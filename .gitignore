@@ -1,0 +1,11 @@
+*.pyc
+database.txt
+*.DS_Store
+*.project
+*.pydevproject
+venv
+.settings
+celerybeat-schedule.db
+celerybeat-schedule
+*.idea
+*celery.log
