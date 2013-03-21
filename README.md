@@ -2,14 +2,21 @@ DocuCanvas
 ====================
 
 ### or How I Learned to Use Canvas and Make Wireframes Fun!
+### aka Burlap to Canvas
 
 Creating documentation and wireframes for things can be tedious, and hard, and plain not fun. To remedy the situation there's DocuCanvas!
 
 Main Features:
 * Add comment/notes/descriptions/etc over an image
 * Break up section of a project to show what things should look like
-* Simulate wireframing techniques via web portal
+* Simulate wire framing techniques via web portal
 * Take advantage of HTM5 Canvas elements for all of it
+* Draw circles with numbers that correspond on the right
+
+Various Notes:
+* Dynamic sizing based on device/screen
+* Text is normally listed to the first X characters on the first line; hovering expands that
+* On hover over the number the list item is highlighted; and a hover box is loaded showing that text
 
 Planned features:
 * Upload of multiple images
