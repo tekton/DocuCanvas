@@ -4,4 +4,4 @@ from django.template import RequestContext
 
 
 def TestIndex(request):
-    return render_to_response("test_board.html", {}, context_instance=RequestContext(request))
+    return render_to_response("test_templates/test_board.html", {}, context_instance=RequestContext(request))
