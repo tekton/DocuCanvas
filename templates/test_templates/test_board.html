@@ -3,31 +3,10 @@
 		<link rel="stylesheet" href="/static/css/jquery-ui.css">
 		<script src="/static/scripts/jquery.js"></script>
 		<script src="/static/scripts/jquery.ui.js"></script>
-        <script>
-            var bgImage = new Image();
-            bgImage.src = '/static/img/screenshot.jpg'
-            $(document).ready(function(){
-                $(".container").append("<img id = 'anImage' style = 'z-index:1' src =" + bgImage.src + "/>");
-            });
-            $(window).load(function(){
-                var canWidth = $("#anImage").width();
-                var canHeight = $("#anImage").height();
-                $(".container").append("<canvas id = 'noteCanvas' style = 'position:absolute; left:0px; top:0px; z-index:2' width ='" + canWidth + "' height = '" + canHeight + "'</canvas>");
-                var canvas = document.getElementById('noteCanvas');
-                var ctx = canvas.getContext('2d');
-                ctx.beginPath();
-                ctx.rect(300,300,100,200);
-                ctx.fillStyle = "yellow"
-                ctx.fill();
-                ctx.stroke();
-                $(".container").append("<a style = 'height:200px; width:100px; position:absolute; left:300px; top:300px; z-index:3; display:block' href = 'http://www.google.com'></a>")
-                });
-
-        </script>
 	</head>
 <body>
 	<div class="container">
-
+	Stuff goes here...
 	</div>
 </body>
 </html>
