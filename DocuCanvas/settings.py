@@ -132,6 +132,8 @@ INSTALLED_APPS = (
     'south',
     'gunicorn',
     'djcelery',
+    ### other basic modules/apps
+    'accounts',
     ### Add project specifics apps here
     'nodes',
     'projects',
