@@ -11,7 +11,7 @@ class MetaIssue(models.Model):
     description = models.TextField()
     priority = models.IntegerField(default=0)
     #
-    mi_type = models.CharField(max_length=255)  # feature, milestone, etc
+    mi_type = models.CharField(max_length=255)  # Meta Issue Type: feature, milestone, etc
     #
     user_story = models.TextField()
 
