@@ -4,4 +4,6 @@ from django.template import RequestContext
 
 
 def TestIndex(request):
-    return render_to_response("test_templates/test_ui.html", {}, context_instance=RequestContext(request))
+    project = "DocuCanvas"
+    page_type = "Bug Report"
+    return render_to_response("test_templates/test_ui.html", {"project": project, "page_type": page_type}, context_instance=RequestContext(request))

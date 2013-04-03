@@ -11,3 +11,7 @@ class Account(models.Model):
     git_account = models.CharField(max_length=255, null=True, blank=True)  # in case we have internal git servers
     github_account = models.CharField(max_length=255, null=True, blank=True)  # for all the people who use github
     location = models.CharField(max_length=255, null=True, blank=True)  # could be address, but could be "the office"
+    google_plus = models.CharField(max_length=255, null=True, blank=True)  #
+    facebook = models.CharField(max_length=255, null=True, blank=True)  #
+    twitter = models.CharField(max_length=255, null=True, blank=True)  #
+    organization = models.CharField(max_length=255, null=True, blank=True)  #

@@ -137,6 +137,7 @@ INSTALLED_APPS = (
     ### Add project specifics apps here
     'nodes',
     'projects',
+    'issues',
 )
 
 # A sample logging configuration. The only tangible logging
