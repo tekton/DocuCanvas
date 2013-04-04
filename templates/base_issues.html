@@ -192,6 +192,10 @@
         <p class="both"></p>
         <h1>{{project}} <span>:: {{page_type}}</span></h1>
         <div class="both">&nbsp;</div>
+        <div class="spiffy_box right">{% block spiffy_box_right %}{% endblock %}</div>
+        <div class="container">
             {% block container %}{% endblock %}
+        </div>
+        <div class="container both" style="margin-top: 25px;">{% block container_bottom_clear %}{% endblock %}</div>
     </body>
 </html>
