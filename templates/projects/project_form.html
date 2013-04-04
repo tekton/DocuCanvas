@@ -1,7 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
-	<body>
+{% extends "base.html" %}
 
+{% block container %}
 	Name:{{form.name}}<br>
 	slug:{{form.slug}}<br>
 	description:{{form.description}}<br>
@@ -19,5 +18,4 @@
 	phase_planning_end:{{form.phase_planning_end}}<br>
 	created:{{form.name}}<br>
 	modified:{{form.name}}<br>
-	</body>
-</html>
+{% endblock %}
