@@ -67,16 +67,17 @@ class IssueView(models.Model):
 
 
 class IssueToIssue(models.Model):
-    primary_issue = models.ForeignKey(Issue)  # fk back to issue
-    secondary_issue = models.ForeignKey(Issue)  # fk back to issue
+    primary_issue = models.ForeignKey(Issue, related_name='primary_issue')  # fk back to issue
+    secondary_issue = models.ForeignKey(Issue, related_name='secondary_issue')  # fk back to issue
     link_type = models.CharField(max_length=255)  # list of link types
-
+    """
     class Meta:
         verbose_name = _('IssueToIssue')
         verbose_name_plural = _('IssueToIssues')
 
     def __unicode__(self):
         pass
+    """
 
 
 class SubscriptionToIssue(models.Model):

@@ -21,6 +21,8 @@ class Project(models.Model):
     current_phase = models.CharField(max_length=255, blank=True, null=True)
     phase_planning_start = models.DateField(null=True, blank=True)
     phase_planning_end = models.DateField(null=True, blank=True)
+    phase_research_start = models.DateField(null=True, blank=True)
+    phase_research_end = models.DateField(null=True, blank=True)
     #
     created = models.DateField(auto_now_add=True, null=True, blank=True)  # NOW
     modified = models.DateField(auto_now=True, null=True, blank=True)  # auto update time
