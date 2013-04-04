@@ -1,22 +1,21 @@
 {% extends "base.html" %}
 
 {% block container %}
+	<h2>Project Overview</h2>
+	Project Name: {{project_O.name}}<br/>
+	Slug: {{project_O.slug}}<br/>
+	Description: {{project_O.description}}<br/>
+	Scope: {{project_O.scope}}<br/>
+	Business Case: {{project_O.business_case}}<br/>
+	Priority: {{project_O.priority}}<br/>
+	Status: {{project_O.status}}<br/>
+	Logo: {{project_O.logo}}<br/>
+	Product Owner: {{project_O.product_owner}}<br/>
+	Project Manager: {{project_O.project_manager}}<br/>
+	Lead Developer: {{project_O.lead_developer}}<br/>
+	Potential End Date: {{project_O.potential_end_date}}<br/>
+	Current Phase: {{project_O.current_phase}}<br/>
+	Phase Planning Start: {{project_O.phase_planning_start}}<br/>
+	Phase Planning End: {{project_O.phase_planning_end}}<br/>
 
-	{{project_O.name}}<br />
-	{{project_O.slug}}<br />
-	{{project_O.description}}<br />
-	{{project_O.scope}}<br />
-	{{project_O.business_case}}<br />
-	{{project_O.priority}}<br />
-	{{project_O.status}}<br />
-	{{project_O.logo}}<br />
-	{{project_O.product_owner}}<br />
-	{{project_O.project_manager}}<br />
-	{{project_O.lead_developer}}<br />
-	{{project_O.potential_end_date}}<br />
-	{{project_O.current_phase}}<br />
-	{{project_O.phase_planning_start}}<br />
-	{{project_O.phase_planning_end}}<br />
-	{{project_O.created}}<br />
-	{{project_O.modified}}<br />
 {% endblock %}

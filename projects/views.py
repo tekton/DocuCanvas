@@ -9,10 +9,14 @@ def project_form(request):
         project = Project()
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
-            project = form.save()
+
+            try:
+                project = form.save()
+            except:
+                print 'unable to save project'
 
             if project.id:
-                return redirect( 'projects.views.project_overview', project.id, permanent=True)
+                return redirect('projects.views.project_overview', project.id, permanent=True)
             else:
                 return render_to_response("projects/project_form.html", {'form':form}, context_instance=RequestContext(request))
     else:
