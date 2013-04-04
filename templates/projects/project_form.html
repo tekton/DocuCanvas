@@ -1,21 +1,11 @@
 {% extends "base.html" %}
 
 {% block container %}
-	Name:{{form.name}}<br>
-	slug:{{form.slug}}<br>
-	description:{{form.description}}<br>
-	scope:{{form.scope}}<br>
-	business_case:{{form.business_case}}<br>
-	priority:{{form.priority}}<br>
-	status:{{form.status}}<br>
-	logo:{{form.logo}}<br>
-	product_owner:{{form.product_owner}}<br>
-	project_manager:{{form.project_manager}}<br>
-	lead_developer:{{form.lead_developer}}<br>
-	potential_end_date:{{form.potential_end_date}}<br>
-	current_phase:{{form.current_phase}}<br>
-	phase_planning_start:{{form.phase_planning_start}}<br>
-	phase_planning_end:{{form.phase_planning_end}}<br>
-	created:{{form.name}}<br>
-	modified:{{form.name}}<br>
+	<form action="/project/new" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		<table>
+		{{form.as_table}}
+		</table>
+		<input type="submit" value="Submit"/>
+	</form>
 {% endblock %}
