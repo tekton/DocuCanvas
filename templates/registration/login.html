@@ -1,0 +1,12 @@
+{% block container %}
+
+<h2>Login</h2>
+<form action="/accounts/login" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="/campaigns/dashboard" />
+	<input type="text" name="username" placeholder="username" id="id_username"/>
+	<input type="password" name="password" placeholder="password" id="id_password"/>
+	<input type="submit" class="button" value="Continue" />
+</form>
+
+{% endblock %}
