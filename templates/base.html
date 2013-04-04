@@ -103,6 +103,14 @@
                 clear: both;
             }
 
+            .main_nav_button{
+                display:inline;
+            }
+
+            .main_nav_button:hover{
+                cursor:pointer;
+            }
+
             /* google search */
 
             #goog-fixurl ul {
@@ -187,7 +195,12 @@
     <body>
         <div id="top_nav" class="both">
             <div class="left">[Home]</div>
-            <div class="right">Context Drop Down | Project List | Account | [S] <input type="text" /></div>
+            <div class="right"> 
+                <div class="main_nav_button">Context Drop Down </div> | 
+                <div class="main_nav_button">Project List </div>|
+                <div class="main_nav_button">Account</div>
+                <div class="main_nav_button"><input type="text" /><input type="button" value="search"/></div>
+            </div>
         </div>
         <p class="both"></p>
         <h1>{{project}} <span>:: {{page_type}}</span></h1>
