@@ -3,31 +3,38 @@ from datetime import date
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from forms import DailyReportForm
+from forms import ReportForm
 from models import UserDailyReport
 
 
 @login_required
-def daily_report_form(request):
+def edit_report_today(request):
     if request.method == 'POST':
-        report = UserDailyReport()
-        form = DailyReportForm(request.POST, instance=report)
+        form = ReportForm(request.POST)
         if form.is_valid():
             try:
-                report = form.save()
+                q = UserDailyReport.objects.filter(user=request.user.id, date=form.cleaned_data['date'])
+                report = q[0] if q else UserDailyReport({"user": request.user.id, "date": form.cleaned_data['date']})
+                report.description = form.cleaned_data['personalReport']
+                report.save()
+                return redirect('daily_reports.views.edit_report_today', permanent=True)
             except Exception, e:
                 print e
-            if report.id:
-                return redirect('daily_reports.views.daily_report_form', permanent=True)
-            else:
                 return render_to_response('daily_reports/daily_report_form.html', {'form': form}, context_instance=RequestContext(request))
+        else:
+            return render_to_response('daily_reports/daily_report_form.html', {'form': form}, context_instance=RequestContext(request))
+
     else:
+        q = None
         try:
-            report = UserDailyReport.objects.get(user_id__exact=request.user.id, date__exact=date.today())
-            form = DailyReportForm(instance=report)
-        except:
-            report = UserDailyReport()
-            form = DailyReportForm({"user": request.user.id, "date": date.today()}, instance=report)
+            q = UserDailyReport.objects.filter(user=request.user.id, date=date.today())
+        except Exception, e:
+            print "Exception: " + str(e)
+            raise e
+        if q:
+            form = ReportForm({"date": date.today(), "goToDate": date.today(), "personalReport": q.description})
+        else:
+            form = ReportForm({"date": date.today(), "goToDate": date.today()})
+            print "no report"
         # print form
     return render_to_response("daily_reports/daily_report_form.html", {'form': form}, context_instance=RequestContext(request))
-
