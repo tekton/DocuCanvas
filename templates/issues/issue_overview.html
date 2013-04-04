@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+
+{% block container %}
+
+	<h2>Issue Overview</h2>
+	Project Name: {{issue_O.project}}<br />
+	Meta Issue: {{issue_O.meta_issues}}<br />
+	State: {{issue_O.state}}<br />
+	Projected Start: {{issue_O.projected_start}}<br />
+	Projected End:{{issue_O.projected_end}}<br />
+	Actual Start:{{issue_O.actual_start}}<br />
+	Actual End: {{issue_O.actual_end}}<br />
+	Date Reported: {{issue_O.date_reported}}<br />
+	Created: {{issue_O.created}}<br />
+	Modified: {{issue_O.modified}}<br />
+	View Type: {{issue_O.view_type}}<br />
+	Issue Type: {{issue_O.issue_type}}<br />
+	Assigned To: {{issue_O.assigned_to}}<br />
+	Title: {{issue_O.title}}<br />
+	Summary: {{issue_O.summary}}<br />
+	Description: {{issue_O.description}}<br />
+	Link Slug: {{issue_O.link_slug}}<br />
+	Status: {{issue_O.status}}<br />
+	Criticality: {{issue_O.criticality}}<br />
+	Fixability: {{issue_O.fixability}}<br />
+	R & D: {{issue_O.r_and_d}}<br />
+	Feature: {{issue_O.feature}}<br />
+	OS: {issue_O.os}}<br />
+	OS Version: {{issue_O.os_version}}<br />
+	Browser: {{issue_O.browser}}<br />
+	Browser Version: {{issue_O.browser_version}}<br />
+	Screen Shot: {{issue_O.screen_shot}}<br />
+	Wireframe: {{issue_O.wireframe}}<br />
+	URI to Test: {{issue_O.uri_to_test}}<br />
+
+
+{% endblock %}

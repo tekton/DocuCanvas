@@ -21,4 +21,5 @@ urlpatterns = patterns('',
     #url(r'^task/', include('tasks.urls')),
     #url(r'^node/', include('nodes.urls')),
     url(r'^project/', include('projects.urls')),
+    url(r'^issue/', include('issues.urls')),
 )
