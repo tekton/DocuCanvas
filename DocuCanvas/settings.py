@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     'nodes',
     'projects',
     'issues',
+    'daily_reports',
 )
 
 # A sample logging configuration. The only tangible logging
