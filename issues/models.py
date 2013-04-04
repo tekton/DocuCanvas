@@ -18,7 +18,7 @@ class MetaIssue(models.Model):
 
 class Issue(models.Model):
     project = models.ForeignKey(Project)  # fk
-    meta_issues = models.ForeignKey(MetaIssue)  # fk
+    meta_issues = models.ForeignKey(MetaIssue, null=True, blank=True)  # fk
     state = models.CharField(max_length=255, blank=True, null=True)  # list
     # dates
     projected_start = models.DateField(null=True, blank=True)

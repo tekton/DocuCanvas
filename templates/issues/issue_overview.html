@@ -1,9 +1,12 @@
-{% extends "base.html" %}
-
+{% extends "base_issues.html" %}
 
 {% block container %}
-
 	<h2>Issue Overview</h2>
+	Summary: {{issue_O.summary}}<br />
+	Description: {{issue_O.description}}
+{% endblock %}
+
+{% block spiffy_box_right %}
 	Project Name: {{issue_O.project}}<br />
 	Meta Issue: {{issue_O.meta_issues}}<br />
 	State: {{issue_O.state}}<br />
@@ -18,8 +21,6 @@
 	Issue Type: {{issue_O.issue_type}}<br />
 	Assigned To: {{issue_O.assigned_to}}<br />
 	Title: {{issue_O.title}}<br />
-	Summary: {{issue_O.summary}}<br />
-	Description: {{issue_O.description}}<br />
 	Link Slug: {{issue_O.link_slug}}<br />
 	Status: {{issue_O.status}}<br />
 	Criticality: {{issue_O.criticality}}<br />
@@ -32,7 +33,5 @@
 	Browser Version: {{issue_O.browser_version}}<br />
 	Screen Shot: {{issue_O.screen_shot}}<br />
 	Wireframe: {{issue_O.wireframe}}<br />
-	URI to Test: x{{issue_O.uri_to_test}}<br />
-
-
+	URI to Test: x{{issue_O.uri_to_test}}
 {% endblock %}
