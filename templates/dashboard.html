@@ -1,5 +1,75 @@
 {% extends "base.html" %}
 
+{% block style %}
+.dashboard_container{
+    _width: 380px;
+    min-height:30em;
+    margin: 0 auto;
+    padding: 30px 20px 50px;
+    border: 1px solid white;
+    border-radius: 4px;
+    box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
+    background: #fcfcfc;
+}
+
+.dashboard_container_section{
+    min-height:10em;
+    margin: 0 4em;
+    padding: 30px 20px 50px;
+    border: 1px solid white;
+    border-radius: 4px;
+    box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
+    background: #fcfcfc;
+    overflow:hidden;
+}
+
+.dashboard_table{
+    width:100%;
+}
+
+h3{
+    margin:0 0 0.5em;
+    width:10%;
+    height:100%;
+    float:left;
+}
+
+{% endblock %}
+
+{% block extra_head %}  
+<script type="text/javascript"></script>
+{% endblock %}
+
 {% block container %}
+
+        <div class="dashboard_container_section">
+            <h3>Pinned</h3>
+            <table class="dashboard_table">
+            {% for issue in issues%}
+                {% if issue.state == "In Progress"%}
+                <tr>
+                    <td>{{issue.project.name}}</td>
+                    <td>{{issue.description}}</td>
+                    <td>{{issue.assigned_to}}</td>
+                </tr>
+                {% endif%}
+            {% endfor%}
+            </table>
+        </div>
+        <div class="dashboard_container_section">
+            <h3>Assigned</h3>
+            <table class="dashboard_table">
+            {% for issue in issues%}
+                <tr>
+                    <td>{{issue.project.name}}</td>
+                    <td>{{issue.description}}</td>
+                    <td>{{issue.assigned_to}}</td>
+                </tr>
+            {% endfor%}
+            </table>
+        </div>
+        <div class="dashboard_container_section">
+            <h3>Subscribed</h3>
+        </div>
 
 {% endblock%}

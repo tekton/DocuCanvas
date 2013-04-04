@@ -6,4 +6,6 @@ from projects.forms import *
 from issues.models import *
 
 def home(request):
-    return render_to_response("dashboard.html", {}, context_instance=RequestContext(request))
+    issues = Issue.objects.filter(assigned_to=request.user).order_by('-created')
+    subscribed = []
+    return render_to_response("dashboard.html", {"issues":issues, "subscribed":subscribed}, context_instance=RequestContext(request))
