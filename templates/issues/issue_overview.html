@@ -35,3 +35,13 @@
 	Wireframe: {{issue_O.wireframe}}<br />
 	URI to Test: x{{issue_O.uri_to_test}}
 {% endblock %}
+
+{% block container_bottom_clear %}
+	<form action="/issue/comment" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		Comment: {{comment_form_O.text}}
+		<input type='hidden' name='issue_id' value='{{issue_O.id}}'/>
+		<input type='hidden' name='user' value='{{user}}'/>
+		<input type="submit" value="Submit"/>
+	</form>
+{% endblock %}
