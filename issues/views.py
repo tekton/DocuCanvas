@@ -42,16 +42,9 @@ def submit_comment(request, issue_id):
         #
         form = CommentForm(request.POST, instance=comment)
         #
-        try:
-            form.is_valid()
-        except Exception, e:
-            print form.errors
-            raise e
-        print "uhhhh"
-        #
         if form.is_valid():
             try:
-                issue = form.save()
+                comment = form.save()  # save the modelform's model!
             except Exception, e:
                 print e
                 print form.errors
@@ -68,4 +61,4 @@ def submit_comment(request, issue_id):
     except Exception, e:
         print e
 
-    return issue_overview(request, request.POST['issue_id'])
+    return issue_overview(request, issue_id)
