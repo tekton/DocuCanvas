@@ -34,7 +34,7 @@ def issue_overview(request, issue_id):
     except:
         print "Somebody messed up the issue overview"
 
-    return render_to_response("issues/issue_overview.html", {'issue_O': issue, 'comment_form_O':comment_form}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'comment_form':comment_form}, context_instance=RequestContext(request))
 
 def submit_comment(request):
     try:
