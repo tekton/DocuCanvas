@@ -52,8 +52,8 @@ h3{
             {% for issue in issues%}
                 {% if issue.state == "In Progress"%}
                 <tr>
-                    <td>{{issue.project.name}}</td>
-                    <td>{{issue.description}}</td>
+                    <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</td>
+                    <td><a href="/issue/{{issue.id}}">{{issue.description}}</td>
                     <td>{{issue.assigned_to}}</td>
                 </tr>
                 {% endif%}
@@ -64,11 +64,14 @@ h3{
             <h3>Assigned</h3>
             <table class="dashboard_table">
             {% for issue in issues%}
+
+                {% if issue.assigned_to == user %}
                 <tr>
-                    <td>{{issue.project.name}}</td>
-                    <td>{{issue.description}}</td>
+                    <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
+                    <td><a href="/issue/{{issue.id}}">{{issue.description}}</td>
                     <td>{{issue.assigned_to}}</td>
                 </tr>
+                {% endif %}
             {% endfor%}
             </table>
         </div>

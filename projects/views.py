@@ -8,7 +8,7 @@ from issues.models import *
 @login_required
 def home(request):
     projects = Project.objects.filter(product_owner=request.user)
-    return render_to_response("projects/projects.html", {'projects': projects}, context_instance=RequestContext(request))
+    return render_to_response("projects/projects.html", {'projects': projects, "page_type":"Project"}, context_instance=RequestContext(request))
 
 
 def project_form(request):
@@ -38,4 +38,4 @@ def project_overview(request, project_id):
         issues = Issue.objects.filter(project=project).order_by('-created')
     except:
         print 'project not found'
-    return render_to_response("projects/project_overview.html", {'project_O': project, "issues": issues}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_overview.html", {'project_O': project, "issues": issues, "page_type":"Project"}, context_instance=RequestContext(request))
