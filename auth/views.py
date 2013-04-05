@@ -69,7 +69,8 @@ def login_func(request):
             else:
                 state = "Your username and/or password were incorrect."
             login(request, user)
-            return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+            #return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+            return redirect('dashboard.views.home')
         else:
             #to_json = {"error": "error with username and/or password"}
             #return HttpResponse(simplejson.dumps(to_json), mimetype='application/json', status=400)
