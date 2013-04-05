@@ -1,10 +1,13 @@
 # Create your views here.
+from datetime import date
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 from forms import DailyReportForm
 from models import UserDailyReport
 
 
+@login_required
 def daily_report_form(request):
     if request.method == 'POST':
         report = UserDailyReport()
@@ -15,18 +18,16 @@ def daily_report_form(request):
             except Exception, e:
                 print e
             if report.id:
-                return redirect('daily_reports.views.daily_report_overview', report.id, permanent=True)
+                return redirect('daily_reports.views.daily_report_form', permanent=True)
             else:
                 return render_to_response('daily_reports/daily_report_form.html', {'form': form}, context_instance=RequestContext(request))
     else:
-        form = DailyReportForm()
-        print form
+        try:
+            report = UserDailyReport.objects.get(user_id__exact=request.user.id, date__exact=date.today())
+            form = DailyReportForm(instance=report)
+        except:
+            report = UserDailyReport()
+            form = DailyReportForm({"user": request.user.id, "date": date.today()}, instance=report)
+        # print form
     return render_to_response("daily_reports/daily_report_form.html", {'form': form}, context_instance=RequestContext(request))
 
-
-def daily_report_overview(request, report_id):
-    try:
-        report = UserDailyReport.objects.get(pk=report_id)
-    except:
-        print "Somebody messed up the report overview"
-    return render_to_response("daily_reports/daily_report_overview.html", {'report': report}, context_instance=RequestContext(request))
