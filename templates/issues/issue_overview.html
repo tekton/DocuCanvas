@@ -43,7 +43,7 @@
 		{% csrf_token %}
 		<b>Comment:</b> {{comment_form.text}}
 		<input type='hidden' name='issue' id='id_issue' value='{{issue.id}}'/>
-		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
+		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
 		<input type="submit" value="Submit"/>
 	</form>
 

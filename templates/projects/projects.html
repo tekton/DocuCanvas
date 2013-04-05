@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block container %}
+
+	<h2>Projects<a href="project/new">+</a></h2>
+
+	<table>
+		<tr>
+			<td>Owner</td>
+			<td>Name</td>
+		</tr>
+		{% for project in projects %}
+			<tr>
+				<td>{{project.product_owner}}</td>
+				<td><a href="/project/{{project.id}}">{{project.name}}</a></td>
+			</tr>
+		{% endfor%}
+	</table>
+{% endblock %}

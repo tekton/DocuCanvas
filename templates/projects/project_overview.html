@@ -1,21 +1,44 @@
-{% extends "base.html" %}
+{% extends "base_issues.html" %}
 
 {% block container %}
-	<h2>Project Overview</h2>
-	Project Name: {{project_O.name}}<br/>
-	Slug: {{project_O.slug}}<br/>
+	<h2>{{project_O.name}}</h2>
 	Description: {{project_O.description}}<br/>
-	Scope: {{project_O.scope}}<br/>
-	Business Case: {{project_O.business_case}}<br/>
-	Priority: {{project_O.priority}}<br/>
 	Status: {{project_O.status}}<br/>
 	Logo: {{project_O.logo}}<br/>
-	Product Owner: {{project_O.product_owner}}<br/>
-	Project Manager: {{project_O.project_manager}}<br/>
-	Lead Developer: {{project_O.lead_developer}}<br/>
 	Potential End Date: {{project_O.potential_end_date}}<br/>
 	Current Phase: {{project_O.current_phase}}<br/>
 	Phase Planning Start: {{project_O.phase_planning_start}}<br/>
 	Phase Planning End: {{project_O.phase_planning_end}}<br/>
+
+{% endblock %}
+
+{% block spiffy_box_right %}
+	Product Owner: {{project_O.product_owner}}<br/>
+	Project Manager: {{project_O.project_manager}}<br/>
+	Lead Developer: {{project_O.lead_developer}}<br/>
+	Scope: {{project_O.scope}}<br/>
+	Business Case: {{project_O.business_case}}<br/>
+	Priority: {{project_O.priority}}<br/>
+	Slug: {{project_O.slug}}<br/>
+
+{% endblock %}
+
+{% block container_bottom_clear %}
+	<h2>Issues</h2>
+
+	<table>
+		<tr>
+			<td>Title</td>
+			<td>Summary</td>
+			<td>Description</td>
+		</tr>
+	{% for issue in issues%}
+		<tr>
+			<td><a href="/issue/{{issue.id}}">{{issue.title}}</a></td>
+			<td>{{issue.summary}}</td>
+			<td>{{issue.desription}}</td>
+		</tr>
+	{% endfor %}
+	</table>
 
 {% endblock %}
