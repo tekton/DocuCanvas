@@ -67,7 +67,7 @@
                 /*max-width: 1000px;*/
                 _width: 380px;
                 margin: 0 auto;
-                margin-right: 225px;
+                margin-right: 275px;
                 padding: 30px 20px 50px;
                 border: 1px solid white;
                 border-radius: 4px;
@@ -76,15 +76,17 @@
             }
 
             .spiffy_box {
-                max-width: 150px;
-                _width: 150px;
+                max-width: 250px;
+                _width: 250px;
                 margin: 0 auto;
 
                 padding: 30px 20px 50px;
                 border: 1px solid white;
                 border-radius: 4px;
                 box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
-                background: #fcfcfc;             
+                background: #fcfcfc;
+
+                font-size: .8em;           
             }
 
             .left {
@@ -189,9 +191,13 @@
             <div class="left">[Home]</div>
             <div class="right">Context Drop Down | Project List | Account | [S] <input type="text" /></div>
         </div>
-        <p class="both"></p>
         <h1>{{project}} <span>:: {{page_type}}</span></h1>
         <div class="both">&nbsp;</div>
+        <div class="spiffy_box right">{% block spiffy_box_right %}{% endblock %}</div>
+        <div class="container">
             {% block container %}{% endblock %}
+            {% block container_bottom_clear %}{% endblock %}
+        </div>
+        <p class="both"></p>
     </body>
 </html>

@@ -18,7 +18,7 @@ class MetaIssue(models.Model):
 
 class Issue(models.Model):
     project = models.ForeignKey(Project)  # fk
-    meta_issues = models.ForeignKey(MetaIssue)  # fk
+    meta_issues = models.ForeignKey(MetaIssue, null=True, blank=True)  # fk
     state = models.CharField(max_length=255, blank=True, null=True)  # list
     # dates
     projected_start = models.DateField(null=True, blank=True)
@@ -85,3 +85,10 @@ class SubscriptionToIssue(models.Model):
     communication_type = models.CharField(max_length=255, default="email")
     # if not e-mail, what?!
     communication_channel = models.CharField(max_length=255, blank=True, null=True)  # phone number, or? -- facebook, twitter, etc
+
+class IssueComment(models.Model):
+    issue = models.ForeignKey(Issue)
+    user = models.ForeignKey(User)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
+    text = models.TextField(max_length=255,blank=False)
