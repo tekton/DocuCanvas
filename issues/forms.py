@@ -9,3 +9,7 @@ Forms for submitting bug reports and suggestions
 class IssueForm(forms.ModelForm):
 	class Meta:
 		model = Issue
+
+class CommentForm(forms.ModelForm):
+	class Meta:
+		model = IssueComment
