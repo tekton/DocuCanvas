@@ -2,45 +2,45 @@
 
 {% block container %}
 	<h2>Issue Overview</h2>
-	Summary: {{issue_O.summary}}<br />
-	Description: {{issue_O.description}}
+	Summary: {{issue.summary}}<br />
+	Description: {{issue.description}}
 {% endblock %}
 
 {% block spiffy_box_right %}
-	Project Name: {{issue_O.project}}<br />
-	Meta Issue: {{issue_O.meta_issues}}<br />
-	State: {{issue_O.state}}<br />
-	Projected Start: {{issue_O.projected_start}}<br />
-	Projected End:{{issue_O.projected_end}}<br />
-	Actual Start:{{issue_O.actual_start}}<br />
-	Actual End: {{issue_O.actual_end}}<br />
-	Date Reported: {{issue_O.date_reported}}<br />
-	Created: {{issue_O.created}}<br />
-	Modified: {{issue_O.modified}}<br />
-	View Type: {{issue_O.view_type}}<br />
-	Issue Type: {{issue_O.issue_type}}<br />
-	Assigned To: {{issue_O.assigned_to}}<br />
-	Title: {{issue_O.title}}<br />
-	Link Slug: {{issue_O.link_slug}}<br />
-	Status: {{issue_O.status}}<br />
-	Criticality: {{issue_O.criticality}}<br />
-	Fixability: {{issue_O.fixability}}<br />
-	R & D: {{issue_O.r_and_d}}<br />
-	Feature: {{issue_O.feature}}<br />
-	OS: {{issue_O.os}}<br />
-	OS Version: {{issue_O.os_version}}<br />
-	Browser: {{issue_O.browser}}<br />
-	Browser Version: {{issue_O.browser_version}}<br />
-	Screen Shot: {{issue_O.screen_shot}}<br />
-	Wireframe: {{issue_O.wireframe}}<br />
-	URI to Test: x{{issue_O.uri_to_test}}
+	Project Name: {{issue.project}}<br />
+	Meta Issue: {{issue.meta_issues}}<br />
+	State: {{issue.state}}<br />
+	Projected Start: {{issue.projected_start}}<br />
+	Projected End:{{issue.projected_end}}<br />
+	Actual Start:{{issue.actual_start}}<br />
+	Actual End: {{issue.actual_end}}<br />
+	Date Reported: {{issue.date_reported}}<br />
+	Created: {{issue.created}}<br />
+	Modified: {{issue.modified}}<br />
+	View Type: {{issue.view_type}}<br />
+	Issue Type: {{issue.issue_type}}<br />
+	Assigned To: {{issue.assigned_to}}<br />
+	Title: {{issue.title}}<br />
+	Link Slug: {{issue.link_slug}}<br />
+	Status: {{issue.status}}<br />
+	Criticality: {{issue.criticality}}<br />
+	Fixability: {{issue.fixability}}<br />
+	R & D: {{issue.r_and_d}}<br />
+	Feature: {{issue.feature}}<br />
+	OS: {{issue.os}}<br />
+	OS Version: {{issue.os_version}}<br />
+	Browser: {{issue.browser}}<br />
+	Browser Version: {{issue.browser_version}}<br />
+	Screen Shot: {{issue.screen_shot}}<br />
+	Wireframe: {{issue.wireframe}}<br />
+	URI to Test: x{{issue.uri_to_test}}
 {% endblock %}
 
 {% block container_bottom_clear %}
-	<form action="/issue/comment/{{issue_O.id}}" method="post" enctype="multipart/form-data">
+	<form action="/issue/comment/{{issue.id}}" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
-		Comment: {{comment_form_O.text}}
-		<input type='hidden' name='issue' id='id_issue' value='{{issue_O.id}}'/>
+		Comment: {{comment_form.text}}
+		<input type='hidden' name='issue' id='id_issue' value='{{issue.id}}'/>
 		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
 		<input type="submit" value="Submit"/>
 	</form>
