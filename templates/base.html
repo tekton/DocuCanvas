@@ -215,10 +215,26 @@
         <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
 
         <script type="text/javascript">
+            var last_clicked;
 
             $(document).ready(function(){
-                $('#account').hover(function(){$('#account_nav').slideToggle();}, function(){});
-                $('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) });
+                $('#account').click(function(){
+                    $('#account_nav').slideToggle();
+                });
+                //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
+
+                $(document).click(function(event) { 
+                    if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
+
+                        if($('#account_nav').css('display') != "none"){
+                            $('#account_nav').slideToggle(); 
+                        }                
+                    }
+                });
+
+            });
+
+
 
         </script>
 
@@ -230,7 +246,7 @@
             <div class="right"> 
                 <div class="main_nav_button">Context Drop Down </div> | 
                 <div class="main_nav_button">Project List </div>|
-                <div class="main_nav_button" id="account"><a href="#">{{user|truncatechars:15}}</a></div>
+                <div class="main_nav_button"><a id="account">{{user|truncatechars:15}}</a></div>
                 <div class="main_nav_button"><input type="text" /><input type="button" value="search"/></div>
             </div>
             <div id="account_nav" class="container">
