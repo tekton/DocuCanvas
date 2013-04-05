@@ -1,12 +1,12 @@
-from django.forms import ModelForm
+from django import forms
+from datetime import date
 from models import *
 
-'''
-Forms for submitting bug reports and suggestions
-'''
+YEAR_CHOICES = range(2013, date.now().year + 1)
 
 
-class DailyReportForm(ModelForm):
-    class Meta:
-        model = UserDailyReport
-        fields = ("date", "description", )
+class ReportForm(forms.Form):
+    date = forms.DateField(widget=forms.HiddenInput)
+    goToDate = forms.DateField(widget=forms.SelectDateWidget(years=YEAR_CHOICES))
+    personalReport = forms.CharField(widget=forms.Textarea)
+    # globalReport = forms.CharField(widget=forms.Textarea)
