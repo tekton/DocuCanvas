@@ -16,8 +16,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from accounts.models import *
 
+
 def register(request):
-    
     if request.method == 'POST':
         next = request.POST.get("next", "/")
         form = RegisterForm(request.POST)
@@ -44,13 +44,14 @@ def register(request):
             print "errors in registration"
             print form.errors
 
-    else:    
+    else:
         print "not post"
         form = RegisterForm()
         next = request.GET.get("next", "/")
         # Add CSRF context token to response.
         return render_to_response("registration/registration.html", {'form': form, 'next': next}, context_instance=RequestContext(request))
     #return render_to_response("registration/registration.html", {'r_form': form, 'next': next}, context_instance=RequestContext(request))
+
 
 def login_func(request):
     next = request.POST.get("next", "/")

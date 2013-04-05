@@ -3,10 +3,9 @@ from django.conf.urls.defaults import *
 from views import *
 
 urlpatterns = patterns('',
-    # url(r'register/$',  register,  name="register"),
-    url(r'register',  'auth.views.register'),
+	url(r'register', 'auth.views.register'),
 #    url(r'edit',  'auth.views.edit_account', {"post_change_redirect": "campaign.views.home"}),
-    url(r'login', 'auth.views.login_func'),
+	url(r'login', 'auth.views.login_func'),
 #    url(r'forgot_password', 'auth.views.forgot_password'),
 #    url(r'logout', logout, name="logout"),
 

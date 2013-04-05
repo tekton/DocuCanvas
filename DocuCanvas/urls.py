@@ -5,7 +5,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
     # url(r'^$', 'DocuCanvas.views.home', name='home'),
     # url(r'^DocuCanvas/', include('DocuCanvas.foo.urls')),
 

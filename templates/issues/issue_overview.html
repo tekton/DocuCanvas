@@ -2,37 +2,37 @@
 
 {% block container %}
 	<h2>Issue Overview</h2>
-	Summary: {{issue.summary}}<br />
+	Summary: {{issue.summary}}<br/>
 	Description: {{issue.description}}
 {% endblock %}
 
 {% block spiffy_box_right %}
-	Project Name: {{issue.project}}<br />
-	Meta Issue: {{issue.meta_issues}}<br />
+	Project Name: {{issue.project}}<br/>
+	Meta Issue: {{issue.meta_issues}}<br/>
 	State: {{issue.state}}<br />
-	Projected Start: {{issue.projected_start}}<br />
-	Projected End:{{issue.projected_end}}<br />
+	Projected Start: {{issue.projected_start}}<br/>
+	Projected End:{{issue.projected_end}}<br/>
 	Actual Start:{{issue.actual_start}}<br />
 	Actual End: {{issue.actual_end}}<br />
-	Date Reported: {{issue.date_reported}}<br />
-	Created: {{issue.created}}<br />
-	Modified: {{issue.modified}}<br />
-	View Type: {{issue.view_type}}<br />
-	Issue Type: {{issue.issue_type}}<br />
-	Assigned To: {{issue.assigned_to}}<br />
-	Title: {{issue.title}}<br />
-	Link Slug: {{issue.link_slug}}<br />
-	Status: {{issue.status}}<br />
-	Criticality: {{issue.criticality}}<br />
-	Fixability: {{issue.fixability}}<br />
-	R & D: {{issue.r_and_d}}<br />
-	Feature: {{issue.feature}}<br />
-	OS: {{issue.os}}<br />
-	OS Version: {{issue.os_version}}<br />
-	Browser: {{issue.browser}}<br />
-	Browser Version: {{issue.browser_version}}<br />
-	Screen Shot: {{issue.screen_shot}}<br />
-	Wireframe: {{issue.wireframe}}<br />
+	Date Reported: {{issue.date_reported}}<br/>
+	Created: {{issue.created}}<br/>
+	Modified: {{issue.modified}}<br/>
+	View Type: {{issue.view_type}}<br/>
+	Issue Type: {{issue.issue_type}}<br/>
+	Assigned To: {{issue.assigned_to}}<br/>
+	Title: {{issue.title}}<br/>
+	Link Slug: {{issue.link_slug}}<br/>
+	Status: {{issue.status}}<br/>
+	Criticality: {{issue.criticality}}<br/>
+	Fixability: {{issue.fixability}}<br/>
+	R & D: {{issue.r_and_d}}<br/>
+	Feature: {{issue.feature}}<br/>
+	OS: {{issue.os}}<br/>
+	OS Version: {{issue.os_version}}<br/>
+	Browser: {{issue.browser}}<br/>
+	Browser Version: {{issue.browser_version}}<br/>
+	Screen Shot: {{issue.screen_shot}}<br/>
+	Wireframe: {{issue.wireframe}}<br/>
 	URI to Test: x{{issue.uri_to_test}}
 {% endblock %}
 
@@ -44,4 +44,17 @@
 		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
 		<input type="submit" value="Submit"/>
 	</form>
+
+	<table>
+		{% for comment in comments%}
+			<tr>
+				<td>{{comment.user}}</td>
+				<td>{{comment.created}}</td>
+			</tr>
+			<tr>
+				<td>{{comment.text}}</td>
+			</tr>
+		{% endfor %}
+
+	</table>
 {% endblock %}

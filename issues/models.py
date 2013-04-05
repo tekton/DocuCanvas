@@ -68,7 +68,7 @@ class IssueView(models.Model):
 
 class IssueToIssue(models.Model):
     primary_issue = models.ForeignKey(Issue, related_name='primary_issue')  # fk back to issue
-    secondary_issue = models.ForeignKey(Issue, related_name ='secondary_issue')  # fk back to issue
+    secondary_issue = models.ForeignKey(Issue, related_name='secondary_issue')  # fk back to issue
     link_type = models.CharField(max_length=255)  # list of link types
 
     class Meta:
@@ -86,9 +86,10 @@ class SubscriptionToIssue(models.Model):
     # if not e-mail, what?!
     communication_channel = models.CharField(max_length=255, blank=True, null=True)  # phone number, or? -- facebook, twitter, etc
 
+
 class IssueComment(models.Model):
     issue = models.ForeignKey(Issue)
     user = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
-    text = models.TextField(max_length=255,blank=False)
+    text = models.TextField(max_length=255, blank=False)
