@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('auth.urls')),
     #
     url(r'^bug/', include('bugs.urls')),
-    #url(r'^board/', include('boards.urls')),
+    url(r'^board/', include('boards.urls')),
     #url(r'^suggestion/', include('suggestions.urls')),
     #url(r'^task/', include('tasks.urls')),
     #url(r'^node/', include('nodes.urls')),

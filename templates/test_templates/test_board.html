@@ -1,12 +1,180 @@
+<!DOCTYPE HTML>
 <html>
-	<head>
-		<link rel="stylesheet" href="/static/css/jquery-ui.css">
-		<script src="/static/scripts/jquery.js"></script>
-		<script src="/static/scripts/jquery.ui.js"></script>
-	</head>
-<body>
-	<div class="container">
-	Stuff goes here...
-	</div>
-</body>
+    <head>
+        <style>
+            body{
+                margin: 0px;
+                padding: 0px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id = "container"> </div>
+         <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
+          <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+         <script>
+            function writeMessage(messageLayer, message){
+                var context = messageLayer.getContext();
+                messageLayer.clear();
+                context.font = '18pt Calibri';
+                context.fillStyle = 'black';
+                context.fillText(message, 10, 25);
+            }
+            var tooltipText = 'THIS IS SOME TEXT\nTHIS IS MORE TEXT\nasdf\nasdf\nasdf'
+            var stage = new Kinetic.Stage({
+                container: 'container',
+                width: 578,
+                height: 600,
+            });
+            var shapesLayer = new Kinetic.Layer();
+            var messageLayer = new Kinetic.Layer();
+
+            var tooltip = new Kinetic.Label({
+               x: 205,
+               y: 120,
+               opacity: 0.75,
+               listening: false,
+               text: {
+                  text: tooltipText,
+                  fontFamily: 'Calibri',
+                  fontSize: 18,
+                  padding: 5,
+                  fill: 'gray'
+               },
+               rect:{
+                  fill: 'black',
+                  pointerDirection: 'left',
+                  pointerWidth: 10,
+                  pointerHeight: 10,
+                  lineJoin: 'round',
+                  shadowColor: 'black',
+                  shadowBlur: 10,
+                  shadowOffset: 10,
+                  shadowOpacity: 0.5
+               }
+            });
+
+            var simpleText = new Kinetic.Text({
+               x: 185, 
+               y: 113,
+               text: '1',
+               fontSize: 15,
+               fontFamily: 'Calibri',
+               fill: 'black',
+               listening: false,
+            });
+
+            var circle = new Kinetic.Circle({
+                x: 190,
+                y: 120,
+                radius: 10,
+                fill: '#00d2ff',
+                stroke: 'black',
+                strokeWidth: 4
+            });
+
+            circle.on('mouseout', function(){
+                writeMessage(messageLayer, 'Mouseout circle');
+            });
+
+            circle.on('mousemove', function(){
+                var mousePos = stage.getMousePosition();
+                var x = mousePos.x - 190;
+                var y = mousePos.y -40;
+                writeMessage(messageLayer, 'x: ' + x + ', y: ' + y);
+            });
+
+            circle.on('mousedown', function(){
+               var mousePos = stage.getMousePosition();
+               var x = mousePos.x - 190;
+               var y = mousePos.y - 40;
+               $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
+
+               if (tooltip.isVisible()){
+                  tooltip.hide();
+                  shapesLayer.draw();
+               }else{
+                  tooltip.show();
+                  shapesLayer.draw();
+               };
+               
+            });
+
+               var tooltip2 = new Kinetic.Label({
+               x: 205,
+               y: 420,
+               opacity: 0.75,
+               listening: false,
+               rect:{
+                  fill: 'black',
+                  pointerDirection: 'left',
+                  pointerWidth: 10,
+                  pointerHeight: 10,
+                  lineJoin: 'round',
+                  shadowColor: 'black',
+                  shadowBlur: 10,
+                  shadowOffset: 10,
+                  shadowOpacity: 0.5
+               }
+            });
+
+            var simpleText2 = new Kinetic.Text({
+               x: 185, 
+               y: 413,
+               text: '1',
+               fontSize: 15,
+               fontFamily: 'Calibri',
+               fill: 'black',
+               listening: false,
+            });
+
+            var circle2 = new Kinetic.Circle({
+               x: 190,
+               y: 420,
+               radius: 10,
+               fill: '#00d2ff',
+               stroke: 'black',
+               strokeWidth: 4
+            });
+
+            circle2.on('mouseout', function(){
+               writeMessage(messageLayer, 'Mouseout circle2');
+            });
+
+            circle2.on('mousemove', function(){
+               var mousePos = stage.getMousePosition();
+               var x = mousePos.x - 190;
+               var y = mousePos.y -40;
+               writeMessage(messageLayer, 'x: ' + x + ', y: ' + y);
+            });
+
+            circle2.on('mousedown', function(){
+               var mousePos = stage.getMousePosition();
+               var x = mousePos.x - 190;
+               var y = mousePos.y - 40;
+               $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
+
+               if (tooltip2.isVisible()){
+                  tooltip2.hide();
+                  shapesLayer.draw();
+                  $('#tooltip1').css('visibility', 'hidden');
+
+               }else{
+                  tooltip2.show();
+                  shapesLayer.draw();
+                  $('#tooltip1').css('visibility', 'visible');
+               };
+               
+            });
+            shapesLayer.add(circle);
+            shapesLayer.add(tooltip);
+            shapesLayer.add(simpleText);
+            shapesLayer.add(circle2);
+            shapesLayer.add(tooltip2);
+            shapesLayer.add(simpleText2);
+            stage.add(shapesLayer);
+            stage.add(messageLayer);
+         </script>
+          <div id = 'tooltip1' style = 'width: 200px; height: 100px; position: relative; top: 210; left: 420; background-color: black;'></div>
+    </body>
 </html>
