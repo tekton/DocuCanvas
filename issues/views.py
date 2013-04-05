@@ -37,6 +37,9 @@ def issue_overview(request, issue_id):
 
 
 def submit_comment(request, issue_id):
+    """
+        Takes a basic comment ModelForm with additional issue_id and user notes added in the form outside the base model form; though those could be added later
+    """
     try:
         comment = IssueComment()
         #
