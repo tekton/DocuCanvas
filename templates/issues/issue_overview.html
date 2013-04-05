@@ -41,8 +41,8 @@
 		
 	<form action="/issue/comment/{{issue.id}}" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
-		<b>Comment:</b> {{comment_form.text}}
-		<input type='hidden' name='issue' id='id_issue' value='{{issue.id}}'/>
+		<b>Comment:</b> {{comment_form.errors}} <br />{{comment_form.description}}
+		<input type='hidden' name="issue" id="id_issue" value='{{issue.id}}'/>
 		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
 		<input type="submit" value="Submit"/>
 	</form>
@@ -54,7 +54,7 @@
 				<td>{{comment.created}}</td>
 			</tr>
 			<tr>
-				<td>{{comment.text}}</td>
+				<td>{{comment.description}}</td>
 			</tr>
 		{% endfor %}
 

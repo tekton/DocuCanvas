@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext as _
+# from django.utils.translation import ugettext as _
 from projects.models import Project
 
 
@@ -35,7 +35,7 @@ class Issue(models.Model):
     #
     issue_type = models.CharField(max_length=255, blank=True, null=True)  # bug, task, suggestion
     #
-    assigned_to = models.ForeignKey(User)
+    assigned_to = models.ForeignKey(User, blank=True, null=True)
     # basic information
     title = models.CharField(max_length=255, blank=True, null=True)
     summary = models.CharField(max_length=140, blank=True, null=True)
@@ -71,9 +71,9 @@ class IssueToIssue(models.Model):
     secondary_issue = models.ForeignKey(Issue, related_name='secondary_issue')  # fk back to issue
     link_type = models.CharField(max_length=255)  # list of link types
 
-    class Meta:
-        verbose_name = _('IssueToIssue')
-        verbose_name_plural = _('IssueToIssues')
+    # class Meta:
+    #    verbose_name = _('IssueToIssue')
+    #    verbose_name_plural = _('IssueToIssues')
 
     def __unicode__(self):
         pass
@@ -92,4 +92,4 @@ class IssueComment(models.Model):
     user = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
-    text = models.TextField(max_length=255, blank=False)
+    description = models.TextField(max_length=255, blank=False)  # note: do not use the word 'text' as a field name
