@@ -22,7 +22,7 @@ def issue_form(request):
                 return render_to_response('issues/issue_form.html', {'form': form}, context_instance=RequestContext(request))
     else:
         form = IssueForm()
-        projects = Project()
+        # projects = Project()
         print form
     return render_to_response("issues/issue_form.html", {'form': form}, context_instance=RequestContext(request))
 
@@ -33,20 +33,22 @@ def issue_overview(request, issue_id):
         comment_form = CommentForm()
     except:
         print "Somebody messed up the issue overview"
+    return render_to_response("issues/issue_overview.html", {'issue_O': issue, 'comment_form_O': comment_form}, context_instance=RequestContext(request))
 
-    return render_to_response("issues/issue_overview.html", {'issue_O': issue, 'comment_form_O':comment_form}, context_instance=RequestContext(request))
 
-def submit_comment(request):
+def submit_comment(request, issue_id):
     try:
-        issue_id = request.POST['issue_id']
-        issue = Issue.objects.get(pk=issue_id)
         comment = IssueComment()
-
+        #
         form = CommentForm(request.POST, instance=comment)
-        form.id_issue = issue.id
-        print 'form stuff'
-        print form
-        
+        #
+        try:
+            form.is_valid()
+        except Exception, e:
+            print form.errors
+            raise e
+        print "uhhhh"
+        #
         if form.is_valid():
             try:
                 issue = form.save()
@@ -56,9 +58,13 @@ def submit_comment(request):
             if comment.id:
                 return issue_overview(request, issue_id)
             else:
-                return render_to_response("issues/issue_overview.html", {'issue_O':issue, 'comment_form_O':form}, context_instance=RequestContext(request))
+                return issue_overview(request, issue_id)
+                # return render_to_response("issues/issue_overview.html", {'issue_O': issue, 'comment_form_O': form}, context_instance=RequestContext(request))
         else:
-            return render_to_response("issues/issue_overview.html", {'issue_O':issue, 'comment_form_O':form}, context_instance=RequestContext(request))
+            print form
+            print form.errors
+            return issue_overview(request, issue_id)
+            # return render_to_response("issues/issue_overview.html", {'issue_O': issue, 'comment_form_O': form}, context_instance=RequestContext(request))
     except Exception, e:
         print e
 
