@@ -2,7 +2,7 @@
 
 
 {% block container %}
-	<form action="/reports/new" method="post" enctype="multipart/form-data">
+	<form action="/reports/edit" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		<table>
 			{{form.as_table}}

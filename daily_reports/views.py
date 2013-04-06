@@ -14,7 +14,7 @@ def edit_report_today(request):
         if form.is_valid():
             try:
                 q = UserDailyReport.objects.filter(user=request.user.id, date=form.cleaned_data['date'])
-                report = q[0] if q else UserDailyReport({"user": request.user.id, "date": form.cleaned_data['date']})
+                report = q[0] if q else UserDailyReport(user=request.user.id, date=form.cleaned_data['date'])
                 report.description = form.cleaned_data['personalReport']
                 report.save()
                 return redirect('daily_reports.views.edit_report_today', permanent=True)
@@ -32,9 +32,9 @@ def edit_report_today(request):
             print "Exception: " + str(e)
             raise e
         if q:
-            form = ReportForm({"date": date.today(), "goToDate": date.today(), "personalReport": q.description})
+            form = ReportForm(initial={"date": date.today(), "goToDate": date.today(), "personalReport": q[0].description})
         else:
-            form = ReportForm({"date": date.today(), "goToDate": date.today()})
+            form = ReportForm(initial={"date": date.today(), "goToDate": date.today()})
             print "no report"
         # print form
     return render_to_response("daily_reports/daily_report_form.html", {'form': form}, context_instance=RequestContext(request))
