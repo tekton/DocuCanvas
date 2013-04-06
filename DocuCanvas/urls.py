@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     # url(r'^DocuCanvas/', include('DocuCanvas.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
+    (r'^$', 'dashboard.views.home'),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:

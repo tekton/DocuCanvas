@@ -63,6 +63,11 @@
                 margin: 1em 0;
             }
 
+            a{
+                text-decoration:none;
+                color:#737373;
+            }
+
             .container {
                 /*max-width: 1000px;*/
                 _width: 380px;
@@ -101,6 +106,30 @@
             
             .both {
                 clear: both;
+            }
+
+            .main_nav_button{
+                display:inline;
+            }
+
+            .main_nav_button:hover{
+                cursor:pointer;
+            }
+
+            /* navigation bar */
+            #advanced_search{
+            }
+            #account_nav {
+                width: 135px;
+                padding: 1em;
+                position: absolute;
+                top: 6.5em;
+                right: 6.5em;
+                height: 2em;
+                overflow: hidden;
+                z-index:10;
+                font-size:0.7em;
+                display:none;
             }
 
             /* google search */
@@ -182,12 +211,49 @@
 
         {% block style %}{% endblock %}
         </style>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script><!-- shoudl be changed to local source?-->
+        <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
+
+        <script type="text/javascript">
+            var last_clicked;
+
+            $(document).ready(function(){
+                $('#account').click(function(){
+                    $('#account_nav').slideToggle();
+                });
+                //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
+
+                $(document).click(function(event) { 
+                    if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
+
+                        if($('#account_nav').css('display') != "none"){
+                            $('#account_nav').slideToggle(); 
+                        }                
+                    }
+                });
+
+            });
+
+
+
+        </script>
+
         {% block extra_head %}{% endblock %}
     </head>
     <body>
         <div id="top_nav" class="both">
-            <div class="left">[Home]</div>
-            <div class="right">Context Drop Down | Project List | Account | [S] <input type="text" /></div>
+            <div class="left"><a href="/">[Home]</a></div>
+            <div class="right"> 
+                <div class="main_nav_button">Context Drop Down </div> | 
+                <div class="main_nav_button">Project List </div>|
+                <div class="main_nav_button"><a id="account">{{user|truncatechars:15}}</a></div>
+                <div class="main_nav_button"><input type="text" /><input type="button" value="search"/></div>
+            </div>
+            <div id="account_nav" class="container">
+                
+                <a href="#">Account Settings</a>
+                <a href="/accounts/logout/?next=/">Logout</a>
+            </div>
         </div>
         <p class="both"></p>
         <h1>{{project}} <span>:: {{page_type}}</span></h1>
