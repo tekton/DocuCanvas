@@ -80,6 +80,27 @@
                 background: #fcfcfc;
             }
 
+            .container_nav{
+                /*max-width: 1000px;*/
+                _width: 380px;
+                margin: 0 auto;
+                margin-right: 225px;
+                padding: 30px 20px 50px;
+                border: 1px solid white;
+                border-radius: 4px;
+                box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
+                background: #fcfcfc;
+            }
+
+            .container_nav a{
+                display:inline-block;
+                width:100%;
+            }
+
+            .container_nav a:hover{
+                cursor:pointer;
+            }
+
             .spiffy_box {
                 max-width: 150px;
                 _width: 150px;
@@ -119,12 +140,54 @@
             /* navigation bar */
             #advanced_search{
             }
+
+            #context_nav {
+                width: 20em;
+                padding: 1em;
+                position: absolute;
+                top: 6.5em;
+                right: 15.5em;
+                min-height: 2em;
+                height:auto;
+                overflow: hidden;
+                z-index:10;
+                font-size:0.7em;
+                display:none;
+            }
+
+            #projects_nav {
+                width: 20em;
+                padding: 1em;
+                position: absolute;
+                top: 6.5em;
+                right: 2.5em;
+                min-height: 2em;
+                height:auto;
+                overflow: hidden;
+                z-index:10;
+                font-size:0.7em;
+                display:none;
+            }
+
+
             #account_nav {
                 width: 135px;
                 padding: 1em;
                 position: absolute;
                 top: 6.5em;
                 right: 6.5em;
+                height: 2em;
+                overflow: hidden;
+                z-index:10;
+                font-size:0.7em;
+                display:none;
+            }
+            #search_nav {
+                width: 10em;
+                padding: 1em;
+                position: absolute;
+                top: 6.5em;
+                right:0;
                 height: 2em;
                 overflow: hidden;
                 z-index:10;
@@ -215,11 +278,22 @@
         <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
 
         <script type="text/javascript">
-            var last_clicked;
 
             $(document).ready(function(){
                 $('#account').click(function(){
                     $('#account_nav').slideToggle();
+                });
+
+                $('#projects_list').click(function(){
+                    $('#projects_nav').slideToggle();
+                });
+
+                $('#context').click(function(){
+                    $('#context_nav').slideToggle();
+                });
+
+                $('#search').click(function(){
+                    $('#search_nav').slideToggle();
                 });
                 //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
 
@@ -228,6 +302,27 @@
 
                         if($('#account_nav').css('display') != "none"){
                             $('#account_nav').slideToggle(); 
+                        }                
+                    }
+
+                    if($(event.target).index($('#projects_nav')) == -1 && $(event.target).attr('id') != "projects_list"){
+
+                        if($('#projects_nav').css('display') != "none"){
+                            $('#projects_nav').slideToggle(); 
+                        }                
+                    }
+
+                    if($(event.target).index($('#context_nav')) == -1 && $(event.target).attr('id') != "context"){
+
+                        if($('#context_nav').css('display') != "none"){
+                            $('#context_nav').slideToggle(); 
+                        }                
+                    }
+
+                    if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search"){
+
+                        if($('#search_nav').css('display') != "none"){
+                            $('#search_nav').slideToggle(); 
                         }                
                     }
                 });
@@ -244,16 +339,27 @@
         <div id="top_nav" class="both">
             <div class="left"><a href="/">[Home]</a></div>
             <div class="right"> 
-                <div class="main_nav_button">Context Drop Down </div> | 
-                <div class="main_nav_button">Project List </div>|
+                <div class="main_nav_button" id="context">Context Drop Down </div> | 
+                <div class="main_nav_button" id="projects_list">Project List </div>|
                 <div class="main_nav_button"><a id="account">{{user|truncatechars:15}}</a></div>
-                <div class="main_nav_button"><input type="text" /><input type="button" value="search"/></div>
+                <div class="main_nav_button"><input type="text" id="search"/><input type="button" value="search"/></div>
             </div>
-            <div id="account_nav" class="container">
-                
+            <div id="context_nav" class="container_nav">   
+            </div>
+            <div id="projects_nav" class="container_nav"> 
+                {% for project in projects%}
+                   <a href="/project/{{project.id}}">{{project.name}}</a>
+                {% endfor %}
+            </div>
+            <div id="account_nav" class="container_nav">   
                 <a href="#">Account Settings</a>
                 <a href="/accounts/logout/?next=/">Logout</a>
             </div>
+            <div id="search_nav" class="container_nav">   
+                <a href="#">Advanced Search</a>
+            </div>
+            
+            
         </div>
         <p class="both"></p>
         <h1>{{project}} <span>:: {{page_type}}</span></h1>
