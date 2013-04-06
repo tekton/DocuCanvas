@@ -13,168 +13,111 @@
          <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
           <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
          <script>
-            function writeMessage(messageLayer, message){
-                var context = messageLayer.getContext();
-                messageLayer.clear();
-                context.font = '18pt Calibri';
-                context.fillStyle = 'black';
-                context.fillText(message, 10, 25);
-            }
-            var tooltipText = 'THIS IS SOME TEXT\nTHIS IS MORE TEXT\nasdf\nasdf\nasdf'
-            var stage = new Kinetic.Stage({
-                container: 'container',
-                width: 578,
-                height: 600,
-            });
-            var shapesLayer = new Kinetic.Layer();
-            var messageLayer = new Kinetic.Layer();
-
-            var tooltip = new Kinetic.Label({
-               x: 205,
-               y: 120,
-               opacity: 0.75,
-               listening: false,
-               text: {
-                  text: tooltipText,
-                  fontFamily: 'Calibri',
-                  fontSize: 18,
-                  padding: 5,
-                  fill: 'gray'
-               },
-               rect:{
-                  fill: 'black',
-                  pointerDirection: 'left',
-                  pointerWidth: 10,
-                  pointerHeight: 10,
-                  lineJoin: 'round',
-                  shadowColor: 'black',
-                  shadowBlur: 10,
-                  shadowOffset: 10,
-                  shadowOpacity: 0.5
-               }
-            });
-
-            var simpleText = new Kinetic.Text({
-               x: 185, 
-               y: 113,
-               text: '1',
-               fontSize: 15,
-               fontFamily: 'Calibri',
-               fill: 'black',
-               listening: false,
-            });
-
-            var circle = new Kinetic.Circle({
-                x: 190,
-                y: 120,
-                radius: 10,
-                fill: '#00d2ff',
-                stroke: 'black',
-                strokeWidth: 4
-            });
-
-            circle.on('mouseout', function(){
-                writeMessage(messageLayer, 'Mouseout circle');
-            });
-
-            circle.on('mousemove', function(){
+         //Set variables for future calculations
+            var tooltipInfo = [{"x":400,"y":500,"text": "THIS IS A BUG"}, {"x":200,"y":200,"text": "THIS IS ANOTHER BUG"}]
+            var imageWidth = 1920;
+            var imageHeight = 1080;
+            var tooltipXPos = 400;
+            var tooltipYPos = 500;
+            var tooltipWidth = 200;
+            var tooltipHeight = 200;
+            var tooltipText = "THIS IS A BUG BLAH BLAH BLAH BLAH BLAH";
+            var imageObj = new Image();
+            imageObj.onload = function() {
+                var bgImage = new Kinetic.Image({
+                    image: imageObj,
+                    width: imageWidth,
+                    height: imageHeight,
+                    id: 'backgroundImage',
+                  });
+                bgImage.on('mousedown', function(){
                 var mousePos = stage.getMousePosition();
-                var x = mousePos.x - 190;
-                var y = mousePos.y -40;
-                writeMessage(messageLayer, 'x: ' + x + ', y: ' + y);
-            });
+                var x = mousePos.x ;
+                var y = mousePos.y ;
+                $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>'); 
+                });
 
-            circle.on('mousedown', function(){
-               var mousePos = stage.getMousePosition();
-               var x = mousePos.x - 190;
-               var y = mousePos.y - 40;
-               $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
+                var stage = new Kinetic.Stage({
+                    container: 'container',
+                    width: imageWidth,
+                    height: imageHeight,
+                });
+                var shapesLayer = new Kinetic.Layer();
+                var messageLayer = new Kinetic.Layer();
+                shapesLayer.add(bgImage);
 
-               if (tooltip.isVisible()){
-                  tooltip.hide();
-                  shapesLayer.draw();
-               }else{
-                  tooltip.show();
-                  shapesLayer.draw();
-               };
-               
-            });
+                for (var i=0;i<tooltipInfo.length;i++){
+                    var circleID = "circle" + i;
+                    var tooltipID = "tooltip" + i;
+                    console.log(circleID);
+                    console.log(tooltipID);
+                    var tooltip = new Kinetic.Label({
+                        x: tooltipInfo[i]["x"] + 15,
+                        y: tooltipInfo[i]["y"],
+                        opacity: 0.75,
+                        listening: false,
+                        visible: true,
+                        id: tooltipID,
+                        rect:{
+                            fill: 'black',
+                            pointerDirection: 'left',
+                            pointerWidth: 10,
+                            pointerHeight: 10,
+                            lineJoin: 'round',
+                            shadowColor: 'black',
+                            shadowBlur: 10,
+                            shadowOffset: 10,
+                            shadowOpacity: 0.5,
+                            }
+                    });
 
-               var tooltip2 = new Kinetic.Label({
-               x: 205,
-               y: 420,
-               opacity: 0.75,
-               listening: false,
-               rect:{
-                  fill: 'black',
-                  pointerDirection: 'left',
-                  pointerWidth: 10,
-                  pointerHeight: 10,
-                  lineJoin: 'round',
-                  shadowColor: 'black',
-                  shadowBlur: 10,
-                  shadowOffset: 10,
-                  shadowOpacity: 0.5
-               }
-            });
+                    var circle = new Kinetic.Circle({
+                        x: tooltipInfo[i]["x"],
+                        y: tooltipInfo[i]["y"],
+                        radius: 5,
+                        fill: '#00d2ff',
+                        stroke: 'black',
+                        strokeWidth: 2,
+                        id: circleID,
+                    });
 
-            var simpleText2 = new Kinetic.Text({
-               x: 185, 
-               y: 413,
-               text: '1',
-               fontSize: 15,
-               fontFamily: 'Calibri',
-               fill: 'black',
-               listening: false,
-            });
+                    shapesLayer.on('click', function(evt) {
+                    // get the shape that was clicked on
+                    var shape = evt.targetNode;
+                    alert('you clicked on \"' + shape.getId() + '\"');
+                    });
+/*                    
+                    circle.on('mouseover', function(){
+                        document.body.style.cursor = 'pointer';
+                    });
+                    circle.on('mouseout', function(){
+                        document.body.style.cursor = 'default';
+                    });
 
-            var circle2 = new Kinetic.Circle({
-               x: 190,
-               y: 420,
-               radius: 10,
-               fill: '#00d2ff',
-               stroke: 'black',
-               strokeWidth: 4
-            });
+                    circle.on('mousedown', function(){
+                        if (tooltip.isVisible()){
+                            tooltip.hide();
+                            shapesLayer.draw();
+                            $('#tooltip0').css('visibility', 'hidden');
 
-            circle2.on('mouseout', function(){
-               writeMessage(messageLayer, 'Mouseout circle2');
-            });
+                        }else{
+                            tooltip.show();
+                            shapesLayer.draw();
+                            $('#' + tooltip).css('visibility', 'visible');
+                        }; 
+                    });
+*/                    
+                    shapesLayer.add(circle);
+                    shapesLayer.add(tooltip);
+                    $('body').append("<div id = 'tooltip" + i + "' style = 'width: " + tooltipWidth +"px; height: " + tooltipHeight + "px; position: absolute; top: " + (tooltipInfo[i]["y"] - (tooltipHeight / 4)) + "px; left: " + (tooltipInfo[i]["x"] + 25) + "px; background-color: black; opacity: 0.9; visibility: visible;'><p style = 'color: grey; text-align: center'>" + tooltipText + "</p></div>");
+                };
+                stage.add(shapesLayer);
 
-            circle2.on('mousemove', function(){
-               var mousePos = stage.getMousePosition();
-               var x = mousePos.x - 190;
-               var y = mousePos.y -40;
-               writeMessage(messageLayer, 'x: ' + x + ', y: ' + y);
-            });
+             };
+            imageObj.src = '/static/img/screenshot.png';
 
-            circle2.on('mousedown', function(){
-               var mousePos = stage.getMousePosition();
-               var x = mousePos.x - 190;
-               var y = mousePos.y - 40;
-               $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
-
-               if (tooltip2.isVisible()){
-                  tooltip2.hide();
-                  shapesLayer.draw();
-                  $('#tooltip1').css('visibility', 'hidden');
-
-               }else{
-                  tooltip2.show();
-                  shapesLayer.draw();
-                  $('#tooltip1').css('visibility', 'visible');
-               };
-               
-            });
-            shapesLayer.add(circle);
-            shapesLayer.add(tooltip);
-            shapesLayer.add(simpleText);
-            shapesLayer.add(circle2);
-            shapesLayer.add(tooltip2);
-            shapesLayer.add(simpleText2);
-            stage.add(shapesLayer);
-            stage.add(messageLayer);
          </script>
-          <div id = 'tooltip1' style = 'width: 200px; height: 100px; position: absolute; top: 370px; left: 215px; background-color: black;'><p style = 'color: grey; text-align: center'>TEXT<br />MORE TEXT</p></div>
+
+             
     </body>
 </html>
