@@ -1,5 +1,9 @@
 {% extends "base_issues.html" %}
 
+{% block context_nav %}
+	<a href="/issue/new">New Issue : {{issue.project.name}}</a>
+{% endblock%}
+
 {% block container %}
 	<h2>Issue Overview</h2>
 	<b>Summary:</b> {{issue.summary}}<br/>

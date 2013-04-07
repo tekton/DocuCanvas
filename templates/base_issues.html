@@ -63,6 +63,11 @@
                 margin: 1em 0;
             }
 
+            a{
+                text-decoration:none;
+                color:#737373;
+            }
+
             .container {
                 /*max-width: 1000px;*/
                 _width: 380px;
@@ -73,6 +78,29 @@
                 border-radius: 4px;
                 box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
                 background: #fcfcfc;
+            }
+
+            .container_nav{
+                /*max-width: 1000px;*/
+                _width: 380px;
+                margin: 0 auto;
+                margin-right: 225px;
+                padding: 30px 20px 50px;
+                border: 1px solid white;
+                border-radius: 4px;
+                box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
+                background: #fcfcfc;
+            }
+
+            .container_nav a{
+                display:inline-block;
+                width:100%;
+                border-radius: 4px;
+            }
+
+            .container_nav a:hover{
+                cursor:pointer;
+                background:#bbb;
             }
 
             .spiffy_box {
@@ -103,6 +131,68 @@
             
             .both {
                 clear: both;
+            }
+
+            .main_nav_button{
+                display:inline;
+            }
+
+            .main_nav_button:hover{
+                cursor:pointer;
+            }
+
+            #context_nav {
+                width: 20em;
+                padding: 1em;
+                position: absolute;
+                top: 6.5em;
+                right: 15.5em;
+                min-height: 2em;
+                height:auto;
+                overflow: hidden;
+                z-index:10;
+                font-size:0.7em;
+                display:none;
+            }
+
+            #projects_nav {
+                width: 20em;
+                padding: 1em;
+                position: absolute;
+                top: 6.5em;
+                right: 2.5em;
+                min-height: 2em;
+                height:auto;
+                overflow: hidden;
+                z-index:10;
+                font-size:0.7em;
+                display:none;
+            }
+
+
+            #account_nav {
+                width: 135px;
+                padding: 1em;
+                position: absolute;
+                top: 6.5em;
+                right: 6.5em;
+                height: 2em;
+                overflow: hidden;
+                z-index:10;
+                font-size:0.7em;
+                display:none;
+            }
+            #search_nav {
+                width: 10em;
+                padding: 1em;
+                position: absolute;
+                top: 6.5em;
+                right:0;
+                height: 2em;
+                overflow: hidden;
+                z-index:10;
+                font-size:0.7em;
+                display:none;
             }
 
             /* google search */
@@ -184,12 +274,93 @@
 
         {% block style %}{% endblock %}
         </style>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script><!-- shoudl be changed to local source?-->
+        <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
+
+        <script type="text/javascript">
+
+            $(document).ready(function(){
+                $('#account').click(function(){
+                    $('#account_nav').slideToggle();
+                });
+
+                $('#projects_list').click(function(){
+                    $('#projects_nav').slideToggle();
+                });
+
+                $('#context').click(function(){
+                    $('#context_nav').slideToggle();
+                });
+
+                $('#search').click(function(){
+                    $('#search_nav').slideToggle();
+                });
+                //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
+
+                $(document).click(function(event) { 
+                    if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
+
+                        if($('#account_nav').css('display') != "none"){
+                            $('#account_nav').slideToggle(); 
+                        }                
+                    }
+
+                    if($(event.target).index($('#projects_nav')) == -1 && $(event.target).attr('id') != "projects_list"){
+
+                        if($('#projects_nav').css('display') != "none"){
+                            $('#projects_nav').slideToggle(); 
+                        }                
+                    }
+
+                    if($(event.target).index($('#context_nav')) == -1 && $(event.target).attr('id') != "context"){
+
+                        if($('#context_nav').css('display') != "none"){
+                            $('#context_nav').slideToggle(); 
+                        }                
+                    }
+
+                    if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search"){
+
+                        if($('#search_nav').css('display') != "none"){
+                            $('#search_nav').slideToggle(); 
+                        }                
+                    }
+                });
+
+            });
+
+
+
+        </script>
+
         {% block extra_head %}{% endblock %}
     </head>
     <body>
         <div id="top_nav" class="both">
-            <div class="left">[Home]</div>
-            <div class="right">Context Drop Down | Project List | Account | [S] <input type="text" /></div>
+             <div class="left"><a href="/">[Home]</a></div>
+             <div class="right"> 
+                <div class="main_nav_button" id="context">Context Drop Down </div> | 
+                <div class="main_nav_button" id="projects_list">Project List </div>|
+                <div class="main_nav_button"><a id="account">{{user|truncatechars:15}}</a></div>
+                <div class="main_nav_button"><input type="text" id="search"/><input type="button" value="search"/></div>
+            </div>
+            <div id="context_nav" class="container_nav"> 
+                {% block context_nav %}{% endblock %}  
+            </div>
+            <div id="projects_nav" class="container_nav"> 
+                {% for project in projects%}
+                   <a href="/project/{{project.id}}">{{project.name}}</a>
+                {% endfor %}
+                <a href="/project/new">New Project</a>
+            </div>
+            <div id="account_nav" class="container_nav">   
+                <a href="#">Account Settings</a>
+                <a href="/accounts/logout/?next=/">Logout</a>
+            </div>
+            <div id="search_nav" class="container_nav">   
+                <a href="#">Advanced Search</a>
+            </div>
         </div>
         <h1>{{project}} <span>:: {{page_type}}</span></h1>
         <div class="both">&nbsp;</div>
