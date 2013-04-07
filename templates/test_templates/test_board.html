@@ -12,25 +12,30 @@
         <div id = "container"> </div>
          <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
           <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-         <script>
-         //Set variables for future calculations
-            var tooltipInfo = [{"x":400,"y":500,"text": "THIS IS A BUG"}, {"x":200,"y":200,"text": "THIS IS ANOTHER BUG"}, {"x": 150, "y":400, "text": "ANOTHER BUG"}]
+           <script>
+
+            // Temporary hash for making a test loop to place multiple notes
+            var tooltipInfo = [{"x":400,"y":500,"text": "THIS IS A BUG"}, {"x":200,"y":200,"text": "THIS IS ANOTHER BUG asdf adf adf asdf asdf asdf"}, {"x": 150, "y":400, "text": "ANOTHER BUG"}]
+
+            //Test variables for placing notes, most will be contained in database when finished
             var imageWidth = 1920;
             var imageHeight = 1080;
-            var tooltipXPos = 700;
-            var tooltipYPos = 300;
             var tooltipWidth = 200;
             var tooltipHeight = 200;
-            var tooltipText = "THIS IS A BUG BLAH BLAH BLAH BLAH BLAH asf asdf asdf sadf sadf asdf asdf asdf as dfa sdf asdf asdf asdf asd fa sdfas dfsa df";
+
+            // Create Background image
             var imageObj = new Image();
+
+            // Most everything occurs inside the image onload function
             imageObj.onload = function() {
                 var bgImage = new Kinetic.Image({
                     image: imageObj,
                     width: imageWidth,
                     height: imageHeight,
-                    listening: false,
                     id: 'backgroundImage',
                   });
+
+                // Test function for getting mouse position
                 bgImage.on('mousedown', function(){
                 var mousePos = stage.getMousePosition();
                 var x = mousePos.x ;
@@ -47,10 +52,10 @@
                 var messageLayer = new Kinetic.Layer();
                 shapesLayer.add(bgImage);
 
-                //for (var i=0;i<tooltipInfo.length;i++){
+                // Function to add a bug to canvas
                 function bugNote(x, y, bugText, divId){
-
                     var tooltipId = "#" + divId;
+                    var bugListId = "#bugListNo" + divId;
                     var tooltip = new Kinetic.Label({
                         x: x + 15,
                         y: y,
@@ -99,22 +104,29 @@
                             tooltip.hide();
                             shapesLayer.draw();
                             $(tooltipId).css('visibility', 'hidden');
+                            $(bugListId).css('background-color', 'green');
 
                         }else{
                             tooltip.show();
                             shapesLayer.draw();
                             $(tooltipId).css('visibility', 'visible');
+
+                            $(bugListId).css('background-color', 'yellow');
                         };
                     });
 
                     shapesLayer.add(circle);
                     shapesLayer.add(tooltip);
-                    $('body').append("<div id = " + divId + " style = 'width: " + tooltipWidth +"px;  position: absolute; top: " + (y - (tooltipHeight / 10)) + "px; left: " + (x + 25) + "px; background-color: black; opacity: 0.9; visibility: hidden;'><p style = 'color: grey; text-align: center'>" + bugText + "</p></div>");
+                    $('body').append("<div id = " + divId + " style = 'width: " + tooltipWidth +"px;  position: absolute; top: " + (y - (tooltipHeight / 15)) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: grey; text-align: left'>" + bugText + "</p><p style = 'text-align: right;'><a style = 'color: yellow' href = 'http://www.google.com'>THIS IS A LINK</a></p></div>");
                 //};
                 };
+                // End bugNote function
+
+                // test loop for creating multiple notes
                 for (var i=0;i<tooltipInfo.length;i++){
                     var newCircle = "circle" + i;
                     newCircle = new bugNote(tooltipInfo[i]["x"], tooltipInfo[i]["y"],tooltipInfo[i]["text"], i);
+                    $('#bugList').append("<div id = bugListNo" + i + ">" + tooltipInfo[i]["text"] + "<br /><br />");
                 };
                 //var circle1 = new bugNote(300, 400, 1);
                 //var circle2 = new bugNote(500, 100, 2);
@@ -123,8 +135,19 @@
              };
             imageObj.src = '/static/img/screenshot.png';
 
+            function toggleBugListDiv(){
+                var toggleDiv = document.getElementById('bugList');
+                if(toggleDiv.style.visibility == 'visible'){
+                    toggleDiv.style.visibility = 'hidden'
+                    $('#toggler').text("Show");
+                }else{
+                    toggleDiv.style.visibility = 'visible'
+                    $('#toggler').text("Hide");
+                };
+            };
+
          </script>
-
-
+         <div  style = 'position: fixed; width: 200px; height: 50px; top: 0px; right: 0px; background-color: blue'><a id = "toggler" href = "#" onclick="toggleBugListDiv()">Hide</a></div>
+         <div id = 'bugList' style = 'position: fixed; width: 200px; height: 700px; top: 50px; right: 0px; background-color: green; visibility: visible;'></div>
     </body>
 </html>
