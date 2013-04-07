@@ -95,10 +95,12 @@
             .container_nav a{
                 display:inline-block;
                 width:100%;
+                border-radius: 4px;
             }
 
             .container_nav a:hover{
                 cursor:pointer;
+                background:#bbb;
             }
 
             .spiffy_box {
@@ -344,12 +346,14 @@
                 <div class="main_nav_button"><a id="account">{{user|truncatechars:15}}</a></div>
                 <div class="main_nav_button"><input type="text" id="search"/><input type="button" value="search"/></div>
             </div>
-            <div id="context_nav" class="container_nav">   
+            <div id="context_nav" class="container_nav"> 
+                {% block context_nav %}{% endblock %}  
             </div>
             <div id="projects_nav" class="container_nav"> 
                 {% for project in projects%}
                    <a href="/project/{{project.id}}">{{project.name}}</a>
                 {% endfor %}
+                <a href="/project/new">New Project</a>
             </div>
             <div id="account_nav" class="container_nav">   
                 <a href="#">Account Settings</a>
