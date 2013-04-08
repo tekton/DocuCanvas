@@ -12,7 +12,7 @@ from django.core.mail import get_connection
 from django.template.loader import get_template
 from django.template import Context
 
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm, PasswordChangeForm, SetPasswordForm
 from django.contrib.auth.decorators import login_required
 from accounts.models import *
 
@@ -83,8 +83,12 @@ def login_func(request):
 
 def account_settings(request):
     if request.method == "POST":
-        return redirect('dashboard.views.home')
-
+        form = PasswordChangeForm(user= request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard.views.home')
+        else:
+            return render_to_response("registration/account_settings.html", {'form': form}, context_instance=RequestContext(request))  
     #form = EditAccountForm()
-    form = EditAccountForm()
+    form = EditAccountForm(SetPasswordForm)
     return render_to_response("registration/account_settings.html", {'form': form}, context_instance=RequestContext(request))
