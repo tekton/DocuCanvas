@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.template import RequestContext
-from forms import RegisterForm
+from forms import RegisterForm, EditAccountForm
 from django.utils import simplejson
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
@@ -12,7 +12,7 @@ from django.core.mail import get_connection
 from django.template.loader import get_template
 from django.template import Context
 
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django.contrib.auth.decorators import login_required
 from accounts.models import *
 
@@ -79,3 +79,12 @@ def login_func(request):
         form = AuthenticationForm()
 
     return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+
+
+def account_settings(request):
+    if request.method == "POST":
+        return redirect('dashboard.views.home')
+
+    #form = EditAccountForm()
+    form = EditAccountForm()
+    return render_to_response("registration/account_settings.html", {'form': form}, context_instance=RequestContext(request))
