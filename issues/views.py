@@ -41,7 +41,7 @@ def issue_overview(request, issue_id):
     except Exception, e:
         print e
 
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'comment_form': comment_form, 'comments':  comments}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'comment_form': comment_form, 'comments':  comments, "page_type":"Issue"}, context_instance=RequestContext(request))
 
 
 def submit_comment(request, issue_id):
