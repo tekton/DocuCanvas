@@ -13,8 +13,8 @@ def edit_report_today(request):
         form = ReportForm(request.POST)
         if form.is_valid():
             try:
-                q = UserDailyReport.objects.filter(user=request.user.id, date=form.cleaned_data['date'])
-                report = q[0] if q else UserDailyReport(user=request.user.id, date=form.cleaned_data['date'])
+                q = UserDailyReport.objects.filter(user=request.user, date=form.cleaned_data['date'])
+                report = q[0] if q else UserDailyReport(user=request.user, date=form.cleaned_data['date'])
                 report.description = form.cleaned_data['personalReport']
                 report.save()
                 return redirect('daily_reports.views.edit_report_today', permanent=True)
@@ -27,7 +27,7 @@ def edit_report_today(request):
     else:
         q = None
         try:
-            q = UserDailyReport.objects.filter(user=request.user.id, date=date.today())
+            q = UserDailyReport.objects.filter(user=request.user, date=date.today())
         except Exception, e:
             print "Exception: " + str(e)
             raise e
@@ -53,7 +53,7 @@ def edit_report(request, year, month, day):
     print d
     q = None
     try:
-        q = UserDailyReport.objects.filter(user=request.user.id, date=d)
+        q = UserDailyReport.objects.filter(user=request.user, date=d)
     except Exception, e:
         print "Exception: " + str(e)
         raise e
