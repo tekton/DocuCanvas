@@ -7,6 +7,7 @@ urlpatterns = patterns('',
 #    url(r'edit',  'auth.views.edit_account', {"post_change_redirect": "campaign.views.home"}),
 	url(r'login', 'auth.views.login_func'),
     url(r'account_settings', 'auth.views.account_settings'),
+    url(r'change_password', 'auth.views.change_password'),
 #    url(r'forgot_password', 'auth.views.forgot_password'),
     url(r'logout', logout, name="logout"),
 

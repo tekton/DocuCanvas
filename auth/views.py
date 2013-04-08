@@ -82,13 +82,17 @@ def login_func(request):
 
 
 def account_settings(request):
+    return render_to_response("registration/account_settings.html", {}, context_instance=RequestContext(request)) 
+
+def change_password(request):
     if request.method == "POST":
         form = PasswordChangeForm(user= request.user, data=request.POST)
         if form.is_valid():
             form.save()
+            print 'it worked!!'
             return redirect('dashboard.views.home')
         else:
-            return render_to_response("registration/account_settings.html", {'form': form}, context_instance=RequestContext(request))  
+            return render_to_response("registration/change_password.html", {'form': form}, context_instance=RequestContext(request))  
     #form = EditAccountForm()
     form = EditAccountForm(SetPasswordForm)
-    return render_to_response("registration/account_settings.html", {'form': form}, context_instance=RequestContext(request))
+    return render_to_response("registration/change_password.html", {'form': form}, context_instance=RequestContext(request))    
