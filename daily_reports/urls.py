@@ -5,6 +5,6 @@ from django.conf.urls.defaults import *
 '''
 
 urlpatterns = patterns('',
-    url(r'edit', 'daily_reports.views.edit_report_today'),
-    # (r'([A-Za-z0-9_\.-]+)', 'daily_reports.views.daily_report_overview'),
+    url(r'edit$', 'daily_reports.views.edit_report_today'),
+    url(r'edit/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})' , 'daily_reports.views.edit_report'),
 )
