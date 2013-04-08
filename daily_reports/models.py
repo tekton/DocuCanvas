@@ -1,15 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class UserDailyReport(models.Model):
-    user = models.IntegerField(default=0)  # would have a lot of things connected to it, like User and other settings
-    # TODO change "user" to whatever the full auth item is
+    user = models.ForeignKey(User)
     date = models.DateField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+    created = models.DateField(auto_now_add=True, null=True, blank=True)  # NOW
+    modified = models.DateField(auto_now=True)  # auto update time
 
 
 class DailyReport(models.Model):
     # a related pull should get the UserDailyReport list for the date
     date = models.DateField()
     description = models.TextField(null=True, blank=True)
-    # any other data that should be contained here...
+    created = models.DateField(auto_now_add=True, null=True, blank=True)  # NOW
+    modified = models.DateField(auto_now=True)  # auto update time
+

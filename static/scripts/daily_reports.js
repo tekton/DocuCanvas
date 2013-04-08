@@ -1,5 +1,6 @@
 $(document).ready(function() {
-	var d = new Date($('#id_date').val());
+	var parts = $('#id_date').val().match(/(\d+)/g);
+	var d = new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
 	for ( var y = 2013; y <= new Date().getFullYear() + 1; y++ ) {
 		$('#goToDate_year').append('<option value="' + y + '">' + y + '</option>');
 	}
@@ -47,7 +48,7 @@ $(document).ready(function() {
 
 
 	$('#goToDate_month').val( d.getMonth() + 1 );
-	$('#goToDate_day').val( d.getDate() + 1 );
+	$('#goToDate_day').val( d.getDate() );
 	$('#goToDate_year').val( d.getFullYear() );
 	$('#goToDate_month').change();
 
