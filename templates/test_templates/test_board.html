@@ -56,25 +56,6 @@
                 function bugNote(x, y, bugText, divId){
                     var tooltipId = "#" + divId;
                     var bugListId = "#bugListNo" + divId;
-                    var tooltip = new Kinetic.Label({
-                        x: x + 15,
-                        y: y,
-                        opacity: 0.75,
-                        listening: false,
-                        visible: false,
-                        //id: tooltipID,
-                        rect:{
-                            fill: 'black',
-                            pointerDirection: 'left',
-                            pointerWidth: 10,
-                            pointerHeight: 10,
-                            lineJoin: 'round',
-                            shadowColor: 'black',
-                            shadowBlur: 10,
-                            shadowOffset: 10,
-                            shadowOpacity: 0.5,
-                            }
-                    });
 
                     var circle = new Kinetic.Circle({
                         x: x,
@@ -83,14 +64,7 @@
                         fill: '#00d2ff',
                         stroke: 'black',
                         strokeWidth: 4,
-                       // id: circleID,
                     });
-
-                    /*shapesLayer.on('click', function(evt) {
-                    // get the shape that was clicked on
-                    var shape = evt.targetNode;
-                    alert('you clicked on \"' + shape.getId() + '\"');
-                    });*/
 
                     circle.on('mouseover', function(){
                         document.body.style.cursor = 'pointer';
@@ -100,24 +74,13 @@
                     });
 
                     circle.on('mousedown', function(){
-                        if (tooltip.isVisible()){
-                            tooltip.hide();
-                            shapesLayer.draw();
-                            $(tooltipId).css('visibility', 'hidden');
-                            $(bugListId).css('background-color', 'green');
-
-                        }else{
-                            tooltip.show();
-                            shapesLayer.draw();
-                            $(tooltipId).css('visibility', 'visible');
-
-                            $(bugListId).css('background-color', 'yellow');
-                        };
+                        toggleInfoBox(divId);
                     });
 
                     shapesLayer.add(circle);
-                    shapesLayer.add(tooltip);
-                    $('body').append("<div id = " + divId + " style = 'width: " + tooltipWidth +"px;  position: absolute; top: " + (y - (tooltipHeight / 15)) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: grey; text-align: left'>" + bugText + "</p><p style = 'text-align: right;'><a style = 'color: yellow' href = 'http://www.google.com'>THIS IS A LINK</a></p></div>");
+                    $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + tooltipWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: grey; text-align: left'>" + bugText + "</p><p style = 'text-align: right;'><a style = 'color: yellow' href = 'http://www.google.com'>THIS IS A LINK</a></p></div>");
+                    $('body').append("<div id = 'triangle" + i + "'; style = 'position: absolute; width: 0; height: 0; border-right: 10px solid black; border-bottom: 10px solid transparent; border-top: 10px solid transparent;  opacity: 0.9; visibility: hidden; z-index: 1; top:" + (y-10) + "px; left: " + (x+14) + "px;'></div> ");
+                    $('#bugList').append("<div id = bugListNo" + i + ">" + tooltipInfo[i]["text"] + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><font id = 'bugListLink" + i + "'>SHOW</font></a><br /><br />");
                 //};
                 };
                 // End bugNote function
@@ -126,14 +89,35 @@
                 for (var i=0;i<tooltipInfo.length;i++){
                     var newCircle = "circle" + i;
                     newCircle = new bugNote(tooltipInfo[i]["x"], tooltipInfo[i]["y"],tooltipInfo[i]["text"], i);
-                    $('#bugList').append("<div id = bugListNo" + i + ">" + tooltipInfo[i]["text"] + "<br /><br />");
+
                 };
-                //var circle1 = new bugNote(300, 400, 1);
-                //var circle2 = new bugNote(500, 100, 2);
                 stage.add(shapesLayer);
 
              };
             imageObj.src = '/static/img/screenshot.png';
+
+             function toggleInfoBox(divId){
+                var toggleTooltipDiv = document.getElementById(divId);
+                var tooltipId = "#" + divId;
+                var bugListId = "#bugListNo" + divId;
+                var triangleId = "triangle" + divId;
+                var bugListLinkId = "#bugListLink" + divId;
+                var toggleTriangleDiv = document.getElementById(triangleId);
+                    if(toggleTooltipDiv.style.visibility == 'visible'){
+                        toggleTooltipDiv.style.visibility = 'hidden';
+                        toggleTriangleDiv.style.visibility = 'hidden';
+                        $(tooltipId).css('visibility', 'hidden');
+                        $(bugListId).css('background-color', 'green');
+                        $(bugListLinkId).text("Show");
+
+                    }else{
+                        toggleTooltipDiv.style.visibility = 'visible';
+                        toggleTriangleDiv.style.visibility = 'visible';
+                        $(tooltipId).css('visibility', 'visible');
+                        $(bugListId).css('background-color', 'yellow');
+                        $(bugListLinkId).text("Hide");
+                    };
+            };
 
             function toggleBugListDiv(){
                 var toggleDiv = document.getElementById('bugList');
