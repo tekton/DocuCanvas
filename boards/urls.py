@@ -6,4 +6,7 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
     (r'test',  'boards.views.TestIndex'),
+    (r'new_board', 'boards.views.boards_form'),
+    (r'new_note', 'boards.views.boards_note_form'),
+    (r'new_node', 'boards.views.boards_node_form'),
 )
