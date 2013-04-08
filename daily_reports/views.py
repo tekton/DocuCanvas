@@ -32,9 +32,35 @@ def edit_report_today(request):
             print "Exception: " + str(e)
             raise e
         if q:
-            form = ReportForm(initial={"date": date.today(), "goToDate": date.today(), "personalReport": q[0].description})
+            form = ReportForm(initial={"date": date.today(), "personalReport": q[0].description})
         else:
-            form = ReportForm(initial={"date": date.today(), "goToDate": date.today()})
+            form = ReportForm(initial={"date": date.today()})
             print "no report"
         # print form
+    return render_to_response("daily_reports/daily_report_form.html", {'form': form}, context_instance=RequestContext(request))
+
+
+@login_required
+def edit_report(request, year, month, day):
+    try:
+        d = date(int(year), int(month), int(day))
+    except:
+        year = "0"
+
+    if (int(year) < 2013 or int(year) > date.today().year + 1):
+        return redirect('daily_reports.views.edit_report_today')
+
+    print d
+    q = None
+    try:
+        q = UserDailyReport.objects.filter(user=request.user.id, date=d)
+    except Exception, e:
+        print "Exception: " + str(e)
+        raise e
+    if q:
+        form = ReportForm(initial={"date": d, "personalReport": q[0].description})
+    else:
+        form = ReportForm(initial={"date": d})
+        print "no report"
+    # print form
     return render_to_response("daily_reports/daily_report_form.html", {'form': form}, context_instance=RequestContext(request))
