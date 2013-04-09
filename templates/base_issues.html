@@ -69,6 +69,14 @@
                 color:#737373;
             }
 
+            .ui-icon{
+                display:inline-block;
+            }
+
+            .ui-icon:hover{
+                cursor:pointer;
+            }
+
             #home_icon{
                 border-style:solid;
                 border-radius:3px;
@@ -154,7 +162,7 @@
                 padding: 1em;
                 position: absolute;
                 top: 6.5em;
-                right: 15.5em;
+                right: 20em;
                 min-height: 2em;
                 height:auto;
                 overflow: hidden;
@@ -168,7 +176,7 @@
                 padding: 1em;
                 position: absolute;
                 top: 6.5em;
-                right: 2.5em;
+                right: 6.5em;
                 min-height: 2em;
                 height:auto;
                 overflow: hidden;
@@ -183,7 +191,7 @@
                 padding: 1em;
                 position: absolute;
                 top: 6.5em;
-                right: 6.5em;
+                right: 8.5em;
                 height: 2em;
                 overflow: hidden;
                 z-index:10;
@@ -195,7 +203,7 @@
                 padding: 1em;
                 position: absolute;
                 top: 6.5em;
-                right:0;
+                right:2em;
                 height: 2em;
                 overflow: hidden;
                 z-index:10;
@@ -346,7 +354,7 @@
                     $('#context_nav').slideToggle();
                 });
 
-                $('#search').click(function(){
+                $('#search_icon').click(function(){
                     $('#search_nav').slideToggle();
                 });
 
@@ -374,7 +382,7 @@
                         }                
                     }
 
-                    if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search"){
+                    if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search_icon"){
 
                         if($('#search_nav').css('display') != "none"){
                             $('#search_nav').slideToggle(); 
@@ -397,7 +405,8 @@
              <div class="right"> 
                 <div class="main_nav_button" id="context">Context Drop Down </div> | 
                 <div class="main_nav_button" id="projects_list">Project List </div>|
-                <div class="main_nav_button"><a id="account">{{user|truncatechars:15}}</a></div>
+                <div class="main_nav_button"><a id="account">{{user|truncatechars:15}}</a></div>|
+                <div class="ui-icon ui-icon-search" id="search_icon"></div>
                 <div class="main_nav_button"><input type="text" name="searchText" id="search"/><input type="submit" value="search"/></div>
             </div>
             </form>
