@@ -174,7 +174,7 @@ def edit(request, issue_id):
     else:
         issue = Issue.objects.get(pk=issue_id)
         form = IssueForm(instance=issue)
-    return render_to_response("issues/issue_edit.html", {"form": form, "issue": issue}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_edit.html", {"form": form, "issue": issue, "page_type": "Edit", "page_value": issue.title}, context_instance=RequestContext(request))
 
 
 def issue_search_simple(request):
