@@ -344,7 +344,7 @@
                 <div class="main_nav_button" id="context">Context Drop Down </div> | 
                 <div class="main_nav_button" id="projects_list">Project List </div>|
                 <div class="main_nav_button"><a id="account">{{user|truncatechars:15}}</a></div>
-                <div class="main_nav_button"><input type="text" id="search"/><input type="button" value="search"/></div>
+                <div class="main_nav_button"><form action="/issue/search" method="POST">{% csrf_token %}<input type="text" name="searchText" id="search"/><input type="submit" value="search"/></form></div>
             </div>
             <div id="context_nav" class="container_nav"> 
                 {% block context_nav %}{% endblock %}  

@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     (r'assign', 'issues.views.assign'),
     (r'subscribe', 'issues.views.subscribe'),
     (r'pin', 'issues.views.pin'),
+    (r'search', 'issues.views.issue_search_simple'),
     (r'comment/([A-Za-z0-9_\.-]+)', 'issues.views.submit_comment'),
     (r'([A-Za-z0-9_\.-]+)', 'issues.views.issue_overview'),
 )
