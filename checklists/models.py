@@ -6,8 +6,6 @@ from projects.models import Project
 class Checklist(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     project = models.ForeignKey(Project)  # fk
-    layout = models.TextField(null=True, blank=True)
-
 
 class CheckListLayoutItems(models.Model):
     Checklist = models.ForeignKey(Checklist)
