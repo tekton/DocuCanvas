@@ -8,7 +8,7 @@ from django.db.models import Q
 # from projects.models import Project
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue
 from projects.models import Project
-from issues.forms import IssueForm, CommentForm
+from issues.forms import IssueForm, IssueFullForm, CommentForm
 from django.contrib.auth.models import User
 
 
@@ -159,7 +159,7 @@ def issue_overview(request, issue_id):
 def edit(request, issue_id):
     if request.method == 'POST':
         issue = Issue.objects.get(pk=issue_id)
-        form = IssueForm(request.POST, instance=issue)
+        form = IssueFullForm(request.POST, instance=issue)
         if form.is_valid():
             try:
                 issue = form.save()
@@ -173,7 +173,7 @@ def edit(request, issue_id):
 
     else:
         issue = Issue.objects.get(pk=issue_id)
-        form = IssueForm(instance=issue,initial={"project": issue.project}, auto_id=False)
+        form = IssueFullForm(instance=issue,initial={"project": issue.project}, auto_id=False)
     return render_to_response("issues/issue_edit.html", {"form": form, "issue": issue, "page_type": "Edit", "page_value": issue.title}, context_instance=RequestContext(request))
 
 

@@ -1,22 +1,40 @@
 {% extends "base.html" %}
 
-<!--{%block extra_head%}
-    <script type="text/javascript">
-        $(document).ready(function(){
-            if("{{project_id}}" != "None"){
-                $('#id_project').val("{{project_id}}")
-            }
-        });
-    </script>
-{% endblock%}-->
-
 {% block container %}
     <form action="/issue/{{issue.id}}/edit" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{form.project.as_hidden}}
-        Summary: {{form.summary}}<br>
-        Description{{form.description}}<br>
+        <b>Project:</b> {{form.project}}<br/>
+        <b>Meta Issue:</b> {{form.meta_issues}}<br>
+        <b>Summary:</b> {{form.summary}}<br>
+        <b>Description:</b> {{form.description}}<br>
+        <b>State:</b> {{form.state}}<br />
+        <b>Projected Start:</b> {{form.projected_start}}<br/>
+        <b>Projected End:</b>{{form.projected_end}}<br/>
+        <b>Actual Start:</b>{{form.actual_start}}<br />
+        <b>Actual End:</b> {{form.actual_end}}<br />
+        <b>Date Reported:</b> {{form.date_reported}}<br/>
+        <b>Created:</b> {{form.created}}<br/>
+        <b>Modified:</b> {{form.modified}}<br/>
+        <b>View Type:</b> {{form.view_type}}<br/>
+        <b>Issue Type:</b> {{form.issue_type}}<br/>
+        <b>Assigned To:</b> {{form.assigned_to}}<br/>
+        <b>Title:</b> {{form.title}}<br/>
+        <b>Link Slug:</b> {{form.link_slug}}<br/>
+        <b>Status:</b> {{form.status}}<br/>
+        <b>Criticality:</b> {{form.criticality}}<br/>
+        <b>Fixability:</b> {{form.fixability}}<br/>
+        <b>R &amp; D:</b> {{form.r_and_d}}<br/>
+        <b>Feature:</b> {{form.feature}}<br/>
+        <b>OS:</b> {{form.os}}<br/>
+        <b>OS Version:</b> {{form.os_version}}<br/>
+        <b>Browser:</b> {{form.browser}}<br/>
+        <b>Browser Version:</b> {{form.browser_version}}<br/>
+        <b>Screen Shot:</b> {{form.screen_shot}}<br/>
+        <b>Wireframe:</b> {{form.wireframe}}<br/>
+        <b>URI to Test:</b> x{{form.uri_to_test}}<br/>
+
     <input type="submit" value="Submit"/>
     </form>
 
 {% endblock %}
+
