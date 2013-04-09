@@ -192,7 +192,7 @@
 {% endblock %}
 
 {% block spiffy_box_right %}
-	<b>Project Name:</b> {{issue.project.name}}<br/>
+	<b>Project Name:</b> <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a><br/>
 	<b>Meta Issue:</b> {{issue.meta_issues.title}}<br/>
 	<b>State:</b> {{issue.state}}<br />
 	<b>Projected Start:</b> {{issue.projected_start}}<br/>
@@ -204,7 +204,7 @@
 	<b>Modified:</b> {{issue.modified}}<br/>
 	<b>View Type:</b> {{issue.view_type}}<br/>
 	<b>Issue Type:</b> {{issue.issue_type}}<br/>
-	<b>Assigned To:</b> {{issue.assigned_to}}<br/>
+	<b>Assigned To:</b> <a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a><br/>
 	<b>Title:</b> {{issue.title}}<br/>
 	<b>Link Slug:</b> {{issue.link_slug}}<br/>
 	<b>Status:</b> {{issue.status}}<br/>

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load set_var%}
 
 {% block style %}
 .dashboard_container{
@@ -25,6 +26,7 @@
 
 .dashboard_table{
     width:100%;
+    border-collapse:collapse;
 }
 
 .dashboard_table td{
@@ -41,9 +43,10 @@
 
 .date_header{
     background:#bbb;
-    width:100%;
-    height:1em;
+    height:0.5em;
+    font-size:0.7em;
 }
+
 
 h3{
     margin:0 0 0.5em;
@@ -186,12 +189,23 @@ h3{
             <h3>Pinned</h3>
             <table class="dashboard_table">
             {% for pin in pins%}
-                <tr class="date_header"></tr>
+
+                {% if not newest_pin %}
+                    {% set newest_pin = pin.created%}
+                    <tr class="date_header"><td>{{pin.created}}</td><td></td><td><td/></tr>
+                {% endif %}
+
+                {% if newest_pin != pin.created %}
+                    <tr class="date_header"><td>{{pin.created}}</td><td></td><td><td/></tr>
+                    {% set newest_pin = pin.created%}
+                {% endif %}
+
+                
                 <tr>
-                    <td><a href="/project/{{pin.issue.project.id}}">{{pin.issue.project.name}}</td>
-                    <td><a href="/issue/{{pin.issue.id}}">{{pin.issue.summary}}</td>
-                    <td><a href="/auth/user/{{pin.issue.assigned_to.id}}">{{pin.issue.assigned_to}}</a></td>
-                    <td><div class="add_remove pin_issue ui-icon ui-icon-closethick" id="pin{{pin.issue.id}}"></div></td>
+                    <td><a href="/project/{{pin.issue.project.id}}">{{pin.project.name}}</td>
+                    <td><a href="/issue/{{pin.issue.id}}">{{pin.summary}}</td>
+                    <td><a href="/auth/user/{{pin.issue.assigned_to.id}}">{{pin.assigned_to}}</a></td>
+                    <td><div class="add_remove pin_issue ui-icon ui-icon-closethick" id="pin{{pin.id}}"></div></td>
                 </tr>
             {% endfor%}
             </table>
@@ -200,6 +214,16 @@ h3{
             <h3>Assigned</h3>
             <table class="dashboard_table">
             {% for issue in issues%}
+                {% if not newest_assigned %}
+                    {% set newest_assigned = issue.created%}
+                    <tr class="date_header"><td>{{issue.created}}</td><td></td><td><td/></tr>
+                {% endif %}
+
+                {% if newest_assigned != issue.created %}
+                    <tr class="date_header"><td>{{issue.created}}</td><td></td><td><td/></tr>
+                    {% set newest_assigned = issue.created%}
+                {% endif %}
+
                 <tr>
                     <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
                     <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
@@ -213,11 +237,22 @@ h3{
             <h3>Subscribed</h3>
             <table class="dashboard_table">
             {% for subscription in subscribed%}
+
+                {% if not newest_subscribed %}
+                    {% set newest_subscribed = subscription.created%}
+                    <tr class="date_header"><td>{{subscription.created}}</td><td></td><td><td/></tr>
+                {% endif %}
+
+                {% if newest_subscribed != subscription.created %}
+                    <tr class="date_header"><td>{{subscription.created}}</td><td></td><td><td/></tr>
+                    {% set newest_subscribed = subscription.created%}
+                {% endif %}
+
                 <tr>
-                    <td><a href="/project/{{subscription.issue.project.id}}">{{subscription.issue.project.name}}</a></td>
-                    <td><a href="/issue/{{subscription.issue.id}}">{{subscription.issue.description}}</td>
-                    <td><a href="/auth/user/{{subscription.issue.assigned_to.id}}">{{subscription.issue.assigned_to}}</a></td>
-                    <td><div class="add_remove subscribe_to_issue ui-icon ui-icon-closethick" id="subscribe{{subscription.issue.id}}"></div></td>
+                    <td><a href="/project/{{subscription.issue.project.id}}">{{subscription.project.name}}</a></td>
+                    <td><a href="/issue/{{subscription.issue.id}}">{{subscription.description}}</td>
+                    <td><a href="/auth/user/{{subscription.assigned_to.id}}">{{subscription.assigned_to}}</a></td>
+                    <td><div class="add_remove subscribe_to_issue ui-icon ui-icon-closethick" id="subscribe{{subscription.id}}"></div></td>
                 </tr>
             {% endfor%}
             </table>
