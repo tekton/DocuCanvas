@@ -60,10 +60,14 @@ h3{
                         var subscribe_id_str = "#subscribe" + subscribe_issue_id;
                         alert(data['status']);
                         if( data['status'] == "Unsubscribing Issue"){
-                            $(subscribe_id_str).text("Subscribe");
+                            $(subscribe_id_str).toggleClass('ui-icon-closethick', false);
+                            $(subscribe_id_str).toggleClass('ui-icon-plusthick', true);
+                            //$(subscribe_id_str).text("Subscribe");
                         }
                         else if(data['status'] == "Successfully subscribed to Issue"){
-                            $(subscribe_id_str).text("Unsubscribe");
+                            $(subscribe_id_str).toggleClass('ui-icon-plusthick', false);
+                            $(subscribe_id_str).toggleClass('ui-icon-closethick', true);
+                            //$(subscribe_id_str).text("Unsubscribe");
                         }
                     },
                     error: function(data){
@@ -86,10 +90,13 @@ h3{
                         var pin_id_str = "#pin" + pin_issue_id;
                         alert(data['status']);
                         if( data['status'] == "Unpinning Issue"){
-                            $(pin_id_str).text("Pin");
+                            $(pin_id_str).toggleClass('ui-icon-closethick', false);
+                            $(pin_id_str).toggleClass('ui-icon-plusthick', true);
                         }
                         else if(data['status'] == "Successfully pinned issue"){
-                            $(pin_id_str).text("Unpin");
+                            $(pin_id_str).toggleClass('ui-icon-plusthick', false);
+                            $(pin_id_str).toggleClass('ui-icon-closethick', true);
+                            
                         }
                     },
                     error: function(data){
@@ -112,10 +119,14 @@ h3{
                         var assign_id_str = "#assign" + assign_issue_id; 
                         alert(data['status']);
                         if( data['status'] == "Successfully unassigned issue"){
-                            $(assign_id_str).text("Assign");
+                            //$(assign_id_str).text("Assign");
+                            $(assign_id_str).toggleClass('ui-icon-closethick', false);
+                            $(assign_id_str).toggleClass('ui-icon-plusthick', true);
                         }
                         else if(data['status'] == "Successfully assigned issue" || data['status'] == "Successfully reassigned issue"){
-                            $(assign_id_str).text("Unassign");
+                            //$(assign_id_str).text("Unassign");
+                            $(assign_id_str).toggleClass('ui-icon-plusthick', false);
+                            $(assign_id_str).toggleClass('ui-icon-closethick', true);
                         }               
                     },
                     error: function(data){
@@ -131,6 +142,7 @@ h3{
                     var that = $(this);
                     if( $(this).hasClass('add_remove')){
                         that.fadeToggle();
+                        //that.css('display','block');
                     }
 
                 }) 
@@ -139,6 +151,7 @@ h3{
                 kids.each(function(){
                     var that = $(this);
                     if( $(this).hasClass('add_remove')){
+                        //that.css('display','none');
                         that.fadeToggle();
                     }
 
@@ -167,7 +180,7 @@ h3{
                     <td><a href="/project/{{pin.issue.project.id}}">{{pin.issue.project.name}}</td>
                     <td><a href="/issue/{{pin.issue.id}}">{{pin.issue.summary}}</td>
                     <td>{{pin.issue.assigned_to}}</td>
-                    <td><a class="add_remove pin_issue" id="pin{{pin.issue.id}}">Unpin</a></td>
+                    <td><div class="add_remove pin_issue ui-icon ui-icon-closethick" id="pin{{pin.issue.id}}"></div></td>
                 </tr>
             {% endfor%}
             </table>
@@ -180,7 +193,7 @@ h3{
                     <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
                     <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
                     <td>{{issue.assigned_to}}</td>
-                    <td><a class="add_remove assign_issue_to" id="assign{{issue.id}}">Unassign</a></td>
+                    <td><div class="add_remove assign_issue_to ui-icon ui-icon-closethick" id="assign{{issue.id}}"></div></td>
                 </tr>
             {% endfor%}
             </table>
@@ -193,7 +206,7 @@ h3{
                     <td><a href="/project/{{subscription.issue.project.id}}">{{subscription.issue.project.name}}</a></td>
                     <td><a href="/issue/{{subscription.issue.id}}">{{subscription.issue.description}}</td>
                     <td>{{subscription.issue.assigned_to}}</td>
-                    <td><a class="add_remove subscribe_to_issue" id="subscribe{{subscription.issue.id}}">Unsubscribe</a></td>
+                    <td><div class="add_remove subscribe_to_issue ui-icon ui-icon-closethick" id="subscribe{{subscription.issue.id}}"></div></td>
                 </tr>
             {% endfor%}
             </table>

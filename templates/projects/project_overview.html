@@ -3,6 +3,7 @@
 {% block context_nav %}
 	<a href="/issue/new/{{project_O.id}}">New Issue : {{project_O.name}}</a>
 	<a href="/issue/new/{{project_O.id}}">New Risk : {{project_O.name}}</a>
+	<a href="/project/{{project_O.id}}/edit">Edit Project</a>
 {% endblock%}
 
 {% block container %}
@@ -36,12 +37,14 @@
 			<td>Title</td>
 			<td>Summary</td>
 			<td>Description</td>
+			<td>State</td>
 		</tr>
 	{% for issue in issues%}
 		<tr>
 			<td><a href="/issue/{{issue.id}}">{{issue.title}}</a></td>
 			<td>{{issue.summary}}</td>
 			<td>{{issue.desription}}</td>
+			<td>{{issue.state}}</td>
 		</tr>
 	{% endfor %}
 	</table>
