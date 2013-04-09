@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 # from django.utils.translation import ugettext as _
 from projects.models import Project
 
+ISSUETYPE = (("bug", "Bug"), ("task", "Task"), ("suggestion", "Suggestion"))
+BUGSTATE = (("not_a_bug", "Not a bug"), ("wont_fix", "Won't Fix"), ("duplicate", "Duplicate"), ("active", "Active"), ("fixed", "Fixed"), ("retest", "Retest"), ("unverified", "Unverified"))
 
 class MetaIssue(models.Model):
     project = models.ForeignKey(Project)  # fk
@@ -33,7 +35,7 @@ class Issue(models.Model):
     #
     view_type = models.CharField(max_length=255, blank=True, null=True)  # default via name, or Issue ID
     #
-    issue_type = models.CharField(max_length=255, blank=True, null=True)  # bug, task, suggestion
+    issue_type = models.CharField(max_length=255, blank=True, null=True, choices=ISSUETYPE)  # bug, task, suggestion
     #
     assigned_to = models.ForeignKey(User, blank=True, null=True)
     # basic information
@@ -42,7 +44,7 @@ class Issue(models.Model):
     description = models.TextField(null=True, blank=True)
     link_slug = models.SlugField(null=True, blank=True)
     # bug centric
-    status = models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(max_length=255, blank=True, null=True, choices=BUGSTATE)
     criticality = models.IntegerField(default=0, blank=True, null=True)
     priority = models.IntegerField(default=0, blank=True, null=True)
     fixability = models.CharField(max_length=255, blank=True, null=True)

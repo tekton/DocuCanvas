@@ -93,6 +93,24 @@
 				})
         	});
 
+        	$('#set_bug_status').click(function(){
+            	$.ajax({
+				    type:"POST",
+				    url:"/issue/set_bug_state",
+				    data:{
+				    	issue:"{{issue.id}}",
+				    	status:$('#id_status').val()
+				    },
+				    success: function(data){	
+				    	alert(data['status']);
+				    },
+				    error: function(data){
+				    	alert("Server side error");
+				    }
+
+				})
+        	});
+
 		});
 
 	</script>
@@ -127,7 +145,10 @@
 		</select>
 		<input type="button" id="assign_issue_to" value="Assign"/>
 	</a>
-	<a>State: {{issue.state}}</a>
+	<a>Status:
+		{{form.status}}
+		<input type="button" id="set_bug_status" value="Set"/>
+	</a>
 	<a href="/issue/{{issue.id}}/edit">Edit</a>
 {% endblock%}
 

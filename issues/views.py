@@ -87,6 +87,18 @@ def subscribe(request):
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 
+def set_bug_state(request):
+    to_json = {}
+    try:
+        issue = Issue.objects.get(pk=request.POST['issue'])
+        issue.status = request.POST['status']
+        issue.save()
+        to_json["status"] = "Bug status set"
+    except:
+        to_json["status"] = "Unable to set bug state"
+    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+
+
 def issue_form(request):
     if request.method == 'POST':
         issue = Issue()
@@ -153,7 +165,9 @@ def issue_overview(request, issue_id):
     except Exception, e:
         print e
 
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": "Issue", "page_value": issue.title}, context_instance=RequestContext(request))
+    form = IssueFullForm(instance=issue)
+
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": "Issue", "page_value": issue.title}, context_instance=RequestContext(request))
 
 
 def edit(request, issue_id):
