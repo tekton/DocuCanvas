@@ -10,6 +10,9 @@ class Board(models.Model):
     height = models.FloatField()
     width = models.FloatField()
 
+    def __unicode__(self):
+        return self.title
+
 
 class BoardNote(models.Model):
     board = models.ForeignKey(Board)
@@ -18,7 +21,7 @@ class BoardNote(models.Model):
     description = models.TextField(blank=True)
 
     def __unicode__(self):
-        pass
+        return self.title
 
 
 class BoardNode(models.Model):
@@ -31,3 +34,6 @@ class BoardNode(models.Model):
     user = models.ForeignKey(User)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return self.title

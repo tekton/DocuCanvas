@@ -1,5 +1,4 @@
 from django import forms
-
 from boards.models import Board, BoardNote, BoardNode
 
 
@@ -8,7 +7,7 @@ Forms for submitting bug reports and suggestions
 '''
 
 
-class BoardsForm(forms.ModelForm):
+class BoardForm(forms.ModelForm):
     class Meta:
         model = Board
 

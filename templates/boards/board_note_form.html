@@ -2,7 +2,7 @@
 
 {% block container %}
 	<h2>New Note</h2>
-	<form action="" method="post" enctype="multipart/form-data">
+	<form action="/board/new_note" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		<table>
 		{{form.as_table}}
