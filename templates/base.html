@@ -431,7 +431,14 @@
             
         </div>
         <p class="both"></p>
-        <h1>{{page_type}} <span>::{{page_value}}</span></h1>
+        <h1>
+        {% if page_type %}
+            {{page_type}} 
+        {% endif %}
+        {% if page_value %}
+        <span>::{{page_value}}</span>
+        {% endif %}
+        </h1>
         <div class="both">&nbsp;</div>
             {% block container %}{% endblock %}
     </body>
