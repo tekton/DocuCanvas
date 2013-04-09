@@ -34,7 +34,7 @@ def project_form(request):
     else:
         form = ProjectForm()
 
-    return render_to_response("projects/project_form.html", {'form': form}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_form.html", {'form': form, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
 
 
 def project_overview(request, project_id):
@@ -49,4 +49,4 @@ def project_overview(request, project_id):
     except:
         print 'Unable to load projects'
 
-    return render_to_response("projects/project_overview.html", {'project_O': project, "issues": issues, "page_type": "Project", "projects": projects}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_overview.html", {'project_O': project, "issues": issues, "projects": projects, "page_type": "Project", "page_value": project.name }, context_instance=RequestContext(request))

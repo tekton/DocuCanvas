@@ -100,7 +100,7 @@
 {% endblock %}
 
 {% block context_nav %}
-	<a href="/issue/new?project={{issue.project.id}}">New Issue : {{issue.project.name}}</a>
+	<a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a>
 
 	{% if subscribe == None%}
 		<a id="subscribe_to_issue">Subscribe</a>
