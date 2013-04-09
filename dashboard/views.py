@@ -13,7 +13,7 @@ def home(request):
         pins = PinIssue.objects.select_related().filter(user=request.user)
         #projects = Project.objects.filter(lead_developer=request.user).order_by('-created')
         projects = Project.objects.all().order_by('-created')
-        subscribed = []
+        subscribed = SubscriptionToIssue.objects.select_related().filter(user=request.user)
         return render_to_response("dashboard.html", {"issues": issues, "subscribed": subscribed, "projects": projects, "page_type": "Dashboard", "pins": pins}, context_instance=RequestContext(request))
     else:
         return redirect('auth.views.login_func')

@@ -38,19 +38,24 @@ def assign(request):
     to_json = {}
     try:
         issue = Issue.objects.get(pk=request.POST['issue'])
-        if issue.assigned_to:
-            to_json["status"] = "Successfully reassigned issue"
 
+        if issue.assigned_to == request.user:
+            issue.assigned_to = None
+            to_json["status"] = "Successfully unassigned issue"
         else:
-            to_json["status"] = "Successfully assigned issue"
+            if issue.assigned_to:
+                to_json["status"] = "Successfully reassigned issue"
 
-        if request.POST['assign'] == 'assign':
-            issue.assigned_to = request.user
-        else:
-            try:
-                issue.assigned_to = User.objects.get(pk=request.POST['user'])
-            except:
-                to_json["status"] = "Unable to find user"
+            else:
+                to_json["status"] = "Successfully assigned issue"
+
+            if request.POST['assign'] == 'assign':
+                issue.assigned_to = request.user
+            else:
+                try:
+                    issue.assigned_to = User.objects.get(pk=request.POST['user'])
+                except:
+                    to_json["status"] = "Unable to find user"
 
         issue.save()
     except:

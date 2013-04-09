@@ -48,6 +48,12 @@
 				    },
 				    success: function(data){	
 				    	alert(data['status']);
+				    	if( data['status'] == "Successfully unassigned issue"){
+				    		$('#assign_issue').text("Assign");
+				    	}
+				    	else if(data['status'] == "Successfully assigned issue" || data['status'] == "Successfully reassigned issue"){
+				    		$('#assign_issue').text("Unassign");
+				    	}		    	
 				    },
 				    error: function(data){
 				    	alert("Server side error");
@@ -75,7 +81,6 @@
 				})
         	});
 
-
 		});
 
 	</script>
@@ -86,7 +91,11 @@
 	<a href="/issue/new?project={{issue.project.id}}">New Issue : {{issue.project.name}}</a>
 	<a id="subscribe_to_issue">Subscribe</a>
 	<a id="pin_issue">Pin</a>
+	{% if issue.assigned_to == user%}
+	<a id="assign_issue">Unassign</a>
+	{% else %}
 	<a id="assign_issue">Assign</a>
+	{% endif %}
 	<a>Assign To:  
 		<select id="assigned_user">
 			{% for user in users%}

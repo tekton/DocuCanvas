@@ -76,6 +76,18 @@ h3{
         </div>
         <div class="dashboard_container_section">
             <h3>Subscribed</h3>
+            <table class="dashboard_table">
+            {% for subscription in subscribed%}
+
+                {% if subscription.issue.assigned_to == user %}
+                <tr>
+                    <td><a href="/project/{{subscription.issue.project.id}}">{{subscription.issue.project.name}}</a></td>
+                    <td><a href="/issue/{{subscription.issue.id}}">{{subscription.issue.description}}</td>
+                    <td>{{subscription.issue.assigned_to}}</td>
+                </tr>
+                {% endif %}
+            {% endfor%}
+            </table>
         </div>
 
 {% endblock%}
