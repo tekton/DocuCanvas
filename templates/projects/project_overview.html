@@ -1,5 +1,29 @@
 {% extends "base_issues.html" %}
 
+{% block style %}
+.tbl-issues {
+	/*
+	border-collapse: collapse;
+    border-spacing: 0;
+    */
+}
+.tbl-issues th {
+	text-align: left;
+}
+.tbl-issues .tbl-issues-title {
+	width: 33%;
+}
+.tbl-issues .tbl-issues-summary {
+	width: 33%;
+}
+.tbl-issues .tbl-issues-description {
+	width: 33%;
+}
+.tbl-issues .tbl-issues-status {
+	width: 140px;
+}
+{% endblock %}
+
 {% block context_nav %}
 	<a href="/issue/new/{{project_O.id}}">New Issue : {{project_O.name}}</a>
 	<a href="/issue/new/{{project_O.id}}">New Risk : {{project_O.name}}</a>
@@ -8,34 +32,34 @@
 {% endblock%}
 
 {% block container %}
-	Scope: {{project_O.scope}}<br/>
-	Description: {{project_O.description}}<br/>
-	Business Case: {{project_O.business_case}}<br/>
+	<b>Scope:</b> {{project_O.scope}}<br/>
+	<b>Description:</b> {{project_O.description}}<br/>
+	<b>Business Case:</b> {{project_O.business_case}}<br/>
 {% endblock %}
 
 {% block spiffy_box_right %}	
-	Status: {{project_O.status}}<br/>
-	Product Owner: <a href="/auth/user/{{project_O.product_owner.id}}">{{project_O.product_owner}}</a><br/>
-	Project Manager: <a href="/auth/user/{{project_O.product_manager.id}}">{{project_O.project_manager}}</a><br/>
-	Lead Developer: <a href="/auth/user/{{project_O.lead_developer.id}}">{{project_O.lead_developer}}</a><br/>
-	Priority: {{project_O.priority}}<br/>
-	Slug: {{project_O.slug}}<br/>
-	Logo: {{project_O.logo}}<br/>
-	Potential End Date: {{project_O.potential_end_date}}<br/>
-	Current Phase: {{project_O.current_phase}}<br/>
-	Phase Planning Start: {{project_O.phase_planning_start}}<br/>
-	Phase Planning End: {{project_O.phase_planning_end}}
+	<b>Status:</b> {{project_O.status}}<br/>
+	<b>Product Owner:</b> <a href="/auth/user/{{project_O.product_owner.id}}">{{project_O.product_owner}}</a><br/>
+	<b>Project Manager:</b> <a href="/auth/user/{{project_O.product_manager.id}}">{{project_O.project_manager}}</a><br/>
+	<b>Lead Developer:</b> <a href="/auth/user/{{project_O.lead_developer.id}}">{{project_O.lead_developer}}</a><br/>
+	<b>Priority:</b> {{project_O.priority}}<br/>
+	<b>Slug:</b> {{project_O.slug}}<br/>
+	<b>Logo:</b> {{project_O.logo}}<br/>
+	<b>Potential End Date:</b> {{project_O.potential_end_date}}<br/>
+	<b>Current Phase:</b> {{project_O.current_phase}}<br/>
+	<b>Phase Planning Start:</b> {{project_O.phase_planning_start}}<br/>
+	<b>Phase Planning End:</b> {{project_O.phase_planning_end}}
 {% endblock %}
 
 {% block container_bottom_clear %}
 	<h2>Issues</h2>
 
-	<table>
+	<table class="tbl-issues">
 		<tr>
-			<th>Title</th>
-			<th>Summary</th>
-			<th>Description</th>
-			<th>Status</th>
+			<th class="tbl-issues-title">Title</th>
+			<th class="tbl-issues-summary">Summary</th>
+			<th class="tbl-issues-description">Description</th>
+			<th class="tbl-issues-status">Status</th>
 		</tr>
 	{% for issue in issues%}
 		<tr>
