@@ -2,7 +2,8 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Test Page of Testing</title>
+        <title>Gadget</title>
+        <link rel="stylesheet" href="/static/css/jquery-ui.css" />
         <style>
             ::-moz-selection {
                 background: #b3d4fc;
@@ -66,6 +67,10 @@
             a{
                 text-decoration:none;
                 color:#737373;
+            }
+
+            .ui-icon{
+                display:inline-block;
             }
 
             .container {
@@ -389,7 +394,7 @@
                 <div class="main_nav_button" id="context">Context Drop Down </div> | 
                 <div class="main_nav_button" id="projects_list">Project List </div>|
                 <div class="main_nav_button"><a id="account">{{user|truncatechars:15}}</a></div>
-                <div class="main_nav_button"><form action="/issue/search" method="POST">{% csrf_token %}<input type="text" name="searchText" id="search"/><input type="submit" value="search"/></form></div>
+                <div class="main_nav_button"><form action="/issue/search" method="POST">{% csrf_token %}<input type="text" name="searchText" id="search"/><span class="ui-icon ui-icon-search"></span></form></div>
             </div>
             <div id="context_nav" class="container_nav"> 
                 {% block context_nav %}{% endblock %}  
