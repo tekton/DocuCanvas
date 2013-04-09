@@ -26,6 +26,8 @@ class Project(models.Model):
     #
     created = models.DateField(auto_now_add=True, null=True, blank=True)  # NOW
     modified = models.DateField(auto_now=True, null=True, blank=True)  # auto update time
+    def __unicode__(self):
+        return self.name
     # TODO etc
 
 
