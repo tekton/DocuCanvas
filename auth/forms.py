@@ -37,3 +37,6 @@ class EditAccountForm(PasswordChangeForm):
     # old_password = forms.CharField(max_length=255)
     # password1 = forms.CharField(max_length=255)
     # password2 = forms.CharField(max_length=255)
+
+class ChangeEmailForm(forms.Form):
+    email = forms.EmailField(max_length=255)

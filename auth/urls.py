@@ -8,6 +8,7 @@ urlpatterns = patterns('',
 	url(r'login', 'auth.views.login_func'),
     url(r'account_settings', 'auth.views.account_settings'),
     url(r'change_password', 'auth.views.change_password'),
+    url(r'change_email', 'auth.views.change_email'),
 #    url(r'forgot_password', 'auth.views.forgot_password'),
     url(r'logout', logout, name="logout"),
 

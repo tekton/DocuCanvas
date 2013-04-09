@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.template import RequestContext
-from forms import RegisterForm, EditAccountForm
+from forms import RegisterForm, EditAccountForm, ChangeEmailForm
 from django.utils import simplejson
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
@@ -57,24 +57,29 @@ def login_func(request):
     next = request.POST.get("next", "/")
     state = ""
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = authenticate(username=request.POST.get("username"), password=request.POST.get("password"))
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    state = "You're successfully logged in!"
+        try:
+            form = AuthenticationForm(data=request.POST)
+            if form.is_valid():
+                user = authenticate(username=request.POST.get("username"), password=request.POST.get("password"))
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        state = "You're successfully logged in!"
+                    else:
+                        state = "Your account is not active, please contact the site admin."
                 else:
-                    state = "Your account is not active, please contact the site admin."
+                    state = "Your username and/or password were incorrect."
+                login(request, user)
+                #return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+                return redirect('dashboard.views.home')
             else:
-                state = "Your username and/or password were incorrect."
-            login(request, user)
-            #return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
-            return redirect('dashboard.views.home')
-        else:
-            #to_json = {"error": "error with username and/or password"}
-            #return HttpResponse(simplejson.dumps(to_json), mimetype='application/json', status=400)
-            return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+                #to_json = {"error": "error with username and/or password"}
+                #return HttpResponse(simplejson.dumps(to_json), mimetype='application/json', status=400)
+                return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+        except Exception, e:
+            print "Error authenticating form"
+            print e
+
     else:
         form = AuthenticationForm()
 
@@ -82,17 +87,47 @@ def login_func(request):
 
 
 def account_settings(request):
-    return render_to_response("registration/account_settings.html", {}, context_instance=RequestContext(request)) 
+    return render_to_response("registration/account_settings.html", {}, context_instance=RequestContext(request))
+
 
 def change_password(request):
     if request.method == "POST":
-        form = PasswordChangeForm(user= request.user, data=request.POST)
-        if form.is_valid():
-            form.save()
-            print 'it worked!!'
-            return redirect('dashboard.views.home')
-        else:
-            return render_to_response("registration/change_password.html", {'form': form}, context_instance=RequestContext(request))  
-    #form = EditAccountForm()
-    form = EditAccountForm(SetPasswordForm)
-    return render_to_response("registration/change_password.html", {'form': form}, context_instance=RequestContext(request))    
+        try:
+            form = PasswordChangeForm(user=request.user, data=request.POST)
+            if form.is_valid():
+                try:
+                    form.save()
+                    return redirect('dashboard.views.home')
+                except Exception, e:
+                    print "Error saving form"
+            else:
+                return render_to_response("registration/change_password.html", {'form': form}, context_instance=RequestContext(request))
+        except Exception, e:
+            print "Error validating password"
+            print e
+    else:
+        form = EditAccountForm(SetPasswordForm)
+    return render_to_response("registration/change_password.html", {'form': form}, context_instance=RequestContext(request))
+
+
+def change_email(request):
+    if request.method == "POST":
+        try:
+            form = ChangeEmailForm(data=request.POST)
+            if form.is_valid():
+                try:
+                    user = request.user
+                    user.email = request.POST['email']
+                    user.save()
+                    return redirect('dashboard.views.home')
+                except Exception, e:
+                    print e
+
+            else:
+                print "form not valid"
+        except Exception, e:
+            print "Error getting email from database"
+            print e
+    else:
+        form = ChangeEmailForm()
+    return render_to_response("registration/change_email.html", {'form': form}, context_instance=RequestContext(request))
