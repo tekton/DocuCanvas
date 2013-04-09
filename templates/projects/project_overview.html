@@ -1,29 +1,5 @@
 {% extends "base_issues.html" %}
 
-{% block style %}
-.tbl-issues {
-	/*
-	border-collapse: collapse;
-    border-spacing: 0;
-    */
-}
-.tbl-issues th {
-	text-align: left;
-}
-.tbl-issues .tbl-issues-title {
-	width: 33%;
-}
-.tbl-issues .tbl-issues-summary {
-	width: 33%;
-}
-.tbl-issues .tbl-issues-description {
-	width: 33%;
-}
-.tbl-issues .tbl-issues-status {
-	width: 140px;
-}
-{% endblock %}
-
 {% block context_nav %}
 	<a href="/issue/new/{{project_O.id}}">New Issue : {{project_O.name}}</a>
 	<a href="/issue/new/{{project_O.id}}">New Risk : {{project_O.name}}</a>
@@ -32,9 +8,26 @@
 {% endblock%}
 
 {% block container %}
-	<b>Scope:</b> {{project_O.scope}}<br/>
-	<b>Description:</b> {{project_O.description}}<br/>
-	<b>Business Case:</b> {{project_O.business_case}}<br/>
+	<table class="tbl-generic tbl-overview">
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Scope</td>
+		</tr>
+		<tr>
+			<td class="tbl-overview-content">{{project_O.scope}}</td>
+		</tr>
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Description</td>
+		</tr>
+		<tr>
+			<td class="tbl-overview-content">{{project_O.description}}</td>
+		</tr>
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Business Case</td>
+		</tr>
+		<tr>
+			<td class="tbl-overview-content">{{project_O.business_case}}</td>
+		</tr>
+	</table>
 {% endblock %}
 
 {% block spiffy_box_right %}	
@@ -56,16 +49,12 @@
 
 	<table class="tbl-issues">
 		<tr>
-			<th class="tbl-issues-title">Title</th>
 			<th class="tbl-issues-summary">Summary</th>
-			<th class="tbl-issues-description">Description</th>
 			<th class="tbl-issues-status">Status</th>
 		</tr>
 	{% for issue in issues%}
 		<tr>
-			<td><a href="/issue/{{issue.id}}">{{issue.title}}</a></td>
-			<td>{{issue.summary}}</td>
-			<td>{{issue.desription}}</td>
+			<td><a href="/issue/{{issue.id}}" title="{{issue.desription}}">{{issue.summary}}</a></td>
 			<td>{{issue.status}}</td>
 		</tr>
 	{% endfor %}

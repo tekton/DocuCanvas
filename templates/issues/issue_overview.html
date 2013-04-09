@@ -152,46 +152,6 @@
 	</script>
 {% endblock %}
 
-{% block style %}
-	.tbl-comments {
-		margin: 2em auto;
-		border-collapse: collapse;
-        border-spacing: 0;
-	}
-
-	.comment_textarea textarea {
-		width: 100%;
-	}
-
-	.tbl-comments {
-		width: 100%;
-		vertical-align: top;
-	}
-
-	.tbl-comments .tbl-comments-rowheader {
-		background: #bbb;
-		font-size: .7em;
-	}
-
-	.tbl-comments .tbl-comments-user {
-		font-weight: bold;
-		text-align: left;
-		padding: .2em .4em;
-	}
-
-	.tbl-comments .tbl-comments-created {
-		text-align: right;
-		padding: .2em .4em;
-	}
-
-	.tbl-comments .tbl-comments-description {
-		font-size: 1em;
-		width: 100%;
-		padding: .2em;
-	}
-
-{% endblock %}
-
 {% block context_nav %}
 	<a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a>
 
@@ -228,8 +188,20 @@
 {% endblock%}
 
 {% block container %}
-	<b>Summary:</b> {{issue.summary}}<br/>
-	<b>Description:</b> {{issue.description|markdown:"safe"}}
+	<table class="tbl-generic tbl-overview">
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Summary</td>
+		</tr>
+		<tr>
+			<td>{{issue.summary}}</td>
+		</tr>
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Description</td>
+		</tr>
+		<tr>
+			<td>{{issue.description|markdown:"safe"}}</td>
+		</tr>
+	</table>
 {% endblock %}
 
 {% block spiffy_box_right %}
@@ -263,22 +235,24 @@
 {% endblock %}
 
 {% block container_bottom_clear %}
-	<br>
-		
-	<form action="/issue/comment/{{issue.id}}" id="submit_comment_form" method="post" enctype="multipart/form-data">
-		{% csrf_token %}
-		<b><a id="comment_title">Comment:</a></b> {{comment_form.errors}} <br />
-		<div class="comment_textarea">{{comment_form.description}}</div>
-		<input type='hidden' name="issue" id="id_issue" value='{{issue.id}}'/>
-		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
-		<input type="submit" value="Submit" id="submit_comment_button"/>
-	</form>
-
-	<table class="tbl-comments">
+	<table class="tbl-generic tbl-comments">
+		<tr>
+			<td colspan="2">
+				<form action="/issue/comment/{{issue.id}}" id="submit_comment_form" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					<b><a id="comment_title">Comment:</a></b> {{comment_form.errors}} <br />
+					<div class="comment_textarea">{{comment_form.description}}</div>
+					<input type='hidden' name="issue" id="id_issue" value='{{issue.id}}'/>
+					<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
+					<input type="submit" value="Submit" id="submit_comment_button"/>
+				</form>
+				<br>
+			</td>
+		</tr>
 		{% for comment in comments%}
-			<tr class="tbl-comments-rowheader">
-				<td class="tbl-comments-user"><b>{{comment.user}}</b</td>
-				<td class="tbl-comments-created">{{comment.created}}</td>
+			<tr class="tbl-rowheader">
+				<td class="tbl-fauxth tbl-comments-user"><b>{{comment.user}}</b</td>
+				<td class="tbl-fauxth tbl-comments-created">{{comment.created}}</td>
 			</tr>
 			<tr>
 				<td class="tbl-comments-description" colspan="2">{{comment.description|markdown:"safe"}}</td>
