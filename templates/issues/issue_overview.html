@@ -150,6 +150,42 @@
 		});
 
 	</script>
+{% endblock %}
+
+{% block style %}
+	.tbl-comments {
+		margin: 2em auto;
+		border-collapse: collapse;
+        border-spacing: 0;
+	}
+
+	.comment_textarea textarea {
+		width: 100%;
+	}
+
+	.tbl-comments {
+		width: 100%;
+		vertical-align: top;
+	}
+
+	.tbl-comments .tbl-comments-rowheader {
+		background: #bbb;
+		font-size: .7em;
+	}
+
+	.tbl-comments .tbl-comments-user {
+		font-weight: bold;
+		text-align: left;
+	}
+
+	.tbl-comments .tbl-comments-created {
+		text-align: right;
+	}
+
+	.tbl-comments .tbl-comments-description {
+		font-size: 1em;
+		width: 100%;
+	}
 
 {% endblock %}
 
@@ -198,8 +234,8 @@
 	<b>Meta Issue:</b> {{issue.meta_issues.title}}<br/>
 	<b>State:</b> {{issue.state}}<br />
 	<b>Projected Start:</b> {{issue.projected_start}}<br/>
-	<b>Projected End:</b>{{issue.projected_end}}<br/>
-	<b>Actual Start:</b>{{issue.actual_start}}<br />
+	<b>Projected End:</b> {{issue.projected_end}}<br/>
+	<b>Actual Start:</b> {{issue.actual_start}}<br />
 	<b>Actual End:</b> {{issue.actual_end}}<br />
 	<b>Date Reported:</b> {{issue.date_reported}}<br/>
 	<b>Created:</b> {{issue.created}}<br/>
@@ -220,7 +256,7 @@
 	<b>Browser Version:</b> {{issue.browser_version}}<br/>
 	<b>Screen Shot:</b> {{issue.screen_shot}}<br/>
 	<b>Wireframe:</b> {{issue.wireframe}}<br/>
-	<b>URI to Test:</b> x{{issue.uri_to_test}}
+	<b>URI to Test:</b> {{issue.uri_to_test}}
 {% endblock %}
 
 {% block container_bottom_clear %}
@@ -228,20 +264,21 @@
 		
 	<form action="/issue/comment/{{issue.id}}" id="submit_comment_form" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
-		<b><a id="comment_title">Comment:</a></b> {{comment_form.errors}} <br />{{comment_form.description}}
+		<b><a id="comment_title">Comment:</a></b> {{comment_form.errors}} <br />
+		<div class="comment_textarea">{{comment_form.description}}</div>
 		<input type='hidden' name="issue" id="id_issue" value='{{issue.id}}'/>
-		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
+		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
 		<input type="submit" value="Submit" id="submit_comment_button"/>
 	</form>
 
-	<table>
+	<table class="tbl-comments">
 		{% for comment in comments%}
-			<tr>
-				<td><b>{{comment.user}}</b></td>
-				<td>{{comment.created}}</td>
+			<tr class="tbl-comments-rowheader">
+				<td class="tbl-comments-user"><b>{{comment.user}}</b</td>
+				<td class="tbl-comments-created">{{comment.created}}</td>
 			</tr>
 			<tr>
-				<td>{{comment.description|markdown:"safe"}}</td>
+				<td class="tbl-comments-description" colspan="2">{{comment.description|markdown:"safe"}}</td>
 			</tr>
 		{% endfor %}
 
