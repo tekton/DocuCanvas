@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block container%}
+<h2>All Registered Food Requests</h2>
+<table>
+    <tr>
+        <td><b>Requested By:</b></td>
+        <td><b>Item:</b></td>
+        <td><b>Quantity:</b></td>
+        <td><b>Total Cost:</b></td>
+        <td><b>Requested Completed:</b></td>
+    </tr>
+    {% for food in food_all%}
+    <tr>
+        <td><a href="/food/view/{{food.id}}">{{food.user}}</a></td>
+        <td><a href="/food/{{food.id}}">{{food.item}}</td>
+        <td>{{food.quantity}}</td>
+        <td>{{food.total_cost}}</td>
+        <td>{{food.request_completed_bool}}</td>
+    </tr>
+    {% endfor%}
+</table>
+{% endblock%}
