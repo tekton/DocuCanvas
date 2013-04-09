@@ -53,7 +53,7 @@ h3{
             {% for pin in pins%}
                 <tr>
                     <td><a href="/project/{{pin.issue.project.id}}">{{pin.issue.project.name}}</td>
-                    <td><a href="/issue/{{pin.issue.id}}">{{pin.issue.description}}</td>
+                    <td><a href="/issue/{{pin.issue.id}}">{{pin.issue.summary}}</td>
                     <td>{{pin.issue.assigned_to}}</td>
                 </tr>
             {% endfor%}
@@ -67,7 +67,7 @@ h3{
                 {% if issue.assigned_to == user %}
                 <tr>
                     <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
-                    <td><a href="/issue/{{issue.id}}">{{issue.description}}</td>
+                    <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
                     <td>{{issue.assigned_to}}</td>
                 </tr>
                 {% endif %}

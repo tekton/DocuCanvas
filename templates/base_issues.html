@@ -2,8 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Gadget</title>
-        <link rel="stylesheet" href="/static/css/jquery-ui.css" />
+        <title>Test Page of Testing</title>
         <style>
             ::-moz-selection {
                 background: #b3d4fc;
@@ -67,10 +66,6 @@
             a{
                 text-decoration:none;
                 color:#737373;
-            }
-
-            .ui-icon{
-                display:inline-block;
             }
 
             .container {
@@ -389,13 +384,15 @@
     </head>
     <body>
         <div id="top_nav" class="both">
+            <form action="/issue/search" method="POST">{% csrf_token %}
              <div class="left"><a href="/">[Home]</a></div>
              <div class="right"> 
                 <div class="main_nav_button" id="context">Context Drop Down </div> | 
                 <div class="main_nav_button" id="projects_list">Project List </div>|
                 <div class="main_nav_button"><a id="account">{{user|truncatechars:15}}</a></div>
-                <div class="main_nav_button"><form action="/issue/search" method="POST">{% csrf_token %}<input type="text" name="searchText" id="search"/><span class="ui-icon ui-icon-search"></span></form></div>
+                <div class="main_nav_button"><input type="text" name="searchText" id="search"/><input type="submit" value="search"/></div>
             </div>
+            </form>
             <div id="context_nav" class="container_nav"> 
                 {% block context_nav %}{% endblock %}  
             </div>
@@ -413,7 +410,7 @@
                 <a href="#">Advanced Search</a>
             </div>
         </div>
-        <h1>{{page_type}} <span>:: {{page_value}}</span></h1>
+        <h1 class="both">{{page_type}} <span>:: {{page_value}}</span></h1>
         <div class="both">&nbsp;</div>
         <div class="spiffy_box right">{% block spiffy_box_right %}{% endblock %}</div>
         <div class="container">

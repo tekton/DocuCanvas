@@ -346,13 +346,15 @@
     </head>
     <body>
         <div id="top_nav" class="both">
+            <form action="/issue/search" method="POST">{% csrf_token %}
             <div class="left"><a href="/">[Home]</a></div>
             <div class="right"> 
                 <div class="main_nav_button" id="context">Context Drop Down </div> | 
                 <div class="main_nav_button" id="projects_list">Project List </div>|
                 <div class="main_nav_button"><a id="account">{{user|truncatechars:15}}</a></div>
-                <div class="main_nav_button"><form action="/issue/search" method="POST">{% csrf_token %}<input type="text" name="searchText" id="search"/><span class="ui-icon ui-icon-search"></span></form></div>
+                <div class="main_nav_button"><input type="text" name="searchText" id="search"/><input type="submit" value="search"/></div>
             </div>
+            </form>
             <div id="context_nav" class="container_nav"> 
                 {% block context_nav %}{% endblock %}  
             </div>
