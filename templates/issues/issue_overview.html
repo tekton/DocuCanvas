@@ -13,6 +13,12 @@
 				    },
 				    success: function(data){	
 				    	alert(data['status']);
+				    	if( data['status'] == "Unsubscribing Issue"){
+				    		$('#subscribe_to_issue').text("Subscribe");
+				    	}
+				    	else if(data['status'] == "Successfully subscribed to Issue"){
+				    		$('#subscribe_to_issue').text("Unsubscribe");
+				    	}
 				    },
 				    error: function(data){
 				    	alert("Server side error");
@@ -30,6 +36,12 @@
 				    },
 				    success: function(data){	
 				    	alert(data['status']);
+				    	if( data['status'] == "Unpinning Issue"){
+				    		$('#pin_issue').text("Pin");
+				    	}
+				    	else if(data['status'] == "Successfully pinned issue"){
+				    		$('#pin_issue').text("Unpin");
+				    	}
 				    },
 				    error: function(data){
 				    	alert("Server side error");
@@ -89,12 +101,23 @@
 
 {% block context_nav %}
 	<a href="/issue/new?project={{issue.project.id}}">New Issue : {{issue.project.name}}</a>
-	<a id="subscribe_to_issue">Subscribe</a>
-	<a id="pin_issue">Pin</a>
-	{% if issue.assigned_to == user%}
-	<a id="assign_issue">Unassign</a>
+
+	{% if subscribe == None%}
+		<a id="subscribe_to_issue">Subscribe</a>
 	{% else %}
-	<a id="assign_issue">Assign</a>
+		<a id="subscribe_to_issue">Unsubscribe</a>
+	{% endif %}
+
+	{% if pin == None %}
+		<a id="pin_issue">Pin</a>
+	{% else %}
+		<a id="pin_issue">Unpin</a>
+	{% endif %}
+
+	{% if issue.assigned_to == user%}
+		<a id="assign_issue">Unassign</a>
+	{% else %}
+		<a id="assign_issue">Assign</a>
 	{% endif %}
 	<a>Assign To:  
 		<select id="assigned_user">

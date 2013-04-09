@@ -18,7 +18,8 @@ def pin(request):
         issue = Issue.objects.get(pk=request.POST['issue'])
         try:
             pin = PinIssue.objects.get(user=request.user, issue=issue)
-            to_json["status"] = "You have already pinned this issue"
+            pin.delete()
+            to_json["status"] = "Unpinning Issue"
         except:
             try:
                 pin = PinIssue()
@@ -39,7 +40,7 @@ def assign(request):
     try:
         issue = Issue.objects.get(pk=request.POST['issue'])
 
-        if issue.assigned_to == request.user:
+        if issue.assigned_to == request.user and request.POST['assign'] == 'assign':
             issue.assigned_to = None
             to_json["status"] = "Successfully unassigned issue"
         else:
@@ -69,7 +70,8 @@ def subscribe(request):
         issue = Issue.objects.get(pk=request.POST['issue'])
         try:
             subscription = SubscriptionToIssue.objects.get(user=request.user, issue=issue)
-            to_json["status"] = "You are already subscribed to this Issue"
+            subscription.delete()
+            to_json["status"] = "Unsubscribing Issue"
         except:
             try:
                 subscription = SubscriptionToIssue()
@@ -133,11 +135,23 @@ def issue_overview(request, issue_id):
         print 'Unable to load projects'
 
     try:
+        pin = PinIssue.objects.get(issue=issue, user=request.user)
+    except:
+        print 'Unable to find pin for issue'
+        pin = None
+
+    try:
+        subscribe = SubscriptionToIssue.objects.get(issue=issue, user=request.user)
+    except:
+        print 'Unable to find subsription for issue'
+        subscribe = None
+
+    try:
         comment_form = CommentForm()
     except Exception, e:
         print e
 
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'comment_form': comment_form, 'comments': comments, "users": users, "page_type": "Issue", "projects":projects}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'comment_form': comment_form, 'comments': comments, "users": users, "page_type": "Issue", "projects": projects}, context_instance=RequestContext(request))
 
 
 def issue_search_simple(request):
