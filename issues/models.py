@@ -87,6 +87,11 @@ class SubscriptionToIssue(models.Model):
     communication_channel = models.CharField(max_length=255, blank=True, null=True)  # phone number, or? -- facebook, twitter, etc
 
 
+class PinToIssue(models.Model):
+    issue = models.ForeignKey(Issue)
+    user = models.ForeignKey(User)
+
+
 class IssueComment(models.Model):
     issue = models.ForeignKey(Issue)
     user = models.ForeignKey(User)

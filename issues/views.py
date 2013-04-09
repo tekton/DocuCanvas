@@ -1,10 +1,42 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
+from django.http import HttpResponse
+from django.utils import simplejson
 # from projects.models import Project
-from issues.models import Issue, IssueComment
+from issues.models import Issue, IssueComment, SubscriptionToIssue
 from issues.forms import IssueForm, CommentForm
 from django.contrib.auth.models import User
+
+
+def pin(request):
+    return render_to_response("issues/pin.html", {'issues': issues}, context_instance=RequestContext(request))
+
+
+def assign(request):
+    return render_to_response("issues/pin.html", {'issues': issues}, context_instance=RequestContext(request))
+
+
+def subscribe(request):
+    to_json = {}
+    try:
+        issue = Issue.objects.get(pk=request.POST['issue'])
+        try:
+            subscription = SubscriptionToIssue.objects.get(user=request.user, issue=issue)
+            to_json["status"] = "You are already subscribed to this Issue"
+        except:
+            try:
+                subscription = SubscriptionToIssue()
+                subscription.issue = issue
+                subscription.user = request.user
+                subscription.save()
+                to_json["status"] = "Successfully subscribed to Issue"
+            except Exception, e:
+                print e
+                to_json["status"] = "Error subscribing to issue"
+    except:
+        to_json["status"] = "Issue does not exist"
+    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 
 def issue_form(request):

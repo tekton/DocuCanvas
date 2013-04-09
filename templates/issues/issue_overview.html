@@ -1,7 +1,40 @@
 {% extends "base_issues.html" %}
 
+{% block extra_head%}
+	<script type="text/javascript">
+
+		$(document).ready(function(){
+
+			$('#subscribe_to_issue').click(function(){
+            	$.ajax({
+				    type:"POST",
+				    url:"/issue/subscribe",
+				    data:{
+				    	issue:"{{issue.id}}"
+				    },
+				    success: function(data){	
+				    	alert(data['status']);
+				    },
+				    error: function(data){
+				    	alert("Server side error");
+				    }
+
+				})
+        	});
+
+		});
+
+	</script>
+
+{% endblock %}
+
+
 {% block context_nav %}
 	<a href="/issue/new">New Issue : {{issue.project.name}}</a>
+	<a id="subscribe_to_issue">Subscribe</a>
+	<a href="/issue/pin">Pin</a>
+	<a href="/issue/assign">Assign</a>
+	<a>Assign To: </a>
 {% endblock%}
 
 {% block container %}
