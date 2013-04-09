@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm, SetPasswordForm
 # from django.contrib.auth.forms import AuthenticationForm
 from django import forms
 from django.contrib.auth.models import User
@@ -28,3 +28,12 @@ class RegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ("username", "email")  # , "video")
+
+
+class EditAccountForm(PasswordChangeForm):
+    class Meta:
+        model = User
+    # email = forms.CharField(max_length=255)
+    # old_password = forms.CharField(max_length=255)
+    # password1 = forms.CharField(max_length=255)
+    # password2 = forms.CharField(max_length=255)

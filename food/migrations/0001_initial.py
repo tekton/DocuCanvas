@@ -8,34 +8,18 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'UserDailyReport'
-        db.create_table('daily_reports_userdailyreport', (
+        # Adding model 'FoodRequest'
+        db.create_table('food_foodrequest', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('created', self.gf('django.db.models.fields.DateField')(auto_now_add=True, null=True, blank=True)),
-            ('modified', self.gf('django.db.models.fields.DateField')(auto_now=True, blank=True)),
+            ('item', self.gf('django.db.models.fields.CharField')(max_length=255)),
         ))
-        db.send_create_signal('daily_reports', ['UserDailyReport'])
-
-        # Adding model 'DailyReport'
-        db.create_table('daily_reports_dailyreport', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('date', self.gf('django.db.models.fields.DateField')()),
-            ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('created', self.gf('django.db.models.fields.DateField')(auto_now_add=True, null=True, blank=True)),
-            ('modified', self.gf('django.db.models.fields.DateField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('daily_reports', ['DailyReport'])
+        db.send_create_signal('food', ['FoodRequest'])
 
 
     def backwards(self, orm):
-        # Deleting model 'UserDailyReport'
-        db.delete_table('daily_reports_userdailyreport')
-
-        # Deleting model 'DailyReport'
-        db.delete_table('daily_reports_dailyreport')
+        # Deleting model 'FoodRequest'
+        db.delete_table('food_foodrequest')
 
 
     models = {
@@ -75,23 +59,12 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'daily_reports.dailyreport': {
-            'Meta': {'object_name': 'DailyReport'},
-            'created': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'null': 'True', 'blank': 'True'}),
-            'date': ('django.db.models.fields.DateField', [], {}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+        'food.foodrequest': {
+            'Meta': {'object_name': 'FoodRequest'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified': ('django.db.models.fields.DateField', [], {'auto_now': 'True', 'blank': 'True'})
-        },
-        'daily_reports.userdailyreport': {
-            'Meta': {'object_name': 'UserDailyReport'},
-            'created': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'null': 'True', 'blank': 'True'}),
-            'date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified': ('django.db.models.fields.DateField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'item': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         }
     }
 
-    complete_apps = ['daily_reports']
+    complete_apps = ['food']

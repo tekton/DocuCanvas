@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.template import RequestContext
-from forms import RegisterForm
+from forms import RegisterForm, EditAccountForm
 from django.utils import simplejson
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
@@ -12,7 +12,7 @@ from django.core.mail import get_connection
 from django.template.loader import get_template
 from django.template import Context
 
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm, PasswordChangeForm, SetPasswordForm
 from django.contrib.auth.decorators import login_required
 from accounts.models import *
 
@@ -69,7 +69,8 @@ def login_func(request):
             else:
                 state = "Your username and/or password were incorrect."
             login(request, user)
-            return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+            #return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+            return redirect('dashboard.views.home')
         else:
             #to_json = {"error": "error with username and/or password"}
             #return HttpResponse(simplejson.dumps(to_json), mimetype='application/json', status=400)
@@ -78,3 +79,20 @@ def login_func(request):
         form = AuthenticationForm()
 
     return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+
+
+def account_settings(request):
+    return render_to_response("registration/account_settings.html", {}, context_instance=RequestContext(request)) 
+
+def change_password(request):
+    if request.method == "POST":
+        form = PasswordChangeForm(user= request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            print 'it worked!!'
+            return redirect('dashboard.views.home')
+        else:
+            return render_to_response("registration/change_password.html", {'form': form}, context_instance=RequestContext(request))  
+    #form = EditAccountForm()
+    form = EditAccountForm(SetPasswordForm)
+    return render_to_response("registration/change_password.html", {'form': form}, context_instance=RequestContext(request))    

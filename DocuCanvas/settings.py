@@ -139,6 +139,8 @@ INSTALLED_APPS = (
     'projects',
     'issues',
     'daily_reports',
+    'boards',
+    'food',
 )
 
 # A sample logging configuration. The only tangible logging
