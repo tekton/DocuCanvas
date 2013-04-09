@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load markup %}
 
 {% block extra_head %}
 <script src="/static/scripts/daily_reports.js"></script>
@@ -71,7 +71,7 @@
 		<br/>
 		{% for report in reports %}
 			User: {{report.user.username}} ({{report.user.first_name}} {{report.user.last_name}})</br>
-			Report: {{report.description|linebreaks}}</br>
+			Report: {{report.description|markdown:"safe"}}</br>
 			<br/><br/>
 		{% empty %}
 			<em>There are no reports for this date.</em>
