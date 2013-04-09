@@ -33,8 +33,12 @@ def project_form(request):
             print e
     else:
         form = ProjectForm()
+        try:
+            projects = Project.objects.all()
+        except:
+            print 'Unable to grab all projects'
 
-    return render_to_response("projects/project_form.html", {'form': form, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_form.html", {'form': form, "projects": projects, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
 
 
 def project_overview(request, project_id):
