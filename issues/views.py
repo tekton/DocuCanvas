@@ -231,4 +231,4 @@ def submit_comment(request, issue_id):
     else:
         # form = CommentForm(user=User, issue=issue)
         form = CommentForm()
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'comment_form': form, 'comments':  comments}, context_instance=RequestContext(request))
+    return redirect('issues.views.issue_overview', issue_id, permanent=False)
