@@ -156,6 +156,27 @@ def issue_overview(request, issue_id):
     return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": "Issue", "page_value": issue.title}, context_instance=RequestContext(request))
 
 
+def edit(request, issue_id):
+    if request.method == 'POST':
+        issue = Issue()
+        form = IssueForm(request.POST, instance=issue)
+        if form.is_valid():
+            try:
+                issue = form.save()
+            except Exception, e:
+                print e
+                print form.errors
+            if issue.id:
+                return redirect('issues.views.issue_overview', issue.id, permanent=True)
+            else:
+                return render_to_response('issues/issue_edit.html', {'form': form, "issue": issue}, context_instance=RequestContext(request))
+
+    else:
+        issue = Issue.objects.get(pk=issue_id)
+        form = IssueForm(instance=issue)
+    return render_to_response("issues/issue_edit.html", {"form": form, "issue": issue}, context_instance=RequestContext(request))
+
+
 def issue_search_simple(request):
     if request.method == "GET":
         return redirect('issues.views.issue_overview')

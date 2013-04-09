@@ -127,6 +127,8 @@
 		</select>
 		<input type="button" id="assign_issue_to" value="Assign"/>
 	</a>
+	<a>State: {{issue.state}}</a>
+	<a href="/issue/{{issue.id}}/edit">Edit</a>
 {% endblock%}
 
 {% block container %}

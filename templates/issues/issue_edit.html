@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+<!--{%block extra_head%}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            if("{{project_id}}" != "None"){
+                $('#id_project').val("{{project_id}}")
+            }
+        });
+    </script>
+{% endblock%}-->
+
+{% block container %}
+    <form action="/issue/new" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+            {{form.as_table}}
+        </table>
+    <input type="submit" value="Submit"/>
+    </form>
+
+{% endblock %}
