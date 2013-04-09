@@ -132,7 +132,7 @@
 {% block container %}
 	<h2>Issue Overview</h2>
 	<b>Summary:</b> {{issue.summary}}<br/>
-	<b>Description:</b> {{issue.description}}
+	<b>Description:</b> {{issue.description|linebreaks}}
 {% endblock %}
 
 {% block spiffy_box_right %}
@@ -183,7 +183,7 @@
 				<td>{{comment.created}}</td>
 			</tr>
 			<tr>
-				<td>{{comment.description}}</td>
+				<td>{{comment.description|linebreaks}}</td>
 			</tr>
 		{% endfor %}
 
