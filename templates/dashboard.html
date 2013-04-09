@@ -50,14 +50,12 @@ h3{
         <div class="dashboard_container_section">
             <h3>Pinned</h3>
             <table class="dashboard_table">
-            {% for issue in issues%}
-                {% if issue.state == "In Progress"%}
+            {% for pin in pins%}
                 <tr>
-                    <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</td>
-                    <td><a href="/issue/{{issue.id}}">{{issue.description}}</td>
-                    <td>{{issue.assigned_to}}</td>
+                    <td><a href="/project/{{pin.issue.project.id}}">{{pin.issue.project.name}}</td>
+                    <td><a href="/issue/{{pin.issue.id}}">{{pin.issue.description}}</td>
+                    <td>{{pin.issue.assigned_to}}</td>
                 </tr>
-                {% endif%}
             {% endfor%}
             </table>
         </div>

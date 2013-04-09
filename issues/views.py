@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import Q
 # from projects.models import Project
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue
+from projects.models import Project
 from issues.forms import IssueForm, CommentForm
 from django.contrib.auth.models import User
 
@@ -94,9 +95,16 @@ def issue_form(request):
             else:
                 return render_to_response('issues/issue_form.html', {'form': form}, context_instance=RequestContext(request))
     else:
-        form = IssueForm()
-        # projects = Project()
-        print form
+        project_id = request.GET.get('project')
+
+        if project_id:
+            try:
+                project = Project.objects.get(pk=project_id)
+                form = IssueForm(initial={"project": project}, auto_id=False)
+            except:
+                print "Unable to find associated project"
+        else:
+            form = IssueForm()
     return render_to_response("issues/issue_form.html", {'form': form}, context_instance=RequestContext(request))
 
 
@@ -115,11 +123,16 @@ def issue_overview(request, issue_id):
         print e
 
     try:
+        projects = Project.objects.all().order_by('-created')
+    except Exception, e:
+        print 'Unable to load projects'
+
+    try:
         comment_form = CommentForm()
     except Exception, e:
         print e
 
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'comment_form': comment_form, 'comments': comments, "users": users, "page_type": "Issue"}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'comment_form': comment_form, 'comments': comments, "users": users, "page_type": "Issue", "projects":projects}, context_instance=RequestContext(request))
 
 
 def issue_search_simple(request):

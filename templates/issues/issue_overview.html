@@ -4,9 +4,6 @@
 	<script type="text/javascript">
 
 		$(document).ready(function(){
-
-			$('#context_nav').height();
-
 			$('#subscribe_to_issue').click(function(){
             	$.ajax({
 				    type:"POST",
@@ -86,7 +83,7 @@
 {% endblock %}
 
 {% block context_nav %}
-	<a href="/issue/new">New Issue : {{issue.project.name}}</a>
+	<a href="/issue/new?project={{issue.project.id}}">New Issue : {{issue.project.name}}</a>
 	<a id="subscribe_to_issue">Subscribe</a>
 	<a id="pin_issue">Pin</a>
 	<a id="assign_issue">Assign</a>
