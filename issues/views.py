@@ -158,7 +158,7 @@ def issue_overview(request, issue_id):
 
 def edit(request, issue_id):
     if request.method == 'POST':
-        issue = Issue()
+        issue = Issue.objects.get(pk=issue_id)
         form = IssueForm(request.POST, instance=issue)
         if form.is_valid():
             try:
@@ -173,7 +173,7 @@ def edit(request, issue_id):
 
     else:
         issue = Issue.objects.get(pk=issue_id)
-        form = IssueForm(instance=issue)
+        form = IssueForm(instance=issue,initial={"project": issue.project}, auto_id=False)
     return render_to_response("issues/issue_edit.html", {"form": form, "issue": issue, "page_type": "Edit", "page_value": issue.title}, context_instance=RequestContext(request))
 
 
