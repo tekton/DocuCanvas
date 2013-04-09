@@ -183,7 +183,7 @@ h3{
                 <tr>
                     <td><a href="/project/{{pin.issue.project.id}}">{{pin.issue.project.name}}</td>
                     <td><a href="/issue/{{pin.issue.id}}">{{pin.issue.summary}}</td>
-                    <td>{{pin.issue.assigned_to}}</td>
+                    <td><a href="/auth/user/{{pin.issue.assigned_to.id}}">{{pin.issue.assigned_to}}</a></td>
                     <td><div class="add_remove pin_issue ui-icon ui-icon-closethick" id="pin{{pin.issue.id}}"></div></td>
                 </tr>
             {% endfor%}

@@ -2,7 +2,8 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Test Page of Testing</title>
+        <title>Gadget</title>
+        <link rel="stylesheet" href="/static/css/jquery-ui.css" />
         <style>
             ::-moz-selection {
                 background: #b3d4fc;
@@ -67,6 +68,13 @@
                 text-decoration:none;
                 color:#737373;
             }
+
+            #home_icon{
+                border-style:solid;
+                border-radius:3px;
+                border-color:#bbb;
+            }
+
 
             .container {
                 /*max-width: 1000px;*/
@@ -385,7 +393,7 @@
     <body>
         <div id="top_nav" class="both">
             <form action="/issue/search" method="POST">{% csrf_token %}
-             <div class="left"><a href="/">[Home]</a></div>
+             <div class="left"><a href="/" class="ui-icon ui-icon-home" id="home_icon"></a></div>
              <div class="right"> 
                 <div class="main_nav_button" id="context">Context Drop Down </div> | 
                 <div class="main_nav_button" id="projects_list">Project List </div>|

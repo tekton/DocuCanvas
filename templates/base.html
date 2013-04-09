@@ -73,6 +73,12 @@
                 display:inline-block;
             }
 
+            #home_icon{
+                border-style:solid;
+                border-radius:3px;
+                border-color:#bbb;
+            }
+
             .container {
                 /*max-width: 1000px;*/
                 _width: 380px;
@@ -392,7 +398,7 @@
     <body>
         <div id="top_nav" class="both">
             <form action="/issue/search" method="POST">{% csrf_token %}
-            <div class="left"><a href="/">[Home]</a></div>
+            <div class="left"><a href="/" class="ui-icon ui-icon-home" id="home_icon"></a></div>
             <div class="right"> 
                 <div class="main_nav_button" id="context">Context Drop Down </div> | 
                 <div class="main_nav_button" id="projects_list">Project List </div>|
