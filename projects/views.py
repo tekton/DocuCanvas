@@ -14,18 +14,22 @@ def home(request):
 def project_form(request):
     if request.method == 'POST':
         project = Project()
-        form = ProjectForm(request.POST, instance=project)
-        if form.is_valid():
+        try:
+            form = ProjectForm(request.POST, instance=project)
+            if form.is_valid():
 
-            try:
-                project = form.save()
-            except:
-                print 'unable to save project'
+                try:
+                    project = form.save()
+                except:
+                    print 'unable to save project'
 
-            if project.id:
-                return redirect('projects.views.project_overview', project.id, permanent=True)
-            else:
-                return render_to_response("projects/project_form.html", {'form': form}, context_instance=RequestContext(request))
+                if project.id:
+                    return redirect('projects.views.project_overview', project.id, permanent=True)
+                else:
+                    return render_to_response("projects/project_form.html", {'form': form}, context_instance=RequestContext(request))
+        except Exception, e:
+            print "Error validating project fields"
+            print e
     else:
         form = ProjectForm()
 

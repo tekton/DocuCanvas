@@ -1,13 +1,6 @@
 {% extends "base.html" %}
 
 {% block container %}
-
-<form action="/accounts/account_settings" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-        <table>
-            {{form.as_table}}
-        </table>
-    <input type="submit" value="Submit"/>
-</form>
-
+<a href="accounts/change_email">Change Email Address</a><br>
+<a href="/accounts/change_password">Change Password</a>
 {% endblock %}
