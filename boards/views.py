@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from forms import *
 from boards.models import *
+from django.http import HttpResponse
 
 
 def TestIndex(request):
@@ -56,3 +57,7 @@ def boards_node_form(request):
         form = BoardNodeForm()
 
     return render_to_response('boards/board_node_form.html', {'form': form}, context_instance=RequestContext(request))
+
+
+def index(request):
+    return HttpResponse("THIS IS THE BOARDS PAGE")
