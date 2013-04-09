@@ -27,11 +27,6 @@
     width:100%;
 }
 
-.dashboard_title{
-    font-weight:bold;
-    text-align:left;
-}
-
 h3{
     margin:0 0 0.5em;
     width:10%;
@@ -55,11 +50,6 @@ h3{
         <div class="dashboard_container_section">
             <h3>Pinned</h3>
             <table class="dashboard_table">
-                <tr>
-                    <td class="dashboard_title">Project</td>
-                    <td class="dashboard_title">Issue</td>
-                    <td class="dashboard_title">Assigned</td>
-                </tr>
             {% for pin in pins%}
                 <tr>
                     <td><a href="/project/{{pin.issue.project.id}}">{{pin.issue.project.name}}</td>
@@ -72,12 +62,8 @@ h3{
         <div class="dashboard_container_section">
             <h3>Assigned</h3>
             <table class="dashboard_table">
-                <tr>
-                    <td class="dashboard_title">Project</td>
-                    <td class="dashboard_title">Issue</td>
-                    <td class="dashboard_title">Assigned</td>
-                </tr>
             {% for issue in issues%}
+
                 {% if issue.assigned_to == user %}
                 <tr>
                     <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
@@ -91,12 +77,8 @@ h3{
         <div class="dashboard_container_section">
             <h3>Subscribed</h3>
             <table class="dashboard_table">
-                <tr>
-                    <td class="dashboard_title">Project</td>
-                    <td class="dashboard_title">Issue</td>
-                    <td class="dashboard_title">Assigned</td>
-                </tr>
             {% for subscription in subscribed%}
+
                 {% if subscription.issue.assigned_to == user %}
                 <tr>
                     <td><a href="/project/{{subscription.issue.project.id}}">{{subscription.issue.project.name}}</a></td>
