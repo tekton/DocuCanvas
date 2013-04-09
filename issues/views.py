@@ -4,6 +4,7 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.utils import simplejson
 from django.db import models
+from django.db.models import Q
 # from projects.models import Project
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue
 from projects.models import Project
@@ -132,6 +133,17 @@ def issue_overview(request, issue_id):
         print e
 
     return render_to_response("issues/issue_overview.html", {'issue': issue, 'comment_form': comment_form, 'comments': comments, "users": users, "page_type": "Issue", "projects":projects}, context_instance=RequestContext(request))
+
+
+def issue_search_simple(request):
+    if request.method == "GET":
+        return redirect('issues.views.issue_overview')
+
+    search = request.POST['searchText']
+    print search
+
+    q = Issue.objects.filter(Q(summary__contains=search) | Q(description__contains=search))
+    return render_to_response("issues/issue_search_results.html", {'results': q}, context_instance=RequestContext(request))
 
 
 def submit_comment(request, issue_id):
