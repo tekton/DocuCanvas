@@ -13,7 +13,7 @@
 			<th>Type</th>
 			<th>Status</th>
 		</tr>{% for issue in results %}<tr>
-			<td>{{ issue.summary }}</td>
+			<td><a href="/issue/{{ issue.id }}">{{ issue.summary }}</a></td>
 			<td>{{ issue.issue_type }}</td>
 			<td>{{ issue.status }}</td>
 		</tr>{% empty %}<tr><td colspan="3"><em>No issues match your search terms.</em></td></tr>{% endfor %}
