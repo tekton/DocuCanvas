@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block container %}
-	<h2>Edit Daily Report</h2>
+	<h2>Edit {% if global %}Global{% else %}Personal{% endif %} Daily Report</h2>
 
 		<table>
 			<tr>
@@ -64,7 +64,7 @@
 				</td>
 			</tr>
 		</table>
-	<form id="reportForm" action="/reports/edit" method="post">
+	<form id="reportForm" action="/reports/edit{% if global %}global{% endif %}" method="post">
 		{% csrf_token %}
 		<table>
 			{{form.as_table}}
