@@ -46,11 +46,10 @@ def register(request):
             print form.errors
 
     else:
-        print "not post"
         form = RegisterForm()
         next = request.GET.get("next", "/")
-        # Add CSRF context token to response.
-        return render_to_response("registration/registration.html", {'form': form, 'next': next}, context_instance=RequestContext(request))
+     # Add CSRF context token to response.
+    return render_to_response("registration/registration.html", {'form': form, 'next': next}, context_instance=RequestContext(request))
     #return render_to_response("registration/registration.html", {'r_form': form, 'next': next}, context_instance=RequestContext(request))
 
 
