@@ -54,7 +54,7 @@ def assign(request, issue_id, user_id=-1):
     except Issue.DoesNotExist:
         raise Http404
 
-    if  user_id == -1:
+    if user_id == -1:
         if issue.assigned_to == request.user:
             issue.assigned_to = None
             to_json['assigned_to'] = 'none'
@@ -69,7 +69,8 @@ def assign(request, issue_id, user_id=-1):
 
         if issue.assigned_to == user:
             # this is a no-op
-            issue = None
+            issue.assigned_to = None
+            to_json['assigned_to'] = 'none'
         else:
             issue.assigned_to = user
             if user == request.user:
