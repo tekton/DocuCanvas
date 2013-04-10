@@ -115,7 +115,7 @@ def issue_form(request):
                 print e
                 print form.errors
             if issue.id:
-                return redirect('issues.views.issue_overview', issue.id, permanent=True)
+                return redirect('issues.views.issue_overview', issue.id)
             else:
                 return render_to_response('issues/issue_form.html', {'form': form}, context_instance=RequestContext(request))
 
@@ -191,7 +191,7 @@ def edit(request, issue_id):
                 print e
                 print form.errors
             if issue.id:
-                return redirect('issues.views.issue_overview', issue.id, permanent=True)
+                return redirect('issues.views.issue_overview', issue.id)
             else:
                 return render_to_response('issues/issue_edit.html', {'form': form, "issue": issue}, context_instance=RequestContext(request))
 

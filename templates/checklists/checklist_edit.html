@@ -71,7 +71,6 @@ textarea{
         {% csrf_token %}
         {{form.management_form}}
         <table>
-        {{checklist_instance_form.title.value}}
         
 
         {% for f in form%}
