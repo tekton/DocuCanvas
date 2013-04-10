@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from forms import *
 from boards.models import *
@@ -20,7 +20,7 @@ def boards_form(request):
         if form.is_valid():
             try:
                 board = form.save()
-                return HttpResponseRedirect(reverse('board_url_display', kwargs={'board_id': board.id}))
+                return redirect('board_url_edit', board.id)
             except Exception, e:
                 print e
     else:
@@ -66,7 +66,7 @@ def boards_node_form(request):
 
 
 def index(request):
-    board_nodes = BoardNode.objects.all()
+    board_nodes = Board.objects.all()
     board_node_count = BoardNode.objects.count()
     context = {'board_nodes': board_nodes, 'board_node_count': board_node_count}
     return render_to_response('boards/index.html', context)
@@ -76,9 +76,32 @@ def boards(request):
     context = {'boards': boards}
     return render_to_response('boards/boards.html', context)
 
-def board_display(request, board_id):
+def board_edit(request, board_id):
+    print "Submitting board..."
+    if request.method == 'POST':
+        boardNode = BoardNode()
+        form = BoardNodeForm(request.POST, instance=boardNode)
+
+        if form.is_valid():
+            try:
+                boardNode = form.save()
+            except:
+                print 'unable to save node'
+        else:
+            print form.errors 
+
+    else:
+        form = BoardNodeForm()
     try:
         p = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
         raise Http404
-    return render_to_response('boards/board_view.html', {'board': p})
+    return render_to_response('boards/board_edit.html', {'board': p, 'form': form}, context_instance=RequestContext(request))
+
+def board_display(request, board_id):
+    board_nodes = BoardNode.objects.all()
+    try:
+        p = Board.objects.get(pk=board_id)
+    except Board.DoesNotExist:
+        raise Http404
+    return render_to_response('boards/board_display.html', {'board': p, "board_nodes": board_nodes}, context_instance=RequestContext(request))
