@@ -128,6 +128,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    ### will be depricated in 1.6, will ahve to find a new way to do this...
+    'django.contrib.markup',
     ### The following are base apps that make things easier...
     'south',
     'gunicorn',
