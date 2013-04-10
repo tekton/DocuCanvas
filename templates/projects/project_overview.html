@@ -7,7 +7,6 @@
 {% endblock%}
 
 {% block container %}
-	<h2>{{project_O.name}}</h2>
 	Description: {{project_O.description}}<br/>
 	Status: {{project_O.status}}<br/>
 	Logo: {{project_O.logo}}<br/>
@@ -37,14 +36,14 @@
 			<td>Title</td>
 			<td>Summary</td>
 			<td>Description</td>
-			<td>State</td>
+			<td>Status</td>
 		</tr>
 	{% for issue in issues%}
 		<tr>
 			<td><a href="/issue/{{issue.id}}">{{issue.title}}</a></td>
 			<td>{{issue.summary}}</td>
 			<td>{{issue.desription}}</td>
-			<td>{{issue.state}}</td>
+			<td>{{issue.status}}</td>
 		</tr>
 	{% endfor %}
 	</table>
