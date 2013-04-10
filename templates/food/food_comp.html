@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+
+{% block container %}
+    <form action="/food/comp/{{food.id}}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td><b>Item: </b></td>
+                <td>{{food.item}}</td>
+            </tr>
+            <tr>
+                <td><b>Quantity: </b></td>
+                <td>{{food.quantity}} {{food.quantity_type}}</td>
+            </tr>
+            <tr>
+                <td><b>Total Cost:</b></td>
+                <td>{{food.total_cost}}</td>
+            </tr>
+            <tr>
+                <td><b>Requested By:</b></td>
+                <td><a href="/food/view/{{food.id}}">{{food.user}}</a></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td><b>Has the request been completed? </b></td>
+                <td>{{form.request_completed_bool}}</td></tr>
+            <!--<tr>
+                <td><b>When was the request completed? </b></td>
+                <td>{{form.request_completed_date}}</td>
+            </tr>-->
+        </table>
+        <input type="submit" value="Submit"/>
+    </form>
+{% endblock %}

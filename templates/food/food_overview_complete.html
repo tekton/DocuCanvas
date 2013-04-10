@@ -1,0 +1,23 @@
+{% extends "base.html"%}
+{% block container%}
+<table>
+    <tr>
+        <td><b>Requested By:</b></td>
+        <td><b>Item:</b></td>
+        <td><b>Quantity:</b></td>
+        <td><b>Total Cost:</b></td>
+        <td><b>Date Requested:</b></td>
+        <td><b>Date Completed:</b></td>
+    </tr>
+    {% for food in complete_food%}
+    <tr>
+        <td>{{food.user}}</td>
+        <td>{{food.item}}</td>
+        <td>{{food.quantity}}</td>
+        <td>{{food.total_cost}}</td>
+        <td>{{food.request_initiated}}</td>
+        <td>{{food.request_completed_date}}</td>
+    </tr>
+    {% endfor%}
+</table>
+{% endblock%}

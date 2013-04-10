@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+
+{% block container %}
+<b>Item: </b>{{food.item}}</br>
+<b>Unit Cost: </b>{{food.cost_per_quantity}}<b> per </b>{{food.quantity_type}}</br>
+<b>Quantity: </b>{{food.quantity}}<b> </b>{{food.quantity_type}}</br>
+<b>Total Cost: </b>{{food.total_cost}}</br>
+<b>Requested By: </b>{{food.user}}</b><b> on </b>{{food.request_initiated}}</br>
+<b>Desired Date of Completion: </b>{{food.desired_completion}}</br></br>
+{% endblock %}
