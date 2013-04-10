@@ -19,6 +19,10 @@ class ChecklistInstanceForm(forms.ModelForm):
         model = ChecklistInstance
         fields = ('title',)
 
+class ChecklistInstanceFullForm(forms.ModelForm):
+    class Meta:
+        model = ChecklistInstance
+
 class ChecklistTagForm(forms.ModelForm):
     class Meta:
         model = ChecklistTag
