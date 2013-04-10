@@ -89,11 +89,16 @@ def subscribe(request):
 
 def set_bug_state(request):
     to_json = {}
+    print 'trying to set bug state'
+    print request.POST['issue']
+    print request.POST['status']
     try:
         issue = Issue.objects.get(pk=request.POST['issue'])
         issue.status = request.POST['status']
         issue.save()
         to_json["status"] = "Bug status set"
+        if request.POST['status'] == 'fixed':
+            return submit_comment(request, issue.id)
     except:
         to_json["status"] = "Unable to set bug state"
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')

@@ -418,7 +418,13 @@
                 <a href="#">Advanced Search</a>
             </div>
         </div>
-        <h1 class="both">{{page_type}} <span>:: {{page_value}}</span></h1>
+        <h1 class="both">{{page_type}} 
+            <span>:: {{page_value}}
+            {% if issue%}
+             :: {{issue.status}}
+            {% endif %}
+             </span>
+        </h1>
         <div class="both">&nbsp;</div>
         <div class="spiffy_box right">{% block spiffy_box_right %}{% endblock %}</div>
         <div class="container">
