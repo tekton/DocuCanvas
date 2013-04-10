@@ -16,7 +16,7 @@
             }
 
             html {
-                padding: 30px 10px;
+                padding: 0 10px;
                 font-size: 20px;
                 line-height: 1.4;
                 color: #737373;
@@ -34,8 +34,9 @@
                 max-width: 80%;
                 _width: 80%;
                 padding: 30px 20px 50px;
-                border: 1px solid #b3b3b3;
-                border-radius: 4px;
+                border-width: 0 1px;
+                border-style: solid;
+                border-color: #b3b3b3;
                 margin: 0 auto;
                 box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
                 background: #fcfcfc;
@@ -161,7 +162,7 @@
                 width: 20em;
                 padding: 1em;
                 position: absolute;
-                top: 6.5em;
+                top: 4.5em;
                 right: 20em;
                 min-height: 2em;
                 height:auto;
@@ -175,7 +176,7 @@
                 width: 20em;
                 padding: 1em;
                 position: absolute;
-                top: 6.5em;
+                top: 4.5em;
                 right: 6.5em;
                 min-height: 2em;
                 height:auto;
@@ -190,7 +191,7 @@
                 width: 135px;
                 padding: 1em;
                 position: absolute;
-                top: 6.5em;
+                top: 4.5em;
                 right: 8.5em;
                 height: 2em;
                 overflow: hidden;
@@ -202,7 +203,7 @@
                 width: 10em;
                 padding: 1em;
                 position: absolute;
-                top: 6.5em;
+                top: 4.5em;
                 right:2em;
                 height: 2em;
                 overflow: hidden;
@@ -288,6 +289,10 @@
             
         }
 
+#mainheader {
+    padding-top: .6em;
+    font-size: 30px;
+}
 .tbl-generic {
     border-collapse: collapse;
     border-spacing: 0;
@@ -389,6 +394,104 @@
                     // or any other URL that isn't scheme relative or absolute i.e relative.
                     !(/^(\/\/|http:|https:).*/.test(url));
             }
+
+            /* Nav Menu - START */
+            var NavMenu = {
+                items: [],
+                triggers: [],
+                mapping: {
+                    'account' : 'account_nav',
+                    'projects_list' : 'projects_nav',
+                    'context' : 'context_nav',
+                    'search_icon' : 'search_nav'
+                },
+                _timeout: null,
+
+                ClearDisplayTimeout: function(){
+                    // Clears display timeout
+                    if (NavMenu._timeout) {
+                        clearTimeout(NavMenu._timeout);
+                    }
+                },
+
+                SetDisplayTimeout: function(){
+                    // Hide any open menu after 5 seconds if: 
+                    //  Desktop User - mouses out from menu
+                    //  Mobile User - does not click a menu item
+                    NavMenu.ClearDisplayTimeout();
+                    NavMenu._timeout = setTimeout(function(){
+                        NavMenu.items.slideUp();
+                    },5000);
+                },
+
+                HideAll: function(){
+                    // Removes any pending timeout since we won't need it
+                    NavMenu.ClearDisplayTimeout();
+                    // Hide all visible menu items
+                    NavMenu.items.slideUp();
+                },
+
+                Init: function(){
+                    // Get mapped IDs for triggers and menus and put them into a DOM query array
+                    $.each(NavMenu.mapping, function(k,v){
+                        NavMenu.triggers.push('#'+k);
+                        NavMenu.items.push('#'+v);
+                    });
+                    NavMenu.items = $(NavMenu.items.join(','));
+                    NavMenu.triggers = $(NavMenu.triggers.join(','));
+
+                    // Bind click event to triggers to show their corresponding menu, based on mapping
+                    NavMenu.triggers.on("click", function(evt){
+                        // Remove 5 second timeout (refer to .SetDisplayTimeout)
+                        NavMenu.ClearDisplayTimeout();
+
+                        var navId = NavMenu.mapping[$(this).attr('id')];
+                        // Itterate through all menu items and hide or show them
+                        NavMenu.items.each(function(i,el){
+                            el = $(el);
+
+                            // Toggle (slide) requested menu
+                            if (el.attr('id') == navId) {
+                                el.slideToggle();
+                            }
+                            // Hide any other menu
+                            else {
+                                el.slideUp();
+                            }
+                        });
+
+                        // Re-add timeout
+                        NavMenu.SetDisplayTimeout();
+                    });
+
+
+                    NavMenu.items.on({
+                        // Removes display timeout if the user is currently within the menu (desktop users)
+                        mouseover: NavMenu.ClearDisplayTimeout,
+
+                        // Re-add timeout after they mouse over menu
+                        mouseout: NavMenu.SetDisplayTimeout
+                    });
+
+                    // If user clicks anything other than a menu item or trigger, hide the menus
+                    $(document).click(function(evt){
+                        var el = evt.target;
+
+                        if ( $.inArray(el, NavMenu.triggers) > -1 || $.inArray(el, NavMenu.items) > -1 ) {
+                            // Nav menu item was clicked
+                            return;
+                        }
+                       
+                        if ( $(el).parents('.navitem').length == 0 ) {
+                            
+                            NavMenu.HideAll();
+                        }
+                    });
+
+                    $('#search').on('click', NavMenu.HideAll);
+                }
+            };
+            /* Nav Menu - END */
             
             $(document).ready(function(){
                 csrftoken = getCookie('csrftoken');
@@ -400,118 +503,57 @@
                         }
                 });
 
-                var navMenuItems = [],
-                    navMenuTriggers = [],
-                    navMenuTimeout,
-                    navMenuMapping = {
-                        'account' : 'account_nav',
-                        'projects_list' : 'projects_nav',
-                        'context' : 'context_nav',
-                        'search_icon' : 'search_nav'
-                    };
+                NavMenu.Init();
 
-                $.each(navMenuMapping,function(k,v){
-                    navMenuTriggers.push('#'+k);
-                    navMenuItems.push('#'+v);
-                });
-
-                navMenuItems = $(navMenuItems.join(','));
-                navMenuTriggers = $(navMenuTriggers.join(','));
-
-                navMenuTriggers.on("click", function(evt){
-                    var triggerEl = $(this),
-                        navId = navMenuMapping[triggerEl.attr('id')];
-
-                    navMenuItems.each(function(i,el){
-                        el = $(el);
-
-                        if (el.attr('id') == navId) {
-                            el.slideToggle();
-                        }
-                        else {
-                            el.slideUp();
-                        }
+                /* OLD nav menu
+                    $('#account').click(function(){
+                        $('#account_nav').slideToggle();
                     });
 
-                    navMenuTimeout = setTimeout(function(){
-                        navMenuItems.slideUp();
-                    },5000);
-                });
+                    $('#projects_list').click(function(){
+                        $('#projects_nav').slideToggle();
+                    });
 
-                navMenuItems.on({
-                    mouseover: function(){
-                        clearTimeout(navMenuTimeout);
-                    },
-                    mouseout: function(){
-                        navMenuTimeout = setTimeout(function(){
-                            navMenuItems.slideUp();
-                        },5000);
-                    }
-                })
+                    $('#context').click(function(){
+                        $('#context_nav').slideToggle();
+                    });
 
-                $(document).click(function(evt){
-                    var el = evt.target;
-                    if ( $.inArray(el,navMenuTriggers) > -1 || $.inArray(el,navMenuItems) > -1 ) {
-                        return;
-                    }
-                    if ( $(el).parents('.navitem').length == 0 ) {
-                        navMenuItems.slideUp();
-                    }
-                });
+                    $('#search_icon').click(function(){
+                        $('#search_nav').slideToggle();
+                    });
 
-                $('#search').click(function(evt){
-                    navMenuItems.slideUp();
-                });
-                
-/*
-                $('#account').click(function(){
-                    $('#account_nav').slideToggle();
-                });
+                    //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
 
-                $('#projects_list').click(function(){
-                    $('#projects_nav').slideToggle();
-                });
+                    $(document).click(function(event) { 
+                        if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
 
-                $('#context').click(function(){
-                    $('#context_nav').slideToggle();
-                });
+                            if($('#account_nav').css('display') != "none"){
+                                $('#account_nav').slideToggle(); 
+                            }                
+                        }
 
-                $('#search_icon').click(function(){
-                    $('#search_nav').slideToggle();
-                });
-*/
-                //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
-/*
-                $(document).click(function(event) { 
-                    if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
+                        if($(event.target).index($('#projects_nav')) == -1 && $(event.target).attr('id') != "projects_list"){
 
-                        if($('#account_nav').css('display') != "none"){
-                            $('#account_nav').slideToggle(); 
-                        }                
-                    }
+                            if($('#projects_nav').css('display') != "none"){
+                                $('#projects_nav').slideToggle(); 
+                            }                
+                        }
 
-                    if($(event.target).index($('#projects_nav')) == -1 && $(event.target).attr('id') != "projects_list"){
+                        if($(event.target).index($('#context_nav')) == -1 && $(event.target).attr('id') != "context"){
 
-                        if($('#projects_nav').css('display') != "none"){
-                            $('#projects_nav').slideToggle(); 
-                        }                
-                    }
+                            if($('#context_nav').css('display') != "none"){
+                                $('#context_nav').slideToggle(); 
+                            }                
+                        }
 
-                    if($(event.target).index($('#context_nav')) == -1 && $(event.target).attr('id') != "context"){
+                        if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search_icon"){
 
-                        if($('#context_nav').css('display') != "none"){
-                            $('#context_nav').slideToggle(); 
-                        }                
-                    }
-
-                    if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search_icon"){
-
-                        if($('#search_nav').css('display') != "none"){
-                            $('#search_nav').slideToggle(); 
-                        }                
-                    }
-                });
-*/
+                            if($('#search_nav').css('display') != "none"){
+                                $('#search_nav').slideToggle(); 
+                            }                
+                        }
+                    });
+                */
             });
 
 
@@ -549,7 +591,7 @@
                 <a href="#">Advanced Search</a>
             </div>
         </div>
-        <h1 class="both">{{page_type}} 
+        <h1 id="mainheader" class="both">{{page_type}} 
             <span>:: {{page_value}}
             {% if issue%}
              :: {{issue.status}}
