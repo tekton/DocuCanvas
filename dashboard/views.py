@@ -9,7 +9,7 @@ from issues.models import *
 def home(request):
     #issues = Issue.objects.filter(assigned_to=request.user).order_by('-created')
     if request.user.is_authenticated():
-        issues = Issue.objects.all().order_by('-created')
+        issues = Issue.objects.filter(assigned_to=request.user).order_by('-created')
         pins = PinIssue.objects.select_related().filter(user=request.user)
         #projects = Project.objects.filter(lead_developer=request.user).order_by('-created')
         projects = Project.objects.all().order_by('-created')
