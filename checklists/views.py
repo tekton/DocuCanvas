@@ -67,10 +67,7 @@ def instance_edit(request, checklist_instance_id):
         formset = ChecklistTagsFormset(request.POST, instance=checklist_instance)
 
         if checklist_instance_form.is_valid() and formset.is_valid():
-            #print 'checklisttag completion status'
-            #print request.POST['checklisttag_set-0-completion_status']
             total_forms = int(request.POST['checklisttag_set-TOTAL_FORMS'])
-
             i = 0
             completion_count = 0
             while i < total_forms:
@@ -83,9 +80,9 @@ def instance_edit(request, checklist_instance_id):
                 i += 1
 
             if completion_count == total_forms:
-                #DOESN'T WORK YET
-                checklist_instance_form.cleaned_data['completion_status'] = True
-                print checklist_instance_form
+                checklist_instance.completion_status = True
+                checklist_instance.save()
+
             checklist_instance_form.save()
             formset.save()
     else:
@@ -96,6 +93,7 @@ def instance_edit(request, checklist_instance_id):
 
 
 def new_instance(request, checklist_id):
+    print 'in new instance'
     try:
         checklist = Checklist.objects.get(pk=checklist_id)
         checklist_layout_items = CheckListLayoutItems.objects.filter(Checklist=checklist)

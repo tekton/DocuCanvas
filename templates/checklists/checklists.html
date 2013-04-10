@@ -29,7 +29,7 @@
                     <a href="/checklist/{{checklist.id}}">{{checklist.name}}</a>
                     </td>
                     <td>
-                        <a href="/checklist/new_checklist_instance/{{checklist.id}}">Add</a>
+                        <a href="/checklist/checklist_instance_new/{{checklist.id}}">Add</a>
                     </td>
                 </tr>
 
@@ -45,9 +45,9 @@
                             <a href="/checklist/instance/{{v.id}}">{{v.title}}</a>
                             </td>
                             <td>
-                                {% if v.completetion_status %}
+                                {% if v.completion_status %}
                                 Complete
-                                {% elif not v.completion_status%}
+                                {% else %}
                                 Incomplete
                                 {% endif%}
                             </td>
