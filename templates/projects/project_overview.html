@@ -52,11 +52,13 @@
 		<tr>
 			<th class="tbl-issues-summary">Summary</th>
 			<th class="tbl-issues-status">Status</th>
+			<th class="tbl-issues-assigned_to">Assigned To</th>
 		</tr>
 	{% for issue in issues%}
 		<tr>
 			<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
 			<td>{{issue.status}}</td>
+			<td>{{issue.assigned_to}}</td>
 		</tr>
 	{% endfor %}
 	</table>
