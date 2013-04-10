@@ -173,7 +173,7 @@ def issue_form_project(request, project_id):
     except:
         print "Unable to find associated project"
         form = IssueForm()
-    return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': 'Issue', 'page_value': project.name, 'projects': projects}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': project.name, 'page_value': "Issue", 'projects': projects}, context_instance=RequestContext(request))
 
 def issue_overview(request, issue_id):
     try:
