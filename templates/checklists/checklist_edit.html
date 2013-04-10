@@ -91,7 +91,7 @@ textarea{
                     {{f.name.as_hidden}}
                 </td>
                 <td>
-                    <textarea id="comment_{{f.id.value}}">{{f.comment.value}}</textarea>
+                    <textarea id="comment_{{f.id.value}}">{% if f.comment.value %}{{f.comment.value}}{% endif %}</textarea>
                 </td>
                 <td>
                     <input type="button" onClick='submit_comment("{{f.id.value}}")' value="Submit Comment"/>
