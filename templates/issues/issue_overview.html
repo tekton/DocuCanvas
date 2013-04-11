@@ -108,6 +108,12 @@
         			});
         		}
 
+        		else if($('#id_status').val() == 'duplicate' ){
+        			if($('#link_issue_duplicate_popup').css('display') == "none"){
+	                        $('#link_issue_duplicate_popup').fadeToggle();
+	                }   
+        		}
+
         		else{
 	            	$.ajax({
 					    type:"POST",
@@ -154,7 +160,7 @@
 	                }                
 	            }
 
-	            if($(event.target).attr('id') != "link_issue_duplicate_popup" && $(event.target).parent().attr('id') != "link_issue_duplicate_popup"){
+	            if($(event.target).attr('id') != "link_issue_duplicate_popup" && $(event.target).parent().attr('id') != "link_issue_duplicate_popup" && $(event.target).attr('id') != "set_bug_status"){
 
 	                if($('#link_issue_duplicate_popup').css('display') != "none"){
 	                        $('#link_issue_duplicate_popup').fadeToggle();
@@ -165,14 +171,23 @@
 
 		});
 
-	function issue_to_issue_link(type){
+	function issue_to_issue_link(type, duplicate){
+		var secondary_issue;
 
+		if(duplicate){
+			secondary_issue = $('#duplicate_issue_id').val();
+		}
+
+		else{
+			secondary_issue = $('[name="related_issue_id"]').val();
+		}
+		
 		$.ajax({
             type:"POST",
                     url:"/issue/link",
                     data:{
                         primary_issue:"{{issue.id}}",
-                        secondary_issue:$('[name="related_issue_id"]').val(),
+                        secondary_issue:secondary_issue,
                         link_type:type
                     },
             success: function(data){       
@@ -213,12 +228,12 @@
 	<a href="/issue/{{issue.id}}/edit">Edit</a>
 {% endblock%}
 
-<!--{% block duplicate_issue_popup %}
+{% block duplicate_issue_popup %}
 <h2>Duplicate Issue</h2>
 Duplicate Issue ID: 
-<input type="text" name="duplicate_issue_id"/>
-<input type="button" value="Link" id="duplicate_issue_id_button" onClick="issue_to_issue_link('duplicate')" />
-{% endblock%}-->
+<input type="text" id="duplicate_issue_id"/>
+<input type="button" value="Link" id="duplicate_issue_id_button" onClick="issue_to_issue_link('duplicate', $('#duplicate_issue_id').val())" />
+{% endblock%}
 
 {% block select_related_issue_popup %}
 <h2>Select Related Issue</h2>
