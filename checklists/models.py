@@ -9,6 +9,12 @@ class Checklist(models.Model):
     layout = models.TextField(null=True, blank=True)
 
 
+class CheckListLayoutItems(models.Model):
+    Checklist = models.ForeignKey(Checklist)
+    title = models.CharField(max_length=255)
+    order = models.IntegerField()
+
+
 class ChecklistInstance(models.Model):
     checklist = models.ForeignKey(Checklist)  # fk
     title = models.CharField(max_length=255, blank=True, null=True)
