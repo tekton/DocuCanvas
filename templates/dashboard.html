@@ -44,7 +44,7 @@
 .date_header {
     background:#bbb;
     height:0.5em;
-    font-size:0.7em;
+    font-size:0.6em;
 }
 
 
@@ -202,9 +202,9 @@ h3 {
 
                 
                 <tr>
-                    <td><a href="/project/{{pin.issue.project.id}}">{{pin.project.name}}</td>
-                    <td><a href="/issue/{{pin.issue.id}}">{{pin.summary}}</td>
-                    <td><a href="/auth/user/{{pin.issue.assigned_to.id}}">{{pin.assigned_to}}</a></td>
+                    <td><a href="/project/{{pin.project.id}}">{{pin.project.name}}</td>
+                    <td><a href="/issue/{{pin.id}}">{{pin.summary}}</td>
+                    <td><a href="/auth/user/{{pin.assigned_to.id}}">{{pin.assigned_to}}</a></td>
                     <td><div class="add_remove pin_issue ui-icon ui-icon-closethick" id="pin{{pin.id}}"></div></td>
                 </tr>
             {% endfor%}
@@ -249,8 +249,8 @@ h3 {
                 {% endif %}
 
                 <tr>
-                    <td><a href="/project/{{subscription.issue.project.id}}">{{subscription.project.name}}</a></td>
-                    <td><a href="/issue/{{subscription.issue.id}}">{{subscription.description}}</td>
+                    <td><a href="/project/{{subscription.project.id}}">{{subscription.project.name}}</a></td>
+                    <td><a href="/issue/{{subscription.id}}">{{subscription.description}}</td>
                     <td><a href="/auth/user/{{subscription.assigned_to.id}}">{{subscription.assigned_to}}</a></td>
                     <td><div class="add_remove subscribe_to_issue ui-icon ui-icon-closethick" id="subscribe{{subscription.id}}"></div></td>
                 </tr>
