@@ -11,8 +11,15 @@ from checklists.forms import *
 
 def project_checklists(request, project_id):
     print 'in project checklists'
-    project = Project.objects.get(pk=project_id)
-    checklists = Checklist.objects.filter(project=project)
+    try:
+        project = Project.objects.get(pk=project_id)
+    except Exception, e:
+        print e
+
+    try:
+        checklists = Checklist.objects.filter(project=project)
+    except Exception, e:
+        print e
 
     checklist_instances = {}
     for checklist in checklists:
@@ -25,7 +32,7 @@ def project_checklists(request, project_id):
             print e
             print 'Checklist Instance not found'
 
-    return render_to_response("checklists/checklists.html", {"checklists": checklists, "checklist_instances": checklist_instances, "project_id": project_id, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
+    return render_to_response("checklists/checklists.html", {"checklists": checklists, "checklist_instances": checklist_instances, "project": project,  "project_id": project_id, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
 def checklist_edit(request, checklist_id):
