@@ -137,6 +137,7 @@ INSTALLED_APPS = (
     ### other basic modules/apps
     'accounts',
     ### Add project specifics apps here
+    'checklists',
     'dashboard',
     'issues',
     'nodes',

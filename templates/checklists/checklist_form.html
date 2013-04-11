@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+
+{% block container %}
+    <form action="/checklist/new" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.project.as_hidden}}
+        {{form.as_table}}
+    <input type="submit" value="Submit"/>
+    </form>
+
+{% endblock %}
