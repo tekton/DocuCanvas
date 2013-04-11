@@ -2,11 +2,21 @@
 
 
 {% block container %}
-    <form action="/checklist/new" method="post" enctype="multipart/form-data">
+    <form action="/checklist/new/{{project_id}}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{form.project.as_hidden}}
-        {{form.as_table}}
-    <input type="submit" value="Submit"/>
+        {{formset.management_form}}
+        <table>
+            {{checklist_form.as_table}}
+
+            {% for form in formset.forms %}
+                <table>
+                    Checklist Item: <br>
+                    {{ form }}
+                </table>
+            {% endfor %}
+        </table>
+    <input title='Add a new checklist item' type='submit' name='add_checklist_item' value='Add' />
+    <input type="submit" name="submit" value="Submit"/>
     </form>
 
 {% endblock %}
