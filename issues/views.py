@@ -147,6 +147,37 @@ def set_bug_state(request):
 
 
 @login_required
+def unlink_issues(request):
+    to_json = {}
+    print 'unlinking'
+    try:
+        primary_issue = Issue.objects.get(pk=request.POST['primary_issue'])
+        try:
+            secondary_issue = Issue.objects.get(pk=request.POST['secondary_issue'])
+
+            try:
+                issue_to_issue_link = IssueToIssue.objects.get(primary_issue=primary_issue, secondary_issue=secondary_issue)
+                issue_to_issue_link.delete()
+                if primary_issue.status == 'duplicate':
+                    primary_issue.status = None
+                    primary_issue.save()
+                to_json['response'] = 'Unlinked Issue ' + str(request.POST['primary_issue']) + ' and Issue ' + str(request.POST['secondary_issue'])
+
+            except Exception, e:
+                print e
+                to_json['response'] = 'Unable to find Issue to Issue Link'
+
+        except Exception, e:
+            print e
+            to_json['response'] = 'Cannot find Secondary Issue'
+    except Exception, e:
+        print e
+        print 'cannot find primary issue'
+        to_json['response'] = 'Cannot find Primary Issue'
+    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+
+
+@login_required
 def issue_to_issue_link(request):
     to_json = {}
 
@@ -273,6 +304,7 @@ def issue_form_project(request, project_id):
         print "Unable to find associated project"
         form = IssueForm()
     return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': project.name, 'page_value': "Issue", 'projects': projects}, context_instance=RequestContext(request))
+
 
 @login_required
 def issue_overview(request, issue_id):

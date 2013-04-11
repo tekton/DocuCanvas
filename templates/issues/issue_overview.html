@@ -171,6 +171,23 @@
 
 		});
 
+	function unlink_issue(secondary_issue){
+		$.ajax({
+            type:"POST",
+                    url:"/issue/unlink",
+                    data:{
+                        primary_issue:"{{issue.id}}",
+                        secondary_issue:secondary_issue,
+                    },
+            success: function(data){       
+                        alert(data['response']);
+                    },
+            error: function(data){
+                		alert("Server side error");
+            }
+        });
+	}
+
 	function issue_to_issue_link(type, duplicate){
 		var secondary_issue;
 
@@ -311,10 +328,13 @@ of Issue
 			{% for issue_to_issue in related_issues %}
 				<tr>
 					<td>
-						{{issue_to_issue.secondary_issue.description}}
+						<a href="/issue/{{issue_to_issue.secondary_issue.id}}">{{issue_to_issue.secondary_issue.description}}</a>
 					</td>
 					<td>
 						{{issue_to_issue.link_type}}
+					</td>
+					<td>
+						<a onClick="unlink_issue('{{issue_to_issue.secondary_issue.id}}')">Unlink</a>
 					</td>
 				</tr>
 			{% endfor %}
