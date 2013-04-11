@@ -69,10 +69,16 @@
 		<form id="reportForm" action="/reports/view"></form>
 		<input type="hidden" id="id_date" value="{{date|date:"Y-m-d"}}"/>
 		<br/>
+		{% if globalReport %}
+			Global Report: {{globalReport.description|markdown:"safe"}}</br>
+			<br/>
+		{% else %}
+			<em>No global report for this date.</em><br/>
+		{% endif %}
 		{% for report in reports %}
 			User: {{report.user.username}} ({{report.user.first_name}} {{report.user.last_name}})</br>
 			Report: {{report.description|markdown:"safe"}}</br>
-			<br/><br/>
+			<br/>
 		{% empty %}
 			<em>There are no reports for this date.</em>
 		{% endfor %}

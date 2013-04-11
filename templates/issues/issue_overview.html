@@ -24,7 +24,7 @@
 				    	alert("Server side error");
 				    }
 
-				})
+				});
         	});
 
 			$('#pin_issue').click(function(){
@@ -47,7 +47,7 @@
 				    	alert("Server side error");
 				    }
 
-				})
+				});
         	});
 
         	$('#assign_issue').click(function(){
@@ -71,7 +71,7 @@
 				    	alert("Server side error");
 				    }
 
-				})
+				});
         	});
 
         	$('#assign_issue_to').click(function(){
@@ -90,7 +90,59 @@
 				    	alert("Server side error");
 				    }
 
-				})
+				});
+        	});
+
+        	$('#set_bug_status').click(function(){
+
+        		if( $('#id_status').val() == "fixed"){
+        			$('#comment_title').text('Bug Fixed Comment');
+        			$('#id_description').focus();
+        			$('<input type="hidden" name="issue" value="{{issue.id}}"></input>').insertBefore('#id_description')
+        			$('<input type="hidden" name="status" value="fixed"></input>').insertBefore('#id_description')
+        			$('#submit_comment_button').val('Fix Bug');
+
+        			$('#submit_comment_button').unbind('click');
+        			$('#submit_comment_form').attr('action', '/issue/set_bug_state');
+
+        			$('#submit_comment_button').click(function(){
+
+        				/*$.ajax({
+					    type:"POST",
+					    url:"/issue/set_bug_state",
+					    data:{
+					    	issue:"{{issue.id}}",
+					    	status:$('#id_status').val()
+					    },
+					    success: function(data){	
+					    	alert(data['status']);
+					    },
+					    error: function(data){
+					    	alert(data['status']);
+					    	alert("Server side error");
+					    }
+
+						});*/
+        			});
+        		}
+
+        		else{
+	            	$.ajax({
+					    type:"POST",
+					    url:"/issue/set_bug_state",
+					    data:{
+					    	issue:"{{issue.id}}",
+					    	status:$('#id_status').val()
+					    },
+					    success: function(data){	
+					    	alert(data['status']);
+					    },
+					    error: function(data){
+					    	alert("Server side error");
+					    }
+
+					});
+            	}
         	});
 
 		});
@@ -127,18 +179,20 @@
 		</select>
 		<input type="button" id="assign_issue_to" value="Assign"/>
 	</a>
-	<a>State: {{issue.state}}</a>
+	<a>Status:
+		{{form.status}}
+		<input type="button" id="set_bug_status" value="Set"/>
+	</a>
 	<a href="/issue/{{issue.id}}/edit">Edit</a>
 {% endblock%}
 
 {% block container %}
-	<h2>Issue Overview</h2>
 	<b>Summary:</b> {{issue.summary}}<br/>
 	<b>Description:</b> {{issue.description|linebreaks}}
 {% endblock %}
 
 {% block spiffy_box_right %}
-	<b>Project Name:</b> {{issue.project.name}}<br/>
+	<b>Project Name:</b> <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a><br/>
 	<b>Meta Issue:</b> {{issue.meta_issues.title}}<br/>
 	<b>State:</b> {{issue.state}}<br />
 	<b>Projected Start:</b> {{issue.projected_start}}<br/>
@@ -150,7 +204,7 @@
 	<b>Modified:</b> {{issue.modified}}<br/>
 	<b>View Type:</b> {{issue.view_type}}<br/>
 	<b>Issue Type:</b> {{issue.issue_type}}<br/>
-	<b>Assigned To:</b> {{issue.assigned_to}}<br/>
+	<b>Assigned To:</b> <a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a><br/>
 	<b>Title:</b> {{issue.title}}<br/>
 	<b>Link Slug:</b> {{issue.link_slug}}<br/>
 	<b>Status:</b> {{issue.status}}<br/>
@@ -170,12 +224,12 @@
 {% block container_bottom_clear %}
 	<br>
 		
-	<form action="/issue/comment/{{issue.id}}" method="post" enctype="multipart/form-data">
+	<form action="/issue/comment/{{issue.id}}" id="submit_comment_form" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
-		<b>Comment:</b> {{comment_form.errors}} <br />{{comment_form.description}}
+		<b><a id="comment_title">Comment:</a></b> {{comment_form.errors}} <br />{{comment_form.description}}
 		<input type='hidden' name="issue" id="id_issue" value='{{issue.id}}'/>
 		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
-		<input type="submit" value="Submit"/>
+		<input type="submit" value="Submit" id="submit_comment_button"/>
 	</form>
 
 	<table>

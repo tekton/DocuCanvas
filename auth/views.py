@@ -15,6 +15,7 @@ from django.template import Context
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm, PasswordChangeForm, SetPasswordForm
 from django.contrib.auth.decorators import login_required
 from accounts.models import *
+from issues.models import *
 
 
 def register(request):
@@ -131,3 +132,10 @@ def change_email(request):
     else:
         form = ChangeEmailForm()
     return render_to_response("registration/change_email.html", {'form': form}, context_instance=RequestContext(request))
+
+
+def user_overview(request, user_id):
+    gadget_user = User.objects.get(pk=user_id)
+    issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-created')
+    return render_to_response("user/user_overview.html", {"gadget_user": gadget_user, "issues": issues, "page_type":gadget_user.username}, context_instance=RequestContext(request))
+

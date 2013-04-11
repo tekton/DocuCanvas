@@ -7,7 +7,6 @@
 {% endblock%}
 
 {% block container %}
-	<h2>{{project_O.name}}</h2>
 	Description: {{project_O.description}}<br/>
 	Status: {{project_O.status}}<br/>
 	Logo: {{project_O.logo}}<br/>
@@ -19,9 +18,9 @@
 {% endblock %}
 
 {% block spiffy_box_right %}
-	Product Owner: {{project_O.product_owner}}<br/>
-	Project Manager: {{project_O.project_manager}}<br/>
-	Lead Developer: {{project_O.lead_developer}}<br/>
+	Product Owner: <a href="/auth/user/{{project_O.product_owner.id}}">{{project_O.product_owner}}</a><br/>
+	Project Manager: <a href="/auth/user/{{project_O.product_manager.id}}">{{project_O.project_manager}}</a><br/>
+	Lead Developer: <a href="/auth/user/{{project_O.lead_developer.id}}">{{project_O.lead_developer}}</a><br/>
 	Scope: {{project_O.scope}}<br/>
 	Business Case: {{project_O.business_case}}<br/>
 	Priority: {{project_O.priority}}<br/>
@@ -37,14 +36,14 @@
 			<td>Title</td>
 			<td>Summary</td>
 			<td>Description</td>
-			<td>State</td>
+			<td>Status</td>
 		</tr>
 	{% for issue in issues%}
 		<tr>
 			<td><a href="/issue/{{issue.id}}">{{issue.title}}</a></td>
 			<td>{{issue.summary}}</td>
 			<td>{{issue.desription}}</td>
-			<td>{{issue.state}}</td>
+			<td>{{issue.status}}</td>
 		</tr>
 	{% endfor %}
 	</table>

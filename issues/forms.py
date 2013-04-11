@@ -14,6 +14,11 @@ class IssueForm(forms.ModelForm):
         fields = ('project', 'summary', 'description')
 
 
+class IssueFullForm(forms.ModelForm):
+    class Meta:
+        model = Issue
+
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = IssueComment

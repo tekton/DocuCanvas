@@ -33,8 +33,12 @@ def project_form(request):
             print e
     else:
         form = ProjectForm()
+        try:
+            projects = Project.objects.all()
+        except:
+            print 'Unable to grab all projects'
 
-    return render_to_response("projects/project_form.html", {'form': form, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_form.html", {'form': form, "projects": projects, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
 
 
 def project_overview(request, project_id):
@@ -49,4 +53,25 @@ def project_overview(request, project_id):
     except:
         print 'Unable to load projects'
 
-    return render_to_response("projects/project_overview.html", {'project_O': project, "issues": issues, "projects": projects, "page_type": "Project", "page_value": project.name }, context_instance=RequestContext(request))
+    return render_to_response("projects/project_overview.html", {'project_O': project, "issues": issues, "projects": projects, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
+
+
+def edit(request, project_id):
+    if request.method == 'POST':
+        project = Project.objects.get(pk=project_id)
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            try:
+                project = form.save()
+            except Exception, e:
+                print e
+                print form.errors
+            if project.id:
+                return redirect('projects.views.project_overview', project.id, permanent=True)
+            else:
+                return render_to_response('projects/project_edit.html', {'form': form, "project": project}, context_instance=RequestContext(request))
+
+    else:
+        project = Project.objects.get(pk=project_id)
+        form = ProjectForm(instance=project)
+    return render_to_response("projects/project_edit.html", {"form": form, "project": project, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))

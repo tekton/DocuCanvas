@@ -8,7 +8,7 @@ from django.db.models import Q
 # from projects.models import Project
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue
 from projects.models import Project
-from issues.forms import IssueForm, CommentForm
+from issues.forms import IssueForm, IssueFullForm, CommentForm
 from django.contrib.auth.models import User
 
 
@@ -87,6 +87,23 @@ def subscribe(request):
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 
+def set_bug_state(request):
+    to_json = {}
+    print 'trying to set bug state'
+    print request.POST['issue']
+    print request.POST['status']
+    try:
+        issue = Issue.objects.get(pk=request.POST['issue'])
+        issue.status = request.POST['status']
+        issue.save()
+        to_json["status"] = "Bug status set"
+        if request.POST['status'] == 'fixed':
+            return submit_comment(request, issue.id)
+    except:
+        to_json["status"] = "Unable to set bug state"
+    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+
+
 def issue_form(request):
     if request.method == 'POST':
         issue = Issue()
@@ -104,17 +121,22 @@ def issue_form(request):
 
     else:
         form = IssueForm()
-    return render_to_response("issues/issue_form.html", {'form': form, "page_type": "Issue"}, context_instance=RequestContext(request))
+        try:
+            projects = Project.objects.all()
+        except:
+            print 'Unable to grab all projects'
+    return render_to_response("issues/issue_form.html", {'form': form, "projects": projects, "page_type": "Issue", "page_value": "New"}, context_instance=RequestContext(request))
 
 
 def issue_form_project(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
+        projects = Project.objects.all()
         form = IssueForm(initial={"project": project}, auto_id=False)
     except:
         print "Unable to find associated project"
         form = IssueForm()
-    return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': 'Issue', 'page_value': project.name}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': 'Issue', 'page_value': project.name, 'projects': projects}, context_instance=RequestContext(request))
 
 
 def issue_overview(request, issue_id):
@@ -153,13 +175,15 @@ def issue_overview(request, issue_id):
     except Exception, e:
         print e
 
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": "Issue", "page_value": issue.title}, context_instance=RequestContext(request))
+    form = IssueFullForm(instance=issue)
+
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": issue.title}, context_instance=RequestContext(request))
 
 
 def edit(request, issue_id):
     if request.method == 'POST':
         issue = Issue.objects.get(pk=issue_id)
-        form = IssueForm(request.POST, instance=issue)
+        form = IssueFullForm(request.POST, instance=issue)
         if form.is_valid():
             try:
                 issue = form.save()
@@ -173,7 +197,7 @@ def edit(request, issue_id):
 
     else:
         issue = Issue.objects.get(pk=issue_id)
-        form = IssueForm(instance=issue,initial={"project": issue.project}, auto_id=False)
+        form = IssueFullForm(instance=issue,initial={"project": issue.project}, auto_id=False)
     return render_to_response("issues/issue_edit.html", {"form": form, "issue": issue, "page_type": "Edit", "page_value": issue.title}, context_instance=RequestContext(request))
 
 

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block context_nav %}
+{% endblock%}
+
+{% block container %}
+    <b>Email:</b> {{gadget_user.email}}<br><br>
+
+    <b>Assigned To:</b><br>
+    <table>
+        {% for issue in issues %}
+            <tr>
+                    <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
+                    <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
+                    <td>{{issue.assigned_to}}</td>
+                </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

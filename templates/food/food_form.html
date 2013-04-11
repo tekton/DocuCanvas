@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+
+{% block container %}
+    <form action="/food/new" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+            <b>Requested By:</b></br>
+            {{form.user}}</br>
+            <b>Item & Quantity:</b></br>
+            {{form.item}}
+            {{form.quantity}}
+            {{form.quantity_type}}</br>
+            <b>Per Unit Cost:</b></br>
+            {{form.cost_per_quantity}}</br>
+            <b>Desired Date of Completion:</b></br>
+            {{form.desired_completion}}
+        </table>
+        <input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
+    <input type="submit" value="Submit"/>
+    </form>
+
+{% endblock %}
