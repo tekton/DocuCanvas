@@ -79,7 +79,7 @@
 	            var el = evt.target;
 
 
-	            if($(event.target).attr('id') != "set_related_to_popup"){
+	            if($(event.target).attr('id') != "set_related_to_popup" && $(event.target).parent().attr('id') != "set_related_to_popup"){
 
 	                if($('#set_related_to_popup').css('display') != "none" ){
 
@@ -105,7 +105,7 @@
                     url:"/issue/link",
                     data:{
                         primary_issue:"{{issue.id}}",
-                        secondary_issue:$('[name="duplicate_issue_id"]').val(),
+                        secondary_issue:$('[name="related_issue_id"]').val(),
                         link_type:type
                     },
             success: function(data){       
@@ -147,17 +147,26 @@
 	<a href="/issue/{{issue.id}}/edit">Edit</a>
 {% endblock%}
 
-{% block duplicate_issue_popup %}
+<!--{% block duplicate_issue_popup %}
 <h2>Duplicate Issue</h2>
 Duplicate Issue ID: 
 <input type="text" name="duplicate_issue_id"/>
 <input type="button" value="Link" id="duplicate_issue_id_button" onClick="issue_to_issue_link('duplicate')" />
-{% endblock%}
+{% endblock%}-->
 
 {% block select_related_issue_popup %}
 <h2>Select Related Issue</h2>
+Current issue {{issue.id}} is a
+<select id="related_issue_id_type">
+	<option value="duplicate">Duplicate</option>
+	<option value="related">Related</option>
+	<option value="child">Child</option>
+	<option value="parent">Parent</option>
+</select>
+of Issue  
+<input type="text" name="related_issue_id"/>
 
-
+<input type="button" value="Link" id="related_issue_id_button" onClick="issue_to_issue_link($('#related_issue_id_type').val())" />
 {% endblock%}
 
 {% block container %}
