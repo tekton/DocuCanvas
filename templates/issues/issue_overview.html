@@ -1,5 +1,5 @@
 {% extends "base_issues.html" %}
-
+{% load markup %}
 {% block extra_head%}
 	<script type="text/javascript">
 
@@ -185,7 +185,7 @@
 				<td>{{comment.created}}</td>
 			</tr>
 			<tr>
-				<td>{{comment.description|linebreaks}}</td>
+				<td>{{comment.description|markdown:"safe"}}</td>
 			</tr>
 		{% endfor %}
 
