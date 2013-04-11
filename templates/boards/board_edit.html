@@ -38,6 +38,19 @@
                 var messageLayer = new Kinetic.Layer();
                 shapesLayer.add(bgImage);
 
+                {% if board_nodes %}
+                    var circleId = 0;
+                    {% for i in board_nodes %}
+                        if("{{i.board}}" == "{{board.title}}"){
+                        var newCircle = "circle" + circleId;
+                        newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.description|linebreaksbr}}", circleId);
+                        circleId ++;
+                    };
+                {% endfor %}
+                {% else %}
+                    $('body').append('<p>No Board nodes</p>');
+                {% endif %}
+
                 stage.add(shapesLayer);
 
                 function createNoteForm(counter){
@@ -92,6 +105,36 @@
                     };
 
             	};
+
+                    function bugNote(x, y, bugText, divId){
+                        var tooltipId = "#" + divId;
+                        var bugListId = "#bugListNo" + divId;
+                        var noteDivWidth = 300;
+
+                        var circle = new Kinetic.Circle({
+                            x: x,
+                            y: y,
+                            radius: 8,
+                            fill: '#00d2ff',
+                            stroke: 'black',
+                            strokeWidth: 4,
+                        });
+
+                        circle.on('mouseover', function(){
+                            document.body.style.cursor = 'pointer';
+                        });
+                        circle.on('mouseout', function(){
+                            document.body.style.cursor = 'default';
+                        });
+
+                        circle.on('mousedown', function(){
+                            toggleInfoBox(divId);
+                        });
+
+                        shapesLayer.add(circle);
+                        $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + noteDivWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: grey; text-align: left'>" + bugText + "</p><p style = 'text-align: right;'><a style = 'color: yellow' href = 'http://www.google.com'>THIS IS A LINK</a></p></div>");
+                //};
+                    };                
 
             };
             imageObj.src = '/static/{{board.image}}';
