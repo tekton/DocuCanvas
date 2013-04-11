@@ -12,6 +12,7 @@ def home(request):
     return render_to_response("projects/projects.html", {'projects': projects, "page_type": "Project"}, context_instance=RequestContext(request))
 
 
+@login_required
 def project_form(request):
     if request.method == 'POST':
         project = Project()
@@ -41,6 +42,7 @@ def project_form(request):
     return render_to_response("projects/project_form.html", {'form': form, "projects": projects, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
 
 
+@login_required
 def project_overview(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
@@ -56,6 +58,7 @@ def project_overview(request, project_id):
     return render_to_response("projects/project_overview.html", {'project_O': project, "issues": issues, "projects": projects, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
 
 
+@login_required
 def edit(request, project_id):
     if request.method == 'POST':
         project = Project.objects.get(pk=project_id)

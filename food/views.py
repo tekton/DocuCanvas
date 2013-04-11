@@ -1,10 +1,11 @@
-# Create your views here.
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from food.forms import FoodFormTres, FoodForm, FoodFormComplete
 from food.models import FoodRequest
 
 
+@login_required
 def food_form(request):
     if request.method == "POST":
         food = FoodRequest()
@@ -31,6 +32,7 @@ def food_form(request):
     return render_to_response('food/food_form.html', {'form': form}, context_instance=RequestContext(request))
 
 
+@login_required
 def get_food(request, food_id):
     try:
         food = FoodRequest.objects.get(pk=food_id)
@@ -40,6 +42,7 @@ def get_food(request, food_id):
     return render_to_response('food/food_view.html', {'food': food}, context_instance=RequestContext(request))
 
 
+@login_required
 def food_received(request, food_id):
     food = FoodRequest.objects.get(pk=food_id)
     if request.method == "POST":
@@ -63,6 +66,7 @@ def food_received(request, food_id):
     return render_to_response('food/food_comp.html', {'form': form, 'food': food}, context_instance=RequestContext(request))
 
 
+@login_required
 def food_overview(request):
     try:
         pending_food = FoodRequest.objects.filter(request_completed_bool=False).order_by('-request_initiated')
@@ -72,6 +76,7 @@ def food_overview(request):
     return render_to_response('food/food_overview.html', {'pending_food': pending_food}, context_instance=RequestContext(request))
 
 
+@login_required
 def user_food_overview(request, food_id):
     food = FoodRequest.objects.get(pk=food_id)
     user_name = food.user
@@ -83,6 +88,7 @@ def user_food_overview(request, food_id):
     return render_to_response('food/food_userview.html', {'user_food': user_food, 'user_name': user_name}, context_instance=RequestContext(request))
 
 
+@login_required
 def food_overview_complete(request):
     try:
         complete_food = FoodRequest.objects.filter(request_completed_bool=True).order_by('-request_initiated')
@@ -92,6 +98,7 @@ def food_overview_complete(request):
     return render_to_response('food/food_overview_complete.html', {'complete_food': complete_food}, context_instance=RequestContext(request))
 
 
+@login_required
 def all_food(request):
     try:
         food_all = FoodRequest.objects.all().order_by('request_completed_bool', '-request_initiated')
