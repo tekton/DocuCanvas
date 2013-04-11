@@ -16,7 +16,7 @@
             }
 
             html {
-                padding: 30px 10px;
+                padding: 0 10px;
                 font-size: 20px;
                 line-height: 1.4;
                 color: #737373;
@@ -34,8 +34,9 @@
                 max-width: 80%;
                 _width: 80%;
                 padding: 30px 20px 50px;
-                border: 1px solid #b3b3b3;
-                border-radius: 4px;
+                border-width: 0 1px;
+                border-style: solid;
+                border-color: #b3b3b3;
                 margin: 0 auto;
                 box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
                 background: #fcfcfc;
@@ -400,6 +401,7 @@
                         }
                 });
 
+                /* Nav Menu - START */
                 var navMenuItems = [],
                     navMenuTriggers = [],
                     navMenuTimeout,
@@ -462,56 +464,57 @@
                 $('#search').click(function(evt){
                     navMenuItems.slideUp();
                 });
+                /* Nav Menu - END */
                 
-/*
-                $('#account').click(function(){
-                    $('#account_nav').slideToggle();
-                });
+                /* OLD nav menu
+                    $('#account').click(function(){
+                        $('#account_nav').slideToggle();
+                    });
 
-                $('#projects_list').click(function(){
-                    $('#projects_nav').slideToggle();
-                });
+                    $('#projects_list').click(function(){
+                        $('#projects_nav').slideToggle();
+                    });
 
-                $('#context').click(function(){
-                    $('#context_nav').slideToggle();
-                });
+                    $('#context').click(function(){
+                        $('#context_nav').slideToggle();
+                    });
 
-                $('#search_icon').click(function(){
-                    $('#search_nav').slideToggle();
-                });
-*/
-                //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
-/*
-                $(document).click(function(event) { 
-                    if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
+                    $('#search_icon').click(function(){
+                        $('#search_nav').slideToggle();
+                    });
 
-                        if($('#account_nav').css('display') != "none"){
-                            $('#account_nav').slideToggle(); 
-                        }                
-                    }
+                    //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
 
-                    if($(event.target).index($('#projects_nav')) == -1 && $(event.target).attr('id') != "projects_list"){
+                    $(document).click(function(event) { 
+                        if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
 
-                        if($('#projects_nav').css('display') != "none"){
-                            $('#projects_nav').slideToggle(); 
-                        }                
-                    }
+                            if($('#account_nav').css('display') != "none"){
+                                $('#account_nav').slideToggle(); 
+                            }                
+                        }
 
-                    if($(event.target).index($('#context_nav')) == -1 && $(event.target).attr('id') != "context"){
+                        if($(event.target).index($('#projects_nav')) == -1 && $(event.target).attr('id') != "projects_list"){
 
-                        if($('#context_nav').css('display') != "none"){
-                            $('#context_nav').slideToggle(); 
-                        }                
-                    }
+                            if($('#projects_nav').css('display') != "none"){
+                                $('#projects_nav').slideToggle(); 
+                            }                
+                        }
 
-                    if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search_icon"){
+                        if($(event.target).index($('#context_nav')) == -1 && $(event.target).attr('id') != "context"){
 
-                        if($('#search_nav').css('display') != "none"){
-                            $('#search_nav').slideToggle(); 
-                        }                
-                    }
-                });
-*/
+                            if($('#context_nav').css('display') != "none"){
+                                $('#context_nav').slideToggle(); 
+                            }                
+                        }
+
+                        if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search_icon"){
+
+                            if($('#search_nav').css('display') != "none"){
+                                $('#search_nav').slideToggle(); 
+                            }                
+                        }
+                    });
+                */
             });
 
 

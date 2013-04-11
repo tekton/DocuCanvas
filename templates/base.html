@@ -16,7 +16,7 @@
             }
 
             html {
-                padding: 30px 10px;
+                padding: 0 10px;
                 font-size: 20px;
                 line-height: 1.4;
                 color: #737373;
@@ -34,8 +34,9 @@
                 max-width: 900px;
                 _width: 900px;
                 padding: 30px 20px 50px;
-                border: 1px solid #b3b3b3;
-                border-radius: 4px;
+                border-width: 0 1px;
+                border-style: solid;
+                border-color: #b3b3b3;
                 margin: 0 auto;
                 box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
                 background: #fcfcfc;
@@ -289,6 +290,63 @@
             
         }
 
+.tbl-generic {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    vertical-align: top;
+}
+.tbl-generic .tbl-rowheader {
+    background: #bbb;
+    font-size: .7em;
+    height: 1.4em;
+}
+.tbl-generic th,
+.tbl-generic .tbl-fauxth {
+    font-weight: bold;
+    text-align: left;
+}
+
+.tbl-issues {}
+.tbl-issues th {
+    text-align: left;
+}
+.tbl-issues .tbl-issues-summary {
+    width: 85%;
+}
+.tbl-issues .tbl-issues-status {
+    width: 15%;
+}
+
+.tbl-overview {}
+.tbl-overview td {
+    padding: .2em .4em;
+}
+.tbl-overview .tbl-overview-content {
+    padding: .2em;
+}
+
+.tbl-comments {
+    margin: 2em auto;
+}
+.tbl-comments .comment_textarea textarea {
+    width: 100%;
+}
+.tbl-comments .tbl-comments-user {
+    font-weight: bold;
+    text-align: left;
+    padding: .2em .4em;
+}
+.tbl-comments .tbl-comments-created {
+    text-align: right;
+    padding: .2em .4em;
+    font-weight: normal;
+}
+.tbl-comments .tbl-comments-description {
+    font-size: 1em;
+    width: 100%;
+    padding: .2em;
+}
         {% block style %}{% endblock %}
         </style>
 
@@ -344,52 +402,119 @@
                         }
                 });
                 
-                $('#account').click(function(){
-                    $('#account_nav').slideToggle();
+                /* Nav Menu - START */
+                var navMenuItems = [],
+                    navMenuTriggers = [],
+                    navMenuTimeout,
+                    navMenuMapping = {
+                        'account' : 'account_nav',
+                        'projects_list' : 'projects_nav',
+                        'context' : 'context_nav',
+                        'search_icon' : 'search_nav'
+                    };
+
+                $.each(navMenuMapping,function(k,v){
+                    navMenuTriggers.push('#'+k);
+                    navMenuItems.push('#'+v);
                 });
 
-                $('#projects_list').click(function(){
-                    $('#projects_nav').slideToggle();
+                navMenuItems = $(navMenuItems.join(','));
+                navMenuTriggers = $(navMenuTriggers.join(','));
+
+                navMenuTriggers.on("click", function(evt){
+                    var triggerEl = $(this),
+                        navId = navMenuMapping[triggerEl.attr('id')];
+
+                    navMenuItems.each(function(i,el){
+                        el = $(el);
+
+                        if (el.attr('id') == navId) {
+                            el.slideToggle();
+                        }
+                        else {
+                            el.slideUp();
+                        }
+                    });
+
+                    navMenuTimeout = setTimeout(function(){
+                        navMenuItems.slideUp();
+                    },5000);
                 });
 
-                $('#context').click(function(){
-                    $('#context_nav').slideToggle();
-                });
-
-                $('#search_icon').click(function(){
-                    $('#search_nav').slideToggle();
-                });
-                //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
-
-                $(document).click(function(event) { 
-                    if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
-
-                        if($('#account_nav').css('display') != "none"){
-                            $('#account_nav').slideToggle(); 
-                        }                
+                navMenuItems.on({
+                    mouseover: function(){
+                        clearTimeout(navMenuTimeout);
+                    },
+                    mouseout: function(){
+                        navMenuTimeout = setTimeout(function(){
+                            navMenuItems.slideUp();
+                        },5000);
                     }
+                })
 
-                    if($(event.target).index($('#projects_nav')) == -1 && $(event.target).attr('id') != "projects_list"){
-
-                        if($('#projects_nav').css('display') != "none"){
-                            $('#projects_nav').slideToggle(); 
-                        }                
+                $(document).click(function(evt){
+                    var el = evt.target;
+                    if ( $.inArray(el,navMenuTriggers) > -1 || $.inArray(el,navMenuItems) > -1 ) {
+                        return;
                     }
-
-                    if($(event.target).index($('#context_nav')) == -1 && $(event.target).attr('id') != "context"){
-
-                        if($('#context_nav').css('display') != "none"){
-                            $('#context_nav').slideToggle(); 
-                        }                
-                    }
-
-                    if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search_icon"){
-
-                        if($('#search_nav').css('display') != "none"){
-                            $('#search_nav').slideToggle(); 
-                        }                
+                    if ( $(el).parents('.navitem').length == 0 ) {
+                        navMenuItems.slideUp();
                     }
                 });
+
+                $('#search').click(function(evt){
+                    navMenuItems.slideUp();
+                });
+                /* Nav Menu - END */
+
+                /* OLD nav Menu 
+                    $('#account').click(function(){
+                        $('#account_nav').slideToggle();
+                    });
+
+                    $('#projects_list').click(function(){
+                        $('#projects_nav').slideToggle();
+                    });
+
+                    $('#context').click(function(){
+                        $('#context_nav').slideToggle();
+                    });
+
+                    $('#search_icon').click(function(){
+                        $('#search_nav').slideToggle();
+                    });
+                    //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
+
+                    $(document).click(function(event) { 
+                        if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
+
+                            if($('#account_nav').css('display') != "none"){
+                                $('#account_nav').slideToggle(); 
+                            }                
+                        }
+
+                        if($(event.target).index($('#projects_nav')) == -1 && $(event.target).attr('id') != "projects_list"){
+
+                            if($('#projects_nav').css('display') != "none"){
+                                $('#projects_nav').slideToggle(); 
+                            }                
+                        }
+
+                        if($(event.target).index($('#context_nav')) == -1 && $(event.target).attr('id') != "context"){
+
+                            if($('#context_nav').css('display') != "none"){
+                                $('#context_nav').slideToggle(); 
+                            }                
+                        }
+
+                        if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search_icon"){
+
+                            if($('#search_nav').css('display') != "none"){
+                                $('#search_nav').slideToggle(); 
+                            }                
+                        }
+                    });
+                */
 
             });
 
