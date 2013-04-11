@@ -37,18 +37,18 @@
     display:none;
 }
 
-.add_remove:hover{
+.add_remove:hover {
     cursor:pointer;
 }
 
-.date_header{
+.date_header {
     background:#bbb;
     height:0.5em;
     font-size:0.7em;
 }
 
 
-h3{
+h3 {
     margin:0 0 0.5em;
     width:10%;
     height:100%;
@@ -192,11 +192,11 @@ h3{
 
                 {% if not newest_pin %}
                     {% set newest_pin = pin.created%}
-                    <tr class="date_header"><td>{{pin.created}}</td><td></td><td><td/></tr>
+                    <tr class="date_header"><td colspan="4">{{pin.created}}</td></tr>
                 {% endif %}
 
                 {% if newest_pin != pin.created %}
-                    <tr class="date_header"><td>{{pin.created}}</td><td></td><td><td/></tr>
+                    <tr class="date_header"><td colspan="4">{{pin.created}}</td></tr>
                     {% set newest_pin = pin.created%}
                 {% endif %}
 
@@ -216,11 +216,11 @@ h3{
             {% for issue in issues%}
                 {% if not newest_assigned %}
                     {% set newest_assigned = issue.created%}
-                    <tr class="date_header"><td>{{issue.created}}</td><td></td><td><td/></tr>
+                    <tr class="date_header"><td colspan="4">{{issue.created}}</td></tr>
                 {% endif %}
 
                 {% if newest_assigned != issue.created %}
-                    <tr class="date_header"><td>{{issue.created}}</td><td></td><td><td/></tr>
+                    <tr class="date_header"><td colspan="4">{{issue.created}}</td></tr>
                     {% set newest_assigned = issue.created%}
                 {% endif %}
 
@@ -240,11 +240,11 @@ h3{
 
                 {% if not newest_subscribed %}
                     {% set newest_subscribed = subscription.created%}
-                    <tr class="date_header"><td>{{subscription.created}}</td><td></td><td><td/></tr>
+                    <tr class="date_header"><td colspan="4">{{subscription.created}}</td></tr>
                 {% endif %}
 
                 {% if newest_subscribed != subscription.created %}
-                    <tr class="date_header"><td>{{subscription.created}}</td><td></td><td><td/></tr>
+                    <tr class="date_header"><td colspan="4">{{subscription.created}}</td></tr>
                     {% set newest_subscribed = subscription.created%}
                 {% endif %}
 
