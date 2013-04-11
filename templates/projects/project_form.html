@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block context_nav %}
+    <a href="/">Dashboard</a>
+    <a href="/project">Projects</a>
+{% endblock%}
+
 {% block container %}
 	<h2>New Project</h2>
 	<form action="/project/new" method="post" enctype="multipart/form-data">
