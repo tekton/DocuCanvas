@@ -150,10 +150,6 @@ def set_bug_state(request):
 def issue_to_issue_link(request):
     to_json = {}
 
-    print request.POST['primary_issue']
-    print request.POST['secondary_issue']
-    print request.POST['link_type']
-
     if request.POST['primary_issue'] == request.POST['secondary_issue']:
         to_json['response'] = 'An issue cannot be related to itself'
 
@@ -311,13 +307,18 @@ def issue_overview(request, issue_id):
         subscribe = None
 
     try:
+        related_issues = IssueToIssue.objects.select_related().filter(primary_issue=issue)
+    except:
+        print 'Unable to find any related issues'
+
+    try:
         comment_form = CommentForm()
     except Exception, e:
         print e
 
     form = IssueFullForm(instance=issue)
 
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue"}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'related_issues': related_issues, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue"}, context_instance=RequestContext(request))
 
 
 @login_required

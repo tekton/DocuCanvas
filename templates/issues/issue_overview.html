@@ -297,6 +297,30 @@ of Issue
 	<!--<b>Screen Shot:</b> {{issue.screen_shot}}<br/>
 	<b>Wireframe:</b> {{issue.wireframe}}<br/>
 	<b>URI to Test:</b> {{issue.uri_to_test}}-->
+	{% if related_issues %}
+		<br><b>Related Issues</b> <br>
+			<table id="relation_table">
+				<tr>
+					<th>
+						Issue
+					</th>
+					<th>
+						Relation
+					</th>
+				</tr>
+			{% for issue_to_issue in related_issues %}
+				<tr>
+					<td>
+						{{issue_to_issue.secondary_issue.description}}
+					</td>
+					<td>
+						{{issue_to_issue.link_type}}
+					</td>
+				</tr>
+			{% endfor %}
+			</table>
+	{% endif %}
+
 {% endblock %}
 
 {% block container_bottom_clear %}
