@@ -402,6 +402,7 @@
 
                 var navMenuItems = [],
                     navMenuTriggers = [],
+                    navMenuTimeout,
                     navMenuMapping = {
                         'account' : 'account_nav',
                         'projects_list' : 'projects_nav',
@@ -431,7 +432,22 @@
                             el.slideUp();
                         }
                     });
+
+                    navMenuTimeout = setTimeout(function(){
+                        navMenuItems.slideUp();
+                    },5000);
                 });
+
+                navMenuItems.on({
+                    mouseover: function(){
+                        clearTimeout(navMenuTimeout);
+                    },
+                    mouseout: function(){
+                        navMenuTimeout = setTimeout(function(){
+                            navMenuItems.slideUp();
+                        },5000);
+                    }
+                })
 
                 $(document).click(function(evt){
                     var el = evt.target;
