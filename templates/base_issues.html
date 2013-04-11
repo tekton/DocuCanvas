@@ -288,6 +288,64 @@
             
         }
 
+.tbl-generic {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    vertical-align: top;
+}
+.tbl-generic .tbl-rowheader {
+    background: #bbb;
+    font-size: .7em;
+    height: 1.4em;
+}
+.tbl-generic th,
+.tbl-generic .tbl-fauxth {
+    font-weight: bold;
+    text-align: left;
+}
+
+.tbl-issues {}
+.tbl-issues th {
+    text-align: left;
+}
+.tbl-issues .tbl-issues-summary {
+    width: 85%;
+}
+.tbl-issues .tbl-issues-status {
+    width: 15%;
+}
+
+.tbl-overview {}
+.tbl-overview td {
+    padding: .2em .4em;
+}
+.tbl-overview .tbl-overview-content {
+    padding: .2em;
+}
+
+.tbl-comments {
+    margin: 2em auto;
+}
+.tbl-comments .comment_textarea textarea {
+    width: 100%;
+}
+.tbl-comments .tbl-comments-user {
+    font-weight: bold;
+    text-align: left;
+    padding: .2em .4em;
+}
+.tbl-comments .tbl-comments-created {
+    text-align: right;
+    padding: .2em .4em;
+    font-weight: normal;
+}
+.tbl-comments .tbl-comments-description {
+    font-size: 1em;
+    width: 100%;
+    padding: .2em;
+}
+
         {% block style %}{% endblock %}
         </style>
 
@@ -342,6 +400,54 @@
                         }
                 });
 
+                var navMenuItems = [],
+                    navMenuTriggers = [],
+                    navMenuMapping = {
+                        'account' : 'account_nav',
+                        'projects_list' : 'projects_nav',
+                        'context' : 'context_nav',
+                        'search_icon' : 'search_nav'
+                    };
+
+                $.each(navMenuMapping,function(k,v){
+                    navMenuTriggers.push('#'+k);
+                    navMenuItems.push('#'+v);
+                });
+
+                navMenuItems = $(navMenuItems.join(','));
+                navMenuTriggers = $(navMenuTriggers.join(','));
+
+                navMenuTriggers.on("click", function(evt){
+                    var triggerEl = $(this),
+                        navId = navMenuMapping[triggerEl.attr('id')];
+
+                    navMenuItems.each(function(i,el){
+                        el = $(el);
+
+                        if (el.attr('id') == navId) {
+                            el.slideToggle();
+                        }
+                        else {
+                            el.slideUp();
+                        }
+                    });
+                });
+
+                $(document).click(function(evt){
+                    var el = evt.target;
+                    if ( $.inArray(el,navMenuTriggers) > -1 || $.inArray(el,navMenuItems) > -1 ) {
+                        return;
+                    }
+                    if ( $(el).parents('.navitem').length == 0 ) {
+                        navMenuItems.slideUp();
+                    }
+                });
+
+                $('#search').click(function(evt){
+                    navMenuItems.slideUp();
+                });
+                
+/*
                 $('#account').click(function(){
                     $('#account_nav').slideToggle();
                 });
@@ -357,9 +463,9 @@
                 $('#search_icon').click(function(){
                     $('#search_nav').slideToggle();
                 });
-
+*/
                 //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
-
+/*
                 $(document).click(function(event) { 
                     if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
 
@@ -389,7 +495,7 @@
                         }                
                     }
                 });
-
+*/
             });
 
 
@@ -403,27 +509,27 @@
             <form action="/issue/search" method="POST">{% csrf_token %}
              <div class="left"><a href="/" class="ui-icon ui-icon-home" id="home_icon"></a></div>
              <div class="right"> 
-                <div class="main_nav_button" id="context">Context Drop Down </div> | 
-                <div class="main_nav_button" id="projects_list">Project List </div>|
-                <div class="main_nav_button"><a id="account">{{user|truncatechars:15}} </a></div>|
-                <div class="ui-icon ui-icon-search" id="search_icon"></div>
-                <div class="main_nav_button"><input type="text" name="searchText" id="search"/><input type="submit" value="search"/></div>
+                <div class="main_nav_button navitem" id="context">Context Drop Down </div> | 
+                <div class="main_nav_button navitem" id="projects_list">Project List </div>|
+                <div class="main_nav_button navitem"><a id="account">{{user|truncatechars:15}} </a></div>|
+                <div class="ui-icon ui-icon-search navitem" id="search_icon"></div>
+                <div class="main_nav_button navitem"><input type="text" name="searchText" id="search"/><input type="submit" value="search"/></div>
             </div>
             </form>
-            <div id="context_nav" class="container_nav"> 
+            <div id="context_nav" class="container_nav navitem"> 
                 {% block context_nav %}{% endblock %}  
             </div>
-            <div id="projects_nav" class="container_nav"> 
+            <div id="projects_nav" class="container_nav navitem"> 
                 {% for project in projects%}
                    <a href="/project/{{project.id}}">{{project.name}}</a>
                 {% endfor %}
                 <a href="/project/new">New Project</a>
             </div>
-            <div id="account_nav" class="container_nav">   
+            <div id="account_nav" class="container_nav navitem">   
                 <a href="/accounts/account_settings">Account Settings</a>
                 <a href="/accounts/logout/?next=/">Logout</a>
             </div>
-            <div id="search_nav" class="container_nav">   
+            <div id="search_nav" class="container_nav navitem">   
                 <a href="#">Advanced Search</a>
             </div>
         </div>
