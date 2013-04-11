@@ -83,6 +83,7 @@
         			$('#comment_title').text('Bug Fixed Comment');
         			$('#id_description').focus();
                     var submitComment = $('#submit_comment_button');
+                    $('<input type="hidden" name="status" value="fixed"></input>').insertBefore('#id_description')
                     submitComment.val('Fix Bug');
 
         			submitComment.unbind('click');
