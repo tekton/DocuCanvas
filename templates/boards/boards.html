@@ -1,0 +1,7 @@
+{% if boards %}
+	{% for i in boards %}
+		<font>Height: {{i.height}} / Width: {{i.width}}</font> <img src = '/static/{{i.image}}' /><br />
+	{% endfor %}
+{% else %}
+	<p>No Boards</p>
+{% endif %}

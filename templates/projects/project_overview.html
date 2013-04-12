@@ -3,46 +3,58 @@
 {% block context_nav %}
 	<a href="/issue/new/{{project_O.id}}">New Issue : {{project_O.name}}</a>
 	<a href="/issue/new/{{project_O.id}}">New Risk : {{project_O.name}}</a>
+	<a href="/checklist/new/{{project_O.id}}">New Checklist : {{project_O.name}}</a>
 	<a href="/project/{{project_O.id}}/edit">Edit Project</a>
 {% endblock%}
 
 {% block container %}
-	Description: {{project_O.description}}<br/>
-	Status: {{project_O.status}}<br/>
-	Logo: {{project_O.logo}}<br/>
-	Potential End Date: {{project_O.potential_end_date}}<br/>
-	Current Phase: {{project_O.current_phase}}<br/>
-	Phase Planning Start: {{project_O.phase_planning_start}}<br/>
-	Phase Planning End: {{project_O.phase_planning_end}}<br/>
-
+	<table class="tbl-generic tbl-overview">
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Scope</td>
+		</tr>
+		<tr>
+			<td class="tbl-overview-content">{{project_O.scope}}</td>
+		</tr>
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Description</td>
+		</tr>
+		<tr>
+			<td class="tbl-overview-content">{{project_O.description}}</td>
+		</tr>
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Business Case</td>
+		</tr>
+		<tr>
+			<td class="tbl-overview-content">{{project_O.business_case}}</td>
+		</tr>
+	</table>
 {% endblock %}
 
-{% block spiffy_box_right %}
-	Product Owner: <a href="/auth/user/{{project_O.product_owner.id}}">{{project_O.product_owner}}</a><br/>
-	Project Manager: <a href="/auth/user/{{project_O.product_manager.id}}">{{project_O.project_manager}}</a><br/>
-	Lead Developer: <a href="/auth/user/{{project_O.lead_developer.id}}">{{project_O.lead_developer}}</a><br/>
-	Scope: {{project_O.scope}}<br/>
-	Business Case: {{project_O.business_case}}<br/>
-	Priority: {{project_O.priority}}<br/>
-	Slug: {{project_O.slug}}<br/>
-
+{% block spiffy_box_right %}	
+	<b>Status:</b> {{project_O.status}}<br/>
+	<b>Product Owner:</b> <a href="/auth/user/{{project_O.product_owner.id}}">{{project_O.product_owner}}</a><br/>
+	<b>Project Manager:</b> <a href="/auth/user/{{project_O.product_manager.id}}">{{project_O.project_manager}}</a><br/>
+	<b>Lead Developer:</b> <a href="/auth/user/{{project_O.lead_developer.id}}">{{project_O.lead_developer}}</a><br/>
+	<b>Priority:</b> {{project_O.priority}}<br/>
+	<b>Slug:</b> {{project_O.slug}}<br/>
+	<b>Logo:</b> {{project_O.logo}}<br/>
+	<b>Potential End Date:</b> {{project_O.potential_end_date}}<br/>
+	<b>Current Phase:</b> {{project_O.current_phase}}<br/>
+	<b>Phase Planning Start:</b> {{project_O.phase_planning_start}}<br/>
+	<b>Phase Planning End:</b> {{project_O.phase_planning_end}}
 {% endblock %}
 
 {% block container_bottom_clear %}
 	<h2>Issues</h2>
 
-	<table>
+	<table class="tbl-issues">
 		<tr>
-			<td>Title</td>
-			<td>Summary</td>
-			<td>Description</td>
-			<td>Status</td>
+			<th class="tbl-issues-summary">Summary</th>
+			<th class="tbl-issues-status">Status</th>
 		</tr>
 	{% for issue in issues%}
 		<tr>
-			<td><a href="/issue/{{issue.id}}">{{issue.title}}</a></td>
-			<td>{{issue.summary}}</td>
-			<td>{{issue.desription}}</td>
+			<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
 			<td>{{issue.status}}</td>
 		</tr>
 	{% endfor %}

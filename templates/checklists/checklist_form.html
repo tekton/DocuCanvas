@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+
+{% block container %}
+    <form action="/checklist/new/{{project_id}}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{formset.management_form}}
+        <table>
+            {{checklist_form.as_table}}
+
+            {% for form in formset.forms %}
+                <table>
+                    Checklist Item: <input title='Add a new checklist item' type='submit' name='add_checklist_item' value='Add Item' /><br>
+                    {{ form }}
+                </table>
+            {% endfor %}
+        </table>
+    <input type="submit" name="submit" value="Submit"/>
+    </form>
+
+{% endblock %}

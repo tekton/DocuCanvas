@@ -1,4 +1,6 @@
 {% extends "base_issues.html" %}
+{% load markup %}
+
 
 {% block extra_head%}
 	<script type="text/javascript">
@@ -11,7 +13,10 @@
 				    data:{
 				    	issue:"{{issue.id}}"
 				    },
-				    success: function(data){	
+				    success: function(data){
+				    	// Hides nav menu only after successfull submission
+				    	NavMenu.HideAll();	
+				    	
 				    	alert(data['status']);
 				    	if( data['status'] == "Unsubscribing Issue"){
 				    		$('#subscribe_to_issue').text("Subscribe");
@@ -34,7 +39,10 @@
 				    data:{
 				    	issue:"{{issue.id}}"
 				    },
-				    success: function(data){	
+				    success: function(data){
+				    	// Hides nav menu only after successfull submission
+				    	NavMenu.HideAll();	
+
 				    	alert(data['status']);
 				    	if( data['status'] == "Unpinning Issue"){
 				    		$('#pin_issue').text("Pin");
@@ -58,7 +66,10 @@
 				    	issue:"{{issue.id}}",
 				    	assign:"assign"
 				    },
-				    success: function(data){	
+				    success: function(data){
+				    	// Hides nav menu only after successfull submission
+				    	NavMenu.HideAll();	
+
 				    	alert(data['status']);
 				    	if( data['status'] == "Successfully unassigned issue"){
 				    		$('#assign_issue').text("Assign");
@@ -83,7 +94,10 @@
 				    	assign:"assign_to",
 				    	user:$('#assigned_user').val()
 				    },
-				    success: function(data){	
+				    success: function(data){
+				    	// Hides nav menu only after successfull submission
+				    	NavMenu.HideAll();	
+
 				    	alert(data['status']);
 				    },
 				    error: function(data){
@@ -96,6 +110,9 @@
         	$('#set_bug_status').click(function(){
 
         		if( $('#id_status').val() == "fixed"){
+					// Hides nav menu
+        			NavMenu.HideAll();
+
         			$('#comment_title').text('Bug Fixed Comment');
         			$('#id_description').focus();
         			$('<input type="hidden" name="issue" value="{{issue.id}}"></input>').insertBefore('#id_description')
@@ -106,6 +123,7 @@
         			$('#submit_comment_form').attr('action', '/issue/set_bug_state');
 
         			$('#submit_comment_button').click(function(){
+        				
 
         				/*$.ajax({
 					    type:"POST",
@@ -134,7 +152,10 @@
 					    	issue:"{{issue.id}}",
 					    	status:$('#id_status').val()
 					    },
-					    success: function(data){	
+					    success: function(data){
+					    	// Hides nav menu only after successfull submission
+				    		NavMenu.HideAll();	
+
 					    	alert(data['status']);
 					    },
 					    error: function(data){
@@ -148,7 +169,6 @@
 		});
 
 	</script>
-
 {% endblock %}
 
 {% block context_nav %}
@@ -187,8 +207,20 @@
 {% endblock%}
 
 {% block container %}
-	<b>Summary:</b> {{issue.summary}}<br/>
-	<b>Description:</b> {{issue.description|linebreaks}}
+	<table class="tbl-generic tbl-overview">
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Summary</td>
+		</tr>
+		<tr>
+			<td>{{issue.summary}}</td>
+		</tr>
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Description</td>
+		</tr>
+		<tr>
+			<td>{{issue.description|markdown:"safe"}}</td>
+		</tr>
+	</table>
 {% endblock %}
 
 {% block spiffy_box_right %}
@@ -196,8 +228,8 @@
 	<b>Meta Issue:</b> {{issue.meta_issues.title}}<br/>
 	<b>State:</b> {{issue.state}}<br />
 	<b>Projected Start:</b> {{issue.projected_start}}<br/>
-	<b>Projected End:</b>{{issue.projected_end}}<br/>
-	<b>Actual Start:</b>{{issue.actual_start}}<br />
+	<b>Projected End:</b> {{issue.projected_end}}<br/>
+	<b>Actual Start:</b> {{issue.actual_start}}<br />
 	<b>Actual End:</b> {{issue.actual_end}}<br />
 	<b>Date Reported:</b> {{issue.date_reported}}<br/>
 	<b>Created:</b> {{issue.created}}<br/>
@@ -218,28 +250,31 @@
 	<b>Browser Version:</b> {{issue.browser_version}}<br/>
 	<b>Screen Shot:</b> {{issue.screen_shot}}<br/>
 	<b>Wireframe:</b> {{issue.wireframe}}<br/>
-	<b>URI to Test:</b> x{{issue.uri_to_test}}
+	<b>URI to Test:</b> {{issue.uri_to_test}}
 {% endblock %}
 
 {% block container_bottom_clear %}
-	<br>
-		
-	<form action="/issue/comment/{{issue.id}}" id="submit_comment_form" method="post" enctype="multipart/form-data">
-		{% csrf_token %}
-		<b><a id="comment_title">Comment:</a></b> {{comment_form.errors}} <br />{{comment_form.description}}
-		<input type='hidden' name="issue" id="id_issue" value='{{issue.id}}'/>
-		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
-		<input type="submit" value="Submit" id="submit_comment_button"/>
-	</form>
-
-	<table>
+	<table class="tbl-generic tbl-comments">
+		<tr>
+			<td colspan="2">
+				<form action="/issue/comment/{{issue.id}}" id="submit_comment_form" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					<b><a id="comment_title">Comment:</a></b> {{comment_form.errors}} <br />
+					<div class="comment_textarea">{{comment_form.description}}</div>
+					<input type='hidden' name="issue" id="id_issue" value='{{issue.id}}'/>
+					<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
+					<input type="submit" value="Submit" id="submit_comment_button"/>
+				</form>
+				<br>
+			</td>
+		</tr>
 		{% for comment in comments%}
-			<tr>
-				<td><b>{{comment.user}}</b></td>
-				<td>{{comment.created}}</td>
+			<tr class="tbl-rowheader">
+				<td class="tbl-fauxth tbl-comments-user"><b>{{comment.user}}</b</td>
+				<td class="tbl-fauxth tbl-comments-created">{{comment.created}}</td>
 			</tr>
 			<tr>
-				<td>{{comment.description|linebreaks}}</td>
+				<td class="tbl-comments-description" colspan="2">{{comment.description|markdown:"safe"}}</td>
 			</tr>
 		{% endfor %}
 
