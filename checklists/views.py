@@ -24,12 +24,12 @@ def project_checklists(request, project_id):
             print e
             print 'Checklist Instance not found'
 
-    print checklist_instances
     return render_to_response("checklists/checklists.html", {"checklists": checklists, "checklist_instances":checklist_instances, "project_id": project_id, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
-def edit(request, checklist_instance_id):
 
+def instance_edit(request, checklist_instance_id):
+    print 'in instance edit'
     checklist_instance = ChecklistInstance.objects.get(pk=checklist_instance_id)
 
     ChecklistTagsFormset = inlineformset_factory(ChecklistInstance, ChecklistTag, can_delete=False, extra=0)
@@ -41,10 +41,12 @@ def edit(request, checklist_instance_id):
             checklist_instance_form.save()
             formset.save()
 
-    return redirect('checklists.views.overview', checklist_instance_id, permanent=True)
+    return render_to_response("checklists/check_edit.html", {"form": formset, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
+    #return redirect('checklists.views.overview', checklist_instance_id, permanent=True)
 
 
 def new_instance(request, checklist_id):
+    print 'creating new instance'
     try:
         checklist = Checklist.objects.get(pk=checklist_id)
         checklist_layout_items = CheckListLayoutItems.objects.filter(Checklist=checklist)
