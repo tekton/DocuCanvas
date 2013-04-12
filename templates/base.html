@@ -396,6 +396,104 @@
                     !(/^(\/\/|http:|https:).*/.test(url));
             }
 
+            /* Nav Menu - START */
+            var NavMenu = {
+                items: [],
+                triggers: [],
+                mapping: {
+                    'account' : 'account_nav',
+                    'projects_list' : 'projects_nav',
+                    'context' : 'context_nav',
+                    'search_icon' : 'search_nav'
+                },
+                _timeout: null,
+
+                ClearDisplayTimeout: function(){
+                    // Clears display timeout
+                    if (NavMenu._timeout) {
+                        clearTimeout(NavMenu._timeout);
+                    }
+                },
+
+                SetDisplayTimeout: function(){
+                    // Hide any open menu after 5 seconds if: 
+                    //  Desktop User - mouses out from menu
+                    //  Mobile User - does not click a menu item
+                    NavMenu.ClearDisplayTimeout();
+                    NavMenu._timeout = setTimeout(function(){
+                        NavMenu.items.slideUp();
+                    },5000);
+                },
+
+                HideAll: function(){
+                    // Removes any pending timeout since we won't need it
+                    NavMenu.ClearDisplayTimeout();
+                    // Hide all visible menu items
+                    NavMenu.items.slideUp();
+                },
+
+                Init: function(){
+                    // Get mapped IDs for triggers and menus and put them into a DOM query array
+                    $.each(NavMenu.mapping, function(k,v){
+                        NavMenu.triggers.push('#'+k);
+                        NavMenu.items.push('#'+v);
+                    });
+                    NavMenu.items = $(NavMenu.items.join(','));
+                    NavMenu.triggers = $(NavMenu.triggers.join(','));
+
+                    // Bind click event to triggers to show their corresponding menu, based on mapping
+                    NavMenu.triggers.on("click", function(evt){
+                        // Remove 5 second timeout (refer to .SetDisplayTimeout)
+                        NavMenu.ClearDisplayTimeout();
+
+                        var navId = NavMenu.mapping[$(this).attr('id')];
+                        // Itterate through all menu items and hide or show them
+                        NavMenu.items.each(function(i,el){
+                            el = $(el);
+
+                            // Toggle (slide) requested menu
+                            if (el.attr('id') == navId) {
+                                el.slideToggle();
+                            }
+                            // Hide any other menu
+                            else {
+                                el.slideUp();
+                            }
+                        });
+
+                        // Re-add timeout
+                        NavMenu.SetDisplayTimeout();
+                    });
+
+
+                    NavMenu.items.on({
+                        // Removes display timeout if the user is currently within the menu (desktop users)
+                        mouseover: NavMenu.ClearDisplayTimeout,
+
+                        // Re-add timeout after they mouse over menu
+                        mouseout: NavMenu.SetDisplayTimeout
+                    });
+
+                    // If user clicks anything other than a menu item or trigger, hide the menus
+                    $(document).click(function(evt){
+                        var el = evt.target;
+
+                        if ( $.inArray(el, NavMenu.triggers) > -1 || $.inArray(el, NavMenu.items) > -1 ) {
+                            // Nav menu item was clicked
+                            return;
+                        }
+                       
+                        if ( $(el).parents('.navitem').length == 0 ) {
+                            
+                            NavMenu.HideAll();
+                        }
+                    });
+
+                    $('#search').on('click', NavMenu.HideAll);
+                }
+            };
+            /* Nav Menu - END */
+
             $(document).ready(function(){
                 csrftoken = getCookie('csrftoken');
                 $.ajaxSetup({
@@ -406,74 +504,7 @@
                         }
                 });
                 
-                /* Nav Menu - START */
-                var navMenuItems = [],
-                    navMenuTriggers = [],
-                    navMenuTimeout,
-                    navMenuMapping = {
-                        'account' : 'account_nav',
-                        'projects_list' : 'projects_nav',
-                        'context' : 'context_nav',
-                        'search_icon' : 'search_nav'
-                    };
-
-                $.each(navMenuMapping,function(k,v){
-                    navMenuTriggers.push('#'+k);
-                    navMenuItems.push('#'+v);
-                });
-
-                navMenuItems = $(navMenuItems.join(','));
-                navMenuTriggers = $(navMenuTriggers.join(','));
-
-                navMenuTriggers.on("click", function(evt){
-                    if (navMenuTimeout) {
-                        clearTimeout(navMenuTimeout);
-                    }
-
-                    var triggerEl = $(this),
-                        navId = navMenuMapping[triggerEl.attr('id')];
-
-                    navMenuItems.each(function(i,el){
-                        el = $(el);
-
-                        if (el.attr('id') == navId) {
-                            el.slideToggle();
-                        }
-                        else {
-                            el.slideUp();
-                        }
-                    });
-
-                    navMenuTimeout = setTimeout(function(){
-                        navMenuItems.slideUp();
-                    },5000);
-                });
-
-                navMenuItems.on({
-                    mouseover: function(){
-                        clearTimeout(navMenuTimeout);
-                    },
-                    mouseout: function(){
-                        navMenuTimeout = setTimeout(function(){
-                            navMenuItems.slideUp();
-                        },5000);
-                    }
-                });
-
-                $(document).click(function(evt){
-                    var el = evt.target;
-                    if ( $.inArray(el,navMenuTriggers) > -1 || $.inArray(el,navMenuItems) > -1 ) {
-                        return;
-                    }
-                    if ( $(el).parents('.navitem').length == 0 ) {
-                        navMenuItems.slideUp();
-                    }
-                });
-
-                $('#search').click(function(evt){
-                    navMenuItems.slideUp();
-                });
-                /* Nav Menu - END */
+                NavMenu.Init();
 
                 /* OLD nav Menu 
                     $('#account').click(function(){
