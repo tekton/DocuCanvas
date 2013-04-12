@@ -8,7 +8,7 @@ from django.db.models import Q
 # from projects.models import Project
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue
 from projects.models import Project
-from issues.forms import IssueForm, IssueFullForm, CommentForm
+from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm
 from django.contrib.auth.models import User
 
 
@@ -203,13 +203,42 @@ def edit(request, issue_id):
 
 def issue_search_simple(request):
     if request.method == "GET":
-        return redirect('issues.views.issue_overview')
+        return render_to_response("issues/issue_adv_search.html", context_instance=RequestContext(request))
 
     search = request.POST['searchText']
     print search
 
     q = Issue.objects.filter(Q(summary__contains=search) | Q(description__contains=search))
     return render_to_response("issues/issue_search_results.html", {'results': q}, context_instance=RequestContext(request))
+
+
+def issue_search_advanced(request):
+    if request.method == "GET":
+        return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm()}, context_instance=RequestContext(request))
+
+    form = AdvSearchForm(request.POST)
+    if not form.is_valid():
+        raise Exception("Invalid adv search form values")
+
+    query = None
+
+    for field in form.cleaned_data.keys():
+        qr = None
+        if len(form.cleaned_data[field]) == 0:
+            continue
+        for item in form.cleaned_data[field]:
+            q = Q(**{"%s__contains" % field: item}) if type(item) == unicode else Q(**{"%s" % field: item})
+            if qr:
+                qr = qr | q
+            else:
+                qr = q
+        if query:
+            query = query & qr
+        else:
+            query = qr
+
+    results = Issue.objects.filter(query)
+    return render_to_response("issues/issue_search_results.html", {'results': results}, context_instance=RequestContext(request))
 
 
 def submit_comment(request, issue_id):
