@@ -29,7 +29,7 @@ $(document).ready(function() {
 	});
 
 	$('form').on( 'click', 'p.form_item a', function(e) {
-		$(this).closest('p.form_item').remove();
+		$(this).closest('p.form_item').slideUp(150, function() { $(this).remove(); });
 		return false;
 	});
 });

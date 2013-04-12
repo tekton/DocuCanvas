@@ -41,12 +41,12 @@ class AdvSearchForm(forms.Form):
     # modified = forms.DateField(required=False)
 
     # view_type = forms.CharField(required=False)
-    # assigned_to = forms.ForeignKey(User, blank=True, null=True)
     # link_slug = forms.SlugField(required=False)
     # screen_shot = forms.CharField(required=False)
     # wireframe = forms.CharField(required=False)
     # uri_to_test = forms.CharField(required=False)
 
+    assigned_to = forms.ModelMultipleChoiceField(required=False, queryset=User.objects.all())
     issue_type = forms.MultipleChoiceField(required=False, choices=ISSUETYPE)
 
     title = MultipleTextField(required=False)

@@ -217,12 +217,28 @@ def issue_search_advanced(request):
         return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm()}, context_instance=RequestContext(request))
 
     form = AdvSearchForm(request.POST)
-    if form.is_valid():
-        print form.cleaned_data
-    else:
-        print form.errors
+    if not form.is_valid():
+        raise Exception("Invalid adv search form values")
 
-    return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm()}, context_instance=RequestContext(request))
+    query = None
+
+    for field in form.cleaned_data.keys():
+        qr = None
+        if len(form.cleaned_data[field]) == 0:
+            continue
+        for item in form.cleaned_data[field]:
+            q = Q(**{"%s__contains" % field: item}) if type(item) == unicode else Q(**{"%s" % field: item})
+            if qr:
+                qr = qr | q
+            else:
+                qr = q
+        if query:
+            query = query & qr
+        else:
+            query = qr
+
+    results = Issue.objects.filter(query)
+    return render_to_response("issues/issue_search_results.html", {'results': results}, context_instance=RequestContext(request))
 
 
 def submit_comment(request, issue_id):
