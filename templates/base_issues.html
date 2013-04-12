@@ -162,7 +162,7 @@
                 width: 20em;
                 padding: 1em;
                 position: absolute;
-                top: 6.5em;
+                top: 4.5em;
                 right: 20em;
                 min-height: 2em;
                 height:auto;
@@ -176,7 +176,7 @@
                 width: 20em;
                 padding: 1em;
                 position: absolute;
-                top: 6.5em;
+                top: 4.5em;
                 right: 6.5em;
                 min-height: 2em;
                 height:auto;
@@ -191,7 +191,7 @@
                 width: 135px;
                 padding: 1em;
                 position: absolute;
-                top: 6.5em;
+                top: 4.5em;
                 right: 8.5em;
                 height: 2em;
                 overflow: hidden;
@@ -203,7 +203,7 @@
                 width: 10em;
                 padding: 1em;
                 position: absolute;
-                top: 6.5em;
+                top: 4.5em;
                 right:2em;
                 height: 2em;
                 overflow: hidden;
@@ -289,6 +289,10 @@
             
         }
 
+#mainheader {
+    padding-top: .6em;
+    font-size: 30px;
+}
 .tbl-generic {
     border-collapse: collapse;
     border-spacing: 0;
@@ -421,6 +425,10 @@
                 navMenuTriggers = $(navMenuTriggers.join(','));
 
                 navMenuTriggers.on("click", function(evt){
+                    if (navMenuTimeout) {
+                        clearTimeout(navMenuTimeout);
+                    }
+
                     var triggerEl = $(this),
                         navId = navMenuMapping[triggerEl.attr('id')];
 
@@ -449,7 +457,7 @@
                             navMenuItems.slideUp();
                         },5000);
                     }
-                })
+                });
 
                 $(document).click(function(evt){
                     var el = evt.target;
@@ -552,7 +560,7 @@
                 <a href="#">Advanced Search</a>
             </div>
         </div>
-        <h1 class="both">{{page_type}} 
+        <h1 id="mainheader" class="both">{{page_type}} 
             <span>:: {{page_value}}
             {% if issue%}
              :: {{issue.status}}

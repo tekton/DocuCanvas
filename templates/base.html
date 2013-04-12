@@ -290,6 +290,10 @@
             
         }
 
+#mainheader {
+    padding-top: .6em;
+    font-size: 30px;
+}
 .tbl-generic {
     border-collapse: collapse;
     border-spacing: 0;
@@ -422,6 +426,10 @@
                 navMenuTriggers = $(navMenuTriggers.join(','));
 
                 navMenuTriggers.on("click", function(evt){
+                    if (navMenuTimeout) {
+                        clearTimeout(navMenuTimeout);
+                    }
+
                     var triggerEl = $(this),
                         navId = navMenuMapping[triggerEl.attr('id')];
 
@@ -450,7 +458,7 @@
                             navMenuItems.slideUp();
                         },5000);
                     }
-                })
+                });
 
                 $(document).click(function(evt){
                     var el = evt.target;
