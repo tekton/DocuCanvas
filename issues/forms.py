@@ -2,6 +2,7 @@ from django import forms
 
 from issues.models import *
 from projects.models import Project
+from customfields import *
 
 '''
 Forms for submitting bug reports and suggestions
@@ -48,18 +49,19 @@ class AdvSearchForm(forms.Form):
 
     issue_type = forms.MultipleChoiceField(required=False, choices=ISSUETYPE)
 
-    title = forms.MultipleChoiceField(required=False, choices=[], widget=forms.TextInput)
-    summary = forms.MultipleChoiceField(required=False, choices=[], widget=forms.TextInput)
-    description = forms.MultipleChoiceField(required=False, choices=[], widget=forms.Textarea)
+    title = MultipleTextField(required=False)
+    summary = MultipleTextField(required=False)
+    description = MultipleTextField(required=False)
+    # description = MultipleTextField(required=False, widget=MultipleTextarea)
 
     status = forms.MultipleChoiceField(required=False, choices=BUGSTATE)
     criticality = forms.MultipleChoiceField(required=False, choices=[(1, 'One'), (2, "Two"), (3, "Three")])
     priority = forms.MultipleChoiceField(required=False, choices=[(1, 'One'), (2, "Two"), (3, "Three")])
     fixability = forms.MultipleChoiceField(required=False, choices=[(1, 'One'), (2, "Two"), (3, "Three")])
 
-    r_and_d = forms.MultipleChoiceField(required=False, choices=[], widget=forms.TextInput)
-    feature = forms.MultipleChoiceField(required=False, choices=[], widget=forms.TextInput)
-    os = forms.MultipleChoiceField(required=False, choices=[], widget=forms.TextInput)
-    os_version = forms.MultipleChoiceField(required=False, choices=[], widget=forms.TextInput)
-    browser = forms.MultipleChoiceField(required=False, choices=[], widget=forms.TextInput)
-    browser_version = forms.MultipleChoiceField(required=False, choices=[], widget=forms.TextInput)
+    r_and_d = MultipleTextField(required=False)
+    feature = MultipleTextField(required=False)
+    os = MultipleTextField(label="Operating System", required=False)
+    os_version = MultipleTextField(label="OS Version", required=False)
+    browser = MultipleTextField(required=False)
+    browser_version = MultipleTextField(required=False)

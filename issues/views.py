@@ -216,9 +216,13 @@ def issue_search_advanced(request):
     if request.method == "GET":
         return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm()}, context_instance=RequestContext(request))
 
-    val = request.POST.getlist('testField')
-    print str(type(val)) + " " + str(val)
-    return render_to_response("issues/issue_adv_search.html", context_instance=RequestContext(request))
+    form = AdvSearchForm(request.POST)
+    if form.is_valid():
+        print form.cleaned_data
+    else:
+        print form.errors
+
+    return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm()}, context_instance=RequestContext(request))
 
 
 def submit_comment(request, issue_id):

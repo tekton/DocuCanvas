@@ -1,27 +1,30 @@
 
 var formFields = {};
-var formFieldNames = {};
+var fieldNum = 1;
 
 $(document).ready(function() {
 	$('#formFields > p').each(function(n, item) {
 		var field = $(this).find(':input').attr( "name" );
 		formFields[field] = $(this);
-		formFieldNames[field] = $(this).find('label').text();
+		$(this).addClass('form_item').hide().children().removeAttr('id').removeAttr('for');
+		$(this).append(' <a href="#">Remove</a>');
+		var name = $(this).find('label').text();
+		$('#fieldList').append('<option value="' + field + '">' + name.substr(0, name.length - 1) + '</option>');
 		$(this).detach();
 	});
 
-	for ( field in formFieldNames ) {
-		if ( !formFieldNames.hasOwnProperty( field ) )
-			continue;
-		$('#fieldList').append('<option value="' + field + '">' + formFieldNames[field] + '</option>');
-	}
+	$('#formFields').remove();
 
 	$('#addField a').click(function( e ) {
 		var field = $('#fieldList').val();
 		if ( !formFields.hasOwnProperty( field ) )
 			return false;
 		console.log( field );
-		field = formFields[field].clone().hide().insertBefore( $('#addField') ).slideDown(200);
+		field = formFields[field].clone();
+		field.find('label').attr('for', 'field' + fieldNum);
+		field.find(':input').attr('id', 'field' + fieldNum);
+		fieldNum++;
+		field.insertBefore( $('#addField') ).slideDown(200);
 		return false;
 	});
 
