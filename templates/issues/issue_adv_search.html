@@ -1,0 +1,66 @@
+{% extends "base_issues.html" %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="/static/css/advsearch.css"/>
+<script src="/static/scripts/advsearch.js"></script>
+{% endblock %}
+
+{% block context_nav %}
+	<a href="/issue/new">New Issue : {{issue.project.name}}</a>
+{% endblock%}
+
+{% block container %}
+	<h2>Advanced Search</h2>
+
+	<form action="/issue/advsearch" method="POST">
+		{% csrf_token %}
+		<p id="addField">Add Field: <select id="fieldList"></select> <a href="#">Add</a></p>
+	</form>
+	<div id="formFields">
+		{{ form.as_p }}
+</div>
+{% endblock %}
+
+{# 
+    project = models.ForeignKey(Project)  # fk
+    meta_issues = models.ForeignKey(MetaIssue, null=True, blank=True)  # fk
+    state = models.CharField(max_length=255, blank=True, null=True)  # list
+    # dates
+    projected_start = models.DateField(null=True, blank=True)
+    projected_end = models.DateField(null=True, blank=True)
+    actual_start = models.DateField(null=True, blank=True)
+    actual_end = models.DateField(null=True, blank=True)
+    #
+    date_reported = models.DateField(null=True, blank=True)
+    #
+    created = models.DateField(auto_now_add=True, null=True, blank=True)  # NOW
+    modified = models.DateField(auto_now=True)  # auto update time
+    #
+    view_type = models.CharField(max_length=255, blank=True, null=True)  # default via name, or Issue ID
+    #
+    issue_type = models.CharField(max_length=255, blank=True, null=True, choices=ISSUETYPE)  # bug, task, suggestion
+    #
+    assigned_to = models.ForeignKey(User, blank=True, null=True)
+    # basic information
+    title = models.CharField(max_length=255, blank=True, null=True)
+    summary = models.CharField(max_length=140, blank=True, null=True)
+    description = models.TextField(null=True, blank=True)
+    link_slug = models.SlugField(null=True, blank=True)
+    # bug centric
+    status = models.CharField(max_length=255, blank=True, null=True, choices=BUGSTATE)
+    criticality = models.IntegerField(default=0, blank=True, null=True)
+    priority = models.IntegerField(default=0, blank=True, null=True)
+    fixability = models.CharField(max_length=255, blank=True, null=True)
+    # tasks and suggestions
+    r_and_d = models.CharField(max_length=255, blank=True, null=True)  # i don't remember what this is for...
+    feature = models.CharField(max_length=255, blank=True, null=True)  # foreign key to something?
+    # bug_resolution  # um...
+    # random important information...
+    os = models.CharField(max_length=255, blank=True, null=True)  # operating system
+    os_version = models.CharField(max_length=255, blank=True, null=True)
+    browser = models.CharField(max_length=255, blank=True, null=True)
+    browser_version = models.CharField(max_length=255, blank=True, null=True)
+    screen_shot = models.CharField(max_length=255, blank=True, null=True)
+    wireframe = models.CharField(max_length=255, blank=True, null=True)  # for suggestions, tasks, features, etc
+    uri_to_test = models.CharField(max_length=255, blank=True, null=True)  # where they're having the issue
+#}
