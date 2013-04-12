@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block style %}
+.checklist_instance_header{
+    font-size:0.7em;  
+    font-weight:bold; 
+}
+
+.checklist_instance_header td{
+    padding-left:2em;
+}
+
+.checklist_instance_item a{
+    font-size:0.7em;
+    padding-left:3em;
+}
+{% endblock %}
+
+{% block container %}
+        <table>
+            <tr>
+                <td>
+                    <b>Checklists</b>
+                </td>
+            </tr>
+            {% for checklist in checklists %}
+                <tr>
+                    <td>
+                    <a href="/checklist/{{checklist.id}}">{{checklist.name}}</a>
+                    </td>
+                    <td>
+                        <a href="/checklist/project/{{checklist.id}}/new_instance">Add</a>
+                    </td>
+                </tr>
+
+                {% if checklist_instances %}
+                    <tr class="checklist_instance_header">
+                        <td>Checklist Instances</td>
+                        <td></td>
+                    </tr>
+                    {% for checklist_instance in checklist_instances%}
+                        {% if checklist_instance.title|lower|slice:"-1" == checklist.name|lower%}
+                        <tr class="checklist_instance_item">
+                            <td>
+                            <a href="/checklist/{{checklist.id}}">{{checklist_instance.title|lower|slice:"-1"}}</a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </table>
+
+{% endblock %}
