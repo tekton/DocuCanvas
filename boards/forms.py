@@ -10,6 +10,7 @@ Forms for submitting bug reports and suggestions
 class BoardForm(forms.ModelForm):
     class Meta:
         model = Board
+        exclude = ('height', 'width',)
 
 
 class BoardNoteForm(forms.ModelForm):

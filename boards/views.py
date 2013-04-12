@@ -12,7 +12,7 @@ def TestIndex(request):
 def boards_form(request):
     if request.method == 'POST':
         board = Board()
-        form = BoardForm(request.POST, instance=board)
+        form = BoardForm(request.POST, request.FILES, instance=board)
 
         if form.is_valid():
             try:
@@ -60,4 +60,12 @@ def boards_node_form(request):
 
 
 def index(request):
-    return HttpResponse("THIS IS THE BOARDS PAGE")
+    board_nodes = BoardNode.objects.all()
+    board_node_count = BoardNode.objects.count()
+    context = {'board_nodes': board_nodes, 'board_node_count': board_node_count}
+    return render_to_response('boards/index.html', context)
+
+def boards(request):
+    boards = Board.objects.all()
+    context = {'boards': boards}
+    return render_to_response('boards/boards.html', context)
