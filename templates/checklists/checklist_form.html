@@ -10,12 +10,11 @@
 
             {% for form in formset.forms %}
                 <table>
-                    Checklist Item: <br>
+                    Checklist Item: <input title='Add a new checklist item' type='submit' name='add_checklist_item' value='Add Item' /><br>
                     {{ form }}
                 </table>
             {% endfor %}
         </table>
-    <input title='Add a new checklist item' type='submit' name='add_checklist_item' value='Add' />
     <input type="submit" name="submit" value="Submit"/>
     </form>
 

@@ -10,4 +10,6 @@ urlpatterns = patterns('',
     (r'new_board', 'boards.views.boards_form'),
     (r'new_note', 'boards.views.boards_note_form'),
     (r'new_node', 'boards.views.boards_node_form'),
+    (r'boards', 'boards.views.boards'),
+    
 )
