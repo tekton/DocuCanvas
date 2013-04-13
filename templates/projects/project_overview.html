@@ -1,9 +1,10 @@
 {% extends "base_issues.html" %}
 
 {% block context_nav %}
-	<a href="/issue/new/{{project_O.id}}">New Issue : {{project_O.name}}</a>
-	<a href="/issue/new/{{project_O.id}}">New Risk : {{project_O.name}}</a>
-	<a href="/checklist/new/{{project_O.id}}">New Checklist : {{project_O.name}}</a>
+	<a href="/issue/new/{{project_O.id}}">New Issue</a>
+	<a href="/issue/new/{{project_O.id}}">New Risk</a>
+	<a href="/checklist/new/{{project_O.id}}">New Checklist</a>
+	<a href="/checklist/project/{{project_O.id}}">Checklists</a>
 	<a href="/project/{{project_O.id}}/edit">Edit Project</a>
 {% endblock%}
 
@@ -13,19 +14,19 @@
 			<td class="tbl-fauxth">Scope</td>
 		</tr>
 		<tr>
-			<td class="tbl-overview-content">{{project_O.scope}}</td>
+			<td class="tbl-overview-content"></td>
 		</tr>
 		<tr class="tbl-rowheader">
 			<td class="tbl-fauxth">Description</td>
 		</tr>
 		<tr>
-			<td class="tbl-overview-content">{{project_O.description}}</td>
+			<td class="tbl-overview-content"></td>
 		</tr>
 		<tr class="tbl-rowheader">
 			<td class="tbl-fauxth">Business Case</td>
 		</tr>
 		<tr>
-			<td class="tbl-overview-content">{{project_O.business_case}}</td>
+			<td class="tbl-overview-content"></td>
 		</tr>
 	</table>
 {% endblock %}

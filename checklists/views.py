@@ -8,7 +8,6 @@ from checklists.forms import *
 
 
 def project_checklists(request, project_id):
-    print 'in project checklists'
     project = Project.objects.get(pk=project_id)
     checklists = Checklist.objects.filter(project=project)
 
@@ -49,7 +48,6 @@ def instance_edit(request, checklist_instance_id):
 
 
 def new_instance(request, checklist_id):
-    print 'creating new instance'
     try:
         checklist = Checklist.objects.get(pk=checklist_id)
         checklist_layout_items = CheckListLayoutItems.objects.filter(Checklist=checklist)
@@ -70,7 +68,6 @@ def new_instance(request, checklist_id):
 
 
 def checklist_form_project(request, project_id):
-
     try:
         project = Project.objects.get(pk=project_id)
 

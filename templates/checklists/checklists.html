@@ -29,7 +29,7 @@
                     <a href="/checklist/{{checklist.id}}">{{checklist.name}}</a>
                     </td>
                     <td>
-                        <a href="/checklist/projects/{{checklist.id}}/new_instance">Add</a>
+                        <a href="/checklist/new_checklist_instance/{{checklist.id}}">Add</a>
                     </td>
                 </tr>
 
@@ -38,11 +38,11 @@
                         <td>Checklist Instances</td>
                         <td></td>
                     </tr>
-                    {% for checklist_instance in checklist_instances%}
-                        {% if checklist_instance.title|lower|slice:"-1" == checklist.name|lower%}
+                    {% for k, v in checklist_instances.items%}
+                        {% if v.title == checklist.name%}
                         <tr class="checklist_instance_item">
                             <td>
-                            <a href="/checklist/instance/{{checklist_instance|last}}">{{checklist_instance.title|lower|slice:"-1"}}</a>
+                            <a href="/checklist/instance/{{v.id}}">{{v.title}}</a>
                             </td>
                         </tr>
                         {% endif %}

@@ -5,7 +5,8 @@ from django.conf.urls.defaults import *
 '''
 
 urlpatterns = patterns('',
-    (r'projects/(\d+)/new_instance', 'checklists.views.new_instance'),
+    #(r'projects/(\d+)/new_instance', 'checklists.views.new_instance'),
+    (r'new_checklist_instance/(\d+)', 'checklists.views.new_instance'),
     (r'project/(\d+)', 'checklists.views.project_checklists'),
     (r'new/(\d+)', 'checklists.views.checklist_form_project'),
     #(r'(\d+)/edit', 'checklists.views.edit'),
