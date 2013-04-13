@@ -3,6 +3,7 @@ from django.template import RequestContext
 from forms import *
 from boards.models import *
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 
 
 def TestIndex(request):
@@ -17,6 +18,7 @@ def boards_form(request):
         if form.is_valid():
             try:
                 board = form.save()
+                return HttpResponseRedirect('boards/new_note')
             except:
                 print 'unable to save board'
     else:
@@ -33,6 +35,7 @@ def boards_note_form(request):
         if form.is_valid():
             try:
                 boardNote = form.save()
+                return HttpResponseRedirect('boards/new_node')
             except:
                 print 'unable to save note'
 
@@ -50,6 +53,7 @@ def boards_node_form(request):
         if form.is_valid():
             try:
                 boardNode = form.save()
+                return HttpResponseRedirect('boards/new_node')
             except:
                 print 'unable to save node'
 
