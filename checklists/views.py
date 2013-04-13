@@ -8,6 +8,7 @@ from checklists.forms import *
 
 
 def project_checklists(request, project_id):
+    print 'in project checklists'
     project = Project.objects.get(pk=project_id)
     checklists = Checklist.objects.filter(project=project)
 
@@ -24,12 +25,10 @@ def project_checklists(request, project_id):
             print e
             print 'Checklist Instance not found'
 
-    return render_to_response("checklists/checklists.html", {"checklists": checklists, "checklist_instances":checklist_instances, "project_id": project_id, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
-
+    return render_to_response("checklists/checklists.html", {"checklists": checklists, "checklist_instances": checklist_instances, "project_id": project_id, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
 def instance_edit(request, checklist_instance_id):
-    print 'in instance edit'
     checklist_instance = ChecklistInstance.objects.get(pk=checklist_instance_id)
 
     ChecklistTagsFormset = inlineformset_factory(ChecklistInstance, ChecklistTag, can_delete=False, extra=0)
@@ -41,7 +40,11 @@ def instance_edit(request, checklist_instance_id):
             checklist_instance_form.save()
             formset.save()
 
-    return render_to_response("checklists/check_edit.html", {"form": formset, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
+    else:
+        formset = ChecklistTagsFormset(instance=checklist_instance)
+
+    checklist_instance_form = ChecklistInstanceFullForm(instance=checklist_instance)
+    return render_to_response("checklists/checklist_edit.html", {"form": formset, "checklist_instance_form": checklist_instance_form, "checklist_instance": checklist_instance, "page_type": checklist_instance.title, "page_value": "Edit"}, context_instance=RequestContext(request))
     #return redirect('checklists.views.overview', checklist_instance_id, permanent=True)
 
 
@@ -87,23 +90,8 @@ def checklist_form_project(request, project_id):
             checklist_form = ChecklistForm(request.POST, instance=checklist)
             formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
             if checklist_form.is_valid() and formset.is_valid():
-                #c = checklist_form.save()
-                #checklist_layout_items = formset.save()
                 c = checklist_form.save()
                 formset.save()
-                #c.save()
-                '''
-                checklist_instance = ChecklistInstance()
-                checklist_instance.checklist = c
-                checklist_instance.title = c.name
-                checklist_instance.save()
-                for item in checklist_layout_items:
-                    checklist_tag = ChecklistTag()
-                    checklist_tag.checklist_instance = checklist_instance
-                    checklist_tag.name = item.title
-                    checklist_tag.save()
-                '''
-
                 return redirect('checklists.views.project_checklists', c.project.id, permanent=True)
 
     else:
