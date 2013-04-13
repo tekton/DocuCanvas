@@ -76,7 +76,7 @@
 			<em>No global report for this date.</em><br/>
 		{% endif %}
 		{% for report in reports %}
-			User: {{report.user.username}} ({{report.user.first_name}} {{report.user.last_name}})</br>
+			User: {{report.user.username}} <!--({{report.user.first_name}} {{report.user.last_name}})--></br>
 			Report: {{report.description|markdown:"safe"}}</br>
 			<br/>
 		{% empty %}
