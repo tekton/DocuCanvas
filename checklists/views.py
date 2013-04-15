@@ -8,6 +8,7 @@ from checklists.forms import *
 
 
 def project_checklists(request, project_id):
+    print 'in project checklists'
     project = Project.objects.get(pk=project_id)
     checklists = Checklist.objects.filter(project=project)
 
@@ -27,8 +28,38 @@ def project_checklists(request, project_id):
     return render_to_response("checklists/checklists.html", {"checklists": checklists, "checklist_instances": checklist_instances, "project_id": project_id, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
+def checklist_edit(request, checklist_id):
+    try:
+        checklist = Checklist.objects.get(pk=checklist_id)
+    except:
+        print 'couldnt find checklist'
+        formset = ChecklistForm()
+        checklist = Checklist()
+
+    ChecklistLayoutItemsFormset = inlineformset_factory(Checklist, CheckListLayoutItems, can_delete=False, extra=0)
+
+    if request.method == 'POST':
+        checklist_form = ChecklistForm(request.POST, instance=checklist)
+        formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
+
+        if checklist_form.is_valid() and formset.is_valid():
+            checklist_form.save()
+            formset.save()
+    else:
+        formset = ChecklistLayoutItemsFormset(instance=checklist)
+
+    checklist_form = ChecklistForm(instance=checklist)
+    return render_to_response("checklists/checklist_overview.html", {"formset": formset, "checklist_form": checklist_form, "checklist_id": checklist.id, "page_type": checklist.project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
+
+
 def instance_edit(request, checklist_instance_id):
-    checklist_instance = ChecklistInstance.objects.get(pk=checklist_instance_id)
+
+    try:
+        checklist_instance = ChecklistInstance.objects.get(pk=checklist_instance_id)
+        # CHECK IF CHECKLIST LAYOUT ITEMS HAS BEEN UPDATED, IF SO UPDATE CHECKLIST INSTANCE TAGS
+    except Exception, e:
+        print e
+        checklist_instance = ChecklistInstance()
 
     ChecklistTagsFormset = inlineformset_factory(ChecklistInstance, ChecklistTag, can_delete=False, extra=0)
     if request.method == 'POST':
@@ -36,15 +67,32 @@ def instance_edit(request, checklist_instance_id):
         formset = ChecklistTagsFormset(request.POST, instance=checklist_instance)
 
         if checklist_instance_form.is_valid() and formset.is_valid():
+            #print 'checklisttag completion status'
+            #print request.POST['checklisttag_set-0-completion_status']
+            total_forms = int(request.POST['checklisttag_set-TOTAL_FORMS'])
+
+            i = 0
+            completion_count = 0
+            while i < total_forms:
+                completion_status_key = "checklisttag_set-" + str(i) + "-completion_status"
+                try:
+                    request.POST[completion_status_key]
+                    completion_count += 1
+                except Exception, e:
+                    print e
+                i += 1
+
+            if completion_count == total_forms:
+                #DOESN'T WORK YET
+                checklist_instance_form.cleaned_data['completion_status'] = True
+                print checklist_instance_form
             checklist_instance_form.save()
             formset.save()
-
     else:
         formset = ChecklistTagsFormset(instance=checklist_instance)
 
     checklist_instance_form = ChecklistInstanceFullForm(instance=checklist_instance)
     return render_to_response("checklists/checklist_edit.html", {"form": formset, "checklist_instance_form": checklist_instance_form, "checklist_instance": checklist_instance, "page_type": checklist_instance.title, "page_value": "Edit"}, context_instance=RequestContext(request))
-    #return redirect('checklists.views.overview', checklist_instance_id, permanent=True)
 
 
 def new_instance(request, checklist_id):
@@ -99,6 +147,7 @@ def checklist_form_project(request, project_id):
 
 
 def overview(request, checklist_id):
+    print 'in overview'
     try:
         checklist_instance = ChecklistInstance.objects.get(pk=checklist_id)
     except:

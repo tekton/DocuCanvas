@@ -11,6 +11,6 @@ urlpatterns = patterns('',
     (r'new/(\d+)', 'checklists.views.checklist_form_project'),
     #(r'(\d+)/edit', 'checklists.views.edit'),
     (r'instance/(\d+)', 'checklists.views.instance_edit'),
-    (r'overview/(\d+)', 'checklists.views.overview'),
-    
+    #(r'overview/(\d+)', 'checklists.views.overview'),
+    (r'(\d+)', 'checklists.views.checklist_edit'),
 )

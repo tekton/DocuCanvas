@@ -9,6 +9,11 @@ Forms for submitting bug reports and suggestions
 class ChecklistForm(forms.ModelForm):
     class Meta:
         model = Checklist
+        #verbose_name = _('MODELNAME')
+        #verbose_name_plural = _('MODELNAMEs')   
+    def __unicode__(self):
+        pass
+
 
 class CheckListLayoutItemsForm(forms.ModelForm):
     class Meta:

@@ -44,6 +44,13 @@
                             <td>
                             <a href="/checklist/instance/{{v.id}}">{{v.title}}</a>
                             </td>
+                            <td>
+                                {% if v.completetion_status %}
+                                Complete
+                                {% elif not v.completion_status%}
+                                Incomplete
+                                {% endif%}
+                            </td>
                         </tr>
                         {% endif %}
                     {% endfor %}
