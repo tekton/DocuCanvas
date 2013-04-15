@@ -14,9 +14,7 @@ def project_checklists(request, project_id):
 
     checklist_instances = {}
     for checklist in checklists:
-        print checklist.name
         try:
-            #checklist_instances[checklist.name] = ChecklistInstance.objects.get(checklist=checklist)
             checklist_instance_list = ChecklistInstance.objects.filter(checklist=checklist)
             for checklist_instance in checklist_instance_list:
                 checklist_instance_key = checklist.name + str(checklist_instance.id)
@@ -67,10 +65,7 @@ def instance_edit(request, checklist_instance_id):
         formset = ChecklistTagsFormset(request.POST, instance=checklist_instance)
 
         if checklist_instance_form.is_valid() and formset.is_valid():
-            #print 'checklisttag completion status'
-            #print request.POST['checklisttag_set-0-completion_status']
             total_forms = int(request.POST['checklisttag_set-TOTAL_FORMS'])
-
             i = 0
             completion_count = 0
             while i < total_forms:
@@ -83,9 +78,9 @@ def instance_edit(request, checklist_instance_id):
                 i += 1
 
             if completion_count == total_forms:
-                #DOESN'T WORK YET
-                checklist_instance_form.cleaned_data['completion_status'] = True
-                print checklist_instance_form
+                checklist_instance.completion_status = True
+                checklist_instance.save()
+
             checklist_instance_form.save()
             formset.save()
     else:
@@ -112,7 +107,8 @@ def new_instance(request, checklist_id):
     except Exception, e:
         print e
 
-    return redirect('checklists.views.project_checklists', checklist.project.id, permanent=True)
+    #return redirect('checklists.views.project_checklists', checklist.project.id, permanent=True)
+    return project_checklists(request, checklist.project.id)
 
 
 def checklist_form_project(request, project_id):
@@ -147,7 +143,6 @@ def checklist_form_project(request, project_id):
 
 
 def overview(request, checklist_id):
-    print 'in overview'
     try:
         checklist_instance = ChecklistInstance.objects.get(pk=checklist_id)
     except:

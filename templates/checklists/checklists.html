@@ -26,10 +26,10 @@
             {% for checklist in checklists %}
                 <tr>
                     <td>
-                    <a href="/checklist/{{checklist.id}}">{{checklist.name}}</a>
+                    <a href="/checklist/{{checklist.id}}/edit">{{checklist.name}}</a>
                     </td>
                     <td>
-                        <a href="/checklist/new_checklist_instance/{{checklist.id}}">Add</a>
+                        <a href="/checklist/checklist_instance_new/{{checklist.id}}">Add</a>
                     </td>
                 </tr>
 
@@ -39,15 +39,15 @@
                         <td></td>
                     </tr>
                     {% for k, v in checklist_instances.items%}
-                        {% if v.title == checklist.name%}
+                        {% if v.title == checklist.name %}
                         <tr class="checklist_instance_item">
                             <td>
                             <a href="/checklist/instance/{{v.id}}">{{v.title}}</a>
                             </td>
                             <td>
-                                {% if v.completetion_status %}
+                                {% if v.completion_status %}
                                 Complete
-                                {% elif not v.completion_status%}
+                                {% else %}
                                 Incomplete
                                 {% endif%}
                             </td>
