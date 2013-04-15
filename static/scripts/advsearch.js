@@ -19,7 +19,6 @@ $(document).ready(function() {
 		var field = $('#fieldList').val();
 		if ( !formFields.hasOwnProperty( field ) )
 			return false;
-		console.log( field );
 		field = formFields[field].clone();
 		field.find('label').attr('for', 'field' + fieldNum);
 		field.find(':input').attr('id', 'field' + fieldNum);
