@@ -138,7 +138,6 @@ def issue_form_project(request, project_id):
         form = IssueForm()
     return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': 'Issue', 'page_value': project.name, 'projects': projects}, context_instance=RequestContext(request))
 
-
 def issue_overview(request, issue_id):
     try:
         issue = Issue.objects.get(pk=issue_id)
@@ -167,7 +166,7 @@ def issue_overview(request, issue_id):
     try:
         subscribe = SubscriptionToIssue.objects.get(issue=issue, user=request.user)
     except:
-        print 'Unable to find subsription for issue'
+        print 'Unable to find subscription for issue'
         subscribe = None
 
     try:
