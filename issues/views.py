@@ -1,37 +1,48 @@
-# Create your views here.
+
+from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.utils import simplejson
-from django.db import models
 from django.db.models import Q
-# from projects.models import Project
+
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm
-from django.contrib.auth.models import User
 
 
-def pin(request):
-    to_json = {}
+def pin(request, issue_id):
+    to_json = {'success': True, 'is_pinned': False, 'error': False}
     try:
-        issue = Issue.objects.get(pk=request.POST['issue'])
+        issue = Issue.objects.get(pk=issue_id)
+    except Issue.DoesNotExist:
+        raise Http404
+
+    try:
+        pin = PinIssue.objects.get(user=request.user, issue=issue)
+    except PinIssue.DoesNotExist:
+        pin = None
+
+    if pin:
         try:
-            pin = PinIssue.objects.get(user=request.user, issue=issue)
             pin.delete()
-            to_json["status"] = "Unpinning Issue"
-        except:
-            try:
-                pin = PinIssue()
-                pin.issue = issue
-                pin.user = request.user
-                pin.save()
-                to_json["status"] = "Successfully pinned issue"
-            except Exception, e:
-                print e
-                to_json["status"] = "Error pinning"
-    except:
-        to_json["status"] = "Issue does not exist"
+        except Exception as e:
+            to_json['success'] = False
+            to_json['error'] = str(e)
+            print e
+    else:
+        pin = PinIssue()
+        pin.issue = issue
+        pin.user = request.user
+        try:
+            pin.save()
+        except Exception as e:
+            to_json['success'] = False
+            to_json['error'] = str(e)
+            print e
+        else:
+            to_json['is_pinned'] = True
+
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 

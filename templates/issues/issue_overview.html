@@ -4,8 +4,8 @@
 
 {% block extra_head%}
 	<script type="text/javascript">
-
 		$(document).ready(function(){
+            var issue_id = $('#issue_id').val();
 			$('#subscribe_to_issue').click(function(){
             	$.ajax({
 				    type:"POST",
@@ -32,30 +32,26 @@
 				});
         	});
 
-			$('#pin_issue').click(function(){
-            	$.ajax({
-				    type:"POST",
-				    url:"/issue/pin",
-				    data:{
-				    	issue:"{{issue.id}}"
-				    },
-				    success: function(data){
-				    	// Hides nav menu only after successfull submission
-				    	NavMenu.HideAll();	
-
-				    	alert(data['status']);
-				    	if( data['status'] == "Unpinning Issue"){
-				    		$('#pin_issue').text("Pin");
-				    	}
-				    	else if(data['status'] == "Successfully pinned issue"){
-				    		$('#pin_issue').text("Unpin");
-				    	}
-				    },
-				    error: function(data){
-				    	alert("Server side error");
+			$('#pin_issue').click(function(e) {
+                e.preventDefault();
+            	$.get($(this).attr('href'), function(data, status) {
+                    // Hides nav menu only after successfull submission
+                    NavMenu.HideAll();
+                    if ( data.success ) {
+                        if ( data.is_pinned ) {
+                            $('#pin_issue').text("Unpin");
+                            alert( "Issue pinned" );
+                        }
+                        else {
+                            $('#pin_issue').text("Pin");
+                            alert( "Issue unpinned" );
+                        }
 				    }
-
+                    else {
+                        alert( "Pinning error: " + data.error )
+                    }
 				});
+                return false;
         	});
 
         	$('#assign_issue').click(function(){
@@ -180,11 +176,7 @@
 		<a id="subscribe_to_issue">Unsubscribe</a>
 	{% endif %}
 
-	{% if pin == None %}
-		<a id="pin_issue">Pin</a>
-	{% else %}
-		<a id="pin_issue">Unpin</a>
-	{% endif %}
+		<a href="/issue/pin/{{ issue.id }}" id="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
 
 	{% if issue.assigned_to == user%}
 		<a id="assign_issue">Unassign</a>
@@ -207,6 +199,7 @@
 {% endblock%}
 
 {% block container %}
+    <input type="hidden" id="issue_id" value="{{ issue.id }}"/>
 	<table class="tbl-generic tbl-overview">
 		<tr class="tbl-rowheader">
 			<td class="tbl-fauxth">Summary</td>
