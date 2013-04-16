@@ -1,4 +1,4 @@
-
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
@@ -46,32 +46,47 @@ def pin(request, issue_id):
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 
-def assign(request):
-    to_json = {}
+@login_required
+def assign(request, issue_id, user_id=-1):
+    to_json = {'success': True, 'error': False, 'assigned_to': False}
     try:
-        issue = Issue.objects.get(pk=request.POST['issue'])
+        issue = Issue.objects.get(pk=issue_id)
+    except Issue.DoesNotExist:
+        raise Http404
 
-        if issue.assigned_to == request.user and request.POST['assign'] == 'assign':
+    if  user_id == -1:
+        if issue.assigned_to == request.user:
             issue.assigned_to = None
-            to_json["status"] = "Successfully unassigned issue"
+            to_json['assigned_to'] = 'none'
         else:
-            if issue.assigned_to:
-                to_json["status"] = "Successfully reassigned issue"
+            issue.assigned_to = request.user
+            to_json['assigned_to'] = 'self'
+    else:
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            raise Http404
 
+        if issue.assigned_to == user:
+            # this is a no-op
+            issue = None
+        else:
+            issue.assigned_to = user
+            if user == request.user:
+                to_json['assigned_to'] = 'self'
             else:
-                to_json["status"] = "Successfully assigned issue"
+                # TODO: report the name of the user being assigned to instead
+                to_json['assigned_to'] = 'user'
 
-            if request.POST['assign'] == 'assign':
-                issue.assigned_to = request.user
-            else:
-                try:
-                    issue.assigned_to = User.objects.get(pk=request.POST['user'])
-                except:
-                    to_json["status"] = "Unable to find user"
+    if issue:
+        try:
+            issue.save()
+        except Exception as e:
+            to_json['success'] = False
+            to_json['error'] = str(e)
+            to_json['assigned_to'] = False
+            print e
 
-        issue.save()
-    except:
-        to_json["status"] = "Unable to assign to issue"
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 

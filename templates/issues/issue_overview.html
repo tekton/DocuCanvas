@@ -35,7 +35,7 @@
 			$('#pin_issue').click(function(e) {
                 e.preventDefault();
             	$.get($(this).attr('href'), function(data, status) {
-                    // Hides nav menu only after successfull submission
+                    // Hides nav menu only after successful submission
                     NavMenu.HideAll();
                     if ( data.success ) {
                         if ( data.is_pinned ) {
@@ -50,57 +50,23 @@
                     else {
                         alert( "Pinning error: " + data.error )
                     }
-				});
+				}).fail(function(xhr, status, e) {
+                    alert( "Server error: " + e );
+                });
                 return false;
         	});
 
-        	$('#assign_issue').click(function(){
-            	$.ajax({
-				    type:"POST",
-				    url:"/issue/assign",
-				    data:{
-				    	issue:"{{issue.id}}",
-				    	assign:"assign"
-				    },
-				    success: function(data){
-				    	// Hides nav menu only after successfull submission
-				    	NavMenu.HideAll();	
-
-				    	alert(data['status']);
-				    	if( data['status'] == "Successfully unassigned issue"){
-				    		$('#assign_issue').text("Assign");
-				    	}
-				    	else if(data['status'] == "Successfully assigned issue" || data['status'] == "Successfully reassigned issue"){
-				    		$('#assign_issue').text("Unassign");
-				    	}		    	
-				    },
-				    error: function(data){
-				    	alert("Server side error");
-				    }
-
-				});
+        	$('#assign_issue').click(function(e) {
+                e.preventDefault();
+                assignUser($(this).attr('href'), null);
+                return false;
         	});
 
-        	$('#assign_issue_to').click(function(){
-            	$.ajax({
-				    type:"POST",
-				    url:"/issue/assign",
-				    data:{
-				    	issue:"{{issue.id}}",
-				    	assign:"assign_to",
-				    	user:$('#assigned_user').val()
-				    },
-				    success: function(data){
-				    	// Hides nav menu only after successfull submission
-				    	NavMenu.HideAll();	
-
-				    	alert(data['status']);
-				    },
-				    error: function(data){
-				    	alert("Server side error");
-				    }
-
-				});
+        	$('#assign_issue_to').click(function(e) {
+                e.preventDefault();
+                console.log( $('#assigned_user').val() );
+                assignUser($(this).attr('data-url'), $('#assigned_user').val());
+                return false;
         	});
 
         	$('#set_bug_status').click(function(){
@@ -164,6 +130,39 @@
 
 		});
 
+        function assignUser( url, user_id ) {
+            var success = function(data) {
+                // Hides nav menu only after successful submission
+                NavMenu.HideAll();
+                if ( data.success ) {
+                    if ( data.assigned_to == "self" ) {
+                        $('#assign_issue').text( "Unassign" );
+                        alert( "Issue now assigned to you." );
+                    }
+                    else if ( data.assigned_to == "none" ) {
+                        $('#assign_issue').text( "Assign to me" );
+                        alert( "Issue unassigned." );
+                    }
+                    else if ( data.assigned_to == "user" ) {
+                        $('#assign_issue').text( "Assign to me" );
+                        alert( "Issue successfully assigned." );
+                    }
+                }
+                else {
+                    alert( "Assigning error: " + data.error );
+                }
+            };
+
+            var failure = function(xhr, status, e) {
+                alert( "Server error: " + e );
+            };
+            console.log( url + user_id );
+            if ( user_id )
+                $.get(url + user_id, success).fail( failure );
+            else
+                $.get(url, success).fail( failure );
+        }
+
 	</script>
 {% endblock %}
 
@@ -178,18 +177,13 @@
 
 		<a href="/issue/pin/{{ issue.id }}" id="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
 
-	{% if issue.assigned_to == user%}
-		<a id="assign_issue">Unassign</a>
-	{% else %}
-		<a id="assign_issue">Assign</a>
-	{% endif %}
-	<a>Assign To:  
+	<a href="/issue/assign/{{ issue.id }}/{{ user.id }}" id="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Assign to me{% endif %}</a>
+	<a>Assign To:
 		<select id="assigned_user">
-			{% for user in users%}
-				<option value="{{user.id}}">{{user.username}}</option>
+			{% for user in users%}<option value="{{user.id}}">{{user.username}}</option>
 			{% endfor%}
 		</select>
-		<input type="button" id="assign_issue_to" value="Assign"/>
+		<input data-url="/issue/assign/{{ issue.id }}/" type="button" id="assign_issue_to" value="Assign"/>
 	</a>
 	<a>Status:
 		{{form.status}}
