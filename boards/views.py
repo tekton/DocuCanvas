@@ -4,6 +4,8 @@ from forms import *
 from boards.models import *
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.http import Http404
+from django.core.urlresolvers import reverse
 
 
 def TestIndex(request):
@@ -18,9 +20,9 @@ def boards_form(request):
         if form.is_valid():
             try:
                 board = form.save()
-                return HttpResponseRedirect('boards/new_note')
-            except:
-                print 'unable to save board'
+                return HttpResponseRedirect(reverse('board_url_display', kwargs={'board_id': board.id}))
+            except Exception, e:
+                print e
     else:
         form = BoardForm()
 
@@ -73,3 +75,10 @@ def boards(request):
     boards = Board.objects.all()
     context = {'boards': boards}
     return render_to_response('boards/boards.html', context)
+
+def board_display(request, board_id):
+    try:
+        p = Board.objects.get(pk=board_id)
+    except Board.DoesNotExist:
+        raise Http404
+    return render_to_response('boards/board_view.html', {'board': p})

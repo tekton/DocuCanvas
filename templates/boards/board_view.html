@@ -1,0 +1,139 @@
+
+{% block container %}
+    <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+           <script>
+
+            // Temporary hash for making a test loop to place multiple notes
+            var tooltipInfo = [{"x":400,"y":500,"text": "THIS IS A BUG"}, {"x":200,"y":200,"text": "THIS IS ANOTHER BUG asdf adf adf asdf asdf asdf"}, {"x": 150, "y":400, "text": "ANOTHER BUG"}]
+
+            //Test variables for placing notes, most will be contained in database when finished
+            var imageWidth = 1920;
+            var imageHeight = 1080;
+            var tooltipWidth = 200;
+            var tooltipHeight = 200;
+
+            // Create Background image
+            var imageObj = new Image();
+
+            // Most everything occurs inside the image onload function
+            imageObj.onload = function() {
+                var bgImage = new Kinetic.Image({
+                    image: imageObj,
+                    width: imageWidth,
+                    height: imageHeight,
+                    id: 'backgroundImage',
+                  });
+
+                // Test function for getting mouse position
+                bgImage.on('mousedown', function(){
+                var mousePos = stage.getMousePosition();
+                var x = mousePos.x ;
+                var y = mousePos.y ;
+                $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
+                });
+
+                var stage = new Kinetic.Stage({
+                    container: 'container',
+                    width: imageWidth,
+                    height: imageHeight,
+                });
+                var shapesLayer = new Kinetic.Layer();
+                var messageLayer = new Kinetic.Layer();
+                shapesLayer.add(bgImage);
+
+                // Function to add a bug to canvas
+                function bugNote(x, y, bugText, divId){
+                    var tooltipId = "#" + divId;
+                    var bugListId = "#bugListNo" + divId;
+
+                    var circle = new Kinetic.Circle({
+                        x: x,
+                        y: y,
+                        radius: 8,
+                        fill: '#00d2ff',
+                        stroke: 'black',
+                        strokeWidth: 4,
+                    });
+
+                    circle.on('mouseover', function(){
+                        document.body.style.cursor = 'pointer';
+                    });
+                    circle.on('mouseout', function(){
+                        document.body.style.cursor = 'default';
+                    });
+
+                    circle.on('mousedown', function(){
+                        toggleInfoBox(divId);
+                    });
+
+                    shapesLayer.add(circle);
+                    $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + tooltipWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: grey; text-align: left'>" + bugText + "</p><p style = 'text-align: right;'><a style = 'color: yellow' href = 'http://www.google.com'>THIS IS A LINK</a></p></div>");
+                    $('body').append("<div id = 'triangle" + divId + "'; style = 'position: absolute; width: 0; height: 0; border-right: 10px solid black; border-bottom: 10px solid transparent; border-top: 10px solid transparent;  opacity: 0.9; visibility: hidden; z-index: 1; top:" + (y-10) + "px; left: " + (x+14) + "px;'></div> ");
+                    $('#bugList').append("<div id = bugListNo" + divId + ">" + bugText + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><font id = 'bugListLink" + divId + "'>SHOW</font></a><br /><br />");
+                //};
+                };
+                // End bugNote function
+
+                // test loop for creating multiple notes
+
+                {% if board_nodes %}
+                var circleId = 0;
+					{% for i in board_nodes %}
+						var newCircle = "circle" + circleId;
+						newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.description|linebreaksbr}}", circleId);
+						circleId ++;
+				{% endfor %}
+				{% else %}
+					<p>No Board nodes</p>
+				{% endif %}
+                /*for (var i=0;i<tooltipInfo.length;i++){
+                    var newCircle = "circle" + i;
+                    newCircle = new bugNote(tooltipInfo[i]["x"], tooltipInfo[i]["y"],tooltipInfo[i]["text"], i);
+
+                };
+                */
+                stage.add(shapesLayer);
+
+             };
+            imageObj.src = '/static/img/screenshot.png';
+
+             function toggleInfoBox(divId){
+                var toggleTooltipDiv = document.getElementById(divId);
+                var tooltipId = "#" + divId;
+                var bugListId = "#bugListNo" + divId;
+                var triangleId = "triangle" + divId;
+                var bugListLinkId = "#bugListLink" + divId;
+                var toggleTriangleDiv = document.getElementById(triangleId);
+                    if(toggleTooltipDiv.style.visibility == 'visible'){
+                        toggleTooltipDiv.style.visibility = 'hidden';
+                        toggleTriangleDiv.style.visibility = 'hidden';
+                        $(tooltipId).css('visibility', 'hidden');
+                        $(bugListId).css('background-color', 'green');
+                        $(bugListLinkId).text("Show");
+
+                    }else{
+                        toggleTooltipDiv.style.visibility = 'visible';
+                        toggleTriangleDiv.style.visibility = 'visible';
+                        $(tooltipId).css('visibility', 'visible');
+                        $(bugListId).css('background-color', 'yellow');
+                        $(bugListLinkId).text("Hide");
+                    };
+            };
+
+            function toggleBugListDiv(){
+                var toggleDiv = document.getElementById('bugList');
+                if(toggleDiv.style.visibility == 'visible'){
+                    toggleDiv.style.visibility = 'hidden'
+                    $('#toggler').text("Show");
+                }else{
+                    toggleDiv.style.visibility = 'visible'
+                    $('#toggler').text("Hide");
+                };
+            };
+
+         </script>
+<body>
+	<img id = 'canvas' src = '/static/{{board.image}}' />
+</body>
+{% endblock %}

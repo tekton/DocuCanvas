@@ -27,7 +27,7 @@ class BoardNote(models.Model):
 
 class BoardNode(models.Model):
     board = models.ForeignKey(Board)
-    nodeLink = models.ForeignKey(BoardNote, null=True, blank=True)
+    nodeLink = models.IntegerField(null=True, blank=True)
     x = models.FloatField(default=0)
     y = models.FloatField(default=0)
     nodeType = models.CharField(max_length=255, null=True, blank=True, default='note')
