@@ -25,7 +25,7 @@ def project_form(request):
                     print 'unable to save project'
 
                 if project.id:
-                    return redirect('projects.views.project_overview', project.id, permanent=True)
+                    return redirect('projects.views.project_overview', project.id)
                 else:
                     return render_to_response("projects/project_form.html", {'form': form}, context_instance=RequestContext(request))
         except Exception, e:
@@ -67,7 +67,7 @@ def edit(request, project_id):
                 print e
                 print form.errors
             if project.id:
-                return redirect('projects.views.project_overview', project.id, permanent=True)
+                return redirect('projects.views.project_overview', project.id)
             else:
                 return render_to_response('projects/project_edit.html', {'form': form, "project": project}, context_instance=RequestContext(request))
 

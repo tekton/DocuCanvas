@@ -17,7 +17,7 @@ def edit_report(request, year=0, month=0, day=0):
                 report = q[0] if q else UserDailyReport(user=request.user, date=form.cleaned_data['date'])
                 report.description = form.cleaned_data['personalReport']
                 report.save()
-                return redirect('daily_reports.views.edit_report', permanent=True)
+                return redirect('daily_reports.views.edit_report')
             except Exception, e:
                 print e
                 return render_to_response('daily_reports/daily_report_form.html', {'form': context_instance}, form=RequestContext(request))
@@ -57,7 +57,7 @@ def edit_global_report(request, year=0, month=0, day=0):
                 report = q[0] if q else DailyReport(date=form.cleaned_data['date'])
                 report.description = form.cleaned_data['personalReport']
                 report.save()
-                return redirect('daily_reports.views.edit_global_report', permanent=True)
+                return redirect('daily_reports.views.edit_global_report')
             except Exception, e:
                 print e
                 return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': True}, context_instance=RequestContext(request))

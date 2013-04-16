@@ -162,8 +162,6 @@
                 width: 20em;
                 padding: 1em;
                 position: absolute;
-                top: 4.5em;
-                right: 20em;
                 min-height: 2em;
                 height:auto;
                 overflow: hidden;
@@ -176,8 +174,6 @@
                 width: 20em;
                 padding: 1em;
                 position: absolute;
-                top: 4.5em;
-                right: 6.5em;
                 min-height: 2em;
                 height:auto;
                 overflow: hidden;
@@ -191,8 +187,6 @@
                 width: 135px;
                 padding: 1em;
                 position: absolute;
-                top: 4.5em;
-                right: 8.5em;
                 height: 2em;
                 overflow: hidden;
                 z-index:10;
@@ -203,8 +197,6 @@
                 width: 10em;
                 padding: 1em;
                 position: absolute;
-                top: 4.5em;
-                right:2em;
                 height: 2em;
                 overflow: hidden;
                 z-index:10;
@@ -431,6 +423,38 @@
                     NavMenu.items.slideUp();
                 },
 
+                ShowMenu: function(navId,trigger) {
+                    // Remove 5 second timeout (refer to .SetDisplayTimeout)
+                    NavMenu.ClearDisplayTimeout();
+
+                    // Itterate through all menu items and hide or show them
+                    NavMenu.items.each(function(i,el){
+                        el = $(el);
+
+                        // Toggle (slide) requested menu
+                        if (el.attr('id') == navId) {
+                            // Resets position of NavMenu to be aligned to the bottom left of the triggr
+                            // Top, Left, and Right attributes removed from CSS
+                            var offsetHeight = trigger.outerHeight(true),
+                                offsetPosition = trigger.offset();
+
+                            el.css({
+                                top: offsetPosition.top + offsetHeight,
+                                left: offsetPosition.left
+                            });
+
+                            el.slideToggle();
+                        }
+                        // Hide any other menu
+                        else {
+                            el.slideUp();
+                        }
+                    });
+
+                    // Re-add timeout
+                    NavMenu.SetDisplayTimeout();
+                },
+
                 Init: function(){
                     // Get mapped IDs for triggers and menus and put them into a DOM query array
                     $.each(NavMenu.mapping, function(k,v){
@@ -442,26 +466,9 @@
 
                     // Bind click event to triggers to show their corresponding menu, based on mapping
                     NavMenu.triggers.on("click", function(evt){
-                        // Remove 5 second timeout (refer to .SetDisplayTimeout)
-                        NavMenu.ClearDisplayTimeout();
-
-                        var navId = NavMenu.mapping[$(this).attr('id')];
-                        // Itterate through all menu items and hide or show them
-                        NavMenu.items.each(function(i,el){
-                            el = $(el);
-
-                            // Toggle (slide) requested menu
-                            if (el.attr('id') == navId) {
-                                el.slideToggle();
-                            }
-                            // Hide any other menu
-                            else {
-                                el.slideUp();
-                            }
-                        });
-
-                        // Re-add timeout
-                        NavMenu.SetDisplayTimeout();
+                        var trigger = $(this),
+                            navId = NavMenu.mapping[trigger.attr('id')];
+                        NavMenu.ShowMenu(navId,trigger);
                     });
 
 
@@ -483,7 +490,6 @@
                         }
                        
                         if ( $(el).parents('.navitem').length == 0 ) {
-                            
                             NavMenu.HideAll();
                         }
                     });
