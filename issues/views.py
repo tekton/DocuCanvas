@@ -1,14 +1,14 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.utils import simplejson
 from django.db import models
 from django.db.models import Q
 # from projects.models import Project
-from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue
+from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue
 from projects.models import Project
-from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm
+from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm
 from django.contrib.auth.models import User
 
 
@@ -102,6 +102,43 @@ def set_bug_state(request):
     except:
         to_json["status"] = "Unable to set bug state"
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+
+
+def meta_issue_form(request, issue_id=-1):
+    if request.method == "GET":
+        if issue_id == -1:
+            return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True}, context_instance=RequestContext(request))
+
+        try:
+            mi = MetaIssue.objects.get(pk=issue_id)
+        except MetaIssue.DoesNotExist:
+            raise Http404
+
+        return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(instance=mi), 'new': False}, context_instance=RequestContext(request))
+    else:
+        if issue_id != -1:
+            try:
+                mi = MetaIssue.objects.get(pk=issue_id)
+            except MetaIssue.DoesNotExist:
+                raise Http404
+            form = MetaIssueForm(data=request.POST, instance=mi)
+        else:
+            form = MetaIssueForm(data=request.POST)
+
+        if form.is_valid():
+            try:
+                mi = form.save()
+            except Exception as e:
+                print e
+                raise e
+
+            if form.instance:
+                return redirect('issues.views.meta_issue_form', mi.id)
+            else:
+                return redirect('issues.views.meta_issue_form')
+
+        else:
+            return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': form.instance is None}, context_instance=RequestContext(request))
 
 
 def issue_form(request):

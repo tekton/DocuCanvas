@@ -25,6 +25,11 @@ class CommentForm(forms.ModelForm):
         model = IssueComment
 
 
+class MetaIssueForm(forms.ModelForm):
+    class Meta:
+        model = MetaIssue
+
+
 class AdvSearchForm(forms.Form):
     project = forms.ModelMultipleChoiceField(required=False, queryset=Project.objects.all())
     meta_issues = forms.ModelMultipleChoiceField(required=False, queryset=MetaIssue.objects.all())
