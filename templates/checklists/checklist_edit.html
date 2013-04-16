@@ -1,20 +1,109 @@
 {% extends "base.html" %}
-
 {% block style %}
 label{
     text-align:left;
 }
+
+textarea{
+    max-height:2em;
+}
+{% endblock %}
+
+{% block extra_head %}
+<script type="text/javascript">
+
+    function toggle_status(id) {
+        var total_forms = $('#id_checklisttag_set-TOTAL_FORMS').val(), total_checked = 0, all_checked = false;
+
+        $('[type="checkbox"]').each(function(){
+            if( $(this).attr('checked') == "checked"){
+                total_checked++;
+            }
+        })
+
+        if( total_checked == total_forms){
+            all_checked = true;
+        }
+        else{
+            all_checked = false;
+        }
+        $.ajax({
+            type:"POST",
+                    url:"/checklist/checkbox",
+                    data:{
+                        checklist_tag_id:id,
+                        all_checked:all_checked
+                    },
+            success: function(data){       
+                        //alert(data['status']);
+                    },
+            error: function(data){
+                //alert("Server side error");
+            }
+        });  
+    }
+
+    function submit_comment(id){
+        var id_string = "#comment_" + id;
+
+        $.ajax({
+            type:"POST",
+                    url:"/checklist/submit_tag_comment",
+                    data:{
+                        checklist_tag_id:id,
+                        comment:$(id_string).val()
+                    },
+            success: function(data){           
+                        //alert(data['status']);
+                    },
+            error: function(data){
+                //alert("Server side error");
+            }
+        });  
+    }
+
+</script>
+
 {% endblock %}
 
 {% block container %}
-    <form action="/checklist/instance/{{checklist_instance.id}}" method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{formset.management_form}}
+        {{form.management_form}}
         <table>
-        Checklist Instance {{checklist_instance_form.as_table}}
-        {{form.as_table}}
+        
+
+        {% for f in form%}
+                {{f.id.as_hidden}}
+                {{f.checklist_instance.as_hidden}}
+            <tr>
+                <td>
+                    {% if f.completion_status.value %}
+                        <input checked="checked" type="checkbox" name="checkbox{{f.id.value}}" id="checkbox{{f.id.value}}" onClick='toggle_status("{{f.id.value}}")'/>
+                    {% else %}
+                        <input  type="checkbox" name="checkbox{{f.id.value}}" id="checkbox{{f.id.value}}" onClick='toggle_status("{{f.id.value}}")'/>
+                    {% endif %}
+
+                </td>
+                <td>
+                    {{f.name.value}}
+                    {{f.name.as_hidden}}
+                </td>
+                <td>
+                    <textarea id="comment_{{f.id.value}}">{% if f.comment.value %}{{f.comment.value}}{% endif %}</textarea>
+                </td>
+                <td>
+                    <input type="button" onClick='submit_comment("{{f.id.value}}")' value="Submit Comment"/>
+                </td>
+                {{f.modified_by.as_hidden}}
+                {{f.modified.as_hidden}}
+            </tr>
+
+        {% endfor %}
+
+
         </table>
-    <input type="submit" value="Submit"/>
+
     </form>
 
 {% endblock %}

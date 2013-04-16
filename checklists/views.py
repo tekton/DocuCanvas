@@ -2,6 +2,8 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.forms.models import inlineformset_factory
+from django.http import HttpResponse
+from django.utils import simplejson
 from projects.models import *
 from checklists.models import *
 from checklists.forms import *
@@ -15,7 +17,7 @@ def project_checklists(request, project_id):
     checklist_instances = {}
     for checklist in checklists:
         try:
-            checklist_instance_list = ChecklistInstance.objects.filter(checklist=checklist)
+            checklist_instance_list = ChecklistInstance.objects.filter(checklist=checklist).order_by('-created')
             for checklist_instance in checklist_instance_list:
                 checklist_instance_key = checklist.name + str(checklist_instance.id)
                 checklist_instances[checklist_instance_key] = checklist_instance
@@ -83,11 +85,52 @@ def instance_edit(request, checklist_instance_id):
 
             checklist_instance_form.save()
             formset.save()
+            return project_checklists(request, checklist_instance.checklist.project.id)
     else:
         formset = ChecklistTagsFormset(instance=checklist_instance)
 
     checklist_instance_form = ChecklistInstanceFullForm(instance=checklist_instance)
-    return render_to_response("checklists/checklist_edit.html", {"form": formset, "checklist_instance_form": checklist_instance_form, "checklist_instance": checklist_instance, "page_type": checklist_instance.title, "page_value": "Edit"}, context_instance=RequestContext(request))
+    return render_to_response("checklists/checklist_edit.html", {"form": formset, "checklist_instance_form": checklist_instance_form, "checklist_instance": checklist_instance, "page_type": checklist_instance.title, "page_value": "Checklist"}, context_instance=RequestContext(request))
+
+
+def toggle_checkbox(request):
+    to_json = {}
+
+    try:
+        checklist_tag = ChecklistTag.objects.get(pk=request.POST['checklist_tag_id'])
+        if checklist_tag.completion_status is True:
+            checklist_tag.completion_status = False
+        else:
+            checklist_tag.completion_status = True
+
+        checklist_tag.save()
+        to_json['status'] = "Completed Check"
+    except Exception, e:
+        to_json['status'] = e
+
+    if request.POST['all_checked'] == "true":
+        try:
+            checklist_instance = ChecklistInstance.objects.get(pk=checklist_tag.checklist_instance.id)
+            checklist_instance.completion_status = True
+            checklist_instance.save()
+            to_json['status'] = "All Checkboxes Checked"
+        except Exception, e:
+            print e
+
+    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+
+
+def submit_tag_comment(request):
+    to_json = {}
+
+    try:
+        checklist_tag = ChecklistTag.objects.get(pk=request.POST['checklist_tag_id'])
+        checklist_tag.comment = request.POST['comment']
+        checklist_tag.save()
+        to_json['status'] = "Saved Comment"
+    except Exception, e:
+        to_json['status'] = e
+    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 
 def new_instance(request, checklist_id):
@@ -107,8 +150,8 @@ def new_instance(request, checklist_id):
     except Exception, e:
         print e
 
-    #return redirect('checklists.views.project_checklists', checklist.project.id, permanent=True)
-    return project_checklists(request, checklist.project.id)
+    #return project_checklists(request, checklist.project.id)
+    return redirect('checklists.views.project_checklists', checklist.project.id)
 
 
 def checklist_form_project(request, project_id):
@@ -133,7 +176,7 @@ def checklist_form_project(request, project_id):
             if checklist_form.is_valid() and formset.is_valid():
                 c = checklist_form.save()
                 formset.save()
-                return redirect('checklists.views.project_checklists', c.project.id, permanent=True)
+                return redirect('checklists.views.project_checklists', c.project.id)
 
     else:
         formset = ChecklistLayoutItemsFormset(instance=checklist)

@@ -115,7 +115,7 @@ def issue_form(request):
                 print e
                 print form.errors
             if issue.id:
-                return redirect('issues.views.issue_overview', issue.id, permanent=True)
+                return redirect('issues.views.issue_overview', issue.id)
             else:
                 return render_to_response('issues/issue_form.html', {'form': form}, context_instance=RequestContext(request))
 
@@ -176,7 +176,7 @@ def issue_overview(request, issue_id):
 
     form = IssueFullForm(instance=issue)
 
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": issue.title}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue"}, context_instance=RequestContext(request))
 
 
 def edit(request, issue_id):
@@ -190,7 +190,7 @@ def edit(request, issue_id):
                 print e
                 print form.errors
             if issue.id:
-                return redirect('issues.views.issue_overview', issue.id, permanent=True)
+                return redirect('issues.views.issue_overview', issue.id)
             else:
                 return render_to_response('issues/issue_edit.html', {'form': form, "issue": issue}, context_instance=RequestContext(request))
 
