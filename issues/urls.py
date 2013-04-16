@@ -5,6 +5,8 @@ from django.conf.urls.defaults import *
 '''
 
 urlpatterns = patterns('',
+    (r'meta/new$', 'issues.views.meta_issue_form'),
+    (r'meta/(\d+)/edit$', 'issues.views.meta_issue_form'),
     (r'(\d+)/edit', 'issues.views.edit'),
     (r'new/(\d+)', 'issues.views.issue_form_project'),
     (r'new', 'issues.views.issue_form'),
