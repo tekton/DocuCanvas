@@ -1,25 +1,33 @@
-/** include/table.css **/
-.tbl-generic {
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
-    vertical-align: top;
-}
-.tbl-generic td,
-.tbl-generic th {
-    padding: .2em .4em;
-}
-.tbl-generic .tbl-rowheader {
-    background: #bbb;
-    font-size: .7em;
-    height: 1.4em;
-}
-.tbl-generic th,
-.tbl-generic .tbl-fauxth {
-    font-weight: bold;
-    text-align: left;
-}
+/** START include/table.css **/
 
+/*
+ * Generic Table Style
+ * 
+ * Base class style to add to all tables
+ *     that you want to apply a style template to
+ */
+.tbl-generic { border-collapse: collapse; border-spacing: 0; width: 100%; }
+.tbl-generic td,
+.tbl-generic th { vertical-align: top; padding: .2em .4em; }
+.tbl-generic thead tr,
+.tbl-generic .tbl-rowheader { background: #bbb; font-size: .7em; height: 1.4em; }
+.tbl-generic th,
+.tbl-generic thead td,
+.tbl-generic .tbl-fauxth { font-weight: bold; text-align: left; }
+.tbl-generic .tbl-ui-trigger { width: 18px; padding-top: .5em; text-align: center; }
+.tbl-generic .tbl-project { width: 150px; }
+.tbl-generic .tbl-summary {}
+.tbl-generic .tbl-status {}
+.tbl-generic .tbl-date {}
+.tbl-generic .tbl-assigned_to { width: 125px; }
+
+
+/*
+ * Issues Table
+ * 
+ * Used on:
+ *     Project Overview : Issues
+ */
 .tbl-issues {
     width: 100%;
 }
@@ -43,6 +51,13 @@
     padding: .2em;
 }
 
+
+/*
+ * Comments Table
+ * 
+ * Used on:
+ *     Issue Overview : Comments
+ */
 .tbl-comments {
     margin: 2em auto;
 }
@@ -64,3 +79,23 @@
     width: 100%;
     padding: .2em;
 }
+
+
+/*
+ * Dashboard Table
+ * 
+ * Used on:
+ *     Dashboard
+ */
+.tbl-dashboard {}
+.tbl-dashboard .tbl-dashboard-project {
+    width: 150px;
+}
+.tbl-dashboard .tbl-dashboard-summary {}
+.tbl-dashboard .tbl-dashboard-assigned_to {
+    width: 125px;
+}
+
+
+
+/** END include/table.css **/

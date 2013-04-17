@@ -20,6 +20,9 @@
     overflow:hidden;
 }
 
+/*
+ * Deprecating - refer to 'tbl-generic' in 'include/table.css'
+ * 
 .dashboard_table{
     width:100%;
     border-collapse:collapse;
@@ -28,6 +31,7 @@
 .dashboard_table td{
     min-width:16px;
 }
+ */
 
 .add_remove{
     display:none;

@@ -109,10 +109,10 @@
                 {% endif %}
 
                 <tr>
-                    <td class="tbl-dashboard-name"><a href="/project/{{pin.project.id}}">{{pin.project.name}}</a></td>
-                    <td class="tbl-dashboard-summary"><a href="/issue/{{pin.id}}">{{pin.summary}}</a></td>
-                    <td class="tbl-dashboard-assigned_to"><a href="/auth/user/{{pin.assigned_to.id}}">{{pin.assigned_to}}</a></td>
-                    <td class="tbl-trigger"><div class="add_remove pin_issue ui-icon ui-icon-closethick" id="pin{{pin.id}}"></div></td>
+                    <td class="tbl-project"><a href="/project/{{pin.project.id}}">{{pin.project.name}}</a></td>
+                    <td class="tbl-summary"><a href="/issue/{{pin.id}}">{{pin.summary}}</a></td>
+                    <td class="tbl-assigned_to"><a href="/auth/user/{{pin.assigned_to.id}}">{{pin.assigned_to}}</a></td>
+                    <td class="tbl-ui-trigger"><div class="add_remove pin_issue ui-icon ui-icon-closethick" id="pin{{pin.id}}"></div></td>
                 </tr>
             {% endfor%}
             </table>
@@ -127,10 +127,10 @@
                 {% endif %}
 
                 <tr>
-                    <td class="tbl-dashboard-name"><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
-                    <td class="tbl-dashboard-summary"><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
-                    <td class="tbl-dashboard-assigned_to"><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
-                    <td class="tbl-trigger"><div class="add_remove assign_issue_to ui-icon ui-icon-closethick" id="assign{{issue.id}}"></div></td>
+                    <td class="tbl-project"><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
+                    <td class="tbl-summary"><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
+                    <td class="tbl-assigned_to"><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
+                    <td class="tbl-ui-trigger"><div class="add_remove assign_issue_to ui-icon ui-icon-closethick" id="assign{{issue.id}}"></div></td>
                 </tr>
             {% endfor%}
             </table>
@@ -146,10 +146,10 @@
                 {% endif %}
 
                 <tr>
-                    <td class="tbl-dashboard-name"><a href="/project/{{subscription.project.id}}">{{subscription.project.name}}</a></td>
-                    <td class="tbl-dashboard-summary"><a href="/issue/{{subscription.id}}">{{subscription.summary}}</a></td>
-                    <td class="tbl-dashboard-assigned_to"><a href="/auth/user/{{subscription.assigned_to.id}}">{{subscription.assigned_to}}</a></td>
-                    <td class="tbl-trigger"><div class="add_remove subscribe_to_issue ui-icon ui-icon-closethick" id="subscribe{{subscription.id}}"></div></td>
+                    <td class="tbl-project"><a href="/project/{{subscription.project.id}}">{{subscription.project.name}}</a></td>
+                    <td class="tbl-summary"><a href="/issue/{{subscription.id}}">{{subscription.summary}}</a></td>
+                    <td class="tbl-assigned_to"><a href="/auth/user/{{subscription.assigned_to.id}}">{{subscription.assigned_to}}</a></td>
+                    <td class="tbl-ui-trigger"><div class="add_remove subscribe_to_issue ui-icon ui-icon-closethick" id="subscribe{{subscription.id}}"></div></td>
                 </tr>
             {% endfor%}
             </table>
