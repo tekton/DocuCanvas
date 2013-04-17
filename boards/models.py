@@ -31,7 +31,7 @@ class BoardNode(models.Model):
     x = models.FloatField(default=0)
     y = models.FloatField(default=0)
     nodeType = models.CharField(max_length=255, null=True, blank=True, default='note')
-    
+
     #nodeLink = models.IntegerField(null=True, blank=True)  # Basic foreign key to nodeType
     # Fields used for testing
     #user = models.ForeignKey(User)

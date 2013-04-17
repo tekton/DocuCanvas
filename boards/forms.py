@@ -19,5 +19,5 @@ class BoardNoteForm(forms.ModelForm):
 
 
 class BoardNodeForm(forms.ModelForm):
-	class Meta:
- 		model = BoardNode
+    class Meta:
+        model = BoardNode

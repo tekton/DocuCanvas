@@ -90,12 +90,14 @@
                 {% if board_nodes %}
                 var circleId = 0;
 					{% for i in board_nodes %}
+                        if("{{i.board}}" == "{{board.title}}"){
 						var newCircle = "circle" + circleId;
 						newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.description|linebreaksbr}}", circleId);
 						circleId ++;
+                    };
 				{% endfor %}
 				{% else %}
-					<p>No Board nodes</p>
+					$('body').append('<p>No Board nodes</p>');
 				{% endif %}
                 /*for (var i=0;i<tooltipInfo.length;i++){
                     var newCircle = "circle" + i;
