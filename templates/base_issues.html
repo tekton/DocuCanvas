@@ -89,7 +89,7 @@
                 /*max-width: 1000px;*/
                 _width: 380px;
                 margin: 0 0 30px auto;
-                margin-right: 310px;
+                margin-right: 330px;
                 padding: 30px 20px 50px;
                 border: 1px solid white;
                 border-radius: 4px;
@@ -121,8 +121,8 @@
             }
 
             .spiffy_box {
-                max-width: 250px;
-                _width: 250px;
+                width: 275px;
+                _width: 275px;
                 margin: 0 auto;
 
                 padding: 30px 20px 50px;
@@ -285,63 +285,7 @@
     padding-top: .6em;
     font-size: 30px;
 }
-.tbl-generic {
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
-    vertical-align: top;
-}
-.tbl-generic .tbl-rowheader {
-    background: #bbb;
-    font-size: .7em;
-    height: 1.4em;
-}
-.tbl-generic th,
-.tbl-generic .tbl-fauxth {
-    font-weight: bold;
-    text-align: left;
-}
-
-.tbl-issues {}
-.tbl-issues th {
-    text-align: left;
-}
-.tbl-issues .tbl-issues-summary {
-    width: 85%;
-}
-.tbl-issues .tbl-issues-status {
-    width: 15%;
-}
-
-.tbl-overview {}
-.tbl-overview td {
-    padding: .2em .4em;
-}
-.tbl-overview .tbl-overview-content {
-    padding: .2em;
-}
-
-.tbl-comments {
-    margin: 2em auto;
-}
-.tbl-comments .comment_textarea textarea {
-    width: 100%;
-}
-.tbl-comments .tbl-comments-user {
-    font-weight: bold;
-    text-align: left;
-    padding: .2em .4em;
-}
-.tbl-comments .tbl-comments-created {
-    text-align: right;
-    padding: .2em .4em;
-    font-weight: normal;
-}
-.tbl-comments .tbl-comments-description {
-    font-size: 1em;
-    width: 100%;
-    padding: .2em;
-}
+{% include "include/table.css" %}
 
         {% block style %}{% endblock %}
         </style>
@@ -388,115 +332,7 @@
             }
 
             /* Nav Menu - START */
-            var NavMenu = {
-                items: [],
-                triggers: [],
-                mapping: {
-                    'account' : 'account_nav',
-                    'projects_list' : 'projects_nav',
-                    'context' : 'context_nav',
-                    'search_icon' : 'search_nav'
-                },
-                _timeout: null,
-
-                ClearDisplayTimeout: function(){
-                    // Clears display timeout
-                    if (NavMenu._timeout) {
-                        clearTimeout(NavMenu._timeout);
-                    }
-                },
-
-                SetDisplayTimeout: function(){
-                    // Hide any open menu after 5 seconds if: 
-                    //  Desktop User - mouses out from menu
-                    //  Mobile User - does not click a menu item
-                    NavMenu.ClearDisplayTimeout();
-                    NavMenu._timeout = setTimeout(function(){
-                        NavMenu.items.slideUp();
-                    },5000);
-                },
-
-                HideAll: function(){
-                    // Removes any pending timeout since we won't need it
-                    NavMenu.ClearDisplayTimeout();
-                    // Hide all visible menu items
-                    NavMenu.items.slideUp();
-                },
-
-                ShowMenu: function(navId,trigger) {
-                    // Remove 5 second timeout (refer to .SetDisplayTimeout)
-                    NavMenu.ClearDisplayTimeout();
-
-                    // Itterate through all menu items and hide or show them
-                    NavMenu.items.each(function(i,el){
-                        el = $(el);
-
-                        // Toggle (slide) requested menu
-                        if (el.attr('id') == navId) {
-                            // Resets position of NavMenu to be aligned to the bottom left of the triggr
-                            // Top, Left, and Right attributes removed from CSS
-                            var offsetHeight = trigger.outerHeight(true),
-                                offsetPosition = trigger.offset();
-
-                            el.css({
-                                top: offsetPosition.top + offsetHeight,
-                                left: offsetPosition.left
-                            });
-
-                            el.slideToggle();
-                        }
-                        // Hide any other menu
-                        else {
-                            el.slideUp();
-                        }
-                    });
-
-                    // Re-add timeout
-                    NavMenu.SetDisplayTimeout();
-                },
-
-                Init: function(){
-                    // Get mapped IDs for triggers and menus and put them into a DOM query array
-                    $.each(NavMenu.mapping, function(k,v){
-                        NavMenu.triggers.push('#'+k);
-                        NavMenu.items.push('#'+v);
-                    });
-                    NavMenu.items = $(NavMenu.items.join(','));
-                    NavMenu.triggers = $(NavMenu.triggers.join(','));
-
-                    // Bind click event to triggers to show their corresponding menu, based on mapping
-                    NavMenu.triggers.on("click", function(evt){
-                        var trigger = $(this),
-                            navId = NavMenu.mapping[trigger.attr('id')];
-                        NavMenu.ShowMenu(navId,trigger);
-                    });
-
-
-                    NavMenu.items.on({
-                        // Removes display timeout if the user is currently within the menu (desktop users)
-                        mouseover: NavMenu.ClearDisplayTimeout,
-
-                        // Re-add timeout after they mouse over menu
-                        mouseout: NavMenu.SetDisplayTimeout
-                    });
-
-                    // If user clicks anything other than a menu item or trigger, hide the menus
-                    $(document).click(function(evt){
-                        var el = evt.target;
-
-                        if ( $.inArray(el, NavMenu.triggers) > -1 || $.inArray(el, NavMenu.items) > -1 ) {
-                            // Nav menu item was clicked
-                            return;
-                        }
-                       
-                        if ( $(el).parents('.navitem').length == 0 ) {
-                            NavMenu.HideAll();
-                        }
-                    });
-
-                    $('#search').on('click', NavMenu.HideAll);
-                }
-            };
+{% include "include/NavMenu.js" %}
             /* Nav Menu - END */
             
             $(document).ready(function(){

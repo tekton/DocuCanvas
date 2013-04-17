@@ -1,0 +1,66 @@
+/** include/table.css **/
+.tbl-generic {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    vertical-align: top;
+}
+.tbl-generic td,
+.tbl-generic th {
+    padding: .2em .4em;
+}
+.tbl-generic .tbl-rowheader {
+    background: #bbb;
+    font-size: .7em;
+    height: 1.4em;
+}
+.tbl-generic th,
+.tbl-generic .tbl-fauxth {
+    font-weight: bold;
+    text-align: left;
+}
+
+.tbl-issues {
+    width: 100%;
+}
+.tbl-issues th {
+    text-align: left;
+}
+.tbl-issues .tbl-issues-summary {
+    width: 60%;
+}
+.tbl-issues .tbl-issues-status {
+    width: 18%;
+}
+
+.tbl-issues .tbl-issues-assigned_to {
+    width: 22%;
+}
+
+.tbl-overview {}
+.tbl-overview td {}
+.tbl-overview .tbl-overview-content {
+    padding: .2em;
+}
+
+.tbl-comments {
+    margin: 2em auto;
+}
+.tbl-comments .comment_textarea textarea {
+    width: 100%;
+}
+.tbl-comments .tbl-comments-user {
+    font-weight: bold;
+    text-align: left;
+    padding: .2em .4em;
+}
+.tbl-comments .tbl-comments-created {
+    text-align: right;
+    padding: .2em .4em;
+    font-weight: normal;
+}
+.tbl-comments .tbl-comments-description {
+    font-size: 1em;
+    width: 100%;
+    padding: .2em;
+}
