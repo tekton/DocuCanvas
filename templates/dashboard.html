@@ -115,56 +115,56 @@
 
         <div class="dashboard_container_section">
             <h3>Pinned</h3>
-            <table class="dashboard_table">
+            <table class="dashboard_table tbl-generic tbl-dashboard">
             {% for pin in pins%}
 
                 {% if newest_pin != pin.created %}
                     {% set newest_pin = pin.created%}
-                    <tr class="date_header"><td colspan="4">{{pin.created}}</td></tr>
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{pin.created}}</td></tr>
                 {% endif %}
 
                 <tr>
-                    <td><a href="/project/{{pin.project.id}}">{{pin.project.name}}</a></td>
-                    <td><a href="/issue/{{pin.id}}">{{pin.summary}}</a></td>
-                    <td><a href="/auth/user/{{pin.assigned_to.id}}">{{pin.assigned_to}}</a></td>
-                    <td><div class="add_remove pin_issue ui-icon ui-icon-closethick" id="pin{{pin.id}}"></div></td>
+                    <td class="tbl-dashboard-name"><a href="/project/{{pin.project.id}}">{{pin.project.name}}</a></td>
+                    <td class="tbl-dashboard-summary"><a href="/issue/{{pin.id}}">{{pin.summary}}</a></td>
+                    <td class="tbl-dashboard-assigned_to"><a href="/auth/user/{{pin.assigned_to.id}}">{{pin.assigned_to}}</a></td>
+                    <td class="tbl-trigger"><div class="add_remove pin_issue ui-icon ui-icon-closethick" id="pin{{pin.id}}"></div></td>
                 </tr>
             {% endfor%}
             </table>
         </div>
         <div class="dashboard_container_section">
             <h3>Assigned</h3>
-            <table class="dashboard_table">
+            <table class="dashboard_table tbl-generic tbl-dashboard">
             {% for issue in issues%}
                 {% if newest_assigned != issue.created %}
                     {% set newest_assigned = issue.created %}
-                    <tr class="date_header"><td colspan="4">{{issue.created}}</td></tr>
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{issue.created}}</td></tr>
                 {% endif %}
 
                 <tr>
-                    <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
-                    <td><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
-                    <td><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
-                    <td><div class="add_remove assign_issue_to ui-icon ui-icon-closethick" id="assign{{issue.id}}"></div></td>
+                    <td class="tbl-dashboard-name"><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
+                    <td class="tbl-dashboard-summary"><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
+                    <td class="tbl-dashboard-assigned_to"><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
+                    <td class="tbl-trigger"><div class="add_remove assign_issue_to ui-icon ui-icon-closethick" id="assign{{issue.id}}"></div></td>
                 </tr>
             {% endfor%}
             </table>
         </div>
         <div class="dashboard_container_section">
             <h3>Subscribed</h3>
-            <table class="dashboard_table">
+            <table class="dashboard_table tbl-generic tbl-dashboard">
             {% for subscription in subscribed%}
 
                 {% if newest_subscribed != subscription.created %}
                     {% set newest_subscribed = subscription.created%}
-                    <tr class="date_header"><td colspan="4">{{subscription.created}}</td></tr>
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{subscription.created}}</td></tr>
                 {% endif %}
 
                 <tr>
-                    <td><a href="/project/{{subscription.project.id}}">{{subscription.project.name}}</a></td>
-                    <td><a href="/issue/{{subscription.id}}">{{subscription.description}}</a></td>
-                    <td><a href="/auth/user/{{subscription.assigned_to.id}}">{{subscription.assigned_to}}</a></td>
-                    <td><div class="add_remove subscribe_to_issue ui-icon ui-icon-closethick" id="subscribe{{subscription.id}}"></div></td>
+                    <td class="tbl-dashboard-name"><a href="/project/{{subscription.project.id}}">{{subscription.project.name}}</a></td>
+                    <td class="tbl-dashboard-summary"><a href="/issue/{{subscription.id}}">{{subscription.summary}}</a></td>
+                    <td class="tbl-dashboard-assigned_to"><a href="/auth/user/{{subscription.assigned_to.id}}">{{subscription.assigned_to}}</a></td>
+                    <td class="tbl-trigger"><div class="add_remove subscribe_to_issue ui-icon ui-icon-closethick" id="subscribe{{subscription.id}}"></div></td>
                 </tr>
             {% endfor%}
             </table>
