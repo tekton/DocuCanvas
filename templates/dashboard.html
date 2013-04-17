@@ -80,7 +80,7 @@
             });
 
             $('.add_remove').closest('tr').hover(function() {
-                $(this).find('.add_remove').fadeIn();
+                $(this).find('.add_remove').stop(true).hide().fadeIn();
             }, function() {
                 $(this).find('.add_remove').fadeOut();
             });
