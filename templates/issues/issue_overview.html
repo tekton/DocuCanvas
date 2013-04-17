@@ -78,7 +78,8 @@
 
 	<a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
 
-	<a href="/issue/assign/{{ issue.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Assign to me{% endif %}</a>
+	<a href="/issue/assign/{{ issue.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a>
+
 	<a>Assign To:
 		<select id="assigned_user">
 			{% for user in users%}<option value="{{user.id}}">{{user.username}}</option>

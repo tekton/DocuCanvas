@@ -6,6 +6,7 @@ from projects.models import Project
 ISSUETYPE = (("bug", "Bug"), ("task", "Task"), ("suggestion", "Suggestion"))
 BUGSTATE = (("not_a_bug", "Not a bug"), ("wont_fix", "Won't Fix"), ("duplicate", "Duplicate"), ("active", "Active"), ("fixed", "Fixed"), ("retest", "Retest"), ("unverified", "Unverified"))
 
+
 class MetaIssue(models.Model):
     project = models.ForeignKey(Project)  # fk
     # info
@@ -16,6 +17,9 @@ class MetaIssue(models.Model):
     mi_type = models.CharField(max_length=255, choices=(('feature', 'Feature'), ('milestone', 'Milestone')))
     #
     user_story = models.TextField()
+
+    def __unicode__(self):
+        return self.title
 
 
 class Issue(models.Model):
@@ -40,7 +44,7 @@ class Issue(models.Model):
     assigned_to = models.ForeignKey(User, blank=True, null=True)
     # basic information
     title = models.CharField(max_length=255, blank=True, null=True)
-    summary = models.CharField(max_length=140, blank=True, null=True)
+    summary = models.CharField(max_length=140, default="No Summary")
     description = models.TextField(null=True, blank=True)
     link_slug = models.SlugField(null=True, blank=True)
     # bug centric

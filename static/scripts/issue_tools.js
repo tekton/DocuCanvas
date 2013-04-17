@@ -74,11 +74,11 @@ function assignUser( url, user_id ) {
                 alert( "Issue now assigned to you." );
             }
             else if ( data.assigned_to == "none" ) {
-                $('a.assign_issue').text( "Assign to me" );
+                $('a.assign_issue').text( "Take" );
                 alert( "Issue unassigned." );
             }
             else if ( data.assigned_to == "user" ) {
-                $('a.assign_issue').text( "Assign to me" );
+                $('a.assign_issue').text( "Take" );
                 alert( "Issue successfully assigned." );
             }
         }
