@@ -17,4 +17,36 @@
     border-radius: 4px;
     box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
     background: #fcfcfc;
+    overflow:hidden;
+}
+
+.dashboard_table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.dashboard_table td{
+    min-width:16px;
+}
+
+.add_remove{
+    display:none;
+}
+
+.add_remove:hover {
+    cursor:pointer;
+}
+
+.date_header {
+    background:#bbb;
+    height:0.5em;
+    font-size:0.6em;
+}
+
+
+h3 {
+    margin:0 0 0.5em;
+    width:10%;
+    height:100%;
+    float:left;
 }

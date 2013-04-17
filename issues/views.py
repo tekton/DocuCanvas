@@ -321,3 +321,8 @@ def submit_comment(request, issue_id):
         # form = CommentForm(user=User, issue=issue)
         form = CommentForm()
     return redirect('issues.views.issue_overview', issue_id, permanent=False)
+
+
+def unassigned_issues(request):
+    q = Issue.objects.filter(Q(assigned_to__isnull = True) & (Q(status = "active") | Q(status = "retest") | Q(status = "unverified") | Q(status__isnull=True)))
+    return render_to_response('issues/issue_unassigned.html', {'issues': q}, context_instance=RequestContext(request))
