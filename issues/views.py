@@ -11,6 +11,7 @@ from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm
 
 
+@login_required
 def pin(request, issue_id):
     to_json = {'success': True, 'is_pinned': False, 'error': False}
     try:
@@ -90,29 +91,43 @@ def assign(request, issue_id, user_id=-1):
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 
-def subscribe(request):
-    to_json = {}
+@login_required
+def subscribe(request, issue_id):
+    to_json = {'success': True, 'is_subscribed': False, 'error': False}
     try:
-        issue = Issue.objects.get(pk=request.POST['issue'])
+        issue = Issue.objects.get(pk=issue_id)
+    except Issue.DoesNotExist:
+        raise Http404
+
+    try:
+        subscription = SubscriptionToIssue.objects.get(user=request.user, issue=issue)
+    except SubscriptionToIssue.DoesNotExist:
+        subscription = None
+
+    if subscription:
         try:
-            subscription = SubscriptionToIssue.objects.get(user=request.user, issue=issue)
             subscription.delete()
-            to_json["status"] = "Unsubscribing Issue"
-        except:
-            try:
-                subscription = SubscriptionToIssue()
-                subscription.issue = issue
-                subscription.user = request.user
-                subscription.save()
-                to_json["status"] = "Successfully subscribed to Issue"
-            except Exception, e:
-                print e
-                to_json["status"] = "Error subscribing to issue"
-    except:
-        to_json["status"] = "Issue does not exist"
+        except Exception as e:
+            to_json['success'] = False
+            to_json['error'] = str(e)
+            print e
+    else:
+        subscription = SubscriptionToIssue()
+        subscription.issue = issue
+        subscription.user = request.user
+        try:
+            subscription.save()
+        except Exception as e:
+            to_json['success'] = False
+            to_json['error'] = str(e)
+            print e
+        else:
+            to_json['is_subscribed'] = True
+
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 
+@login_required
 def set_bug_state(request):
     to_json = {}
     print 'trying to set bug state'
@@ -130,6 +145,7 @@ def set_bug_state(request):
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 
+@login_required
 def meta_issue_form(request, issue_id=-1):
     if request.method == "GET":
         if issue_id == -1:
@@ -167,6 +183,7 @@ def meta_issue_form(request, issue_id=-1):
             return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': form.instance is None}, context_instance=RequestContext(request))
 
 
+@login_required
 def issue_form(request):
     if request.method == 'POST':
         issue = Issue()
@@ -191,6 +208,7 @@ def issue_form(request):
     return render_to_response("issues/issue_form.html", {'form': form, "projects": projects, "page_type": "Issue", "page_value": "New"}, context_instance=RequestContext(request))
 
 
+@login_required
 def issue_form_project(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
@@ -201,6 +219,7 @@ def issue_form_project(request, project_id):
         form = IssueForm()
     return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': project.name, 'page_value': "Issue", 'projects': projects}, context_instance=RequestContext(request))
 
+@login_required
 def issue_overview(request, issue_id):
     try:
         issue = Issue.objects.get(pk=issue_id)
@@ -242,6 +261,7 @@ def issue_overview(request, issue_id):
     return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue"}, context_instance=RequestContext(request))
 
 
+@login_required
 def edit(request, issue_id):
     if request.method == 'POST':
         issue = Issue.objects.get(pk=issue_id)
@@ -263,6 +283,7 @@ def edit(request, issue_id):
     return render_to_response("issues/issue_edit.html", {"form": form, "issue": issue, "page_type": "Edit", "page_value": issue.title}, context_instance=RequestContext(request))
 
 
+@login_required
 def issue_search_simple(request):
     if request.method == "GET":
         return render_to_response("issues/issue_adv_search.html", context_instance=RequestContext(request))
@@ -274,6 +295,7 @@ def issue_search_simple(request):
     return render_to_response("issues/issue_search_results.html", {'results': q}, context_instance=RequestContext(request))
 
 
+@login_required
 def issue_search_advanced(request):
     if request.method == "GET":
         return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm()}, context_instance=RequestContext(request))
@@ -303,6 +325,7 @@ def issue_search_advanced(request):
     return render_to_response("issues/issue_search_results.html", {'results': results}, context_instance=RequestContext(request))
 
 
+@login_required
 def submit_comment(request, issue_id):
     """
         Bad assumption: will only be called with POST...
@@ -349,6 +372,7 @@ def submit_comment(request, issue_id):
     return redirect('issues.views.issue_overview', issue_id, permanent=False)
 
 
+@login_required
 def unassigned_issues(request):
     q = Issue.objects.filter(Q(assigned_to__isnull = True) & (Q(status = "active") | Q(status = "retest") | Q(status = "unverified") | Q(status__isnull=True)))
     return render_to_response('issues/issue_unassigned.html', {'issues': q}, context_instance=RequestContext(request))

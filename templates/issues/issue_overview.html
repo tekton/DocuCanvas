@@ -7,32 +7,6 @@
 	<script type="text/javascript">
 		$(document).ready(function(){
 
-            $('a.subscribe_to_issue').click(function(){
-                $.ajax({
-                    type:"POST",
-                    url:"/issue/subscribe",
-                    data:{
-                        issue:"{{issue.id}}"
-                    },
-                    success: function(data){
-                        // Hides nav menu only after successfull submission
-                        NavMenu.HideAll();
-
-                        alert(data['status']);
-                        if( data['status'] == "Unsubscribing Issue"){
-                            $('a.subscribe_to_issue').text("Subscribe");
-                        }
-                        else if(data['status'] == "Successfully subscribed to Issue"){
-                            $('a.subscribe_to_issue').text("Unsubscribe");
-                        }
-                    },
-                    error: function(data){
-                        alert("Server side error");
-                    }
-
-                });
-            });
-
             $('#set_bug_status').click(function(){
 
         		if( $('#id_status').val() == "fixed"){
@@ -100,15 +74,11 @@
 {% block context_nav %}
 	<a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a>
 
-	{% if subscribe == None%}
-		<a class="subscribe_to_issue">Subscribe</a>
-	{% else %}
-		<a class="subscribe_to_issue">Unsubscribe</a>
-	{% endif %}
+	<a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a>
 
-		<a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
+	<a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
 
-	<a href="/issue/assign/{{ issue.id }}/{{ user.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Assign to me{% endif %}</a>
+	<a href="/issue/assign/{{ issue.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Assign to me{% endif %}</a>
 	<a>Assign To:
 		<select id="assigned_user">
 			{% for user in users%}<option value="{{user.id}}">{{user.username}}</option>
