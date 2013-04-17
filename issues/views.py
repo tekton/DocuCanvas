@@ -1,14 +1,14 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.utils import simplejson
 from django.db import models
 from django.db.models import Q
 # from projects.models import Project
-from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue
+from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue
 from projects.models import Project
-from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm
+from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm
 from django.contrib.auth.models import User
 
 
@@ -104,6 +104,43 @@ def set_bug_state(request):
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 
+def meta_issue_form(request, issue_id=-1):
+    if request.method == "GET":
+        if issue_id == -1:
+            return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True}, context_instance=RequestContext(request))
+
+        try:
+            mi = MetaIssue.objects.get(pk=issue_id)
+        except MetaIssue.DoesNotExist:
+            raise Http404
+
+        return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(instance=mi), 'new': False}, context_instance=RequestContext(request))
+    else:
+        if issue_id != -1:
+            try:
+                mi = MetaIssue.objects.get(pk=issue_id)
+            except MetaIssue.DoesNotExist:
+                raise Http404
+            form = MetaIssueForm(data=request.POST, instance=mi)
+        else:
+            form = MetaIssueForm(data=request.POST)
+
+        if form.is_valid():
+            try:
+                mi = form.save()
+            except Exception as e:
+                print e
+                raise e
+
+            if form.instance:
+                return redirect('issues.views.meta_issue_form', mi.id)
+            else:
+                return redirect('issues.views.meta_issue_form')
+
+        else:
+            return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': form.instance is None}, context_instance=RequestContext(request))
+
+
 def issue_form(request):
     if request.method == 'POST':
         issue = Issue()
@@ -115,7 +152,7 @@ def issue_form(request):
                 print e
                 print form.errors
             if issue.id:
-                return redirect('issues.views.issue_overview', issue.id, permanent=True)
+                return redirect('issues.views.issue_overview', issue.id)
             else:
                 return render_to_response('issues/issue_form.html', {'form': form}, context_instance=RequestContext(request))
 
@@ -136,8 +173,7 @@ def issue_form_project(request, project_id):
     except:
         print "Unable to find associated project"
         form = IssueForm()
-    return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': 'Issue', 'page_value': project.name, 'projects': projects}, context_instance=RequestContext(request))
-
+    return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': project.name, 'page_value': "Issue", 'projects': projects}, context_instance=RequestContext(request))
 
 def issue_overview(request, issue_id):
     try:
@@ -167,7 +203,7 @@ def issue_overview(request, issue_id):
     try:
         subscribe = SubscriptionToIssue.objects.get(issue=issue, user=request.user)
     except:
-        print 'Unable to find subsription for issue'
+        print 'Unable to find subscription for issue'
         subscribe = None
 
     try:
@@ -177,7 +213,7 @@ def issue_overview(request, issue_id):
 
     form = IssueFullForm(instance=issue)
 
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": issue.title}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue"}, context_instance=RequestContext(request))
 
 
 def edit(request, issue_id):
@@ -191,7 +227,7 @@ def edit(request, issue_id):
                 print e
                 print form.errors
             if issue.id:
-                return redirect('issues.views.issue_overview', issue.id, permanent=True)
+                return redirect('issues.views.issue_overview', issue.id)
             else:
                 return render_to_response('issues/issue_edit.html', {'form': form, "issue": issue}, context_instance=RequestContext(request))
 

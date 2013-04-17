@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block container %}
-    <form action="/checklist/{{checklist_instance_id}}/edit" method="post" enctype="multipart/form-data">
+    <form action="/checklist/{{checklist_id}}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{formset.management_form}}
         <table>
-            {{checklist_instance_form.as_table}}
+            {{checklist_form.as_table}}
 
             {% for form in formset.forms %}
                 <table>
@@ -17,8 +17,5 @@
     <input type="submit" name="submit" value="Submit"/>
     </form><br>
 
-    <table>
-        Checklist Instances
-    </table>
 
 {% endblock %}

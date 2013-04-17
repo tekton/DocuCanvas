@@ -146,7 +146,7 @@ INSTALLED_APPS = (
     'daily_reports',
     'boards',
     'food',
-)
+ )
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

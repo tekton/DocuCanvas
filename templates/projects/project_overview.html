@@ -1,9 +1,10 @@
 {% extends "base_issues.html" %}
 
 {% block context_nav %}
-	<a href="/issue/new/{{project_O.id}}">New Issue : {{project_O.name}}</a>
-	<a href="/issue/new/{{project_O.id}}">New Risk : {{project_O.name}}</a>
-	<a href="/checklist/new/{{project_O.id}}">New Checklist : {{project_O.name}}</a>
+	<a href="/issue/new/{{project_O.id}}">New Issue</a>
+	<a href="/issue/new/{{project_O.id}}">New Risk</a>
+	<a href="/checklist/new/{{project_O.id}}">New Checklist</a>
+	<a href="/checklist/project/{{project_O.id}}">Checklists</a>
 	<a href="/project/{{project_O.id}}/edit">Edit Project</a>
 {% endblock%}
 
@@ -13,19 +14,19 @@
 			<td class="tbl-fauxth">Scope</td>
 		</tr>
 		<tr>
-			<td class="tbl-overview-content">{{project_O.scope}}</td>
+			<td class="tbl-overview-content"></td>
 		</tr>
 		<tr class="tbl-rowheader">
 			<td class="tbl-fauxth">Description</td>
 		</tr>
 		<tr>
-			<td class="tbl-overview-content">{{project_O.description}}</td>
+			<td class="tbl-overview-content"></td>
 		</tr>
 		<tr class="tbl-rowheader">
 			<td class="tbl-fauxth">Business Case</td>
 		</tr>
 		<tr>
-			<td class="tbl-overview-content">{{project_O.business_case}}</td>
+			<td class="tbl-overview-content"></td>
 		</tr>
 	</table>
 {% endblock %}
@@ -51,11 +52,13 @@
 		<tr>
 			<th class="tbl-issues-summary">Summary</th>
 			<th class="tbl-issues-status">Status</th>
+			<th class="tbl-issues-assigned_to">Assigned To</th>
 		</tr>
 	{% for issue in issues%}
 		<tr>
 			<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
 			<td>{{issue.status}}</td>
+			<td>{{issue.assigned_to}}</td>
 		</tr>
 	{% endfor %}
 	</table>
