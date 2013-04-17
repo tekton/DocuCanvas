@@ -3,73 +3,37 @@
 
 
 {% block extra_head%}
+    <script type="text/javascript" src="/static/scripts/issue_tools.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
-            var issue_id = $('#issue_id').val();
-			$('#subscribe_to_issue').click(function(){
-            	$.ajax({
-				    type:"POST",
-				    url:"/issue/subscribe",
-				    data:{
-				    	issue:"{{issue.id}}"
-				    },
-				    success: function(data){
-				    	// Hides nav menu only after successfull submission
-				    	NavMenu.HideAll();	
-				    	
-				    	alert(data['status']);
-				    	if( data['status'] == "Unsubscribing Issue"){
-				    		$('#subscribe_to_issue').text("Subscribe");
-				    	}
-				    	else if(data['status'] == "Successfully subscribed to Issue"){
-				    		$('#subscribe_to_issue').text("Unsubscribe");
-				    	}
-				    },
-				    error: function(data){
-				    	alert("Server side error");
-				    }
 
-				});
-        	});
+            $('a.subscribe_to_issue').click(function(){
+                $.ajax({
+                    type:"POST",
+                    url:"/issue/subscribe",
+                    data:{
+                        issue:"{{issue.id}}"
+                    },
+                    success: function(data){
+                        // Hides nav menu only after successfull submission
+                        NavMenu.HideAll();
 
-			$('#pin_issue').click(function(e) {
-                e.preventDefault();
-            	$.get($(this).attr('href'), function(data, status) {
-                    // Hides nav menu only after successful submission
-                    NavMenu.HideAll();
-                    if ( data.success ) {
-                        if ( data.is_pinned ) {
-                            $('#pin_issue').text("Unpin");
-                            alert( "Issue pinned" );
+                        alert(data['status']);
+                        if( data['status'] == "Unsubscribing Issue"){
+                            $('a.subscribe_to_issue').text("Subscribe");
                         }
-                        else {
-                            $('#pin_issue').text("Pin");
-                            alert( "Issue unpinned" );
+                        else if(data['status'] == "Successfully subscribed to Issue"){
+                            $('a.subscribe_to_issue').text("Unsubscribe");
                         }
-				    }
-                    else {
-                        alert( "Pinning error: " + data.error )
+                    },
+                    error: function(data){
+                        alert("Server side error");
                     }
-				}).fail(function(xhr, status, e) {
-                    alert( "Server error: " + e );
+
                 });
-                return false;
-        	});
+            });
 
-        	$('#assign_issue').click(function(e) {
-                e.preventDefault();
-                assignUser($(this).attr('href'), null);
-                return false;
-        	});
-
-        	$('#assign_issue_to').click(function(e) {
-                e.preventDefault();
-                console.log( $('#assigned_user').val() );
-                assignUser($(this).attr('data-url'), $('#assigned_user').val());
-                return false;
-        	});
-
-        	$('#set_bug_status').click(function(){
+            $('#set_bug_status').click(function(){
 
         		if( $('#id_status').val() == "fixed"){
 					// Hides nav menu
@@ -130,39 +94,6 @@
 
 		});
 
-        function assignUser( url, user_id ) {
-            var success = function(data) {
-                // Hides nav menu only after successful submission
-                NavMenu.HideAll();
-                if ( data.success ) {
-                    if ( data.assigned_to == "self" ) {
-                        $('#assign_issue').text( "Unassign" );
-                        alert( "Issue now assigned to you." );
-                    }
-                    else if ( data.assigned_to == "none" ) {
-                        $('#assign_issue').text( "Assign to me" );
-                        alert( "Issue unassigned." );
-                    }
-                    else if ( data.assigned_to == "user" ) {
-                        $('#assign_issue').text( "Assign to me" );
-                        alert( "Issue successfully assigned." );
-                    }
-                }
-                else {
-                    alert( "Assigning error: " + data.error );
-                }
-            };
-
-            var failure = function(xhr, status, e) {
-                alert( "Server error: " + e );
-            };
-            console.log( url + user_id );
-            if ( user_id )
-                $.get(url + user_id, success).fail( failure );
-            else
-                $.get(url, success).fail( failure );
-        }
-
 	</script>
 {% endblock %}
 
@@ -170,14 +101,14 @@
 	<a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a>
 
 	{% if subscribe == None%}
-		<a id="subscribe_to_issue">Subscribe</a>
+		<a class="subscribe_to_issue">Subscribe</a>
 	{% else %}
-		<a id="subscribe_to_issue">Unsubscribe</a>
+		<a class="subscribe_to_issue">Unsubscribe</a>
 	{% endif %}
 
-		<a href="/issue/pin/{{ issue.id }}" id="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
+		<a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
 
-	<a href="/issue/assign/{{ issue.id }}/{{ user.id }}" id="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Assign to me{% endif %}</a>
+	<a href="/issue/assign/{{ issue.id }}/{{ user.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Assign to me{% endif %}</a>
 	<a>Assign To:
 		<select id="assigned_user">
 			{% for user in users%}<option value="{{user.id}}">{{user.username}}</option>

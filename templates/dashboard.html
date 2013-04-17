@@ -7,7 +7,7 @@
 
         $(document).ready(function(){
             $('.subscribe_to_issue').click(function(){
-                var subscribe_issue_id = $(event.target).attr('id').substr(9);
+                var subscribe_issue_id = $(this).attr('id').substr(9);
                 $.ajax({
                     type:"POST",
                     url:"/issue/subscribe",
@@ -37,61 +37,46 @@
 
             $('.pin_issue').click(function(event){
                 var pin_issue_id = $(event.target).attr('id').substr(3);
-
-                $.ajax({
-                  type:"POST",
-                    url:"/issue/pin",
-                    data:{
-                        issue:pin_issue_id
-                    },
-                    success: function(data){    
-                        var pin_id_str = "#pin" + pin_issue_id;
-                        alert(data['status']);
-                        if( data['status'] == "Unpinning Issue"){
-                            $(pin_id_str).toggleClass('ui-icon-closethick', false);
-                            $(pin_id_str).toggleClass('ui-icon-plusthick', true);
-                        }
-                        else if(data['status'] == "Successfully pinned issue"){
+                $.get('/issue/pin/' + pin_issue_id, function(data) {
+                    var pin_id_str = "#pin" + pin_issue_id;
+                    if ( data.success ) {
+                        if ( data.is_pinned ) {
+                            alert( "Successfully pinned issue" );
                             $(pin_id_str).toggleClass('ui-icon-plusthick', false);
                             $(pin_id_str).toggleClass('ui-icon-closethick', true);
-                            
                         }
-                    },
-                    error: function(data){
-                        alert("Server side error");
+                        else {
+                            alert( "Successfully unpinned issue" );
+                            $(pin_id_str).toggleClass('ui-icon-plusthick', true);
+                            $(pin_id_str).toggleClass('ui-icon-closethick', false);
+                        }
                     }
-
-                })
+                    else {
+                        alert( "Error on pin: " + data.error );
+                    }
+                });
             });
 
             $('.assign_issue_to').click(function(){
-                var assign_issue_id = $(event.target).attr('id').substr(6);
-                $.ajax({
-                    type:"POST",
-                    url:"/issue/assign",
-                    data:{
-                        issue:assign_issue_id,
-                        assign:"assign"
-                    },
-                    success: function(data){   
-                        var assign_id_str = "#assign" + assign_issue_id; 
-                        alert(data['status']);
-                        if( data['status'] == "Successfully unassigned issue"){
-                            //$(assign_id_str).text("Assign");
+                var assign_issue_id = $(this).attr('id').substr(6);
+                $.get('/issue/assign/' + assign_issue_id, function(data) {
+                    var assign_id_str = "#assign" + assign_issue_id;
+                    if ( data.success ) {
+                        if ( data.assigned_to == 'none' ) {
+                            alert( "Successfully unassigned issue" );
                             $(assign_id_str).toggleClass('ui-icon-closethick', false);
                             $(assign_id_str).toggleClass('ui-icon-plusthick', true);
                         }
-                        else if(data['status'] == "Successfully assigned issue" || data['status'] == "Successfully reassigned issue"){
-                            //$(assign_id_str).text("Unassign");
+                        else if ( data.assigned_to == 'self' ) {
+                            alert( 'Successfully assigned issue' );
                             $(assign_id_str).toggleClass('ui-icon-plusthick', false);
                             $(assign_id_str).toggleClass('ui-icon-closethick', true);
-                        }               
-                    },
-                    error: function(data){
-                        alert("Server side error");
+                        }
                     }
-
-                })
+                    else {
+                        alert( "Error on assignment: " + data.error );
+                    }
+                });
             });
 
             $('.add_remove').closest('tr').hover(function() {
