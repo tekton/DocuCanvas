@@ -3,37 +3,7 @@
 
 {% block extra_head %}
 <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css"/>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('a.assign_issue').click(function(){
-            var link = $(this);
-            $.ajax({
-                type:"POST",
-                url:"/issue/assign",
-                data:{
-                    issue:$(this).attr("href").substr( 1 ),
-                    assign:"assign"
-                },
-                success: function(data){
-                    // Hides nav menu only after successfull submission
-                    NavMenu.HideAll();
-
-                    alert(data['status']);
-
-                    if(data['status'] == "Successfully assigned issue" || data['status'] == "Successfully reassigned issue"){
-                        link.closest('td').text("Claimed");
-                    }
-                },
-                error: function(data){
-                    alert("Server side error");
-                }
-
-            });
-        });
-
-    });
-
-</script>
+<script type="text/javascript" src="/static/scripts/issue_tools.js"></script>
 {% endblock %}
 
 {% block context_nav %}
@@ -56,7 +26,7 @@
             <tr>
                 <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</td>
                 <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
-                <td><a href="#{{ issue.id }}" class="assign_issue">Assign to me</a></td>
+                <td><a href="/issue/assign/{{ issue.id }}" class="assign_issue">Assign to me</a></td>
             </tr>
         {% endfor%}
     </table>
