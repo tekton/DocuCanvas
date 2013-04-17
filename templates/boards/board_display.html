@@ -1,15 +1,25 @@
-
-{% block container %}
-    <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <style>
+            body{
+                margin: 0px;
+                padding: 0px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id = "container"> </div>
+         <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
+          <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
            <script>
 
             // Temporary hash for making a test loop to place multiple notes
             var tooltipInfo = [{"x":400,"y":500,"text": "THIS IS A BUG"}, {"x":200,"y":200,"text": "THIS IS ANOTHER BUG asdf adf adf asdf asdf asdf"}, {"x": 150, "y":400, "text": "ANOTHER BUG"}]
 
             //Test variables for placing notes, most will be contained in database when finished
-            var imageWidth = 1920;
-            var imageHeight = 1080;
+            var imageWidth = {{board.width}};
+            var imageHeight = {{board.height}};
             var tooltipWidth = 200;
             var tooltipHeight = 200;
 
@@ -96,7 +106,7 @@
                 stage.add(shapesLayer);
 
              };
-            imageObj.src = '/static/img/screenshot.png';
+            imageObj.src = '/static/{{board.image}}';
 
              function toggleInfoBox(divId){
                 var toggleTooltipDiv = document.getElementById(divId);
@@ -133,7 +143,7 @@
             };
 
          </script>
-<body>
-	<img id = 'canvas' src = '/static/{{board.image}}' />
-</body>
-{% endblock %}
+         <div  style = 'position: fixed; width: 200px; height: 50px; top: 0px; right: 0px; background-color: blue'><a id = "toggler" href = "#" onclick="toggleBugListDiv()">Hide</a></div>
+         <div id = 'bugList' style = 'position: fixed; width: 200px; height: 700px; top: 50px; right: 0px; background-color: green; visibility: visible;'></div>
+    </body>
+</html>

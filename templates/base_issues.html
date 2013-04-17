@@ -411,7 +411,7 @@
                 <div class="main_nav_button navitem" id="context">Context Drop Down </div> | 
                 <div class="main_nav_button navitem" id="projects_list">Project List </div>|
                 <div class="main_nav_button navitem"><a id="account">{{user|truncatechars:15}} </a></div>|
-                <div class="ui-icon ui-icon-search navitem" id="search_icon"></div>
+                <a class="ui-icon ui-icon-search navitem" id="search_icon" a href="/issue/advsearch"></a>
                 <div class="main_nav_button navitem"><input type="text" name="searchText" id="search"/><input type="submit" value="search"/></div>
             </div>
             </form>
@@ -428,9 +428,9 @@
                 <a href="/accounts/account_settings">Account Settings</a>
                 <a href="/accounts/logout/?next=/">Logout</a>
             </div>
-            <div id="search_nav" class="container_nav navitem">   
+            <!--<div id="search_nav" class="container_nav navitem">   
                 <a href="/issue/advsearch">Advanced Search</a>
-            </div>
+            </div>-->
         </div>
         <h1 id="mainheader" class="both">{{page_type}} 
             <span>:: {{page_value}}

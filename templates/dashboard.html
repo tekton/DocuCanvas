@@ -80,7 +80,7 @@
             });
 
             $('.add_remove').closest('tr').hover(function() {
-                $(this).find('.add_remove').fadeIn();
+                $(this).find('.add_remove').stop(true).hide().fadeIn();
             }, function() {
                 $(this).find('.add_remove').fadeOut();
             });
@@ -94,6 +94,7 @@
 {% block context_nav %}
     <a href="/issue/new">New Issue</a>
     <a href="/reports/edit">Daily Reports</a>
+    <a href="/food/all">Food Requests</a>
 {% endblock %}
 
 {% block container %}
