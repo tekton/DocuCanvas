@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load set_var %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="/static/css/dashboard.css"/>
+<script type="text/javascript" src="/static/scripts/issue_tools.js"></script>
+{% endblock %}
+
+{% block context_nav %}
+    <a href="issue/new">New Issue</a>
+    <a href="reports/edit">Daily Reports</a>
+{% endblock %}
+
+{% block container %}
+
+<div class="dashboard_container_section">
+    <h3>Unassigned Issues</h3>
+    <table class="dashboard_table">
+        {% for issue in issues %}
+            {% if newest_unassigned != issue.created %}
+                {% set newest_unassigned = issue.created %}
+                <tr class="date_header"><td colspan="4">{{issue.created}}</td></tr>
+            {% endif %}
+
+
+            <tr>
+                <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</td>
+                <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
+                <td><a href="/issue/assign/{{ issue.id }}" class="assign_issue">Assign to me</a></td>
+            </tr>
+        {% endfor%}
+    </table>
+</div>
+
+{% endblock %}

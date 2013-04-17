@@ -3,111 +3,37 @@
 
 
 {% block extra_head%}
+    <script type="text/javascript" src="/static/scripts/issue_tools.js"></script>
 	<script type="text/javascript">
-
 		$(document).ready(function(){
-			$('#subscribe_to_issue').click(function(){
-            	$.ajax({
-				    type:"POST",
-				    url:"/issue/subscribe",
-				    data:{
-				    	issue:"{{issue.id}}"
-				    },
-				    success: function(data){
-				    	// Hides nav menu only after successfull submission
-				    	NavMenu.HideAll();	
-				    	
-				    	alert(data['status']);
-				    	if( data['status'] == "Unsubscribing Issue"){
-				    		$('#subscribe_to_issue').text("Subscribe");
-				    	}
-				    	else if(data['status'] == "Successfully subscribed to Issue"){
-				    		$('#subscribe_to_issue').text("Unsubscribe");
-				    	}
-				    },
-				    error: function(data){
-				    	alert("Server side error");
-				    }
 
-				});
-        	});
+            $('a.subscribe_to_issue').click(function(){
+                $.ajax({
+                    type:"POST",
+                    url:"/issue/subscribe",
+                    data:{
+                        issue:"{{issue.id}}"
+                    },
+                    success: function(data){
+                        // Hides nav menu only after successfull submission
+                        NavMenu.HideAll();
 
-			$('#pin_issue').click(function(){
-            	$.ajax({
-				    type:"POST",
-				    url:"/issue/pin",
-				    data:{
-				    	issue:"{{issue.id}}"
-				    },
-				    success: function(data){
-				    	// Hides nav menu only after successfull submission
-				    	NavMenu.HideAll();	
+                        alert(data['status']);
+                        if( data['status'] == "Unsubscribing Issue"){
+                            $('a.subscribe_to_issue').text("Subscribe");
+                        }
+                        else if(data['status'] == "Successfully subscribed to Issue"){
+                            $('a.subscribe_to_issue').text("Unsubscribe");
+                        }
+                    },
+                    error: function(data){
+                        alert("Server side error");
+                    }
 
-				    	alert(data['status']);
-				    	if( data['status'] == "Unpinning Issue"){
-				    		$('#pin_issue').text("Pin");
-				    	}
-				    	else if(data['status'] == "Successfully pinned issue"){
-				    		$('#pin_issue').text("Unpin");
-				    	}
-				    },
-				    error: function(data){
-				    	alert("Server side error");
-				    }
+                });
+            });
 
-				});
-        	});
-
-        	$('#assign_issue').click(function(){
-            	$.ajax({
-				    type:"POST",
-				    url:"/issue/assign",
-				    data:{
-				    	issue:"{{issue.id}}",
-				    	assign:"assign"
-				    },
-				    success: function(data){
-				    	// Hides nav menu only after successfull submission
-				    	NavMenu.HideAll();	
-
-				    	alert(data['status']);
-				    	if( data['status'] == "Successfully unassigned issue"){
-				    		$('#assign_issue').text("Assign");
-				    	}
-				    	else if(data['status'] == "Successfully assigned issue" || data['status'] == "Successfully reassigned issue"){
-				    		$('#assign_issue').text("Unassign");
-				    	}		    	
-				    },
-				    error: function(data){
-				    	alert("Server side error");
-				    }
-
-				});
-        	});
-
-        	$('#assign_issue_to').click(function(){
-            	$.ajax({
-				    type:"POST",
-				    url:"/issue/assign",
-				    data:{
-				    	issue:"{{issue.id}}",
-				    	assign:"assign_to",
-				    	user:$('#assigned_user').val()
-				    },
-				    success: function(data){
-				    	// Hides nav menu only after successfull submission
-				    	NavMenu.HideAll();	
-
-				    	alert(data['status']);
-				    },
-				    error: function(data){
-				    	alert("Server side error");
-				    }
-
-				});
-        	});
-
-        	$('#set_bug_status').click(function(){
+            $('#set_bug_status').click(function(){
 
         		if( $('#id_status').val() == "fixed"){
 					// Hides nav menu
@@ -175,29 +101,20 @@
 	<a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a>
 
 	{% if subscribe == None%}
-		<a id="subscribe_to_issue">Subscribe</a>
+		<a class="subscribe_to_issue">Subscribe</a>
 	{% else %}
-		<a id="subscribe_to_issue">Unsubscribe</a>
+		<a class="subscribe_to_issue">Unsubscribe</a>
 	{% endif %}
 
-	{% if pin == None %}
-		<a id="pin_issue">Pin</a>
-	{% else %}
-		<a id="pin_issue">Unpin</a>
-	{% endif %}
+		<a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
 
-	{% if issue.assigned_to == user%}
-		<a id="assign_issue">Unassign</a>
-	{% else %}
-		<a id="assign_issue">Assign</a>
-	{% endif %}
-	<a>Assign To:  
+	<a href="/issue/assign/{{ issue.id }}/{{ user.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Assign to me{% endif %}</a>
+	<a>Assign To:
 		<select id="assigned_user">
-			{% for user in users%}
-				<option value="{{user.id}}">{{user.username}}</option>
+			{% for user in users%}<option value="{{user.id}}">{{user.username}}</option>
 			{% endfor%}
 		</select>
-		<input type="button" id="assign_issue_to" value="Assign"/>
+		<input data-url="/issue/assign/{{ issue.id }}/" type="button" id="assign_issue_to" value="Assign"/>
 	</a>
 	<a>Status:
 		{{form.status}}
@@ -207,6 +124,7 @@
 {% endblock%}
 
 {% block container %}
+    <input type="hidden" id="issue_id" value="{{ issue.id }}"/>
 	<table class="tbl-generic tbl-overview">
 		<tr class="tbl-rowheader">
 			<td class="tbl-fauxth">Summary</td>
