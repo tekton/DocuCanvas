@@ -224,33 +224,34 @@
 {% endblock %}
 
 {% block spiffy_box_right %}
-	<b>Project Name:</b> <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a><br/>
+	<b>Assigned To:</b> <a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a><br/>
 	<b>Meta Issue:</b> {{issue.meta_issues.title}}<br/>
+	<!--
+	<b>Project Name:</b> <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a><br/>
 	<b>State:</b> {{issue.state}}<br />
 	<b>Projected Start:</b> {{issue.projected_start}}<br/>
 	<b>Projected End:</b> {{issue.projected_end}}<br/>
 	<b>Actual Start:</b> {{issue.actual_start}}<br />
-	<b>Actual End:</b> {{issue.actual_end}}<br />
+	<b>Actual End:</b> {{issue.actual_end}}<br />-->
 	<b>Date Reported:</b> {{issue.date_reported}}<br/>
 	<b>Created:</b> {{issue.created}}<br/>
 	<b>Modified:</b> {{issue.modified}}<br/>
 	<b>View Type:</b> {{issue.view_type}}<br/>
 	<b>Issue Type:</b> {{issue.issue_type}}<br/>
-	<b>Assigned To:</b> <a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a><br/>
-	<b>Title:</b> {{issue.title}}<br/>
-	<b>Link Slug:</b> {{issue.link_slug}}<br/>
+	<!--<b>Title:</b> {{issue.title}}<br/>
+	<b>Link Slug:</b> {{issue.link_slug}}<br/>-->
 	<b>Status:</b> {{issue.status}}<br/>
 	<b>Criticality:</b> {{issue.criticality}}<br/>
 	<b>Fixability:</b> {{issue.fixability}}<br/>
-	<b>R &amp; D:</b> {{issue.r_and_d}}<br/>
-	<b>Feature:</b> {{issue.feature}}<br/>
+	<!--<b>R &amp; D:</b> {{issue.r_and_d}}<br/>
+	<b>Feature:</b> {{issue.feature}}<br/>-->
 	<b>OS:</b> {{issue.os}}<br/>
 	<b>OS Version:</b> {{issue.os_version}}<br/>
 	<b>Browser:</b> {{issue.browser}}<br/>
 	<b>Browser Version:</b> {{issue.browser_version}}<br/>
-	<b>Screen Shot:</b> {{issue.screen_shot}}<br/>
+	<!--<b>Screen Shot:</b> {{issue.screen_shot}}<br/>
 	<b>Wireframe:</b> {{issue.wireframe}}<br/>
-	<b>URI to Test:</b> {{issue.uri_to_test}}
+	<b>URI to Test:</b> {{issue.uri_to_test}}-->
 {% endblock %}
 
 {% block container_bottom_clear %}
