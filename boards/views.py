@@ -85,10 +85,12 @@ def board_edit(request, board_id):
         if form.is_valid():
             try:
                 boardNode = form.save()
-            except:
+            except Exception, e:
+                print e
                 print 'unable to save node'
+                print form.errors
         else:
-            print form.errors 
+            print form.errors
 
     else:
         form = BoardNodeForm()
