@@ -56,7 +56,7 @@ def checklist_edit(request, checklist_id):
         formset = ChecklistLayoutItemsFormset(instance=checklist)
 
     checklist_form = ChecklistForm(instance=checklist)
-    return render_to_response("checklists/checklist_overview.html", {"formset": formset, "checklist_form": checklist_form, "checklist_id": checklist.id, "page_type": checklist.project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
+    return render_to_response("checklists/checklist_overview.html", {"formset": formset, "checklist_form": checklist_form, "checklist": checklist, "page_type": checklist.project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
 def instance_edit(request, checklist_instance_id):
@@ -189,7 +189,7 @@ def checklist_form_project(request, project_id):
         formset = ChecklistLayoutItemsFormset(instance=checklist)
 
     checklist_form = ChecklistForm(instance=checklist, initial={"project": project}, auto_id=False)
-    return render_to_response("checklists/checklist_form.html", {'formset': formset, "checklist_form": checklist_form, "project_id": project_id, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
+    return render_to_response("checklists/checklist_form.html", {'formset': formset, "checklist_form": checklist_form, "project": project, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
 def overview(request, checklist_id):

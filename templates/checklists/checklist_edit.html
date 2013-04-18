@@ -66,6 +66,12 @@ textarea{
 
 {% endblock %}
 
+{% block context_nav %}
+    <a href="/project/{{checklist_instance.checklist.project.id}}">{{checklist_instance.checklist.project.name}}</a>
+    <a href="/checklist/project/{{checklist_instance.checklist.id}}">{{checklist_instance.checklist.name}}</a>
+    <a href="/checklist/new/{{checklist_instance.checklist.project.id}}">New Checklist Instance</a>
+{% endblock%}
+
 {% block container %}
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}

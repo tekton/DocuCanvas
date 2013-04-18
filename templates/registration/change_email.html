@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
-{% block container %}
+{% block context_nav %}
+    <a href="/">Dashboard</a>
+    <a href="/auth/user/{{user.id}}">{{user}}</a>
+    <a href="/accounts/account_settings">Account Settings</a>
+{% endblock%}
 
+{% block container %}
 <form action="/accounts/change_email" method="post" enctype="multipart/form-data">
     {% csrf_token %}
         <table>
