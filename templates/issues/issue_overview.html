@@ -1,38 +1,11 @@
 {% extends "base_issues.html" %}
 {% load markup %}
 
-
 {% block extra_head%}
     <script type="text/javascript" src="/static/scripts/issue_tools.js"></script>
 	<script type="text/javascript">
+
 		$(document).ready(function(){
-
-            $('a.subscribe_to_issue').click(function(){
-                $.ajax({
-                    type:"POST",
-                    url:"/issue/subscribe",
-                    data:{
-                        issue:"{{issue.id}}"
-                    },
-                    success: function(data){
-                        // Hides nav menu only after successfull submission
-                        NavMenu.HideAll();
-
-                        alert(data['status']);
-                        if( data['status'] == "Unsubscribing Issue"){
-                            $('a.subscribe_to_issue').text("Subscribe");
-                        }
-                        else if(data['status'] == "Successfully subscribed to Issue"){
-                            $('a.subscribe_to_issue').text("Unsubscribe");
-                        }
-                    },
-                    error: function(data){
-                        alert("Server side error");
-                    }
-
-                });
-            });
-
             $('#set_bug_status').click(function(){
 
         		if( $('#id_status').val() == "fixed"){
@@ -49,8 +22,6 @@
         			$('#submit_comment_form').attr('action', '/issue/set_bug_state');
 
         			$('#submit_comment_button').click(function(){
-        				
-
         				/*$.ajax({
 					    type:"POST",
 					    url:"/issue/set_bug_state",
@@ -92,7 +63,61 @@
             	}
         	});
 
+			$('a.link_issue').click(function(e){
+        		e.preventDefault();
+        		$('#link_issue_duplicate_popup').fadeToggle();
+        		return false;
+    		});
+			
+			$('a.set_related_issue').click(function(e){
+        		e.preventDefault();
+        		$('#set_related_to_popup').fadeToggle();
+        		return false;
+    		});
+
+			$(document).click(function(evt){
+	            var el = evt.target;
+
+
+	            if($(event.target).attr('id') != "set_related_to_popup" && $(event.target).parent().attr('id') != "set_related_to_popup"){
+
+	                if($('#set_related_to_popup').css('display') != "none" ){
+
+	                        $('#set_related_to_popup').fadeToggle();
+	                }                
+	            }
+
+	            if($(event.target).attr('id') != "link_issue_duplicate_popup" && $(event.target).parent().attr('id') != "link_issue_duplicate_popup"){
+
+	                if($('#link_issue_duplicate_popup').css('display') != "none"){
+	                        $('#link_issue_duplicate_popup').fadeToggle();
+	                }                
+	            }
+
+        	});
+
 		});
+
+	function issue_to_issue_link(type){
+
+		$.ajax({
+            type:"POST",
+                    url:"/issue/link",
+                    data:{
+                        primary_issue:"{{issue.id}}",
+                        secondary_issue:$('[name="related_issue_id"]').val(),
+                        link_type:type
+                    },
+            success: function(data){       
+                        alert(data['response']);
+                    },
+            error: function(data){
+                		alert("Server side error");
+            }
+        });
+
+	}
+
 
 	</script>
 {% endblock %}
@@ -100,15 +125,12 @@
 {% block context_nav %}
 	<a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a>
 
-	{% if subscribe == None%}
-		<a class="subscribe_to_issue">Subscribe</a>
-	{% else %}
-		<a class="subscribe_to_issue">Unsubscribe</a>
-	{% endif %}
+	<a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a>
 
-		<a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
+	<a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
 
-	<a href="/issue/assign/{{ issue.id }}/{{ user.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a>
+	<a href="/issue/assign/{{ issue.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a>
+
 	<a>Assign To:
 		<select id="assigned_user">
 			{% for user in users%}<option value="{{user.id}}">{{user.username}}</option>
@@ -120,7 +142,31 @@
 		{{form.status}}
 		<input type="button" id="set_bug_status" value="Set"/>
 	</a>
+	<a class="link_issue">Link to Duplicate Issue</a>
+	<a class="set_related_issue">Set Related To...</a>
 	<a href="/issue/{{issue.id}}/edit">Edit</a>
+{% endblock%}
+
+<!--{% block duplicate_issue_popup %}
+<h2>Duplicate Issue</h2>
+Duplicate Issue ID: 
+<input type="text" name="duplicate_issue_id"/>
+<input type="button" value="Link" id="duplicate_issue_id_button" onClick="issue_to_issue_link('duplicate')" />
+{% endblock%}-->
+
+{% block select_related_issue_popup %}
+<h2>Select Related Issue</h2>
+Current issue {{issue.id}} is a
+<select id="related_issue_id_type">
+	<option value="duplicate">Duplicate</option>
+	<option value="related">Related</option>
+	<option value="child">Child</option>
+	<option value="parent">Parent</option>
+</select>
+of Issue  
+<input type="text" name="related_issue_id"/>
+
+<input type="button" value="Link" id="related_issue_id_button" onClick="issue_to_issue_link($('#related_issue_id_type').val())" />
 {% endblock%}
 
 {% block container %}

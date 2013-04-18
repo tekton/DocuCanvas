@@ -77,6 +77,7 @@ def boards(request):
     return render_to_response('boards/boards.html', context)
 
 def board_edit(request, board_id):
+    board_nodes = BoardNode.objects.all()
     print "Submitting board..."
     if request.method == 'POST':
         boardNode = BoardNode()
@@ -98,7 +99,7 @@ def board_edit(request, board_id):
         p = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
         raise Http404
-    return render_to_response('boards/board_edit.html', {'board': p, 'form': form}, context_instance=RequestContext(request))
+    return render_to_response('boards/board_edit.html', {'board': p, 'form': form, 'board_nodes': board_nodes}, context_instance=RequestContext(request))
 
 def board_display(request, board_id):
     board_nodes = BoardNode.objects.all()

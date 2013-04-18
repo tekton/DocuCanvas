@@ -1,6 +1,30 @@
 
 $(document).ready(function() {
 
+    $('a.subscribe_to_issue').click(function(e) {
+        e.preventDefault();
+        $.get($(this).attr('href'), function(data, status) {
+            // Hides nav menu only after successful submission
+            NavMenu.HideAll();
+            if ( data.success ) {
+                if ( data.is_subscribed ) {
+                    $('a.subscribe_to_issue').text("Unsubscribe");
+                    alert( "Issue subscribed" );
+                }
+                else {
+                    $('a.subscribe_to_issue').text("Subscribe");
+                    alert( "Issue unsubscribed" );
+                }
+            }
+            else {
+                alert( "Subscribe error: " + data.error )
+            }
+        }).fail(function(xhr, status, e) {
+                alert( "Server error: " + e );
+            });
+        return false;
+    });
+
     $('a.pin_issue').click(function(e) {
         e.preventDefault();
         $.get($(this).attr('href'), function(data, status) {
@@ -66,7 +90,7 @@ function assignUser( url, user_id ) {
     var failure = function(xhr, status, e) {
         alert( "Server error: " + e );
     };
-    console.log( url + user_id );
+
     if ( user_id )
         $.get(url + user_id, success).fail( failure );
     else

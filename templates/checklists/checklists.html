@@ -16,6 +16,11 @@
 }
 {% endblock %}
 
+{% block context_nav %}
+    <a href="/project/{{project.id}}">{{project.name}}</a>
+    <a href="/checklist/new/{{project.id}}">New Checklist</a>
+{% endblock%}
+
 {% block container %}
         <table>
             <tr>
