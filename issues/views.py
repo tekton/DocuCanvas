@@ -155,10 +155,10 @@ def issue_to_issue_link(request):
     print request.POST['link_type']
 
     try:
-        primary_issue = Issue(pk=request.POST['primary_issue'])
+        primary_issue = Issue.objects.get(pk=request.POST['primary_issue'])
 
         try:
-            secondary_issue = Issue(pk=request.POST['secondary_issue'])
+            secondary_issue = Issue.objects.get(pk=request.POST['secondary_issue'])
 
             try:
                 issue_to_issue_link = IssueToIssue.objects.get(primary_issue=primary_issue, secondary_issue=secondary_issue)
@@ -169,6 +169,11 @@ def issue_to_issue_link(request):
                     old_link_type = issue_to_issue_link.link_type
                     issue_to_issue_link.link_type = request.POST['link_type']
                     issue_to_issue_link.save()
+
+                    if request.POST['link_type'] == 'duplicate':
+                        primary_issue.status = request.POST['link_type']
+                        primary_issue.save()
+
                     to_json['response'] = 'Changed old link from ' + str(old_link_type) + ' to ' + str(request.POST['link_type'])
 
             except Exception, e:
@@ -177,6 +182,11 @@ def issue_to_issue_link(request):
                 issue_to_issue_link.secondary_issue = secondary_issue
                 issue_to_issue_link.link_type = request.POST['link_type']
                 issue_to_issue_link.save()
+
+                if request.POST['link_type'] == 'duplicate':
+                    primary_issue.status = request.POST['link_type']
+                    primary_issue.save()
+
                 to_json['response'] = 'Linked Issue: ' + str(request.POST['primary_issue']) + ' to Issue: ' + str(request.POST['secondary_issue']) + ' as ' + str(request.POST['link_type'])
 
         except Exception, e:
