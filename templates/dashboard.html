@@ -3,76 +3,57 @@
 
 {% block extra_head%}
     <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css"/>
+    <script type="text/javascript" src="/static/scripts/ajax_tools.js"></script>
     <script type="text/javascript">
 
         $(document).ready(function() {
-            $('.subscribe_to_issue').click(function(e) {
-                e.preventDefault();
-                var icon = $(this).find('.add_remove');
-                $.get($(this).attr('href'), function(data) {
-                    if ( data.success ) {
-                        if ( data.is_subscribed ) {
-                            alert( "Successfully subscribed to issue" );
-                            $(icon).toggleClass('ui-icon-plusthick', false);
-                            $(icon).toggleClass('ui-icon-closethick', true);
-                        }
-                        else {
-                            alert( "Successfully unsubscribed from issue" );
-                            $(icon).toggleClass('ui-icon-plusthick', true);
-                            $(icon).toggleClass('ui-icon-closethick', false);
-                        }
+
+            $('.subscribe_to_issue').asAjax(function(data) {
+                if ( data.success ) {
+                    if ( data.is_subscribed ) {
+                        alert( "Successfully subscribed to issue" );
+                        $(this).find('.add_remove').toggleClass('ui-icon-plusthick', false).toggleClass('ui-icon-closethick', true);
                     }
                     else {
-                        alert( "Error on subscribe: " + data.error );
+                        alert( "Successfully unsubscribed from issue" );
+                        $(this).find('.add_remove').toggleClass('ui-icon-plusthick', true).toggleClass('ui-icon-closethick', false);
                     }
-                });
-                return false;
+                }
+                else {
+                    alert( "Error on subscribe: " + data.error );
+                }
             });
 
-            $('.pin_issue').click(function(e){
-                e.preventDefault();
-                var icon = $(this).find('.add_remove');
-                $.get($(this).attr('href'), function(data) {
-                    if ( data.success ) {
-                        if ( data.is_pinned ) {
-                            alert( "Successfully pinned issue" );
-                            $(icon).toggleClass('ui-icon-plusthick', false);
-                            $(icon).toggleClass('ui-icon-closethick', true);
-                        }
-                        else {
-                            alert( "Successfully unpinned issue" );
-                            $(icon).toggleClass('ui-icon-plusthick', true);
-                            $(icon).toggleClass('ui-icon-closethick', false);
-                        }
+            $('.pin_issue').asAjax( function(data) {
+                if ( data.success ) {
+                    if ( data.is_pinned ) {
+                        alert( "Successfully pinned issue" );
+                        $(this).find('.add_remove').toggleClass('ui-icon-plusthick', false).toggleClass('ui-icon-closethick', true);
                     }
                     else {
-                        alert( "Error on pin: " + data.error );
+                        alert( "Successfully unpinned issue" );
+                        $(this).find('.add_remove').toggleClass('ui-icon-plusthick', true).toggleClass('ui-icon-closethick', false);
                     }
-                });
-                return false;
+                }
+                else {
+                    alert( "Error on pin: " + data.error );
+                }
             });
 
-            $('.assign_issue').click(function(e) {
-                e.preventDefault();
-                var icon = $(this).find('.add_remove');
-                $.get($(this).attr('href'), function(data) {
-                    if ( data.success ) {
-                        if ( data.assigned_to == 'none' ) {
-                            alert( "Successfully unassigned issue" );
-                            $(icon).toggleClass('ui-icon-closethick', false);
-                            $(icon).toggleClass('ui-icon-plusthick', true);
-                        }
-                        else if ( data.assigned_to == 'self' ) {
-                            alert( 'Successfully assigned issue' );
-                            $(icon).toggleClass('ui-icon-plusthick', false);
-                            $(icon).toggleClass('ui-icon-closethick', true);
-                        }
+            $('.assign_issue').asAjax( function(data) {
+                if ( data.success ) {
+                    if ( data.assigned_to == 'none' ) {
+                        alert( "Successfully unassigned issue" );
+                        $(this).find('.add_remove').toggleClass('ui-icon-closethick', false).toggleClass('ui-icon-plusthick', true);
                     }
-                    else {
-                        alert( "Error on assignment: " + data.error );
+                    else if ( data.assigned_to == 'self' ) {
+                        alert( 'Successfully assigned issue' );
+                        $(this).find('.add_remove').toggleClass('ui-icon-plusthick', false).toggleClass('ui-icon-closethick', true);
                     }
-                });
-                return false;
+                }
+                else {
+                    alert( "Error on assignment: " + data.error );
+                }
             });
 
             $('.add_remove').closest('tr').hover(function() {
@@ -89,7 +70,7 @@
 
 {% block context_nav %}
     <a href="/issue/new">New Issue</a>
-    <a href="/issue/edit">Daily Reports</a>
+    <a href="/issue/unassigned">Unassigned Issues</a>
     <a href="/food/all">Food Requests</a>
     <a href="/reports/edit">Daily Reports</a>
 {% endblock %}
