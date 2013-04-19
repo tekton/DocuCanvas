@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 
+{% block context_nav %} 
+    <a href="/project/{{project.id}}">{{project.name}}</a>
+    <a href="/issue/new/{{project.id}}">New Issue</a>
+    <a href="/issue/new/{{project.id}}">New Risk</a>
+    <a href="/checklist/new/{{project.id}}">New Checklist</a>
+    <a href="/checklist/project/{{project.id}}">Checklists</a>
+{% endblock%}
+
 {% block container %}
     <h2>New Project</h2>
     <form action="/project/{{project.id}}/edit" method="post" enctype="multipart/form-data">

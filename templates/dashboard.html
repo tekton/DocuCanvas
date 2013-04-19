@@ -3,80 +3,57 @@
 
 {% block extra_head%}
     <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css"/>
+    <script type="text/javascript" src="/static/scripts/ajax_tools.js"></script>
     <script type="text/javascript">
 
-        $(document).ready(function(){
-            $('.subscribe_to_issue').click(function(){
-                var subscribe_issue_id = $(this).attr('id').substr(9);
-                $.ajax({
-                    type:"POST",
-                    url:"/issue/subscribe",
-                    data:{
-                        issue:subscribe_issue_id
-                    },
-                    success: function(data){    
-                        var subscribe_id_str = "#subscribe" + subscribe_issue_id;
-                        alert(data['status']);
-                        if( data['status'] == "Unsubscribing Issue"){
-                            $(subscribe_id_str).toggleClass('ui-icon-closethick', false);
-                            $(subscribe_id_str).toggleClass('ui-icon-plusthick', true);
-                            //$(subscribe_id_str).text("Subscribe");
-                        }
-                        else if(data['status'] == "Successfully subscribed to Issue"){
-                            $(subscribe_id_str).toggleClass('ui-icon-plusthick', false);
-                            $(subscribe_id_str).toggleClass('ui-icon-closethick', true);
-                            //$(subscribe_id_str).text("Unsubscribe");
-                        }
-                    },
-                    error: function(data){
-                        alert("Server side error");
-                    }
+        $(document).ready(function() {
 
-                })
-            });
-
-            $('.pin_issue').click(function(event){
-                var pin_issue_id = $(event.target).attr('id').substr(3);
-                $.get('/issue/pin/' + pin_issue_id, function(data) {
-                    var pin_id_str = "#pin" + pin_issue_id;
-                    if ( data.success ) {
-                        if ( data.is_pinned ) {
-                            alert( "Successfully pinned issue" );
-                            $(pin_id_str).toggleClass('ui-icon-plusthick', false);
-                            $(pin_id_str).toggleClass('ui-icon-closethick', true);
-                        }
-                        else {
-                            alert( "Successfully unpinned issue" );
-                            $(pin_id_str).toggleClass('ui-icon-plusthick', true);
-                            $(pin_id_str).toggleClass('ui-icon-closethick', false);
-                        }
+            $('.subscribe_to_issue').asAjax(function(data) {
+                if ( data.success ) {
+                    if ( data.is_subscribed ) {
+                        alert( "Successfully subscribed to issue" );
+                        $(this).find('.add_remove').toggleClass('ui-icon-plusthick', false).toggleClass('ui-icon-closethick', true);
                     }
                     else {
-                        alert( "Error on pin: " + data.error );
+                        alert( "Successfully unsubscribed from issue" );
+                        $(this).find('.add_remove').toggleClass('ui-icon-plusthick', true).toggleClass('ui-icon-closethick', false);
                     }
-                });
+                }
+                else {
+                    alert( "Error on subscribe: " + data.error );
+                }
             });
 
-            $('.assign_issue_to').click(function(){
-                var assign_issue_id = $(this).attr('id').substr(6);
-                $.get('/issue/assign/' + assign_issue_id, function(data) {
-                    var assign_id_str = "#assign" + assign_issue_id;
-                    if ( data.success ) {
-                        if ( data.assigned_to == 'none' ) {
-                            alert( "Successfully unassigned issue" );
-                            $(assign_id_str).toggleClass('ui-icon-closethick', false);
-                            $(assign_id_str).toggleClass('ui-icon-plusthick', true);
-                        }
-                        else if ( data.assigned_to == 'self' ) {
-                            alert( 'Successfully assigned issue' );
-                            $(assign_id_str).toggleClass('ui-icon-plusthick', false);
-                            $(assign_id_str).toggleClass('ui-icon-closethick', true);
-                        }
+            $('.pin_issue').asAjax( function(data) {
+                if ( data.success ) {
+                    if ( data.is_pinned ) {
+                        alert( "Successfully pinned issue" );
+                        $(this).find('.add_remove').toggleClass('ui-icon-plusthick', false).toggleClass('ui-icon-closethick', true);
                     }
                     else {
-                        alert( "Error on assignment: " + data.error );
+                        alert( "Successfully unpinned issue" );
+                        $(this).find('.add_remove').toggleClass('ui-icon-plusthick', true).toggleClass('ui-icon-closethick', false);
                     }
-                });
+                }
+                else {
+                    alert( "Error on pin: " + data.error );
+                }
+            });
+
+            $('.assign_issue').asAjax( function(data) {
+                if ( data.success ) {
+                    if ( data.assigned_to == 'none' ) {
+                        alert( "Successfully unassigned issue" );
+                        $(this).find('.add_remove').toggleClass('ui-icon-closethick', false).toggleClass('ui-icon-plusthick', true);
+                    }
+                    else if ( data.assigned_to == 'self' ) {
+                        alert( 'Successfully assigned issue' );
+                        $(this).find('.add_remove').toggleClass('ui-icon-plusthick', false).toggleClass('ui-icon-closethick', true);
+                    }
+                }
+                else {
+                    alert( "Error on assignment: " + data.error );
+                }
             });
 
             $('.add_remove').closest('tr').hover(function() {
@@ -93,9 +70,10 @@
 
 {% block context_nav %}
     <a href="/issue/new">New Issue</a>
-    <a href="/reports/edit">Daily Reports</a>
+    <a href="/issue/unassigned">Unassigned Issues</a>
     <a href="/food/all">Food Requests</a>
     <a href="/reports/edit">Daily Reports</a>
+    <a href="/help/all">Help</a>
 {% endblock %}
 
 {% block container %}
@@ -103,18 +81,18 @@
         <div class="dashboard_container_section">
             <h3>Pinned</h3>
             <table class="dashboard_table tbl-generic tbl-dashboard">
-            {% for pin in pins%}
+            {% for issue in pins%}
 
-                {% if newest_pin != pin.created %}
-                    {% set newest_pin = pin.created%}
-                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{pin.created}}</td></tr>
+                {% if newest_pin != issue.created %}
+                    {% set newest_pin = issue.created%}
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{issue.created}}</td></tr>
                 {% endif %}
 
                 <tr>
-                    <td class="tbl-project"><a href="/project/{{pin.project.id}}">{{pin.project.name}}</a></td>
-                    <td class="tbl-summary"><a href="/issue/{{pin.id}}">{{pin.summary}}</a></td>
-                    <td class="tbl-assigned_to"><a href="/auth/user/{{pin.assigned_to.id}}">{{pin.assigned_to}}</a></td>
-                    <td class="tbl-ui-trigger"><div class="add_remove pin_issue ui-icon ui-icon-closethick" id="pin{{pin.id}}"></div></td>
+                    <td class="tbl-project"><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
+                    <td class="tbl-summary"><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
+                    <td class="tbl-assigned_to"><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
+                    <td class="tbl-ui-trigger"><a href="/issue/pin/{{ issue.id }}" class="pin_issue"><div class="add_remove ui-icon ui-icon-closethick"></div></a></td>
                 </tr>
             {% endfor%}
             </table>
@@ -132,7 +110,7 @@
                     <td class="tbl-project"><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
                     <td class="tbl-summary"><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
                     <td class="tbl-assigned_to"><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
-                    <td class="tbl-ui-trigger"><div class="add_remove assign_issue_to ui-icon ui-icon-closethick" id="assign{{issue.id}}"></div></td>
+                    <td class="tbl-ui-trigger"><a href="/issue/assign/{{ issue.id }}" class="assign_issue"><div class="add_remove ui-icon ui-icon-closethick"></div></a></td>
                 </tr>
             {% endfor%}
             </table>
@@ -140,18 +118,18 @@
         <div class="dashboard_container_section">
             <h3>Subscribed</h3>
             <table class="dashboard_table tbl-generic tbl-dashboard">
-            {% for subscription in subscribed%}
+            {% for issue in subscribed%}
 
-                {% if newest_subscribed != subscription.created %}
-                    {% set newest_subscribed = subscription.created%}
-                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{subscription.created}}</td></tr>
+                {% if newest_subscribed != issue.created %}
+                    {% set newest_subscribed = issue.created%}
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{issue.created}}</td></tr>
                 {% endif %}
 
                 <tr>
-                    <td class="tbl-project"><a href="/project/{{subscription.project.id}}">{{subscription.project.name}}</a></td>
-                    <td class="tbl-summary"><a href="/issue/{{subscription.id}}">{{subscription.summary}}</a></td>
-                    <td class="tbl-assigned_to"><a href="/auth/user/{{subscription.assigned_to.id}}">{{subscription.assigned_to}}</a></td>
-                    <td class="tbl-ui-trigger"><div class="add_remove subscribe_to_issue ui-icon ui-icon-closethick" id="subscribe{{subscription.id}}"></div></td>
+                    <td class="tbl-project"><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
+                    <td class="tbl-summary"><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
+                    <td class="tbl-assigned_to"><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
+                    <td class="tbl-ui-trigger"><a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue"><div class="add_remove ui-icon ui-icon-closethick"></div></a></td>
                 </tr>
             {% endfor%}
             </table>

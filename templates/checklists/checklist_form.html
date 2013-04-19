@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
+{% block context_nav %}
+    <a href="/project/{{project.id}}">{{project.name}}</a>
+    <a href="/checklist/project/{{project.id}}">{{project.name}} Checklists</a>
+{% endblock%}
 
 {% block container %}
-    <form action="/checklist/new/{{project_id}}" method="post" enctype="multipart/form-data">
+    <form action="/checklist/new/{{project.id}}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{formset.management_form}}
         <table>

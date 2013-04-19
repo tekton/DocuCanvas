@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from forms import *
@@ -8,10 +9,12 @@ from django.http import Http404
 from django.core.urlresolvers import reverse
 
 
+@login_required
 def TestIndex(request):
     return render_to_response("test_templates/test_board.html", {}, context_instance=RequestContext(request))
 
 
+@login_required
 def boards_form(request):
     if request.method == 'POST':
         board = Board()
@@ -29,6 +32,7 @@ def boards_form(request):
     return render_to_response('boards/boards_form.html', {'form': form}, context_instance=RequestContext(request))
 
 
+@login_required
 def boards_note_form(request):
     if request.method == 'POST':
         boardNote = BoardNote()
@@ -47,6 +51,7 @@ def boards_note_form(request):
     return render_to_response('boards/board_note_form.html', {'form': form}, context_instance=RequestContext(request))
 
 
+@login_required
 def boards_node_form(request):
     if request.method == 'POST':
         boardNode = BoardNode()
@@ -65,18 +70,24 @@ def boards_node_form(request):
     return render_to_response('boards/board_node_form.html', {'form': form}, context_instance=RequestContext(request))
 
 
+@login_required
 def index(request):
     board_nodes = Board.objects.all()
     board_node_count = BoardNode.objects.count()
     context = {'board_nodes': board_nodes, 'board_node_count': board_node_count}
     return render_to_response('boards/index.html', context)
 
+
+@login_required
 def boards(request):
     boards = Board.objects.all()
     context = {'boards': boards}
     return render_to_response('boards/boards.html', context)
 
+
+@login_required
 def board_edit(request, board_id):
+    board_nodes = BoardNode.objects.all()
     print "Submitting board..."
     if request.method == 'POST':
         boardNode = BoardNode()
@@ -98,8 +109,10 @@ def board_edit(request, board_id):
         p = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
         raise Http404
-    return render_to_response('boards/board_edit.html', {'board': p, 'form': form}, context_instance=RequestContext(request))
+    return render_to_response('boards/board_edit.html', {'board': p, 'form': form, 'board_nodes': board_nodes}, context_instance=RequestContext(request))
 
+
+@login_required
 def board_display(request, board_id):
     board_nodes = BoardNode.objects.all()
     try:

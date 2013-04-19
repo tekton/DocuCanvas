@@ -3,7 +3,34 @@
 
 {% block extra_head %}
 <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css"/>
-<script type="text/javascript" src="/static/scripts/issue_tools.js"></script>
+<script type="text/javascript" src="/static/scripts/ajax_tools.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('a.assign_issue').asAjax(function(data) {
+            // Hides nav menu only after successful submission
+            NavMenu.HideAll();
+            if ( data.success ) {
+                if ( data.assigned_to == "self" ) {
+                    $(this).text( "Unassign" );
+                    alert( "Issue now assigned to you." );
+                }
+                else if ( data.assigned_to == "none" ) {
+                    $(this).text( "Take" );
+                    alert( "Issue unassigned." );
+                }
+                else if ( data.assigned_to == "user" ) {
+                    $(this).text( "Take" );
+                    alert( "Issue successfully assigned." );
+                }
+            }
+            else {
+                alert( "Assigning error: " + data.error );
+            }
+        }, function(xhr, status, e) { alert( "Server error: " + e ); });
+
+    });
+</script>
+
 {% endblock %}
 
 {% block context_nav %}
@@ -26,7 +53,7 @@
             <tr>
                 <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</td>
                 <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
-                <td><a href="/issue/assign/{{ issue.id }}" class="assign_issue">Assign to me</a></td>
+                <td><a href="/issue/assign/{{ issue.id }}" class="assign_issue">Take</a></td>
             </tr>
         {% endfor%}
     </table>

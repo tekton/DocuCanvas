@@ -1,4 +1,11 @@
 {% extends "base.html"%}
+
+{% block context_nav %}
+    <a href="/food/new">New Food Request</a>
+    <a href="/food/complete">Completed Requests</a>
+    <a href="/food/overview">Pending Requests</a>
+{% endblock %}
+
 {% block container%}
 <table>
     <tr>

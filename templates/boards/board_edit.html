@@ -38,6 +38,19 @@
                 var messageLayer = new Kinetic.Layer();
                 shapesLayer.add(bgImage);
 
+                {% if board_nodes %}
+                    var circleId = 0;
+                    {% for i in board_nodes %}
+                        if("{{i.board}}" == "{{board.title}}"){
+                        var newCircle = "circle" + circleId;
+                        newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.description|linebreaksbr}}", circleId);
+                        circleId ++;
+                    };
+                {% endfor %}
+                {% else %}
+                    $('body').append('<p>No Board nodes</p>');
+                {% endif %}
+
                 stage.add(shapesLayer);
 
                 function createNoteForm(counter){
@@ -61,7 +74,7 @@
                 	};
 
                 	if(placementLock == false){
-                		$('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; width: " + noteDivWidth + "px; background-color: gray'><form action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><input id='id_nodeType' type='text' name='nodeType' value='note' maxlength='255' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                		$('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; width: " + noteDivWidth + "px; background-color: gray'><form action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><input id='id_nodeType' type='text' name='nodeType' value='note' maxlength='255' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cance' onclick = 'cancelForm(" + counter + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
                 		placementLock = true
                 		$('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
                 		var circle = new Kinetic.Circle({
@@ -93,6 +106,60 @@
 
             	};
 
+                    function bugNote(x, y, bugText, divId){
+                        var tooltipId = "#" + divId;
+                        var bugListId = "#bugListNo" + divId;
+                        var noteDivWidth = 300;
+
+                        var circle = new Kinetic.Circle({
+                            x: x,
+                            y: y,
+                            radius: 8,
+                            fill: '#00d2ff',
+                            stroke: 'black',
+                            strokeWidth: 4,
+                            name: divId,
+                        });
+
+                        circle.on('mouseover', function(){
+                            document.body.style.cursor = 'pointer';
+                        });
+                        circle.on('mouseout', function(){
+                            document.body.style.cursor = 'default';
+                        });
+
+                        circle.on('mousedown', function(){
+                            toggleInfoBox(divId);
+                        });
+
+                        shapesLayer.add(circle);
+                        $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + noteDivWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: grey; text-align: left'>" + bugText + "</p><p style = 'text-align: right;'><a style = 'color: yellow' href = 'http://www.google.com'>THIS IS A LINK</a></p></div>");
+                //};
+                    };
+
+                    function toggleInfoBox(divId){
+                        var toggleTooltipDiv = document.getElementById(divId);
+                        var tooltipId = "#" + divId;
+                        var bugListId = "#bugListNo" + divId;
+                        var triangleId = "triangle" + divId;
+                        var bugListLinkId = "#bugListLink" + divId;
+                        var toggleTriangleDiv = document.getElementById(triangleId);
+                            if(toggleTooltipDiv.style.visibility == 'visible'){
+                                toggleTooltipDiv.style.visibility = 'hidden';
+                                toggleTriangleDiv.style.visibility = 'hidden';
+                                $(tooltipId).css('visibility', 'hidden');
+                                $(bugListId).css('background-color', 'green');
+                                $(bugListLinkId).text("Show");
+
+                            }else{
+                                toggleTooltipDiv.style.visibility = 'visible';
+                                toggleTriangleDiv.style.visibility = 'visible';
+                                $(tooltipId).css('visibility', 'visible');
+                                $(bugListId).css('background-color', 'yellow');
+                                $(bugListLinkId).text("Hide");
+                            };
+                    };                
+
             };
             imageObj.src = '/static/{{board.image}}';
 
@@ -109,6 +176,16 @@
                         placementLock = true;
                     };
             };
+
+            function cancelForm(divId){
+                var noteFormNo = "noteNo" + divId;
+                var toggleNoteFormDiv = document.getElementById(noteFormNo);
+                var toggleCircle = '.' + divId.toString();
+                toggleNoteFormDiv.style.visibility = 'hidden';
+                toggleCircle.remove();
+                placementLock = false;
+                    
+            };            
 
          </script>
 </body>

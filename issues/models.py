@@ -3,8 +3,10 @@ from django.contrib.auth.models import User
 # from django.utils.translation import ugettext as _
 from projects.models import Project
 
+ISSUETOISSUETYPE = (('duplicated', 'Duplicate'), ('related', 'Related'), ('child', 'Child'), ('parent', 'Parent'))
 ISSUETYPE = (("bug", "Bug"), ("task", "Task"), ("suggestion", "Suggestion"))
 BUGSTATE = (("not_a_bug", "Not a bug"), ("wont_fix", "Won't Fix"), ("duplicate", "Duplicate"), ("active", "Active"), ("fixed", "Fixed"), ("retest", "Retest"), ("unverified", "Unverified"))
+
 
 class MetaIssue(models.Model):
     project = models.ForeignKey(Project)  # fk
@@ -16,6 +18,9 @@ class MetaIssue(models.Model):
     mi_type = models.CharField(max_length=255, choices=(('feature', 'Feature'), ('milestone', 'Milestone')))
     #
     user_story = models.TextField()
+
+    def __unicode__(self):
+        return self.title
 
 
 class Issue(models.Model):
@@ -40,7 +45,7 @@ class Issue(models.Model):
     assigned_to = models.ForeignKey(User, blank=True, null=True)
     # basic information
     title = models.CharField(max_length=255, blank=True, null=True)
-    summary = models.CharField(max_length=140, blank=True, null=True)
+    summary = models.CharField(max_length=140, default="No Summary")
     description = models.TextField(null=True, blank=True)
     link_slug = models.SlugField(null=True, blank=True)
     # bug centric
@@ -71,14 +76,14 @@ class IssueView(models.Model):
 class IssueToIssue(models.Model):
     primary_issue = models.ForeignKey(Issue, related_name='primary_issue')  # fk back to issue
     secondary_issue = models.ForeignKey(Issue, related_name='secondary_issue')  # fk back to issue
-    link_type = models.CharField(max_length=255)  # list of link types
+    link_type = models.CharField(max_length=255, choices=ISSUETOISSUETYPE, default='related')  # list of link types
 
     # class Meta:
     #    verbose_name = _('IssueToIssue')
     #    verbose_name_plural = _('IssueToIssues')
 
     def __unicode__(self):
-        pass
+        return self.link_type
 
 
 class SubscriptionToIssue(models.Model):

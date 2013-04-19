@@ -157,6 +157,20 @@
                 cursor:pointer;
             }
 
+            .issue_popup{
+                display:none;
+                height:10em;
+                width:40%;
+                margin:0 auto;
+                position:absolute;
+                padding: 30px 20px 50px;
+                border: 1px solid white;
+                border-radius: 4px;
+                box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
+                background: #fcfcfc;
+                z-index:11;
+            }
+
             #context_nav {
                 width: 20em;
                 padding: 1em;
@@ -203,6 +217,13 @@
                 display:none;
             }
 
+            #relation_table th{
+                text-align:left;
+            }
+
+            #relation_table td a:hover{
+                cursor:pointer;
+            }
             /* google search */
 
             #goog-fixurl ul {
@@ -439,6 +460,8 @@
             {% endif %}
              </span>
         </h1>
+        <div class="issue_popup" id="link_issue_duplicate_popup">{% block duplicate_issue_popup %}{% endblock %}</div>
+        <div class="issue_popup" id="set_related_to_popup">{% block select_related_issue_popup %}{% endblock %}</div>
         <div class="both">&nbsp;</div>
         <div class="spiffy_box right">{% block spiffy_box_right %}{% endblock %}</div>
         <div class="container">
