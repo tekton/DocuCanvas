@@ -1,9 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from helpdesk.forms import HelpForm
 from helpdesk.models import HelpRequest
 
 
+@login_required
 def help_form(request):
 	if request.method == 'POST':
 		help = HelpRequest()
@@ -24,6 +26,7 @@ def help_form(request):
 	return render_to_response('helpdesk/help_form.html', {'form': helpform}, context_instance=RequestContext(request))
 
 
+@login_required
 def get_help(request, help_id):
 	try:
 		help = HelpRequest.objects.get(pk=help_id)
@@ -33,6 +36,7 @@ def get_help(request, help_id):
 	return render_to_response('helpdesk/help_view.html', {'help': help}, context_instance=RequestContext(request))
 
 
+@login_required
 def get_all(request):
 	try:
 		all_help = HelpRequest.objects.filter(status='answered')
@@ -41,6 +45,7 @@ def get_all(request):
 		print e
 	return render_to_response('helpdesk/help_all_requests.html', {'form': all_help}, context_instance=RequestContext(request))
 
+@login_required
 def get_pending(request):
 	try:
 		requests_pending = HelpRequest.objects.exclude(status='answered')
