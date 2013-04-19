@@ -262,7 +262,12 @@ Current issue {{issue.id}} is a
 	<option value="parent">Parent</option>
 </select>
 of Issue  
-<input type="text" name="related_issue_id"/>
+
+<select  name="related_issue_id">
+    {% for project_issue in project_issues%}
+        <option value="{{project_issue.id}}">{{project_issue.summary}}</option>
+    {% endfor %}
+</select>
 
 <input type="button" value="Link" id="related_issue_id_button" onClick="issue_to_issue_link($('#related_issue_id_type').val())" />
 {% endblock%}

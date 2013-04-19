@@ -311,9 +311,17 @@ def issue_overview(request, issue_id):
     try:
         issue = Issue.objects.get(pk=issue_id)
         comments = IssueComment.objects.filter(issue=issue).order_by('-created')
+
+        try:
+            project_issues = Issue.objects.filter(project=issue.project)
+            project_issues = project_issues.exclude(pk=issue.id)
+        except Exception, e:
+            print e
+            print 'could not find other issues in same project'
     except Exception, e:
         print "Somebody messed up the issue overview"
         print e
+
 
     try:
         users = User.objects.all()
@@ -350,7 +358,7 @@ def issue_overview(request, issue_id):
 
     form = IssueFullForm(instance=issue)
 
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'related_issues': related_issues, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue"}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'related_issues': related_issues, 'project_issues': project_issues, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue"}, context_instance=RequestContext(request))
 
 
 @login_required

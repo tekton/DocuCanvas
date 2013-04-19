@@ -83,7 +83,7 @@ class IssueToIssue(models.Model):
     #    verbose_name_plural = _('IssueToIssues')
 
     def __unicode__(self):
-        return self.link_type
+        return str(self.primary_issue.summary) + ' ' + str(self.link_type) + ' ' + str(self.secondary_issue.summary)
 
 
 class SubscriptionToIssue(models.Model):
