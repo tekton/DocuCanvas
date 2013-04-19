@@ -6,7 +6,7 @@ from django.http import HttpResponse, Http404
 from django.utils import simplejson
 from django.db.models import Q
 
-from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue
+from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm
 
@@ -143,6 +143,64 @@ def set_bug_state(request):
             return submit_comment(request, issue.id)
     except:
         to_json["status"] = "Unable to set bug state"
+    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+
+
+@login_required
+def issue_to_issue_link(request):
+    to_json = {}
+
+    print request.POST['primary_issue']
+    print request.POST['secondary_issue']
+    print request.POST['link_type']
+
+    if request.POST['primary_issue'] == request.POST['secondary_issue']:
+        to_json['response'] = 'An issue cannot be related to itself'
+
+    else:
+        try:
+            primary_issue = Issue.objects.get(pk=request.POST['primary_issue'])
+
+            try:
+                secondary_issue = Issue.objects.get(pk=request.POST['secondary_issue'])
+
+                try:
+                    issue_to_issue_link = IssueToIssue.objects.get(primary_issue=primary_issue, secondary_issue=secondary_issue)
+                    if issue_to_issue_link.link_type == request.POST['link_type']:
+                        to_json['response'] = 'Link already exists'
+
+                    else:
+                        old_link_type = issue_to_issue_link.link_type
+                        issue_to_issue_link.link_type = request.POST['link_type']
+                        issue_to_issue_link.save()
+
+                        if request.POST['link_type'] == 'duplicate':
+                            primary_issue.status = request.POST['link_type']
+                            primary_issue.save()
+
+                        to_json['response'] = 'Changed old link from ' + str(old_link_type) + ' to ' + str(request.POST['link_type'])
+
+                except Exception, e:
+                    issue_to_issue_link = IssueToIssue()
+                    issue_to_issue_link.primary_issue = primary_issue
+                    issue_to_issue_link.secondary_issue = secondary_issue
+                    issue_to_issue_link.link_type = request.POST['link_type']
+                    issue_to_issue_link.save()
+
+                    if request.POST['link_type'] == 'duplicate':
+                        primary_issue.status = request.POST['link_type']
+                        primary_issue.save()
+
+                    to_json['response'] = 'Linked Issue: ' + str(request.POST['primary_issue']) + ' to Issue: ' + str(request.POST['secondary_issue']) + ' as ' + str(request.POST['link_type'])
+
+            except Exception, e:
+                print e
+                to_json['response'] = 'Cannot find Secondary Issue'
+        except Exception, e:
+            print e
+            print 'cannot find primary issue'
+            to_json['response'] = 'Cannot find Primary Issue'
+
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
 

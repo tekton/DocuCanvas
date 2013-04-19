@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block context_nav %}
+    <a href="/help/new">Ask a Question</a>
+    <a href="/help/complete">All Past Questions</a>
+    <a href="/help/pending">Unanswered Questions</a>
+{% endblock %}
+
+{% block container %}
+<form action="/help/new" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<table>
+		<b>Whats your question?</b></br>
+		{{form.question}}</br>
+		<b>Upload a Screenshot (optional):</b></br>
+		{{form.photo}}</br>
+	</table>
+	<input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
+    <input type="submit" value="Submit"/>
+</form>
+{% endblock %}

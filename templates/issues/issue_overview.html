@@ -1,11 +1,77 @@
 {% extends "base_issues.html" %}
 {% load markup %}
 
-
 {% block extra_head%}
-    <script type="text/javascript" src="/static/scripts/issue_tools.js"></script>
+    <script type="text/javascript" src="/static/scripts/ajax_tools.js"></script>
 	<script type="text/javascript">
+
+        function ajaxError(xhr, status, e) {
+            alert( "Server error: " + e );
+        }
+
+        function assignSuccess(data) {
+            // Hides nav menu only after successful submission
+            NavMenu.HideAll();
+            if ( data.success ) {
+                if ( data.assigned_to == "self" ) {
+                    $(this).text( "Unassign" );
+                    alert( "Issue now assigned to you." );
+                }
+                else if ( data.assigned_to == "none" ) {
+                    $(this).text( "Take" );
+                    alert( "Issue unassigned." );
+                }
+                else if ( data.assigned_to == "user" ) {
+                    $(this).text( "Take" );
+                    alert( "Issue successfully assigned." );
+                }
+            }
+            else {
+                alert( "Assigning error: " + data.error );
+            }
+        }
+
 		$(document).ready(function(){
+
+            $('a.subscribe_to_issue').asAjax( function(data, status) {
+                // Hides nav menu only after successful submission
+                NavMenu.HideAll();
+                if ( data.success ) {
+                    if ( data.is_subscribed ) {
+                        $(this).text("Unsubscribe");
+                        alert( "Issue subscribed" );
+                    }
+                    else {
+                        $(this).text("Subscribe");
+                        alert( "Issue unsubscribed" );
+                    }
+                }
+                else {
+                    alert( "Subscribe error: " + data.error )
+                }
+            }, ajaxError);
+
+            $('a.pin_issue').asAjax(function(data, status) {
+                // Hides nav menu only after successful submission
+                NavMenu.HideAll();
+                if ( data.success ) {
+                    if ( data.is_pinned ) {
+                        $(this).text("Unpin");
+                        alert( "Issue pinned" );
+                    }
+                    else {
+                        $(this).text("Pin");
+                        alert( "Issue unpinned" );
+                    }
+                }
+                else {
+                    alert( "Pinning error: " + data.error )
+                }
+            }, ajaxError);
+
+            $('a.assign_issue').asAjax(assignSuccess, ajaxError);
+
+            $('#assign_issue_to').asAjax( assignSuccess, ajaxError, function() { return $(this).attr('data-url') + $('#assigned_user').val(); } );
 
             $('#set_bug_status').click(function(){
 
@@ -23,8 +89,6 @@
         			$('#submit_comment_form').attr('action', '/issue/set_bug_state');
 
         			$('#submit_comment_button').click(function(){
-        				
-
         				/*$.ajax({
 					    type:"POST",
 					    url:"/issue/set_bug_state",
@@ -42,6 +106,12 @@
 
 						});*/
         			});
+        		}
+
+        		else if($('#id_status').val() == 'duplicate' ){
+        			if($('#link_issue_duplicate_popup').css('display') == "none"){
+	                        $('#link_issue_duplicate_popup').fadeToggle();
+	                }   
         		}
 
         		else{
@@ -66,7 +136,70 @@
             	}
         	});
 
+			$('a.link_issue').click(function(e){
+        		e.preventDefault();
+        		$('#link_issue_duplicate_popup').fadeToggle();
+        		return false;
+    		});
+			
+			$('a.set_related_issue').click(function(e){
+        		e.preventDefault();
+        		$('#set_related_to_popup').fadeToggle();
+        		return false;
+    		});
+
+			$(document).click(function(evt){
+	            var el = evt.target;
+
+
+	            if($(event.target).attr('id') != "set_related_to_popup" && $(event.target).parent().attr('id') != "set_related_to_popup"){
+
+	                if($('#set_related_to_popup').css('display') != "none" ){
+
+	                        $('#set_related_to_popup').fadeToggle();
+	                }                
+	            }
+
+	            if($(event.target).attr('id') != "link_issue_duplicate_popup" && $(event.target).parent().attr('id') != "link_issue_duplicate_popup" && $(event.target).attr('id') != "set_bug_status"){
+
+	                if($('#link_issue_duplicate_popup').css('display') != "none"){
+	                        $('#link_issue_duplicate_popup').fadeToggle();
+	                }                
+	            }
+
+        	});
+
 		});
+
+	function issue_to_issue_link(type, duplicate){
+		var secondary_issue;
+
+		if(duplicate){
+			secondary_issue = $('#duplicate_issue_id').val();
+		}
+
+		else{
+			secondary_issue = $('[name="related_issue_id"]').val();
+		}
+		
+		$.ajax({
+            type:"POST",
+                    url:"/issue/link",
+                    data:{
+                        primary_issue:"{{issue.id}}",
+                        secondary_issue:secondary_issue,
+                        link_type:type
+                    },
+            success: function(data){       
+                        alert(data['response']);
+                    },
+            error: function(data){
+                		alert("Server side error");
+            }
+        });
+
+	}
+
 
 	</script>
 {% endblock %}
@@ -91,7 +224,30 @@
 		{{form.status}}
 		<input type="button" id="set_bug_status" value="Set"/>
 	</a>
+	<a class="set_related_issue">Set Related To...</a>
 	<a href="/issue/{{issue.id}}/edit">Edit</a>
+{% endblock%}
+
+{% block duplicate_issue_popup %}
+<h2>Duplicate Issue</h2>
+Duplicate Issue ID: 
+<input type="text" id="duplicate_issue_id"/>
+<input type="button" value="Link" id="duplicate_issue_id_button" onClick="issue_to_issue_link('duplicate', $('#duplicate_issue_id').val())" />
+{% endblock%}
+
+{% block select_related_issue_popup %}
+<h2>Select Related Issue</h2>
+Current issue {{issue.id}} is a
+<select id="related_issue_id_type">
+	<option value="duplicate">Duplicate</option>
+	<option value="related">Related</option>
+	<option value="child">Child</option>
+	<option value="parent">Parent</option>
+</select>
+of Issue  
+<input type="text" name="related_issue_id"/>
+
+<input type="button" value="Link" id="related_issue_id_button" onClick="issue_to_issue_link($('#related_issue_id_type').val())" />
 {% endblock%}
 
 {% block container %}
