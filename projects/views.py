@@ -46,8 +46,8 @@ def project_form(request):
 def project_overview(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
-        incomplete_issues = Issue.objects.filter(project=project)
-        incomplete_issues = incomplete_issues.exclude(status='fixed').order_by('-created')
+        metas = MetaIssue.objects.filter(project=project)
+        incomplete_issues = Issue.objects.filter(project=project).exclude(status='fixed').order_by('-created')
         fixed_issues = Issue.objects.filter(project=project, status='fixed').order_by('-created')
     except:
         print 'project not found'
@@ -58,7 +58,7 @@ def project_overview(request, project_id):
     except:
         print 'Unable to load projects'
 
-    return render_to_response("projects/project_overview.html", {'project_O': project, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_overview.html", {'project_O': project, "metas": metas, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
 
 
 @login_required

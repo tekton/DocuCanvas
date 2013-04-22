@@ -46,6 +46,19 @@
 {% endblock %}
 
 {% block container_bottom_clear %}
+    <h2>Meta Issues</h2>
+    <table class="tbl-generic tbl-overview">
+        <tr class="tbl-rowheader">
+            <th>Title</th>
+            <th>Type</th>
+        </tr>
+        {% for meta in metas %}<tr>
+            <td><a href="/issue/meta/{{ meta.id }}/edit">{{ meta.title }}</a></td>
+            <td>{{ meta.mi_type }}</td>
+        </tr>{% empty %}<tr><td><em>No meta-issues for this project.</em></td></tr>
+        {% endfor %}
+    </table>
+
 	<h2>Issues</h2>
 
 	<table class="tbl-issues tbl-generic">
