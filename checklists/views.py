@@ -10,6 +10,7 @@ from checklists.models import *
 from checklists.forms import *
 
 
+@login_required
 def project_checklists(request, project_id):
     print 'in project checklists'
     try:
@@ -36,6 +37,7 @@ def project_checklists(request, project_id):
     return render_to_response("checklists/checklists.html", {"checklists": checklists, "checklist_instances": checklist_instances, "project": project,  "project_id": project_id, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
+@login_required
 def checklist_edit(request, checklist_id):
     try:
         checklist = Checklist.objects.get(pk=checklist_id)
@@ -60,6 +62,7 @@ def checklist_edit(request, checklist_id):
     return render_to_response("checklists/checklist_overview.html", {"formset": formset, "checklist_form": checklist_form, "checklist": checklist, "page_type": checklist.project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
+@login_required
 def instance_edit(request, checklist_instance_id):
 
     try:
@@ -101,6 +104,7 @@ def instance_edit(request, checklist_instance_id):
     return render_to_response("checklists/checklist_edit.html", {"form": formset, "checklist_instance_form": checklist_instance_form, "checklist_instance": checklist_instance, "page_type": checklist_instance.title, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
+@login_required
 def toggle_checkbox(request):
     to_json = {}
 
@@ -128,6 +132,7 @@ def toggle_checkbox(request):
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 
+@login_required
 def submit_tag_comment(request):
     to_json = {}
 
@@ -141,6 +146,7 @@ def submit_tag_comment(request):
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 
+@login_required
 def new_instance(request, checklist_id):
     try:
         checklist = Checklist.objects.get(pk=checklist_id)
@@ -162,6 +168,7 @@ def new_instance(request, checklist_id):
     return redirect('checklists.views.project_checklists', checklist.project.id)
 
 
+@login_required
 def checklist_form_project(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
@@ -193,6 +200,7 @@ def checklist_form_project(request, project_id):
     return render_to_response("checklists/checklist_form.html", {'formset': formset, "checklist_form": checklist_form, "project": project, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
+@login_required
 def overview(request, checklist_id):
     try:
         checklist_instance = ChecklistInstance.objects.get(pk=checklist_id)
