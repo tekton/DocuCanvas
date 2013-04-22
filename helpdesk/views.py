@@ -1,6 +1,6 @@
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from helpdesk.forms import HelpForm
+from helpdesk.forms import HelpForm, HelpFormComplete
 from helpdesk.models import HelpRequest
 
 
@@ -41,6 +41,7 @@ def get_all(request):
 		print e
 	return render_to_response('helpdesk/help_all_requests.html', {'form': all_help}, context_instance=RequestContext(request))
 
+
 def get_pending(request):
 	try:
 		requests_pending = HelpRequest.objects.exclude(status='answered')
@@ -48,3 +49,41 @@ def get_pending(request):
 		print "Couldn't find all pending questions"
 		print e
 	return render_to_response('helpdesk/pending_help.html', {'form': requests_pending}, context_instance=RequestContext(request))
+
+
+def edit_help(request, help_id):
+	try:
+		help = HelpRequest.objects.get(pk=help_id)
+	except Exception, e:
+		print "Couldn't find question"
+		print e
+	if request.method == 'POST':
+		helpform = HelpForm(request.POST, request.FILES, instance=help)
+		try:
+			help = helpform.save()
+		except Exception, e:
+			print e
+		if help.id:
+			redirect('helpdesk.views.get_help', help.id)
+	else:
+		helpform = HelpForm()
+	return render_to_response('helpdesk/help_edit.html', {'form': helpform}, context_instance=RequestContext(request))
+
+
+def admin_help(request, help_id):
+	try:
+		help = HelpRequest.objects.get(pk=help_id)
+	except Exception, e:
+		print e
+		print "couldn't load help object"
+	if request.method == 'POST':
+		helpform = HelpFormComplete(request.POST, request.FILES, instance=help)
+		try:
+			help = helpform.save()
+		except Exception, e:
+			print e
+		if help.id:
+			redirect('helpdesk.views.get_help', help.id)
+	else:
+		helpform = HelpForm()
+	return render_to_response('helpdesk/help_admin.html', {'form': helpform}, context_instance=RequestContext(request))

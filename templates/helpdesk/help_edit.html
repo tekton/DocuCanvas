@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block context_nav %}
+    <a href="/help/new">Ask a Question</a>
+    <a href="/help/complete">All Past Questions</a>
+    <a href="/help/pending">Unanswered Questions</a>
+{% endblock %}
+
+{% block container %}
+<form>
+	<table>
+		{{form.as_table}}
+	</table>
+	<input type="submit" value="Submit"/>
+</form>
+{% endblock %}
