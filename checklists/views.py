@@ -1,9 +1,10 @@
+import json
+
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.forms.models import inlineformset_factory
 from django.http import HttpResponse
-from django.utils import simplejson
 from projects.models import *
 from checklists.models import *
 from checklists.forms import *
@@ -124,7 +125,7 @@ def toggle_checkbox(request):
         except Exception, e:
             print e
 
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 
 def submit_tag_comment(request):
@@ -137,7 +138,7 @@ def submit_tag_comment(request):
         to_json['status'] = "Saved Comment"
     except Exception, e:
         to_json['status'] = e
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 
 def new_instance(request, checklist_id):

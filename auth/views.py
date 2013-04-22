@@ -3,7 +3,6 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.template import RequestContext
 from forms import RegisterForm, EditAccountForm, ChangeEmailForm
-from django.utils import simplejson
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import authenticate, login

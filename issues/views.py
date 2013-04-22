@@ -1,9 +1,11 @@
+
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, Http404
-from django.utils import simplejson
 from django.db.models import Q
 
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue
@@ -44,7 +46,10 @@ def pin(request, issue_id):
         else:
             to_json['is_pinned'] = True
 
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    if request.is_ajax():
+        return HttpResponse(json.dumps(to_json), mimetype='application/json')
+    else:
+        return redirect('issues.views.issue_overview', issue_id)
 
 
 @login_required
@@ -89,7 +94,10 @@ def assign(request, issue_id, user_id=-1):
             to_json['assigned_to'] = False
             print e
 
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    if request.is_ajax():
+        return HttpResponse(json.dumps(to_json), mimetype='application/json')
+    else:
+        return redirect('issues.views.issue_overview', issue_id)
 
 
 @login_required
@@ -125,7 +133,10 @@ def subscribe(request, issue_id):
         else:
             to_json['is_subscribed'] = True
 
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    if request.is_ajax():
+        return HttpResponse(json.dumps(to_json), mimetype='application/json')
+    else:
+        return redirect('issues.views.issue_overview', issue_id)
 
 
 @login_required
@@ -143,7 +154,7 @@ def set_bug_state(request):
             return submit_comment(request, issue.id)
     except:
         to_json["status"] = "Unable to set bug state"
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 
 @login_required
@@ -174,7 +185,7 @@ def unlink_issues(request):
         print e
         print 'cannot find primary issue'
         to_json['response'] = 'Cannot find Primary Issue'
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 
 @login_required
@@ -228,7 +239,7 @@ def issue_to_issue_link(request):
             print 'cannot find primary issue'
             to_json['response'] = 'Cannot find Primary Issue'
 
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 
 @login_required
