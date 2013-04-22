@@ -147,37 +147,25 @@ def set_bug_state(request):
 
 
 @login_required
-def issue_to_issue_link(request):
+def unlink_issues(request):
     to_json = {}
-
-    print request.POST['primary_issue']
-    print request.POST['secondary_issue']
-    print request.POST['link_type']
-
+    print 'unlinking'
     try:
-        primary_issue = Issue(pk=request.POST['primary_issue'])
-
+        primary_issue = Issue.objects.get(pk=request.POST['primary_issue'])
         try:
-            secondary_issue = Issue(pk=request.POST['secondary_issue'])
+            secondary_issue = Issue.objects.get(pk=request.POST['secondary_issue'])
 
             try:
                 issue_to_issue_link = IssueToIssue.objects.get(primary_issue=primary_issue, secondary_issue=secondary_issue)
-                if issue_to_issue_link.link_type == request.POST['link_type']:
-                    to_json['response'] = 'Link already exists'
-
-                else:
-                    old_link_type = issue_to_issue_link.link_type
-                    issue_to_issue_link.link_type = request.POST['link_type']
-                    issue_to_issue_link.save()
-                    to_json['response'] = 'Changed old link from ' + str(old_link_type) + ' to ' + str(request.POST['link_type'])
+                issue_to_issue_link.delete()
+                if primary_issue.status == 'duplicate':
+                    primary_issue.status = None
+                    primary_issue.save()
+                to_json['response'] = 'Unlinked Issue ' + str(request.POST['primary_issue']) + ' and Issue ' + str(request.POST['secondary_issue'])
 
             except Exception, e:
-                issue_to_issue_link = IssueToIssue()
-                issue_to_issue_link.primary_issue = primary_issue
-                issue_to_issue_link.secondary_issue = secondary_issue
-                issue_to_issue_link.link_type = request.POST['link_type']
-                issue_to_issue_link.save()
-                to_json['response'] = 'Linked Issue: ' + str(request.POST['primary_issue']) + ' to Issue: ' + str(request.POST['secondary_issue']) + ' as ' + str(request.POST['link_type'])
+                print e
+                to_json['response'] = 'Unable to find Issue to Issue Link'
 
         except Exception, e:
             print e
@@ -186,6 +174,59 @@ def issue_to_issue_link(request):
         print e
         print 'cannot find primary issue'
         to_json['response'] = 'Cannot find Primary Issue'
+    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+
+
+@login_required
+def issue_to_issue_link(request):
+    to_json = {}
+
+    if request.POST['primary_issue'] == request.POST['secondary_issue']:
+        to_json['response'] = 'An issue cannot be related to itself'
+
+    else:
+        try:
+            primary_issue = Issue.objects.get(pk=request.POST['primary_issue'])
+
+            try:
+                secondary_issue = Issue.objects.get(pk=request.POST['secondary_issue'])
+
+                try:
+                    issue_to_issue_link = IssueToIssue.objects.get(primary_issue=primary_issue, secondary_issue=secondary_issue)
+                    if issue_to_issue_link.link_type == request.POST['link_type']:
+                        to_json['response'] = 'Link already exists'
+
+                    else:
+                        old_link_type = issue_to_issue_link.link_type
+                        issue_to_issue_link.link_type = request.POST['link_type']
+                        issue_to_issue_link.save()
+
+                        if request.POST['link_type'] == 'duplicate':
+                            primary_issue.status = request.POST['link_type']
+                            primary_issue.save()
+
+                        to_json['response'] = 'Changed old link from ' + str(old_link_type) + ' to ' + str(request.POST['link_type'])
+
+                except Exception, e:
+                    issue_to_issue_link = IssueToIssue()
+                    issue_to_issue_link.primary_issue = primary_issue
+                    issue_to_issue_link.secondary_issue = secondary_issue
+                    issue_to_issue_link.link_type = request.POST['link_type']
+                    issue_to_issue_link.save()
+
+                    if request.POST['link_type'] == 'duplicate':
+                        primary_issue.status = request.POST['link_type']
+                        primary_issue.save()
+
+                    to_json['response'] = 'Linked Issue: ' + str(request.POST['primary_issue']) + ' to Issue: ' + str(request.POST['secondary_issue']) + ' as ' + str(request.POST['link_type'])
+
+            except Exception, e:
+                print e
+                to_json['response'] = 'Cannot find Secondary Issue'
+        except Exception, e:
+            print e
+            print 'cannot find primary issue'
+            to_json['response'] = 'Cannot find Primary Issue'
 
     return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
 
@@ -264,14 +305,23 @@ def issue_form_project(request, project_id):
         form = IssueForm()
     return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': project.name, 'page_value': "Issue", 'projects': projects}, context_instance=RequestContext(request))
 
+
 @login_required
 def issue_overview(request, issue_id):
     try:
         issue = Issue.objects.get(pk=issue_id)
         comments = IssueComment.objects.filter(issue=issue).order_by('-created')
+
+        try:
+            project_issues = Issue.objects.filter(project=issue.project)
+            project_issues = project_issues.exclude(pk=issue.id)
+        except Exception, e:
+            print e
+            print 'could not find other issues in same project'
     except Exception, e:
         print "Somebody messed up the issue overview"
         print e
+
 
     try:
         users = User.objects.all()
@@ -297,13 +347,18 @@ def issue_overview(request, issue_id):
         subscribe = None
 
     try:
+        related_issues = IssueToIssue.objects.select_related().filter(primary_issue=issue)
+    except:
+        print 'Unable to find any related issues'
+
+    try:
         comment_form = CommentForm()
     except Exception, e:
         print e
 
     form = IssueFullForm(instance=issue)
 
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue"}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'related_issues': related_issues, 'project_issues': project_issues, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue"}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -419,5 +474,5 @@ def submit_comment(request, issue_id):
 
 @login_required
 def unassigned_issues(request):
-    q = Issue.objects.filter(Q(assigned_to__isnull = True) & (Q(status = "active") | Q(status = "retest") | Q(status = "unverified") | Q(status__isnull=True)))
+    q = Issue.objects.filter(Q(assigned_to__isnull = True) & (Q(status = "active") | Q(status = "retest") | Q(status = "unverified") | Q(status__isnull=True))).order_by('-created')
     return render_to_response('issues/issue_unassigned.html', {'issues': q}, context_instance=RequestContext(request))

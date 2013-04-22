@@ -66,6 +66,11 @@ class Issue(models.Model):
     wireframe = models.CharField(max_length=255, blank=True, null=True)  # for suggestions, tasks, features, etc
     uri_to_test = models.CharField(max_length=255, blank=True, null=True)  # where they're having the issue
 
+'''
+class FinishedIssue(models.Model):
+    finished_issue = models.ForeignKey(Issue) #fk
+    status = models.CharField(max_length=255, blank=True, null=True, choices=BUGSTATE)
+'''
 
 class IssueView(models.Model):
     issue = models.ForeignKey(Issue)  # fk
@@ -83,7 +88,7 @@ class IssueToIssue(models.Model):
     #    verbose_name_plural = _('IssueToIssues')
 
     def __unicode__(self):
-        return self.link_type
+        return str(self.primary_issue.summary) + ' ' + str(self.link_type) + ' ' + str(self.secondary_issue.summary)
 
 
 class SubscriptionToIssue(models.Model):

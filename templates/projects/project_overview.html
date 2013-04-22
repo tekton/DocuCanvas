@@ -54,7 +54,22 @@
 			<th class="tbl-issues-status">Status</th>
 			<th class="tbl-issues-assigned_to">Assigned To</th>
 		</tr>
-	{% for issue in issues%}
+	{% for issue in incomplete_issues%}
+		<tr>
+			<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
+			<td>{{issue.status}}</td>
+			<td>{{issue.assigned_to}}</td>
+		</tr>
+	{% endfor %}
+	</table>
+
+	<table class="tbl-issues tbl-generic">
+		<tr class="tbl-rowheader">
+			<th class="tbl-issues-summary">Completed Issues</th>
+			<th class="tbl-issues-status">Status</th>
+			<th class="tbl-issues-assigned_to">Assigned To</th>
+		</tr>
+	{% for issue in fixed_issues%}
 		<tr>
 			<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
 			<td>{{issue.status}}</td>

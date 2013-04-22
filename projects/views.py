@@ -12,6 +12,7 @@ def home(request):
     return render_to_response("projects/projects.html", {'projects': projects, "page_type": "Project"}, context_instance=RequestContext(request))
 
 
+@login_required
 def project_form(request):
     if request.method == 'POST':
         project = Project()
@@ -41,21 +42,26 @@ def project_form(request):
     return render_to_response("projects/project_form.html", {'form': form, "projects": projects, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
 
 
+@login_required
 def project_overview(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
-        issues = Issue.objects.filter(project=project).order_by('-created')
+        incomplete_issues = Issue.objects.filter(project=project)
+        incomplete_issues = incomplete_issues.exclude(status='fixed').order_by('-created')
+        fixed_issues = Issue.objects.filter(project=project, status='fixed').order_by('-created')
     except:
         print 'project not found'
 
     try:
+        # NEED TO CHANGE TO FILTER PROJECTS VIEABLE BY USER
         projects = Project.objects.all().order_by('-created')
     except:
         print 'Unable to load projects'
 
-    return render_to_response("projects/project_overview.html", {'project_O': project, "issues": issues, "projects": projects, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_overview.html", {'project_O': project, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
 
 
+@login_required
 def edit(request, project_id):
     if request.method == 'POST':
         project = Project.objects.get(pk=project_id)

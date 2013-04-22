@@ -48,6 +48,7 @@ def edit_report(request, year=0, month=0, day=0):
         return render_to_response("daily_reports/daily_report_form.html", {'form': form, 'global': False}, context_instance=RequestContext(request))
 
 
+@login_required
 def edit_global_report(request, year=0, month=0, day=0):
     if request.method == 'POST':
         form = ReportForm(request.POST)
@@ -88,6 +89,7 @@ def edit_global_report(request, year=0, month=0, day=0):
         return render_to_response("daily_reports/daily_report_form.html", {'form': form, 'global': True}, context_instance=RequestContext(request))
 
 
+@login_required
 def view_reports(request, year=0, month=0, day=0):
     d = date.today()
     if (year != 0):
