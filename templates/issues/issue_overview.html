@@ -335,7 +335,7 @@ of Issue
 	<table class="tbl-generic tbl-comments">
 		<tr>
 			<td colspan="2">
-				<form action="/issue/comment" id="submit_comment_form" method="post">
+				<form action="/issue/comment/{{ issue.id }}" id="submit_comment_form" method="post">
 					{% csrf_token %}
 					<b><a id="comment_title">Comment:</a></b> {{comment_form.errors}} <br />
 					<div class="comment_textarea">{{comment_form.description}}</div>
