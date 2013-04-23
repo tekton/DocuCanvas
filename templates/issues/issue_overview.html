@@ -75,40 +75,22 @@
 
             $('#set_bug_status').click(function(){
 
-        		if( $('#id_status').val() == "fixed"){
+                var statusVal = $('#id_status').val();
+                if( statusVal == "fixed"){
 					// Hides nav menu
         			NavMenu.HideAll();
 
         			$('#comment_title').text('Bug Fixed Comment');
         			$('#id_description').focus();
-        			$('<input type="hidden" name="issue" value="{{issue.id}}"></input>').insertBefore('#id_description')
-        			$('<input type="hidden" name="status" value="fixed"></input>').insertBefore('#id_description')
-        			$('#submit_comment_button').val('Fix Bug');
+                    var submitComment = $('#submit_comment_button');
+                    submitComment.val('Fix Bug');
 
-        			$('#submit_comment_button').unbind('click');
+        			submitComment.unbind('click');
         			$('#submit_comment_form').attr('action', '/issue/set_bug_state');
 
-        			$('#submit_comment_button').click(function(){
-        				/*$.ajax({
-					    type:"POST",
-					    url:"/issue/set_bug_state",
-					    data:{
-					    	issue:"{{issue.id}}",
-					    	status:$('#id_status').val()
-					    },
-					    success: function(data){	
-					    	alert(data['status']);
-					    },
-					    error: function(data){
-					    	alert(data['status']);
-					    	alert("Server side error");
-					    }
-
-						});*/
-        			});
         		}
 
-        		else if($('#id_status').val() == 'duplicate' ){
+        		else if(statusVal == 'duplicate' ){
         			if($('#link_issue_duplicate_popup').css('display') == "none"){
 	                        $('#link_issue_duplicate_popup').fadeToggle();
 	                }   
@@ -120,7 +102,7 @@
 					    url:"/issue/set_bug_state",
 					    data:{
 					    	issue:"{{issue.id}}",
-					    	status:$('#id_status').val()
+					    	status:statusVal
 					    },
 					    success: function(data){
 					    	// Hides nav menu only after successfull submission
@@ -177,7 +159,7 @@
                     url:"/issue/unlink",
                     data:{
                         primary_issue:"{{issue.id}}",
-                        secondary_issue:secondary_issue,
+                        secondary_issue:secondary_issue
                     },
             success: function(data){       
                         alert(data['response']);
@@ -352,7 +334,7 @@ of Issue
 	<table class="tbl-generic tbl-comments">
 		<tr>
 			<td colspan="2">
-				<form action="/issue/comment/{{issue.id}}" id="submit_comment_form" method="post" enctype="multipart/form-data">
+				<form action="/issue/comment" id="submit_comment_form" method="post">
 					{% csrf_token %}
 					<b><a id="comment_title">Comment:</a></b> {{comment_form.errors}} <br />
 					<div class="comment_textarea">{{comment_form.description}}</div>
@@ -365,7 +347,7 @@ of Issue
 		</tr>
 		{% for comment in comments%}
 			<tr class="tbl-rowheader">
-				<td class="tbl-fauxth tbl-comments-user"><b>{{comment.user}}</b</td>
+				<td class="tbl-fauxth tbl-comments-user"><b>{{comment.user}}</b></td>
 				<td class="tbl-fauxth tbl-comments-created">{{comment.created}}</td>
 			</tr>
 			<tr>

@@ -437,50 +437,33 @@ def issue_search_advanced(request):
 
 
 @login_required
-def submit_comment(request, issue_id):
+def submit_comment(request):
     """
         Bad assumption: will only be called with POST...
         Takes a basic comment ModelForm with additional issue_id and user notes added in the form outside the base model form; though those could be added later
     """
-    try:
-        issue = Issue.objects.get(pk=issue_id)
-    except Exception, e:
-        print "error getting issue"
-        raise e
+    if request.method == "GET":
+        return redirect("/")
 
     try:
-        comments = IssueComment.objects.filter(issue=issue).order_by('-created')
-    except Exception, e:
-        print "Error getting comments"
-        raise e
+        issue = Issue.objects.get(pk=request.POST['issue'])
+    except Issue.DoesNotExist:
+        raise Http404
 
     comment = IssueComment()
 
-    if request.method == 'POST':
+    form = CommentForm(request.POST, instance=comment)
+    if form.is_valid():
         try:
-            #
-            form = CommentForm(request.POST, instance=comment)
-            #
-            if form.is_valid():
-                try:
-                    comment = form.save()  # save the modelform's model!
-                except Exception, e:
-                    print "Error saving form"
-                    print e
-                    print form.errors
-            else:
-                print "comment form not valid"
-                print form
-                print form.errors
-        except Exception, e:
-            print "Error somewhere in comment posting"
-            print e
-            # form = CommentForm(user=User, issue=issue)
-            form = CommentForm()
+            comment = form.save()  # save the modelform's model!
+        except Exception as e:
+            print "Error saving new comment", e
+            raise e
     else:
-        # form = CommentForm(user=User, issue=issue)
-        form = CommentForm()
-    return redirect('issues.views.issue_overview', issue_id, permanent=False)
+        #TODO: Need to get the errors to the issue page somehow
+        pass
+
+    return redirect('issues.views.issue_overview', issue.id)
 
 
 @login_required

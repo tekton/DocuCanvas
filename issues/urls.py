@@ -20,6 +20,6 @@ urlpatterns = patterns('',
     (r'link', 'issues.views.issue_to_issue_link'),
     (r'advsearch', 'issues.views.issue_search_advanced'),
     (r'search', 'issues.views.issue_search_simple'),
-    (r'comment/([A-Za-z0-9_\.-]+)', 'issues.views.submit_comment'),
+    (r'comment', 'issues.views.submit_comment'),
     (r'([A-Za-z0-9_\.-]+)', 'issues.views.issue_overview'),
 )
