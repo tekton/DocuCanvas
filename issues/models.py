@@ -18,6 +18,8 @@ class MetaIssue(models.Model):
     mi_type = models.CharField(max_length=255, choices=(('feature', 'Feature'), ('milestone', 'Milestone')))
     #
     user_story = models.TextField()
+    #
+    code_name = models.CharField(max_length=255, null=True, blank=True)
 
     def __unicode__(self):
         return self.title
