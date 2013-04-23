@@ -151,8 +151,9 @@ def set_bug_state(request):
         issue.save()
         to_json["status"] = "Bug status set"
         if request.POST['status'] == 'fixed':
-            return submit_comment(request, issue.id)
-    except:
+            return submit_comment(request)
+    except Exception, e:
+        print e
         to_json["status"] = "Unable to set bug state"
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
