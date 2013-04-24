@@ -14,10 +14,23 @@ from django.db.models import Q
 from oauth2client.client import OAuth2WebServerFlow
 from apiclient.discovery import build
 
+import os
+
+
+def _get_google_keys():
+    returnVal = {}
+    returnVal["devKey"] = os.getenv("GOOGLE_API_KEY","")
+    returnVal["devSecretKey"] = os.getenv("GOOGLE_API_SECRET_KEY","")
+    return returnVal
+
 
 def _get_flow():
-    gSettings = settings.OAUTH_SETTINGS['google']
-    return OAuth2WebServerFlow(client_id=gSettings['devKey'], client_secret=gSettings['devSecretKey'], scope='https://www.googleapis.com/auth/youtube.readonly', redirect_uri='http://localtest.channelfactory.com:8000/acct/oauth2callback')
+    gSettings = _get_google_keys()
+    return OAuth2WebServerFlow(
+        client_id=gSettings['devKey'], 
+        client_secret=gSettings['devSecretKey'], 
+        scope='https://www.googleapis.com/auth/youtube.readonly', 
+        redirect_uri='http://localtest.channelfactory.com:8000/acct/oauth2callback')
 
 
 def oauth_test(request):
@@ -30,6 +43,7 @@ def oauth_callback(request):
         raise Http404
     flow = _get_flow()
     credentials = flow.step2_exchange(request.GET['code'])
+    
     service = build('youtube', 'v3', http=credentials.authorize(Http()))
 
     output = ""
