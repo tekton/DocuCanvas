@@ -81,3 +81,9 @@ def edit(request, project_id):
         project = Project.objects.get(pk=project_id)
         form = ProjectForm(instance=project)
     return render_to_response("projects/project_edit.html", {"form": form, "project": project, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
+
+
+def CodeNames(request):
+    cn_projects = Project.objects.all()
+    cn_meta = MetaIssue.objects.all()
+    return render_to_response("projects/code_names.html", {"cn_projects": cn_projects, "cn_meta": cn_meta, "page_type": "Project", "page_value": "Code Names"}, context_instance=RequestContext(request))
