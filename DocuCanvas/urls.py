@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('auth.urls')),
     #
+    url(r'^acct/', include('accounts.urls')),
     url(r'^bug/', include('bugs.urls')),
     url(r'^board/', include('boards.urls')),
     #url(r'^suggestion/', include('suggestions.urls')),
@@ -28,4 +29,5 @@ urlpatterns = patterns('',
     url(r'^auth/', include('auth.urls')),
     url(r'^food/', include('food.urls')),
     url(r'^help/', include('helpdesk.urls')),
+    url(r'^gapps/', include('gapps.urls')),
 )

@@ -147,6 +147,7 @@ INSTALLED_APPS = (
     'boards',
     'food',
     'helpdesk',
+    'gapps',
  )
 
 # A sample logging configuration. The only tangible logging
@@ -189,3 +190,10 @@ BROKER_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 CELERY_RESULT_BACKEND = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 # CELERY_IMPORTS = ("bg_tasks.tasks")  # Uncomment line to add where the tasks are! A suggest default is in there
 ### /CELERY ###
+
+OAUTH_SETTINGS = {}
+
+try:
+    from oauth_settings import *
+except ImportError:
+    pass
