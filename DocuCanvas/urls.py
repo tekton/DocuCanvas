@@ -29,4 +29,5 @@ urlpatterns = patterns('',
     url(r'^auth/', include('auth.urls')),
     url(r'^food/', include('food.urls')),
     url(r'^help/', include('helpdesk.urls')),
+    url(r'^gapps/', include('gapps.urls')),
 )

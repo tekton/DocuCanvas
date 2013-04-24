@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 class Board(models.Model):
     title = models.CharField(max_length=255)
     image = models.ImageField(upload_to="img", height_field='height', width_field='width')
-#    image = models.CharField(max_length=255)  # image URI
     height = models.FloatField(null=True, blank=True)
     width = models.FloatField(null=True, blank=True)
 

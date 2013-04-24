@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block context_nav %}
+	<a href="/issue/new/{{project_O.id}}">New Issue</a>
+	<a href="/issue/new/{{project_O.id}}">New Risk</a>
+	<a href="/checklist/new/{{project_O.id}}">New Checklist</a>
+	<a href="/checklist/project/{{project_O.id}}">Checklists</a>
+	<a href="/project/{{project_O.id}}/edit">Edit Project</a>
+{% endblock%}
+
+{% block container %}
+	<table>
+	<tr><th colspan=2>Project Code Names</th></tr>
+	{% for project in cn_projects %}
+		<tr>
+			<td>{{project.name}}</td>
+			<td>{{project.code_name}}</td>
+		</tr>
+	{% endfor %}
+	<tr><th colspan=2>Feature Code Names</th></tr>
+	{% for meta in cn_meta %}
+		<tr>
+			<td>{{meta.title}}</td>
+			<td>{{meta.code_name}}</td>
+		</tr>		
+	{% endfor %}
+	</table>
+{% endblock %}
