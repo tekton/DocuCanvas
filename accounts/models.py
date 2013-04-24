@@ -23,5 +23,9 @@ class GoogleAccount(models.Model):
     """
     user = models.ForeignKey(User)
     account = models.ForeignKey(Account)
-    security_token = models.CharField(max_length=255, null=True, blank=True)
     # put other fields needed below ?
+    google_account_id = models.CharField(max_length=255, null=True, blank=True) #id
+    account_label = models.CharField(max_length=255, null=True, blank=True) #email address
+    refresh_token = models.CharField(max_length=255, null=True, blank=True) 
+    client_auth_key = models.CharField(max_length=255, null=True, blank=True)
+    client_auth_key_expiration = models.DateTimeField(null=True, blank=True)
