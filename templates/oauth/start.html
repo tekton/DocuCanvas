@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OAUTH 2 Test start page</title>
+    <title>Google OAuth 2 Test</title>
     <style type="text/css">
         body, td {
             font-family: Verdana, sans-serif;
@@ -10,7 +10,7 @@
     </style>
 </head>
 <body>
-    <h1>OAUTH2 Testing Start Page</h1>
+    <h1>Google OAuth2 Testing Start Page</h1>
     <p>{% if hasCreds %}You have authorized credentials{% else %}You do not have authorized credentials{% endif %}</p>
     {% if hasCreds %}<p><a href="{% url 'accounts.views.oauth_test' %}">Proceed to test</a></p>{% endif %}
     <p><a href="{% url 'accounts.views.oauth_authorize' %}">Obtain new authorization</a></p>

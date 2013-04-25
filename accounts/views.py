@@ -11,7 +11,7 @@ from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.db.models import Q
 
-from oauth2client.client import OAuth2WebServerFlow
+from oauth2client.client import OAuth2WebServerFlow, TokenRevokeError
 from apiclient.discovery import build
 
 from models import GoogleAccount
@@ -27,12 +27,28 @@ def _get_flow():
 
 @login_required
 def oauth_start(request):
-    hasCreds = GoogleAccount.objects.filter(user=request.user).exists()
-    return render_to_response("oauth/start.html", {'hasCreds':hasCreds}, RequestContext(request))
+    try:
+        acct = GoogleAccount.objects.get(user=request.user)
+    except GoogleAccount.DoesNotExist:
+        acct = None
+
+    return render_to_response("oauth/start.html", {'hasCreds': (acct and not acct.credentials.invalid)}, RequestContext(request))
 
 
 @login_required
 def oauth_authorize(request):
+    try:
+        acct = GoogleAccount.objects.get(user=request.user)
+    except GoogleAccount.DoesNotExist:
+        pass
+    else:
+        if not acct.credentials.invalid:
+            try:
+                acct.credentials.revoke(Http())
+            except TokenRevokeError as e:
+                print e
+            else:
+                acct.save()
     flow = _get_flow()
     return redirect(flow.step1_get_authorize_url())
 
@@ -49,6 +65,8 @@ def oauth_callback(request):
         acct.credentials = credentials
         acct.save()
 
+    print credentials.to_json()
+
     return redirect('accounts.views.oauth_start')
 
 
@@ -57,11 +75,12 @@ def oauth_test(request):
     try:
         acct = GoogleAccount.objects.get(user=request.user)
     except GoogleAccount.DoesNotExist:
+        acct = None
+
+    if not acct or acct.credentials.invalid:
         return redirect('accounts.views.oauth_start')
 
-    credentials = acct.credentials
-
-    service = build('youtube', 'v3', http=credentials.authorize(Http()))
+    service = build('youtube', 'v3', http=acct.credentials.authorize(Http()))
 
     output = ""
 
@@ -75,7 +94,6 @@ def oauth_test(request):
 
         output += "\n"
 
-    acct.credentials = credentials
     acct.save()
 
     return HttpResponse(output, mimetype="text/plain")
