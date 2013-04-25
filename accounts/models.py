@@ -27,8 +27,7 @@ class GoogleAccount(models.Model):
         Google Account table to allow people to link 1 to unlimited Google/YouTube account to their account
     """
     user = models.ForeignKey(User)
-    account = models.ForeignKey(Account)
-    # put other fields needed below ?
+    account = models.ForeignKey(Account, null=True)
     google_account_id = models.CharField(max_length=255, null=True, blank=True) #id
     account_label = models.CharField(max_length=255, null=True, blank=True) #email address
     # refresh_token = models.CharField(max_length=255, null=True, blank=True)
