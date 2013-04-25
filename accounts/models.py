@@ -1,5 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib import admin
+
+from south.modelsinspector import add_introspection_rules
+
+from oauth2client.django_orm import CredentialsField
 
 # Create your models here.
 
@@ -26,6 +31,11 @@ class GoogleAccount(models.Model):
     # put other fields needed below ?
     google_account_id = models.CharField(max_length=255, null=True, blank=True) #id
     account_label = models.CharField(max_length=255, null=True, blank=True) #email address
-    refresh_token = models.CharField(max_length=255, null=True, blank=True) 
-    client_auth_key = models.CharField(max_length=255, null=True, blank=True)
-    client_auth_key_expiration = models.DateTimeField(null=True, blank=True)
+    # refresh_token = models.CharField(max_length=255, null=True, blank=True)
+    # client_auth_key = models.CharField(max_length=255, null=True, blank=True)
+    # client_auth_key_expiration = models.DateTimeField(null=True, blank=True)
+    credentials = CredentialsField()
+
+add_introspection_rules([], ["^oauth2client\.django_orm\.CredentialsField"])
+
+admin.site.register(GoogleAccount)
