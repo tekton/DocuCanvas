@@ -17,18 +17,10 @@ from apiclient.discovery import build
 from models import GoogleAccount
 
 
-def _get_google_keys():
-    returnVal = {}
-    returnVal["devKey"] = os.getenv("GOOGLE_API_KEY","")
-    returnVal["devSecretKey"] = os.getenv("GOOGLE_API_SECRET_KEY","")
-    return returnVal
-
-
 def _get_flow():
-    gSettings = _get_google_keys()
     return OAuth2WebServerFlow(
-        client_id=gSettings['devKey'], 
-        client_secret=gSettings['devSecretKey'], 
+        client_id=os.getenv("GOOGLE_API_KEY"),
+        client_secret=os.getenv("GOOGLE_API_SECRET_KEY"),
         scope='https://www.googleapis.com/auth/youtube.readonly', 
         redirect_uri='http://localtest.channelfactory.com:8000/acct/oauth2callback')
 
