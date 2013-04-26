@@ -24,9 +24,9 @@ def _get_flow():
         client_id=os.getenv("GOOGLE_API_KEY"),
         client_secret=os.getenv("GOOGLE_API_SECRET_KEY"),
         #https://www.googleapis.com/auth/youtube.readonly,
-        scope='https://www.googleapis.com/auth/plus.login ', 
-        redirect_uri='http://localtest.channelfactory.com:8000/acct/oauth2callback',
-        request_visible_actions="http://schemas.google.com/AddActivity")
+        scope='https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly',
+        redirect_uri='http://localtest.channelfactory.com:8000/acct/oauth2callback')
+        # request_visible_actions="http://schemas.google.com/AddActivity")
 
 
 @login_required
@@ -89,23 +89,57 @@ def oauth_test(request):
     if not acct or acct.credentials.invalid:
         return redirect('accounts.views.oauth_start')
 
-    service = build('youtube', 'v3', http=acct.credentials.authorize(Http()))
+    http = acct.credentials.authorize(Http())
+    ytService = build('youtube', 'v3', http=http)
+    ytaService = build('youtubeAnalytics', 'v1', http=http)
 
     output = ""
+    videos = []
 
-    channels = service.channels().list(mine=True, part="contentDetails").execute()
-    for channel in channels['items']:
-        listId = channel['contentDetails']['relatedPlaylists']['uploads']
-        output += "Videos in list %s\n" % listId
-        videos = service.playlistItems().list(playlistId=listId, part="snippet", maxResults=20).execute()
-        for video in videos['items']:
-            output += "\"%s\" - http://www.youtube.com/watch?v=%s\n" % (video['snippet']['title'], video['snippet']['resourceId']['videoId'])
+    channelResponse = ytService.channels().list(mine=True, part="id,contentDetails").execute()
+    if 'items' not in channelResponse or len(channelResponse['items']) == 0:
+        raise Http404
+    channel = channelResponse['items'][0]
+    channelId = channel['id']
+    uploadListId = channel['contentDetails']['relatedPlaylists']['uploads']
+    videoResponse = ytService.playlistItems().list(playlistId=uploadListId, part="snippet", maxResults=20).execute()
+    for video in videoResponse['items']:
+        videos.append((video['snippet']['resourceId']['videoId'], video['snippet']['title']))
 
+    analyticsOpts = {'ids':'channel==%s' % channelId,
+                     'start_date':'2013-01-01',
+                     'end_date':'2013-05-01',
+                     "sort": "month",
+                     'metrics':"views",
+                     'dimensions':"month"}
+
+    # for n in range(0, 3):
+    #     if analyticsResponse['columnHeaders'][n]['name'] == "video":
+    #         xVid = n
+    #     elif analyticsResponse['columnHeaders'][n]['name'] == "month":
+    #         xMonth = n
+    #     elif analyticsResponse['columnHeaders'][n]['name'] == "views":
+    #         xViews = n
+    #
+    # for data in analyticsResponse['rows']:
+    #     videos[data[xVid]]['views'].append( (data[xMonth], data[xViews]) )
+
+    for vid in videos:
+        analyticsResponse = ytaService.reports().query(filters="video==%s" % vid[0], **analyticsOpts).execute()
+
+        if 'rows' not in analyticsResponse:
+            continue
+
+        output += "Monthly views for \"%s\" http://www.youtube.com/watch?v=%s\n" % (vid[1], vid[0])
+
+        for data in analyticsResponse['rows']:
+            output += "    %s - %5d\n" % (data[0], data[1])
         output += "\n"
 
     acct.save()
 
     return HttpResponse(output, mimetype="text/plain")
+
 
 @login_required
 def oauth_gplus_moment(request):
