@@ -80,6 +80,7 @@ class IssueStatusUpdate(models.Model):
     user = models.ForeignKey(User)  # fk
     old_status = models.CharField(max_length=255, blank=True, null=True, choices=BUGSTATE)
     new_status = models.CharField(max_length=255, blank=True, null=True, choices=BUGSTATE)
+    time_stamp = models.DateTimeField(auto_now_add=True)
 
 
 class IssueView(models.Model):
