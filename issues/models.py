@@ -74,6 +74,14 @@ class FinishedIssue(models.Model):
     status = models.CharField(max_length=255, blank=True, null=True, choices=BUGSTATE)
 '''
 
+
+class IssueStatusUpdate(models.Model):
+    issue = models.ForeignKey(Issue)  # fk
+    user = models.ForeignKey(User)  # fk
+    old_status = models.CharField(max_length=255, blank=True, null=True, choices=BUGSTATE)
+    new_status = models.CharField(max_length=255, blank=True, null=True, choices=BUGSTATE)
+
+
 class IssueView(models.Model):
     issue = models.ForeignKey(Issue)  # fk
     hash_val = models.CharField(max_length=255)  # MD5 hash of something
