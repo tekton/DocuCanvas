@@ -1,9 +1,11 @@
 from django.conf.urls import patterns
 
 
-urlpatterns = patterns('',
-    (r'^$', 'accounts.views.oauth_start'),
-    (r'test$', 'accounts.views.oauth_test'),
-    (r'authorize$', 'accounts.views.oauth_authorize'),
-    (r'oauth2callback$', 'accounts.views.oauth_callback'),
+urlpatterns = patterns('accounts.views',
+    (r'^$', 'oauth_start'),
+    (r'test$', 'oauth_test'),
+    (r'gplus$', 'oauth_gplus_moment'),
+    (r'revoke', 'oauth_revoke_auth'),
+    (r'authorize$', 'oauth_authorize'),
+    (r'oauth2callback$', 'oauth_callback'),
 )

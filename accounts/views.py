@@ -10,6 +10,8 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.db.models import Q
+from django.utils import timezone
+import datetime
 
 from oauth2client.client import OAuth2WebServerFlow, TokenRevokeError
 from apiclient.discovery import build
@@ -21,8 +23,10 @@ def _get_flow():
     return OAuth2WebServerFlow(
         client_id=os.getenv("GOOGLE_API_KEY"),
         client_secret=os.getenv("GOOGLE_API_SECRET_KEY"),
-        scope='https://www.googleapis.com/auth/youtube.readonly', 
-        redirect_uri='http://localtest.channelfactory.com:8000/acct/oauth2callback')
+        #https://www.googleapis.com/auth/youtube.readonly,
+        scope='https://www.googleapis.com/auth/plus.login ', 
+        redirect_uri='http://localtest.channelfactory.com:8000/acct/oauth2callback',
+        request_visible_actions="http://schemas.google.com/AddActivity")
 
 
 @login_required
@@ -37,6 +41,12 @@ def oauth_start(request):
 
 @login_required
 def oauth_authorize(request):
+    oauth_revoke_auth(request)
+    flow = _get_flow()
+    return redirect(flow.step1_get_authorize_url())
+
+@login_required
+def oauth_revoke_auth(request):
     try:
         acct = GoogleAccount.objects.get(user=request.user)
     except GoogleAccount.DoesNotExist:
@@ -49,8 +59,7 @@ def oauth_authorize(request):
                 print e
             else:
                 acct.save()
-    flow = _get_flow()
-    return redirect(flow.step1_get_authorize_url())
+    return redirect('accounts.views.oauth_start')
 
 
 @login_required
@@ -95,5 +104,43 @@ def oauth_test(request):
         output += "\n"
 
     acct.save()
+
+    return HttpResponse(output, mimetype="text/plain")
+
+@login_required
+def oauth_gplus_moment(request):
+    try:
+        acct = GoogleAccount.objects.get(user=request.user)
+    except GoogleAccount.DoesNotExist:
+        acct = None
+
+    if not acct or acct.credentials.invalid:
+        return redirect('accounts.views.oauth_start')
+
+    service = build('plus' ,'v1', http=acct.credentials.authorize(Http()))
+
+    output = ""
+
+    moment_to_insert = {
+        "type" : "http://schemas.google.com/AddActivity",
+        "target" : {
+
+#            "id": "target-id-1",
+#            "type":"http://schemas.google.com/AddActivity",
+#            "name": "The Google+ Platform",
+#            "description": "A page that describes just how awesome Google+ is!",
+#            "image": "https://developers.google.com/+/plugins/snippet/examples/thing.png"
+
+            "url" : "http://www.channelfactory.com"
+        }
+    }
+
+
+    google_moment_insert = service.moments().insert(collection="vault", userId="me", body=moment_to_insert)
+    google_moment_insert.execute()
+
+    output = ""
+    moments_list = service.moments().list(collection='vault',userId='me').execute()
+    output += str(moments_list)
 
     return HttpResponse(output, mimetype="text/plain")
