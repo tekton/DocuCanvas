@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 '''
     these all assume http[s]://URI/reports/ as the base
