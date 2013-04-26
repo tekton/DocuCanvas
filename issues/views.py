@@ -8,7 +8,7 @@ from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.db.models import Q
 
-from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue
+from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm
 
@@ -147,9 +147,19 @@ def set_bug_state(request):
     print request.POST['status']
     try:
         issue = Issue.objects.get(pk=request.POST['issue'])
+        old_status = issue.status
         issue.status = request.POST['status']
         issue.save()
         to_json["status"] = "Bug status set"
+        try:
+            issue_status_update = IssueStatusUpdate()
+            issue_status_update.issue = issue
+            issue_status_update.user = request.user
+            issue_status_update.old_status = old_status
+            issue_status_update.new_status = request.POST['status']
+            issue_status_update.save()
+        except Exception, e:
+            print e
         if request.POST['status'] == 'fixed':
             return submit_comment(request, issue.id)
     except:
