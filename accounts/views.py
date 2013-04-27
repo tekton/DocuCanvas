@@ -110,19 +110,8 @@ def oauth_test(request):
                      'start_date':'2013-01-01',
                      'end_date':'2013-05-01',
                      "sort": "month",
-                     'metrics':"views",
+                     'metrics':"views,likes",
                      'dimensions':"month"}
-
-    # for n in range(0, 3):
-    #     if analyticsResponse['columnHeaders'][n]['name'] == "video":
-    #         xVid = n
-    #     elif analyticsResponse['columnHeaders'][n]['name'] == "month":
-    #         xMonth = n
-    #     elif analyticsResponse['columnHeaders'][n]['name'] == "views":
-    #         xViews = n
-    #
-    # for data in analyticsResponse['rows']:
-    #     videos[data[xVid]]['views'].append( (data[xMonth], data[xViews]) )
 
     for vid in videos:
         analyticsResponse = ytaService.reports().query(filters="video==%s" % vid[0], **analyticsOpts).execute()
@@ -130,10 +119,10 @@ def oauth_test(request):
         if 'rows' not in analyticsResponse:
             continue
 
-        output += "Monthly views for \"%s\" http://www.youtube.com/watch?v=%s\n" % (vid[1], vid[0])
-
+        output += "Monthly stats for \"%s\" http://www.youtube.com/watch?v=%s\n" % (vid[1], vid[0])
+        output += "%11s %7s %7s\n" % ('Month', 'Views', 'Likes')
         for data in analyticsResponse['rows']:
-            output += "    %s - %5d\n" % (data[0], data[1])
+            output += "%11s %7d %7d\n" % (data[0], data[1], data[2])
         output += "\n"
 
     acct.save()
