@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% load markup %}
+{% load staticfiles %}
 
 {% block extra_head %}
-<script src="/static/scripts/daily_reports.js"></script>
+<script src="{% static 'scripts/daily_reports.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}"/>
 {% endblock %}
 
 {% block container %}
@@ -76,11 +78,12 @@
 			<em>No global report for this date.</em><br/>
 		{% endif %}
 		{% for report in reports %}
-			User: {{report.user.username}} <!--({{report.user.first_name}} {{report.user.last_name}})--></br>
-			Report: {{report.description|markdown:"safe"}}</br>
-			<br/>
+		<div class="dashboard_container_section">
+			<div style="padding: 5px; background-color: #ddd; width: 100%; margin: 0;">{{report.user.username}} <!--({{report.user.first_name}} {{report.user.last_name}})--></div>
+			<div>{{report.description|markdown:"safe"}}</div>
+		</div>
 		{% empty %}
-			<em>There are no reports for this date.</em>
+			<div>There are no reports for this date.</div></div>
 		{% endfor %}
 
 {% endblock %}
