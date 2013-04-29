@@ -24,7 +24,7 @@ def _get_flow():
         client_id=os.getenv("GOOGLE_API_KEY"),
         client_secret=os.getenv("GOOGLE_API_SECRET_KEY"),
         scope='https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly',
-        redirect_uri='http://localtest.channelfactory.com:8000/acct/oauth2callback')
+        redirect_uri='http://localtest.channelfactory.com:8000/acct/oauth2callback',
         request_visible_actions="http://schemas.google.com/AddActivity")
 
 
