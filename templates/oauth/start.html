@@ -14,6 +14,7 @@
     <p>{% if hasCreds %}You have authorized credentials{% else %}You do not have authorized credentials{% endif %}</p>
     {% if hasCreds %}<p><a href="{% url 'accounts.views.oauth_test' %}">Proceed to test</a></p>
     <p><a href="{% url 'accounts.views.oauth_gplus_moment' %}">Get G+ moments!</a></p>
+    <p><a href="{% url 'accounts.views.yt_videos_list' %}">List YT Videos!</a></p>
     <p><a href="{% url 'accounts.views.oauth_revoke_auth' %}">Revoke Auth</a></p>{% endif %}
     <p><a href="{% url 'accounts.views.oauth_authorize' %}">Obtain new authorization</a></p>
 </body>
