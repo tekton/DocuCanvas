@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block context_nav %}
+    <a href="/">Dashboard</a>
+    <a href="/accounts/account_settings">Account Settings</a>
+{% endblock%}
+
+{% block container %}
+<h3>Issue Status Count</h3><br><br>
+<table>
+        <tr>
+            <th>Status</th>
+            <th>Count</th>
+        </tr>
+
+        <tr>
+            <td>Not a Bug</td>
+            <td>{{not_a_bug_count}}</td>
+        </tr>
+        <tr>
+            <td>Won't Fix</td>
+            <td>{{wont_fix_count}}</td>
+        </tr>
+        <tr>
+            <td>Duplicate</td>
+            <td>{{duplicate_count}}</td>
+        </tr>
+        <tr>
+            <td>Active</td>
+            <td>{{active_count}}</td>
+        </tr>
+        <tr>
+            <td>Fixed</td>
+            <td>{{fixed_count}}</td>
+        </tr>
+        <tr>
+            <td>Retest</td>
+            <td>{{retest_count}}</td>
+        </tr>
+        <tr>
+            <td>Unverified</td>
+            <td>{{unverified_count}}</td>
+        </tr>
+    </table>
+
+<h3>Still Active Issues</h3><br>
+'Active', 'unverified', 'need more info'<br><br>
+<table>
+    <tr>
+        <td>
+            Status
+        </td>
+        <td>
+            Issue
+        </td>
+    </tr>
+    {% for active_issue in active_issues%}
+        <tr>
+            <td>
+                {{active_issue.status}}
+            </td>
+            <td>
+                <a href="/issue/{{active_issue.id}}">{{active_issue.summary}}</a>
+            </td>
+        </tr>
+    {% endfor %}
+</table><br><br>
+
+<h3>Still Active Bugs</h3><br>
+Ordered by criticality<br><br>
+<table>
+</table><br><br>
+
+<h3>List of bugs for review</h3><br>
+'wont fix', 'not a bug', 'need more info'<br><br>
+<table>
+    <tr>
+        <td>
+            Status
+        </td>
+        <td>
+            Issue
+        </td>
+    </tr>
+    {% for bug_for_review in bugs_for_review%}
+        <tr>
+            <td>
+                {{bug_for_review.status}}
+            </td>
+            <td>
+                <a href="/issue/{{bug_for_review.id}}">{{bug_for_review.summary}}</a>
+            </td>
+        </tr>
+    {% endfor %}
+</table><br><br>
+{% endblock %}
