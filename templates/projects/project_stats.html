@@ -69,6 +69,24 @@
 <h3>Still Active Bugs</h3><br>
 Ordered by criticality<br><br>
 <table>
+    <tr>
+        <td>
+            Status
+        </td>
+        <td>
+            Issue
+        </td>
+    </tr>
+    {% for criticality_issue in criticality_issues%}
+        <tr>
+            <td>
+                {{criticality_issue.status}}
+            </td>
+            <td>
+                <a href="/issue/{{criticality_issue.id}}">{{criticality_issue.summary}}</a>
+            </td>
+        </tr>
+    {% endfor %}
 </table><br><br>
 
 <h3>List of bugs for review</h3><br>
