@@ -25,7 +25,6 @@ def project_form(request):
                     project = form.save()
                 except:
                     print 'unable to save project'
-
                 if project.id:
                     return redirect('projects.views.project_overview', project.id)
                 else:
@@ -77,11 +76,10 @@ def project_stats(request, project_id):
 
         active_issues = Issue.objects.filter(Q(project=project) & (Q(status='active') | Q(status='unverified') | Q(status='duplicate')))
         criticality_issues = Issue.objects.filter(Q(project=project) & (Q(status='active') | Q(status='unverified') | Q(status='duplicate'))).order_by('-criticality')
-        bugs_for_review = Issue.objects.filter(Q(project=project) & (Q(status='wont_fix')|Q(status='not_a_bug')|Q(status='retest')))
+        bugs_for_review = Issue.objects.filter(Q(project=project) & (Q(status='wont_fix') | Q(status='not_a_bug') | Q(status='retest')))
 
     except Exception, e:
         print e
-
 
     return render_to_response("projects/project_stats.html", {"criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "active_issues": active_issues, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count}, context_instance=RequestContext(request))
 

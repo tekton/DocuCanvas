@@ -52,10 +52,12 @@
         <tr class="tbl-rowheader">
             <th>Title</th>
             <th>Type</th>
+            <th>Stats</th>
         </tr>
         {% for meta in metas %}<tr>
             <td><a href="/issue/meta/{{ meta.id }}/edit">{{ meta.title }}</a></td>
             <td>{{ meta.mi_type }}</td>
+            <td><a href="/issue/meta/{{meta.id}}/stats">Stats</a></td>
         </tr>{% empty %}<tr><td><em>No meta-issues for this project.</em></td></tr>
         {% endfor %}
     </table>
