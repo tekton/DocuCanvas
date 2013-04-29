@@ -40,6 +40,7 @@ def edit_report(request, year=0, month=0, day=0):
         except Exception, e:
             print "Exception: " + str(e)
             raise e
+        dir(q)
         if q:
             form = ReportForm(initial={"date": d, "personalReport": q[0].description})
         else:

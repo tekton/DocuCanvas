@@ -17,5 +17,69 @@
                     <td>{{issue.assigned_to}}</td>
                 </tr>
         {% endfor %}
+    </table><br>
+
+    <b>Status Changes</b></br><br>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Change Type</th>
+            <th>Issue</th>
+        </tr>
+        {% for status_update in status_updates%}
+            <tr>
+                <td>{{status_update.time_stamp}}</td>
+                <td>{{status_update.new_status}}</td>
+                <td><a href="/issue/{{status_update.issue.id}}">{{status_update.issue.summary}}</a></td>
+            </tr>
+        {% endfor %}
+    </table><br><Br>
+
+    <b>Issue Count</b><br><br>
+    <table>
+        <tr>
+            <th>Status</th>
+            <th>Count</th>
+        </tr>
+
+        <tr>
+            <td>Not a Bug</td>
+            <td>{{not_a_bug_count}}</td>
+        </tr>
+        <tr>
+            <td>Won't Fix</td>
+            <td>{{wont_fix_count}}</td>
+        </tr>
+        <tr>
+            <td>Duplicate</td>
+            <td>{{duplicate_count}}</td>
+        </tr>
+        <tr>
+            <td>Active</td>
+            <td>{{active_count}}</td>
+        </tr>
+        <tr>
+            <td>Fixed</td>
+            <td>{{fixed_count}}</td>
+        </tr>
+        <tr>
+            <td>Retest</td>
+            <td>{{retest_count}}</td>
+        </tr>
+        <tr>
+            <td>Unverified</td>
+            <td>{{unverified_count}}</td>
+        </tr>
     </table>
+
+    <b>Assignment Count</b><br><br>
+    <table>
+       {% for k,v in project_dict.items%}
+        <tr>
+            <td>{{k}}</td>
+            <td>{{v}}</td>
+        </tr>
+       {% endfor %}
+    </table>
+
 {% endblock %}

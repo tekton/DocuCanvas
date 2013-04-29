@@ -1,5 +1,5 @@
 # Create your views here.
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 '''
     these all assume http[s]://URI/board/ as the base
