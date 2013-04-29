@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     (r'^$', 'projects.views.home'),
     (r'names', 'projects.views.CodeNames'),
     (r'new', 'projects.views.project_form'),
+    (r'(\d+)/stats', 'projects.views.project_stats'),
     (r'(\d+)/edit', 'projects.views.edit'),
     (r'([A-Za-z0-9_\.-]+)', 'projects.views.project_overview'),
 )
