@@ -11,8 +11,12 @@ def create_user(request):
 	userForm = createUser()
 	if request.method == 'POST':
 		form = UserForm(request.POST, instance=userForm)
-		userForm = form.save()
-		admin_user = userForm.admin_user
+		try:
+			userForm = form.save()
+		except Exception, e:
+			print e
+		domain_name = userForm.domain_name
+		admin_user = userForm.admin_user + "@" + domain_name
 		admin_pass = userForm.admin_pass
 
 		first_name = userForm.first_name
@@ -22,52 +26,49 @@ def create_user(request):
 		job_title = userForm.job_title
 		extension = userForm.extension
 		mobile_number = userForm.mobile_number
-		add_to_groups = userForm.add_to_groups.split(', ')
-		newEmail = email_address + "@domain_goes_here"
-		
+		add_to_groups = userForm.add_to_groups
+		email_signature = userForm.email_signature
+		newEmail = email_address + "@" + domain_name
+		# prevent errors if there are no groups to add to
+		if add_to_groups != "":
+			add_to_groups = userForm.add_to_groups.split(', ')		
 
 		phoneLine = '<font size = "1" face = "sans-serif">Mobile: ' + mobile_number + '</font><br />'
 
 		# Excludes the line with mobile number if one is not entered
 		if mobile_number == "":
 			phoneLine = ""
-			
+
+		# prevent errors if there is no email signature
+		if email_signature != "":
+			email_signature = userForm.email_signature % (first_name, last_name, job_title, extension, phoneLine, newEmail, newEmail)
+		
 		# create connection to change simple email settings
-		emailClient = gdata.apps.emailsettings.client.EmailSettingsClient(domain='domain_goes_here')
+		emailClient = gdata.apps.emailsettings.client.EmailSettingsClient(domain=domain_name)
 		emailClient.ClientLogin(email=admin_user, password=admin_pass, source='apps')
 		emailClient.ssl = True
 
 		# create connection to change group settings
-		groupClient = gdata.apps.groups.client.GroupsProvisioningClient(domain='domain_goes_here')
+		groupClient = gdata.apps.groups.client.GroupsProvisioningClient(domain=domain_name)
 		groupClient.ClientLogin(email=admin_user, password=admin_pass, source='apps')
 		groupClient.ssl = True
 
 		# create connection for creating a new client
-		client = gdata.apps.client.AppsClient(domain='domain_goes_here')
+		client = gdata.apps.client.AppsClient(domain=domain_name)
 		client.ClientLogin(email=admin_user, password=admin_pass, source='apps')
 		client.ssl = True
 
 		# create new user
-		client.CreateUser(email_address, last_name, first_name, temp_pass)
-		# create nickname using first name of user
-		client.CreateNickname(email_address, first_name)
+		client.CreateUser(email_address, last_name, first_name, temp_pass, change_password='true')
 
 		# add user to groups
 		for i in add_to_groups:
-			groupClient.AddMemberToGroup(i, newemail)
-		groupClient.AddMemberToGroup('default_group', newEmail)
+			groupClient.AddMemberToGroup(i, newEmail)
 
-		emailClient.UpdateSignature(username=email_address, signature=	'<img src = "signature_image_goes_here" /><br />' + 
-				                                    '<font size = "1" face = "sans-serif">' + first_name + " " + last_name + '</font><br />' +
-				                                    '<font size = "1" face = "sans-serif">' + job_title + '</font></strong><br />' +
-				                                    '<font size = "1" face = "sans-serif">Phone:  phone_number - Ext: ' + extension + ' </font><br />' + phoneLine +
-				                                    '<font size = "1" face = "sans-serif"><a href = "mailto:' + newEmail + '">' + newEmail + '</a></font><br />' +
-				                                    '<font size = "1" face = "sans-serif"><a href = "domain_goes_here">domain_goes_here</a></font><br />' +
-				                                    '<strong><font size = "1" face = "sans-serif">stuff_goes_here</font></strong>')
+		emailClient.UpdateSignature(username=email_address, signature=email_signature)
 
 		
 		print admin_user
-		print admin_pass
 		print first_name
 		print last_name
 		print email_address
