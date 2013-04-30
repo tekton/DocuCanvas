@@ -1,5 +1,6 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
@@ -158,3 +159,18 @@ def mark_as_answer(request, response_id):
     else:
         response_form = ResponseFormValue(instance=answer)
     return render_to_response('helpdesknew/mark_as_answer.html', {'response': answer, 'response_form': response_form}, context_instance=RequestContext(request))
+
+
+@login_required
+def user_help(request, user_id):
+    try:
+        myuser = User.objects.get(pk=user_id)
+    except Exception, e:
+        print e
+        print "no myuser object"
+    try:
+        requests_from_user = HelpRequest.objects.filter(user=myuser)
+    except Exception, e:
+        print e
+        print "couldn't find user questions"
+    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user}, context_instance=RequestContext(request))

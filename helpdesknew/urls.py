@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     (r'resolved', 'helpdesknew.views.get_resolved'),
     (r'response/([A-Za-z0-9_\.-]+)', 'helpdesknew.views.submit_response'),
     (r'mark/([A-Za-z0-9_\.-]+)', 'helpdesknew.views.mark_as_answer'),
+    (r'user/([A-Za-z0-9_\.-]+)', 'helpdesknew.views.user_help'),
     (r'([A-Za-z0-9_\.-]+)', 'helpdesknew.views.get_help'),
 )
