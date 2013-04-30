@@ -146,7 +146,8 @@ INSTALLED_APPS = (
     'daily_reports',
     'boards',
     'food',
-    'helpdesknew',
+    'helpdesk',
+    'gapps',
  )
 
 # A sample logging configuration. The only tangible logging

@@ -3,7 +3,8 @@ var formFields = {};
 var fieldNum = 1;
 
 $(document).ready(function() {
-	$('#formFields > p').each(function(n, item) {
+    var formFields = $('#formFields');
+    formFields.children('p').each(function(n, item) {
 		var field = $(this).find(':input').attr( "name" );
 		formFields[field] = $(this);
 		$(this).addClass('form_item').hide().children().removeAttr('id').removeAttr('for');
@@ -13,9 +14,9 @@ $(document).ready(function() {
 		$(this).detach();
 	});
 
-	$('#formFields').remove();
+    formFields.remove();
 
-	$('#addField a').click(function( e ) {
+	$('#addField').find('a').click(function( e ) {
 		var field = $('#fieldList').val();
 		if ( !formFields.hasOwnProperty( field ) )
 			return false;

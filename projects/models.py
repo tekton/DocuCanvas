@@ -26,6 +26,13 @@ class Project(models.Model):
     #
     created = models.DateField(auto_now_add=True, null=True, blank=True)  # NOW
     modified = models.DateField(auto_now=True, null=True, blank=True)  # auto update time
+    #
+    repository_url = models.CharField(max_length=255, blank=True, null=True)
+    deployment_server = models.CharField(max_length=255, blank=True, null=True)
+    deployment_url = models.CharField(max_length=255, blank=True, null=True)
+    #
+    code_name = models.CharField(max_length=255, blank=True, null=True)
+
     def __unicode__(self):
         return self.name
     # TODO etc
@@ -45,6 +52,7 @@ class Product(models.Model):
     business_case = models.TextField(blank=True,null=True)
     priority = models.IntegerField(blank=True,null=True)
     status = models.CharField(max_length=255, choices=PRODUCT_STATUS,default=PRODUCT_STATUS[0][0])
+    #
     def __unicode__(self):
-        return self.product 
+        return self.product
 """

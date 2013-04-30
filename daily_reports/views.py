@@ -1,4 +1,3 @@
-# Create your views here.
 from datetime import date
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
@@ -20,7 +19,7 @@ def edit_report(request, year=0, month=0, day=0):
                 return redirect('daily_reports.views.edit_report')
             except Exception, e:
                 print e
-                return render_to_response('daily_reports/daily_report_form.html', {'form': context_instance}, form=RequestContext(request))
+                return render_to_response('daily_reports/daily_report_form.html', {'form': form}, context_instance=RequestContext(request))
         else:
             return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': False}, context_instance=RequestContext(request))
 
@@ -41,6 +40,7 @@ def edit_report(request, year=0, month=0, day=0):
         except Exception, e:
             print "Exception: " + str(e)
             raise e
+        dir(q)
         if q:
             form = ReportForm(initial={"date": d, "personalReport": q[0].description})
         else:

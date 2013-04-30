@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Google OAuth 2 Test</title>
+    <style type="text/css">
+        body, td {
+            font-family: Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Google OAuth2 Testing Start Page</h1>
+    <p>{% if hasCreds %}You have authorized credentials{% else %}You do not have authorized credentials{% endif %}</p>
+    {% if hasCreds %}<p><a href="{% url 'accounts.views.oauth_test' %}">Proceed to test</a></p>
+    <p><a href="{% url 'accounts.views.oauth_gplus_moment' %}">Get G+ moments!</a></p>
+    <p><a href="{% url 'accounts.views.yt_videos_list' %}">List YT Videos!</a></p>
+    <p><a href="{% url 'accounts.views.oauth_revoke_auth' %}">Revoke Auth</a></p>{% endif %}
+    <p><a href="{% url 'accounts.views.oauth_authorize' %}">Obtain new authorization</a></p>
+</body>
+</html>

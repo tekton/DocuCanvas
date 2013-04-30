@@ -1,12 +1,14 @@
+
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, Http404
-from django.utils import simplejson
 from django.db.models import Q
 
-from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue
+from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm
 
@@ -44,7 +46,10 @@ def pin(request, issue_id):
         else:
             to_json['is_pinned'] = True
 
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    if request.is_ajax():
+        return HttpResponse(json.dumps(to_json), mimetype='application/json')
+    else:
+        return redirect('issues.views.issue_overview', issue_id)
 
 
 @login_required
@@ -89,7 +94,10 @@ def assign(request, issue_id, user_id=-1):
             to_json['assigned_to'] = False
             print e
 
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    if request.is_ajax():
+        return HttpResponse(json.dumps(to_json), mimetype='application/json')
+    else:
+        return redirect('issues.views.issue_overview', issue_id)
 
 
 @login_required
@@ -125,7 +133,10 @@ def subscribe(request, issue_id):
         else:
             to_json['is_subscribed'] = True
 
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    if request.is_ajax():
+        return HttpResponse(json.dumps(to_json), mimetype='application/json')
+    else:
+        return redirect('issues.views.issue_overview', issue_id)
 
 
 @login_required
@@ -136,14 +147,24 @@ def set_bug_state(request):
     print request.POST['status']
     try:
         issue = Issue.objects.get(pk=request.POST['issue'])
+        old_status = issue.status
         issue.status = request.POST['status']
         issue.save()
         to_json["status"] = "Bug status set"
+        try:
+            issue_status_update = IssueStatusUpdate()
+            issue_status_update.issue = issue
+            issue_status_update.user = request.user
+            issue_status_update.old_status = old_status
+            issue_status_update.new_status = request.POST['status']
+            issue_status_update.save()
+        except Exception, e:
+            print e
         if request.POST['status'] == 'fixed':
             return submit_comment(request, issue.id)
     except:
         to_json["status"] = "Unable to set bug state"
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 
 @login_required
@@ -174,7 +195,7 @@ def unlink_issues(request):
         print e
         print 'cannot find primary issue'
         to_json['response'] = 'Cannot find Primary Issue'
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 
 @login_required
@@ -228,7 +249,7 @@ def issue_to_issue_link(request):
             print 'cannot find primary issue'
             to_json['response'] = 'Cannot find Primary Issue'
 
-    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 
 @login_required
@@ -267,6 +288,29 @@ def meta_issue_form(request, issue_id=-1):
 
         else:
             return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': form.instance is None}, context_instance=RequestContext(request))
+
+
+@login_required
+def meta_issue_stats(request, meta_issue_id):
+    try:
+        meta_issue = MetaIssue.objects.get(pk=meta_issue_id)
+
+        not_a_bug_count = Issue.objects.filter(meta_issues=meta_issue, status='not_a_bug').count()
+        wont_fix_count = Issue.objects.filter(meta_issues=meta_issue, status='wont_fix').count()
+        duplicate_count = Issue.objects.filter(meta_issues=meta_issue, status='duplicate').count()
+        active_count = Issue.objects.filter(meta_issues=meta_issue, status='active').count()
+        fixed_count = Issue.objects.filter(meta_issues=meta_issue, status='fixed').count()
+        retest_count = Issue.objects.filter(meta_issues=meta_issue, status='retest').count()
+        unverified_count = Issue.objects.filter(meta_issues=meta_issue, status='unverified').count()
+
+        active_issues = Issue.objects.filter(Q(meta_issues=meta_issue) & (Q(status='active') | Q(status='unverified') | Q(status='duplicate')))
+        criticality_issues = Issue.objects.filter(Q(meta_issues=meta_issue) & (Q(status='active') | Q(status='unverified') | Q(status='duplicate'))).order_by('-criticality')
+        bugs_for_review = Issue.objects.filter(Q(meta_issues=meta_issue) & (Q(status='wont_fix')|Q(status='not_a_bug')|Q(status='retest')))
+
+    except Exception, e:
+        print e
+
+    return render_to_response('issues/meta_issue_stats.html', {"criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "active_issues": active_issues, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": meta_issue.title, "page_value":"Report"}, context_instance=RequestContext(request))
 
 
 @login_required

@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 '''
     these all assume http[s]://URI/board/ as the base
@@ -6,6 +6,7 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
     (r'meta/new$', 'issues.views.meta_issue_form'),
+    (r'meta/(\d+)/stats', 'issues.views.meta_issue_stats'),
     (r'meta/(\d+)/edit$', 'issues.views.meta_issue_form'),
     (r'(\d+)/edit', 'issues.views.edit'),
     (r'new/(\d+)', 'issues.views.issue_form_project'),

@@ -3,7 +3,6 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.template import RequestContext
 from forms import RegisterForm, EditAccountForm, ChangeEmailForm
-from django.utils import simplejson
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import authenticate, login
@@ -133,6 +132,29 @@ def change_email(request):
 
 
 def user_overview(request, user_id):
-    gadget_user = User.objects.get(pk=user_id)
-    issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-created')
-    return render_to_response("user/user_overview.html", {"gadget_user": gadget_user, "issues": issues, "page_type": gadget_user.username}, context_instance=RequestContext(request))
+    try:
+        gadget_user = User.objects.get(pk=user_id)
+        issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-created')
+        issue_status_updates = IssueStatusUpdate.objects.filter(user=gadget_user).order_by('-time_stamp')
+
+        #issue count by status
+
+        not_a_bug_count = Issue.objects.filter(assigned_to=gadget_user, status='not_a_bug').count()
+        wont_fix_count = Issue.objects.filter(assigned_to=gadget_user, status='wont_fix').count()
+        duplicate_count = Issue.objects.filter(assigned_to=gadget_user, status='duplicate').count()
+        active_count = Issue.objects.filter(assigned_to=gadget_user, status='active').count()
+        fixed_count = Issue.objects.filter(assigned_to=gadget_user, status='fixed').count()
+        retest_count = Issue.objects.filter(assigned_to=gadget_user, status='retest').count()
+        unverified_count = Issue.objects.filter(assigned_to=gadget_user, status='unverified').count()
+        #assignment count by project
+
+        projects = Project.objects.all()
+        project_dict = {}
+        for project in projects:
+            project_dict[project.name] = Issue.objects.filter(project=project, assigned_to=gadget_user).count()
+
+    except Exception, e:
+        print e
+
+    return render_to_response("user/user_overview.html", {"gadget_user": gadget_user, "issues": issues, "status_updates": issue_status_updates, "project_dict": project_dict , "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": gadget_user.username}, context_instance=RequestContext(request))
+
