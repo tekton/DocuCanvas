@@ -134,7 +134,14 @@
     display:none;
 }
 
+.tbl-project-assignment-issue{
+    display:none;
+}
+
 .project-status-count:hover{
+    cursor:pointer;
+}
+.project-assignment-count:hover{
     cursor:pointer;
 }
 

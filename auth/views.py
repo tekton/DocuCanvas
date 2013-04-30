@@ -146,12 +146,18 @@ def user_overview(request, user_id):
         fixed_count = Issue.objects.filter(assigned_to=gadget_user, status='fixed').count()
         retest_count = Issue.objects.filter(assigned_to=gadget_user, status='retest').count()
         unverified_count = Issue.objects.filter(assigned_to=gadget_user, status='unverified').count()
-        #assignment count by project
 
+        #assignment count by project
         projects = Project.objects.all()
         project_dict = {}
         for project in projects:
-            project_dict[project.name] = Issue.objects.filter(project=project, assigned_to=gadget_user).count()
+            temp_dict = {}
+            project_issues = Issue.objects.filter(project=project, assigned_to=gadget_user)
+            for issue in project_issues:
+                temp_dict[issue.id] = issue.summary
+            temp_dict[project.name] = Issue.objects.filter(project=project, assigned_to=gadget_user).count()
+            project_dict[project.name] = temp_dict
+            #project_dict[project.name] = Issue.objects.filter(project=project, assigned_to=gadget_user).count()
 
     except Exception, e:
         print e
