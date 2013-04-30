@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block context_nav %}
+    <a href="/help/new">Ask a Question</a>
+    <a href="/help/resolved">Resolved Questions</a>
+    <a href="/help/pending">Unresolved Questions</a>
+    <a href="/help/user/{{user.id}}">Your Questions</a>
+{% endblock %}
+
+{% block container %}
+<h2>All Questions from {{user.username}}</h2>
+<table class="tbl-generic tbl-overview">
+    <tr class="tbl-rowheader">
+        <td class="tbl-fauxth">Summary</td>
+        <td class="tbl-fauxth">Date Asked:</td>
+        <td class="tbl-fauxth">Status:</td>
+    </tr>
+    {% for help in requests %}
+    <tr>
+        <td><a href="/help/{{help.id}}">{{help.name}}</a></td>
+        <td><a href="/help/{{help.id}}">{{help.request_init}}</a></td>
+        {% if help.status == '(1, 1)' %}
+            <td><a href="/help/{{help.id}}">No Responses</a></td>
+        {% elif help.status = "('active', 'Active Responses')" %}
+            <td><a href="/help/{{help.id}}">Active</a></td>
+        {% elif help.status = "('reopened', 'Re-Opened')" %}
+            <td><a href="/help/{{help.id}}">Re-Opened</a></td>
+        {% elif help.status = "('resolved', 'Resolved')" %}
+        	<td><a href="/help/{{help.id}}">Resolved</a></td>
+        {% else %}
+            <td><a href="/help/{{help.id}}">{{help.status}}</a></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
