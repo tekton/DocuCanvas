@@ -146,7 +146,7 @@ INSTALLED_APPS = (
     'daily_reports',
     'boards',
     'food',
-    'helpdesk',
+    'helpdesknew',
     'gapps',
  )
 
