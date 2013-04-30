@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block context_nav %}
+    <a href="/help/new">Ask a Question</a>
+    <a href="/help/resolved">Resolved Questions</a>
+    <a href="/help/pending">Unresolved Questions</a>
+{% endblock %}
+
+{% block container %}
+<table class="tbl-generic tbl-overview">
+    <tr class="tbl-rowheader">
+    	<td class="tbl-fauxth">Question</td>
+    </tr>
+    <tr>
+    	<td>{{response.helprequest.name}}</td>
+    </tr>
+</table>
+<table class="tbl-generic tbl-overview">
+	<tr class="tbl-rowheader">
+		<td>Response</td>
+	</tr>
+	<tr>
+		<td>{{response.response}}</td>
+	</tr>
+</table>
+<form action="{{response.id}}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<table>
+		<tr>
+			<td>
+				{{response_form.value}}
+			</td>
+		</tr>
+	</table>
+	<!--<input type="checkbox" name="value" value="answer">Answer-->
+	<input type="submit" value="Submit"/>
+</form>
+{% endblock %}

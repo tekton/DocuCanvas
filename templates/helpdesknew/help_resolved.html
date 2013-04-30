@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block context_nav %}
+    <a href="/help/new">Ask a Question</a>
+    <a href="/help/resolved">Resolved Questions</a>
+    <a href="/help/pending">Unresolved Questions</a>
+{% endblock %}
+
+{% block container %}
+<h2>Resolved Questions</h2>
+<table class="tbl-generic tbl-overview">
+    <tr class="tbl-rowheader">
+        <td class="tbl-fauxth">Summary</td>
+        <td class="tbl-fauxth">Asked By:</td>
+        <td class="tbl-fauxth">Date Asked:</td>
+    </tr>
+    {% for help in form %}
+    <tr>
+        <td><a href="/help/{{help.id}}">{{help.name}}</a></td>
+        <td><a href="/help/{{help.id}}">{{help.user}}</a></td>
+        <td><a href="/help/{{help.id}}">{{help.request_init}}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

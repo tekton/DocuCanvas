@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block context_nav %}
+    <a href="/help/new">Ask a Question</a>
+    <a href="/help/resolved">Resolved Questions</a>
+    <a href="/help/pending">Unresolved Questions</a>
+{% endblock %}
+
+{% block container %}
+    <input type="hidden" id="help_id" value="{{help.id}}"/>
+	<table class="tbl-generic tbl-overview">
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">{{help.name}}</td>
+			{% if help.status == '(1, 1)' %}
+				<td class="tbl-fauxth">Status: No Responses</td>
+			{% elif help.status = "('active', 'Active Responses')" %}
+				<td class="tbl-fauxth">Status: Active</td>
+			{% elif help.status = "('resolved', 'Resolved')" %}
+				<td class="tbl-fauxth">Status: Resolved</td>
+			{% elif help.status = "('reopened', 'Re-Opened')" %}
+				<td class="tbl-fauxth">Status: Re-Opened</td>
+			{% else %}
+				<td class="tbl-fauxth">Status: {{help.status}}</td>
+			{% endif %}
+		</tr>
+		<tr>
+			<td>{{help.question}}</td>
+		</tr>
+		{% if help.photo %}
+			<tr>
+				<td><img src="/static/{{help.photo}}"></td>
+			</tr>
+		{% endif %}
+	</table>
+	<table class="tbl-generic tbl-overview">
+		{% for arrow in answer %}
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Answer:</td>
+		</tr>
+			<tr>
+				<td class="tbl-comments-description" colspan="2">{{arrow.response}}</td>
+			</tr>
+		{% endfor %}
+	</table>
+	<table class="tbl-generic tbl-comments">
+		<tr>
+			<td colspan="2">
+				<form action="/help/response/{{help.id}}" id="submit_response_form" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					<b><a id="comment_title">Submit A Response:</a></b><br />
+					<div class="comment_textarea">{{help_response.response}}</div>
+					<input type='hidden' name="helprequest" id="id_helprequest" value='{{help.id}}'/>
+					<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
+					<input type="submit" value="Submit" id="submit_response_button"/>
+				</form>
+				<br>
+			</td>
+		</tr>
+		{% for comment in comments%}
+			<tr class="tbl-rowheader">
+				<td class="tbl-fauxth tbl-comments-user"><a href="mark/{{comment.id}}"><b>{{comment.user}}</b></a></td>
+				<td class="tbl-fauxth tbl-comments-created"><a href="mark/{{comment.id}}">{{comment.created}}</a></td>
+			</tr>
+			<tr>
+				<td class="tbl-comments-description" colspan="2">{{comment.response}}</td>
+			</tr>
+		{% endfor %}
+
+	</table>
+{% endblock %}

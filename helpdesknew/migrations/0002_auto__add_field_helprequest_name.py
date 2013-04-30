@@ -8,15 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'HelpRequest.status'
-        db.add_column('helpdesk_helprequest', 'status',
-                      self.gf('django.db.models.fields.NullBooleanField')(default=False, null=True, blank=True),
+        # Adding field 'HelpRequest.name'
+        db.add_column('helpdesknew_helprequest', 'name',
+                      self.gf('django.db.models.fields.CharField')(default='hello', max_length=140),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'HelpRequest.status'
-        db.delete_column('helpdesk_helprequest', 'status')
+        # Deleting field 'HelpRequest.name'
+        db.delete_column('helpdesknew_helprequest', 'name')
 
 
     models = {
@@ -56,16 +56,25 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'helpdesk.helprequest': {
+        'helpdesknew.helprequest': {
             'Meta': {'object_name': 'HelpRequest'},
-            'answer': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '140'}),
             'photo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'question': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'request_init': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'null': 'True', 'blank': 'True'}),
-            'status': ('django.db.models.fields.NullBooleanField', [], {'default': 'False', 'null': 'True', 'blank': 'True'}),
+            'status': ('django.db.models.fields.CharField', [], {'default': '(1, 1)', 'max_length': '255'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+        },
+        'helpdesknew.helpresponse': {
+            'Meta': {'object_name': 'HelpResponse'},
+            'created': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'null': 'True', 'blank': 'True'}),
+            'helprequest': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['helpdesknew.HelpRequest']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'response': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
+            'value': ('django.db.models.fields.CharField', [], {'default': '(1, 1)', 'max_length': '255'})
         }
     }
 
-    complete_apps = ['helpdesk']
+    complete_apps = ['helpdesknew']
