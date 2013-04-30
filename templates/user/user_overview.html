@@ -9,7 +9,7 @@
     <b>Email:</b> {{gadget_user.email}}<br><br>
 
     <b>Assigned To:</b><br>
-    <table>
+    <table class="tbl-generic">
         {% for issue in issues %}
             <tr>
                     <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
@@ -20,7 +20,7 @@
     </table><br>
 
     <b>Status Changes</b></br><br>
-    <table>
+    <table class="tbl-generic">
         <tr>
             <th>Date</th>
             <th>Change Type</th>
@@ -36,7 +36,7 @@
     </table><br><Br>
 
     <b>Issue Count</b><br><br>
-    <table>
+    <table class="tbl-generic">
         <tr>
             <th>Status</th>
             <th>Count</th>
@@ -73,7 +73,7 @@
     </table>
 
     <b>Assignment Count</b><br><br>
-    <table>
+    <table class="tbl-generic">
        {% for k,v in project_dict.items%}
         <tr>
             <td>{{k}}</td>
