@@ -96,6 +96,54 @@
     width: 125px;
 }
 
+/*
+*   Project Status Count Table
+*
+*
+*/
+
+.tbl-project-status-count td a{
+    padding-left:2em;
+}
+
+.tbl-project-active-count{ 
+    display:none;
+}
+
+.tbl-project-unverified-count{ 
+    display:none;
+}
+
+.tbl-project-not-a-bug-count{ 
+    display:none;
+}
+
+.tbl-project-wont-fix-count{ 
+    display:none;
+}
+
+.tbl-project-fixed-count{ 
+    display:none;
+}
+
+.tbl-project-retest-count{ 
+    display:none;
+}
+
+.tbl-project-duplicate-count{ 
+    display:none;
+}
+
+.tbl-project-assignment-issue{
+    display:none;
+}
+
+.project-status-count:hover{
+    cursor:pointer;
+}
+.project-assignment-count:hover{
+    cursor:pointer;
+}
 
 
 /** END include/table.css **/

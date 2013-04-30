@@ -5,22 +5,56 @@
     <a href="/accounts/account_settings">Account Settings</a>
 {% endblock%}
 
+{% block extra_head%}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#active_count').click(function(){
+                $('.tbl-project-active-count').fadeToggle('slow', function(){});
+            });
+            $('#not_a_bug_count').click(function(){
+                $('.tbl-project-not-a-bug-count').fadeToggle('slow', function(){});
+            });
+            $('#wont_fix_count').click(function(){
+                $('.tbl-project-wont-fix-count').fadeToggle('slow', function(){});
+            });
+            $('#duplicate_count').click(function(){
+                $('.tbl-project-duplicate-count').fadeToggle('slow', function(){});
+            });
+            $('#fixed_count').click(function(){
+                $('.tbl-project-fixed-count').fadeToggle('slow', function(){});
+            });
+            $('#retest_count').click(function(){
+                $('.tbl-project-retest-count').fadeToggle('slow', function(){});
+            });
+            $('#unverified_count').click(function(){
+                $('.tbl-project-unverified-count').fadeToggle('slow', function(){});
+            });
+
+
+        });
+
+        function toggleProjectAssignmentCount(project_name){
+            var class_string = '.' + project_name
+            $(class_string).fadeToggle('slow', function(){});
+        }
+    </script>
+{% endblock %}
+
 {% block container %}
     <b>Email:</b> {{gadget_user.email}}<br><br>
 
     <b>Assigned To:</b><br>
-    <table>
+    <table class="tbl-generic">
         {% for issue in issues %}
             <tr>
                     <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
                     <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
-                    <td>{{issue.assigned_to}}</td>
                 </tr>
         {% endfor %}
     </table><br>
 
     <b>Status Changes</b></br><br>
-    <table>
+    <table class="tbl-generic">
         <tr>
             <th>Date</th>
             <th>Change Type</th>
@@ -36,7 +70,7 @@
     </table><br><Br>
 
     <b>Issue Count</b><br><br>
-    <table>
+    <table class="tbl-generic">
         <tr>
             <th>Status</th>
             <th>Count</th>
@@ -44,41 +78,144 @@
 
         <tr>
             <td>Not a Bug</td>
-            <td>{{not_a_bug_count}}</td>
+            <td id="not_a_bug_count" class="project-status-count">{{not_a_bug_count}}</td>
         </tr>
+            {% for issue in issues%}
+                {% if issue.status = "not_a_bug" %}
+                <tr class="tbl-project-status-count tbl-project-not-a-bug-count">
+                    <td>
+                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
+                    </td>
+                    <td>
+                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                    </td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+
         <tr>
             <td>Won't Fix</td>
-            <td>{{wont_fix_count}}</td>
+            <td id="wont_fix_count" class="project-status-count">{{wont_fix_count}}</td>
         </tr>
+            {% for issue in issues %}
+                {% if issue.status = "wont_fix" %}
+                <tr class="tbl-project-status-count tbl-project-wont-fix-count">
+                    <td>
+                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
+                    </td>
+                    <td>
+                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                    </td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+
         <tr>
             <td>Duplicate</td>
-            <td>{{duplicate_count}}</td>
+            <td id="duplicate_count" class="project-status-count">{{duplicate_count}}</td>
         </tr>
+                {% for issue in issues%}
+                    {% if issue.status = "duplicate" %}
+                    <tr class=" tbl-project-status-count tbl-project-duplicate-count">
+                        <td>
+                            <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
+                        </td>
+                        <td>
+                            <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+
         <tr>
             <td>Active</td>
-            <td>{{active_count}}</td>
+            <td id="active_count" class="project-status-count">{{active_count}}</td>
         </tr>
+
+            {% for issue in issues%}
+                {% if issue.status = "active" %}
+                <tr class="tbl-project-status-count tbl-project-active-count">
+                    <td>
+                            <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
+                    </td>
+                    <td>
+                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                    </td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+
         <tr>
             <td>Fixed</td>
-            <td>{{fixed_count}}</td>
+            <td id="fixed_count" class="project-status-count">{{fixed_count}}</td>
         </tr>
+            {% for issue in issues%}
+                {% if issue.status = "fixed" %}
+                <tr class="tbl-project-status-count  tbl-project-fixed-count">
+                    <td>
+                            <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
+                    </td>
+                    <td>
+                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                    </td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+
         <tr>
             <td>Retest</td>
-            <td>{{retest_count}}</td>
+            <td id="retest_count" class="project-status-count">{{retest_count}}</td>
         </tr>
+            {% for issue in issues%}
+                {% if issue.status = "retest" %}
+                <tr class="tbl-project-status-count  tbl-project-retest-count">
+                    <td>
+                            <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
+                    </td>
+                    <td>
+                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                    </td>
+                </tr>
+                {% endif %}
+            {% endfor %}
         <tr>
             <td>Unverified</td>
-            <td>{{unverified_count}}</td>
+            <td id="unverified_count" class="project-status-count">{{unverified_count}}</td>
         </tr>
+            {% for issue in issues %}
+                {% if issue.status = "unverified" %}
+                <tr class="tbl-project-status-count  tbl-project-unverified-count">
+                    <td>
+                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
+                    </td>
+                    <td>
+                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                    </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
     </table>
 
     <b>Assignment Count</b><br><br>
-    <table>
+    <table class="tbl-generic">
        {% for k,v in project_dict.items%}
-        <tr>
-            <td>{{k}}</td>
-            <td>{{v}}</td>
-        </tr>
+            <tr>
+                <td>{{k}}</td>
+                {% for key, value in v.items%}
+                    {% if key == k %}
+                        <td class="project-assignment-count" id="{{k}}" onClick="toggleProjectAssignmentCount($(this).attr('id'))">{{value}}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+
+            {% for key,value in v.items%}
+                {% if key != k%}
+                <tr class="tbl-project-status-count tbl-project-assignment-issue {{k}}" >
+                    <td><a href="/issue/{{key}}">{{value}}</a></td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        
        {% endfor %}
     </table>
 
