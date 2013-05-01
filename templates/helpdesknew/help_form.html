@@ -36,8 +36,6 @@
         <form action="/temp" method="post">
         <input type='file' id='id_photo' name='photo' onchange="readImage(this);" /></br>
         <img id="image_upload_preview" src="noimage.jpg" alt="your image" border="1" />
-        <!--<input type='file' id='imageselect' name='imageselect' onchange="readImage(this);" />-->
-        <!--<div id='img_loader' style='display:none; float:left;'><img src="ajax-loader.gif"></div>-->
     </table>
     <input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
     <input type="submit" value="Submit"/>

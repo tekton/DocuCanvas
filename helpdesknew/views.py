@@ -172,8 +172,15 @@ def user_help(request, user_id):
         requests_from_user = HelpRequest.objects.filter(user=myuser)
     except Exception, e:
         print e
-        print "couldn't find user questions"
-    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user}, context_instance=RequestContext(request))
+    try:
+        responses = requests_from_user.exclude(status="('resolved', 'Resolved')")
+    except Exception, e:
+        print e
+    try:
+        answers = requests_from_user.filter(status="('resolved', 'Resolved')")
+    except Exception, e:
+        print e
+    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user, 'responses': responses, 'answers': answers}, context_instance=RequestContext(request))
 
 
 @login_required

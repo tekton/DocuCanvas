@@ -11,6 +11,47 @@
 <h2>All Questions from {{user.username}}</h2>
 <table class="tbl-generic tbl-overview">
     <tr class="tbl-rowheader">
+        <td class="tbl-fauxth" colspan=3>Resolved</td>
+    </tr>
+    <tr class="tbl-rowheader">
+        <td class="tbl-fauxth">Summary</td>
+        <td class="tbl-fauxth">Date Asked</td>
+        <td class="tbl-fauxth">Status</td>
+    </tr>
+    {% for answer in answers %}
+    <tr>
+        <td><a href="/help/{{answer.id}}">{{answer.name}}</a></td>
+        <td><a href="/help/{{answer.id}}">{{answer.request_init}}</a></td>
+        <td><a href="/help/{{answer.id}}">Resolved</a></td>
+    </tr>
+    {% endfor %}
+    </br></br>
+    <tr class="tbl-rowheader">
+        <td class="tbl-fauxth" colspan=3>Pending</td>
+    </tr>
+    <tr class="tbl-rowheader">
+        <td class="tbl-fauxth">Summary</td>
+        <td class="tbl-fauxth">Date Asked:</td>
+        <td class="tbl-fauxth">Status:</td>
+    </tr>
+    {% for help in responses %}
+    <tr>
+        <td><a href="/help/{{help.id}}">{{help.name}}</a></td>
+        <td><a href="/help/{{help.id}}">{{help.request_init}}</a></td>
+        {% if help.status == '(1, 1)' %}
+            <td><a href="/help/{{help.id}}">No Responses</a></td>
+        {% elif help.status = "('active', 'Active Responses')" %}
+            <td><a href="/help/{{help.id}}">Active</a></td>
+        {% elif help.status = "('reopened', 'Re-Opened')" %}
+            <td><a href="/help/{{help.id}}">Re-Opened</a></td>
+        {% elif help.status = "('resolved', 'Resolved')" %}
+            <td><a href="/help/{{help.id}}">Resolved</a></td>
+        {% else %}
+            <td><a href="/help/{{help.id}}">{{help.status}}</a></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    <!--<tr class="tbl-rowheader">
         <td class="tbl-fauxth">Summary</td>
         <td class="tbl-fauxth">Date Asked:</td>
         <td class="tbl-fauxth">Status:</td>
@@ -31,6 +72,6 @@
             <td><a href="/help/{{help.id}}">{{help.status}}</a></td>
         {% endif %}
     </tr>
-    {% endfor %}
+    {% endfor %}-->
 </table>
 {% endblock %}
