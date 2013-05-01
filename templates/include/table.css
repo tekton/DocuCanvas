@@ -138,6 +138,42 @@
     display:none;
 }
 
+.tbl-meta-issue-active-count{ 
+    display:none;
+}
+
+.tbl-meta-issue-unverified-count{ 
+    display:none;
+}
+
+.tbl-meta-issue-not-a-bug-count{ 
+    display:none;
+}
+
+.tbl-meta-issue-wont-fix-count{ 
+    display:none;
+}
+
+.tbl-meta-issue-fixed-count{ 
+    display:none;
+}
+
+.tbl-meta-issue-retest-count{ 
+    display:none;
+}
+
+.tbl-meta-issue-duplicate-count{ 
+    display:none;
+}
+
+.tbl-meta-issue-assignment-issue{
+    display:none;
+}
+
+.meta-issue-status-count:hover{
+    cursor:pointer;
+}
+
 .project-status-count:hover{
     cursor:pointer;
 }

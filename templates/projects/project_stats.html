@@ -45,13 +45,11 @@
             <td id="not_a_bug_count" class="project-status-count">{{not_a_bug_count}}</td>
         </tr>
                 {% for issue in bugs_for_review%}
-                    {% if issue.status = "not_a_bug" %}
                     <tr class="tbl-project-status-count tbl-project-not-a-bug-count">
                         <td>
                             <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
                         </td>
                     </tr>
-                    {% endif %}
                 {% endfor %}
 
         <tr>
