@@ -182,7 +182,7 @@ def user_help(request, user_id):
         print e
     res_count = responses.count()
     ans_count = answers.count()
-    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user, 'responses': responses, 'answers': answers, 'res_count': res_count, 'ans_count': ans_count}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user, 'responses': responses, 'answers': answers, 'res_count': res_count, 'ans_count': ans_count, "myuser": myuser}, context_instance=RequestContext(request))
 
 
 @login_required
