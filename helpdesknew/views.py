@@ -174,3 +174,46 @@ def user_help(request, user_id):
         print e
         print "couldn't find user questions"
     return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user}, context_instance=RequestContext(request))
+
+
+@login_required
+def bypass_user(request, response_id):
+    try:
+        answer = HelpResponse.objects.get(pk=response_id)
+        print "it works the first time around"
+    except Exception, e:
+        print e
+        print "no answer"
+    try:
+        answers = HelpResponse.objects.filter(helprequest=answer.helprequest)
+    except Exception, e:
+        print e
+    if request.method == 'POST':
+        response_form = ResponseFormValue(request.POST, instance=answer)
+        if request.POST['value'] == 'answer':
+            answer.mark_answer()
+            try:
+                answer.save()
+            except Exception, e:
+                print "answer didn't save"
+            help = HelpRequest.objects.get(pk=answer.helprequest.id)
+            help.update_status(2)
+            help.save()
+        else:
+            answer.mark_input()
+            try:
+                answer.save()
+            except Exception, e:
+                print "input didn't save"
+            help = HelpRequest.objects.get(pk=answer.helprequest.id)
+            if help.status == "('resolved', 'Resolved')":
+                help.update_status(3)
+            else:
+                help.update_status(1)
+            help.save()
+        if answer.id:
+            help_id = answer.helprequest.id
+            return redirect('helpdesknew.views.get_help', help_id)
+    else:
+        response_form = ResponseFormValue(instance=answer)
+    return render_to_response('helpdesknew/bypass_user.html', {'response': answer, 'response_form': response_form}, context_instance=RequestContext(request))
