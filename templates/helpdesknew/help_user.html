@@ -11,7 +11,7 @@
 <h2>All Questions from {{myuser.username}}</h2>
 {% if user.id != myuser.id %}
     <p>You're not <b>{{myuser.username}}</b>!</p>
-    <p>You don't have access to this page</p>
+    <p>You don't have access to this page.</p>
     <p>To view all of your question, <a href="/help/user/{{user.id}}"><b>click here!</b></a></p>
 {% else %}
     {% if res_count or ans_count %}
@@ -34,7 +34,7 @@
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan=3>There are no resolved question objects</td>
+                    <td colspan=3>There are no resolved question objects.</td>
                 </tr>
             {% endif %}
             </br></br>
@@ -44,8 +44,8 @@
             {% if res_count != 0 %}
                 <tr class="tbl-rowheader">
                     <td class="tbl-fauxth">Summary</td>
-                    <td class="tbl-fauxth">Date Asked:</td>
-                    <td class="tbl-fauxth">Status:</td>
+                    <td class="tbl-fauxth">Date Asked</td>
+                    <td class="tbl-fauxth">Status</td>
                 </tr>
                 {% for help in responses %}
                     <tr>
@@ -66,34 +66,12 @@
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan=3>There are no pending question objects</td>
+                    <td colspan=3>There are no pending question objects.</td>
                 </tr>
             {% endif %}
-            <!--<tr class="tbl-rowheader">
-                <td class="tbl-fauxth">Summary</td>
-                <td class="tbl-fauxth">Date Asked:</td>
-                <td class="tbl-fauxth">Status:</td>
-            </tr>
-            {% for help in requests %}
-            <tr>
-                <td><a href="/help/{{help.id}}">{{help.name}}</a></td>
-                <td><a href="/help/{{help.id}}">{{help.request_init}}</a></td>
-                {% if help.status == '(1, 1)' %}
-                    <td><a href="/help/{{help.id}}">No Responses</a></td>
-                {% elif help.status = "('active', 'Active Responses')" %}
-                    <td><a href="/help/{{help.id}}">Active</a></td>
-                {% elif help.status = "('reopened', 'Re-Opened')" %}
-                    <td><a href="/help/{{help.id}}">Re-Opened</a></td>
-                {% elif help.status = "('resolved', 'Resolved')" %}
-                	<td><a href="/help/{{help.id}}">Resolved</a></td>
-                {% else %}
-                    <td><a href="/help/{{help.id}}">{{help.status}}</a></td>
-                {% endif %}
-            </tr>
-            {% endfor %}-->
         </table>
     {% else %}
-        <p>You have not submitted any questions yet</p>
+        <p>You have not submitted any questions yet.</p>
         <p>To ask a question, <a href="/help/new"><b>click here!</b></a></p>
     {% endif %}
 {% endif %}
