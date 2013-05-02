@@ -142,6 +142,10 @@
     display:none;
 }
 
+.tbl-meta-issue-blank-count{
+    display:none;
+}
+
 .tbl-meta-issue-active-count{ 
     display:none;
 }

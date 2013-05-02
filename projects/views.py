@@ -66,23 +66,32 @@ def project_stats(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
 
-        not_a_bug_count = Issue.objects.filter(project=project, status='not_a_bug').count()
-        wont_fix_count = Issue.objects.filter(project=project, status='wont_fix').count()
-        duplicate_count = Issue.objects.filter(project=project, status='duplicate').count()
-        active_count = Issue.objects.filter(project=project, status='active').count()
-        fixed_count = Issue.objects.filter(project=project, status='fixed').count()
-        retest_count = Issue.objects.filter(project=project, status='retest').count()
-        unverified_count = Issue.objects.filter(project=project, status='unverified').count()
+        issues = Issue.objects.filter(project=project)
 
-        active_issues = Issue.objects.filter(Q(project=project) & (Q(status='active') | Q(status='unverified') | Q(status='duplicate')))
+        blank_issues = issues.filter(status=None)
+        not_a_bug_issues = issues.filter(status='not_a_bug')
+        wont_fix_issues = issues.filter(status='wont_fix')
+        duplicate_issues = issues.filter(status='duplicate')
+        active_issues = issues.filter(status='active')
+        fixed_issues = issues.filter(status='fixed')
+        retest_issues = issues.filter(status='retest')
+        unverified_issues = issues.filter(status='unverified')
+
+        blank_count = blank_issues.count()
+        not_a_bug_count = not_a_bug_issues.count()
+        wont_fix_count = wont_fix_issues.count()
+        duplicate_count = duplicate_issues.count()
+        active_count = active_issues.count()
+        fixed_count = fixed_issues.count()
+        retest_count = retest_issues.count()
+        unverified_count = unverified_issues.count()
+
         criticality_issues = Issue.objects.filter(Q(project=project) & (Q(status='active') | Q(status='unverified') | Q(status='duplicate'))).order_by('-criticality')
-        bugs_for_review = Issue.objects.filter(Q(project=project) & (Q(status='wont_fix') | Q(status='not_a_bug') | Q(status='retest')))
-        fixed_issues = Issue.objects.filter(project=project, status='fixed')
-
+        bugs_for_review = Issue.objects.filter(Q(project=project) & (Q(status='wont_fix') | Q(status='not_a_bug') | Q(status='retest') | Q(status='duplicate')))
     except Exception, e:
         print e
 
-    return render_to_response("projects/project_stats.html", {"project": project, "fixed_issues": fixed_issues, "criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "active_issues": active_issues, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": project.name, "page_value":"Report"}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_stats.html", {"project": project, "criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues, "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": project.name, "page_value":"Report"}, context_instance=RequestContext(request))
 
 
 @login_required

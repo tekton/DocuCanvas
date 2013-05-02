@@ -295,6 +295,11 @@ def meta_issue_stats(request, meta_issue_id):
     try:
         meta_issue = MetaIssue.objects.get(pk=meta_issue_id)
 
+
+        issues = Issue.objects.filter(meta_issues=meta_issue)
+
+
+        '''
         not_a_bug_issues = Issue.objects.filter(meta_issues=meta_issue, status='not_a_bug')
         wont_fix_issues = Issue.objects.filter(meta_issues=meta_issue, status='wont_fix')
         duplicate_issues = Issue.objects.filter(meta_issues=meta_issue, status='duplicate')
@@ -302,7 +307,18 @@ def meta_issue_stats(request, meta_issue_id):
         fixed_issues = Issue.objects.filter(meta_issues=meta_issue, status='fixed')
         retest_issues = Issue.objects.filter(meta_issues=meta_issue, status='retest')
         unverified_issues = Issue.objects.filter(meta_issues=meta_issue, status='unverified')
+        '''
 
+        blank_issues = issues.filter(status=None)
+        not_a_bug_issues = issues.filter(status='not_a_bug')
+        wont_fix_issues = issues.filter(status='wont_fix')
+        duplicate_issues = issues.filter(status='duplicate')
+        active_issues = issues.filter(status='active')
+        fixed_issues = issues.filter(status='fixed')
+        retest_issues = issues.filter(status='retest')
+        unverified_issues = issues.filter(status='unverified')
+
+        blank_count = blank_issues.count()
         not_a_bug_count = not_a_bug_issues.count()
         wont_fix_count = wont_fix_issues.count()
         duplicate_count = duplicate_issues.count()
@@ -317,7 +333,7 @@ def meta_issue_stats(request, meta_issue_id):
     except Exception, e:
         print e
 
-    return render_to_response('issues/meta_issue_stats.html', {"criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": meta_issue.title, "page_value": "Report"}, context_instance=RequestContext(request))
+    return render_to_response('issues/meta_issue_stats.html', {"criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues, "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": meta_issue.title, "page_value": "Report"}, context_instance=RequestContext(request))
 
 
 @login_required
