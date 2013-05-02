@@ -134,7 +134,8 @@ def change_email(request):
 def user_overview(request, user_id):
     try:
         gadget_user = User.objects.get(pk=user_id)
-        issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-created')
+        #issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-created')
+        issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-project')
         issue_status_updates = IssueStatusUpdate.objects.filter(user=gadget_user).order_by('-time_stamp')
 
         #issue count by status

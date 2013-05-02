@@ -45,16 +45,6 @@
 {% block container %}
     <b>Email:</b> {{gadget_user.email}}<br><br>
 
-    <b>Assigned To:</b><br>
-    <table class="tbl-generic">
-        {% for issue in issues %}
-            <tr>
-                    <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
-                    <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
-                </tr>
-        {% endfor %}
-    </table><br>
-
     <b>Status Changes</b></br>
     <table class="tbl-generic">
         {% for status_update in status_updates%}
@@ -69,7 +59,22 @@
             </tr>
             
         {% endfor %}
-    </table><br><Br>
+    </table><br><br>
+
+    <b>Assigned To:</b><br>
+    <table class="tbl-generic">
+        {% for issue in issues %}
+            {% if newest_project != issue.project %}
+                {% set newest_project = issue.project%}
+                <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{issue.project.name}}</td></tr>
+            {% endif %}
+
+            <tr>
+                <!--<td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>-->
+                <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
+            </tr>
+        {% endfor %}
+    </table><br>
 
     <b>Issue Count</b><br><br>
     <table class="tbl-generic">
