@@ -132,20 +132,12 @@
 
 <h3>Still Active Issues</h3>
 <table class="tbl-generic">
-    <tr>
-        <td>
-            Status
-        </td>
-        <td>
-            Issue
-        </td>
-    </tr>
     {% for active_issue in active_issues%}
         <tr>
-            <td>
+            <td title="status">
                 {{active_issue.status}}
             </td>
-            <td>
+            <td title="issue">
                 <a href="/issue/{{active_issue.id}}">{{active_issue.summary}}</a>
             </td>
         </tr>
@@ -164,20 +156,15 @@
 
 <h3>Still Active Bugs by Criticality</h3>
 <table class="tbl-generic">
-    <tr>
-        <td>
-            Status
-        </td>
-        <td>
-            Issue
-        </td>
-    </tr>
     {% for criticality_issue in criticality_issues%}
         <tr>
-            <td>
+            <td title="criticality">
+                {{criticality_issue.criticality}}
+            </td>
+            <td title="status">
                 {{criticality_issue.status}}
             </td>
-            <td>
+            <td title="issue">
                 <a href="/issue/{{criticality_issue.id}}">{{criticality_issue.summary}}</a>
             </td>
         </tr>
@@ -186,20 +173,12 @@
 
 <h3>List of bugs for review</h3>
 <table class="tbl-generic">
-    <tr>
-        <td>
-            Status
-        </td>
-        <td>
-            Issue
-        </td>
-    </tr>
     {% for bug_for_review in bugs_for_review%}
         <tr>
-            <td>
+            <td title="status">
                 {{bug_for_review.status}}
             </td>
-            <td>
+            <td title="issue">
                 <a href="/issue/{{bug_for_review.id}}">{{bug_for_review.summary}}</a>
             </td>
         </tr>

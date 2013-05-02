@@ -54,6 +54,7 @@
                     <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{newest_status_timestamp}}</td></tr>
             {% endif %}
             <tr>
+                <td title="project"><a href="/project/{{status_update.issue.project.id}}">{{status_update.issue.project}}</a></td>
                 <td title="issue"><a href="/issue/{{status_update.issue.id}}">{{status_update.issue.summary}}</a></td>
                 <td title="change type">{{status_update.new_status}}</td>
             </tr>
@@ -70,7 +71,6 @@
             {% endif %}
 
             <tr>
-                <!--<td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>-->
                 <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
             </tr>
         {% endfor %}
