@@ -140,7 +140,7 @@
             <td title="status">
                 {{active_issue.status}}
             </td>
-            <td>
+            <td title="assigned to">
                 <a href="/auth/user/{{active_issue.assigned_to.id}}">{{active_issue.assigned_to}}</a>
             </td>
         </tr>
@@ -153,7 +153,7 @@
             <td>
                 {{active_issue.status}}
             </td>
-            <td>
+            <td title="assigned to">
                 <a href="/auth/user/{{active_issue.assigned_to.id}}">{{active_issue.assigned_to}}</a>
             </td>
         </tr>
@@ -173,7 +173,7 @@
             <td title="status">
                 {{criticality_issue.status}}
             </td>
-            <td>
+            <td title="assigned to">
                 <a href="/auth/user/{{criticality_issue.assigned_to.id}}">{{criticality_issue.assigned_to}}</a>
             </td>
             
@@ -191,7 +191,7 @@
             <td title="status">
                 {{bug_for_review.status}}
             </td>
-            <td>
+            <td title="assigned to">
                 <a href="/auth/user/{{bug_for_review.assigned_to.id}}">{{bug_for_review.assigned_to}}</a>
             </td>
         </tr>
