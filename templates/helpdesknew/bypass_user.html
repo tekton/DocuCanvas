@@ -7,6 +7,12 @@
     <a href="/help/user/{{user.id}}">Your Questions</a>
 {% endblock %}
 
+{% block style %}
+.helpdesk-question{
+	word-break: break-all;
+}
+{% endblock %}
+
 {% block container %}
 <table class="tbl-generic tbl-overview">
     <tr class="tbl-rowheader">
@@ -21,7 +27,9 @@
 		<td>Response</td>
 	</tr>
 	<tr>
-		<td>{{response.response}}</td>
+		<td>
+			<div class="helpdesk-question">{{response.response}}</div>
+		</td>
 	</tr>
 </table>
 <form action="{{response.id}}" method="post" enctype="multipart/form-data">

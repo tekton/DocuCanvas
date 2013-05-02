@@ -47,7 +47,11 @@
 			<td class="tbl-fauxth"><a href="mark/{{arrow.id}}">Answer</a></td>
 		</tr>
 			<tr>
-				<td class="tbl-comments-description" colspan="2"><a href="mark/{{arrow.id}}">{{arrow.response}}</a></td>
+				<td class="tbl-comments-description" colspan="2">
+					<a href="mark/{{arrow.id}}">
+						<div class="helpdesk-question">{{arrow.response}}</div>
+					</a>
+				</td>
 			</tr>
 		{% endfor %}
 	</table>
@@ -71,7 +75,9 @@
 				<td class="tbl-fauxth tbl-comments-created"><a href="mark/{{comment.id}}">{{comment.created}}</a></td>
 			</tr>
 			<tr>
-				<td class="tbl-comments-description" colspan="2">{{comment.response}}</td>
+				<td class="tbl-comments-description" colspan="2">
+					<div class="helpdesk-question">{{comment.response}}</div>
+				</td>
 			</tr>
 		{% endfor %}
 

@@ -130,14 +130,12 @@ def mark_as_answer(request, response_id):
         print "no answer"
     try:
         answers = HelpResponse.objects.filter(helprequest=answer.helprequest)
-        ans_count = answers.count()
     except Exception, e:
         print e
     if request.method == 'POST':
         response_form = ResponseFormValue(request.POST, instance=answer)
         if request.POST['value'] == 'answer':
-            print ans_count
-            if ans_count != 0:
+            if answer.helprequest.status == "('resolved', 'Resolved')":
                 return redirect('helpdesknew.views.error_page')
             else:
                 answer.mark_answer()
@@ -165,7 +163,7 @@ def mark_as_answer(request, response_id):
             return redirect('helpdesknew.views.get_help', help_id)
     else:
         response_form = ResponseFormValue(instance=answer)
-    return render_to_response('helpdesknew/mark_as_answer.html', {'response': answer, 'response_form': response_form, 'count': ans_count}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/mark_as_answer.html', {'response': answer, 'response_form': response_form}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -204,21 +202,20 @@ def bypass_user(request, response_id):
         answers = HelpResponse.objects.filter(helprequest=answer.helprequest)
     except Exception, e:
         print e
-    try:
-        help = answer.helprequest
-    except Exception, e:
-        print e
     if request.method == 'POST':
         response_form = ResponseFormValue(request.POST, instance=answer)
         if request.POST['value'] == 'answer':
-            answer.mark_answer()
-            try:
-                answer.save()
-            except Exception, e:
-                print "answer didn't save"
-            help = HelpRequest.objects.get(pk=answer.helprequest.id)
-            help.update_status(2)
-            help.save()
+            if answer.helprequest.status == "('resolved', 'Resolved')":
+                return redirect('helpdesknew.views.error_page')
+            else:
+                answer.mark_answer()
+                try:
+                    answer.save()
+                except Exception, e:
+                    print "answer didn't save"
+                help = HelpRequest.objects.get(pk=answer.helprequest.id)
+                help.update_status(2)
+                help.save()
         else:
             answer.mark_input()
             try:
@@ -236,7 +233,7 @@ def bypass_user(request, response_id):
             return redirect('helpdesknew.views.get_help', help_id)
     else:
         response_form = ResponseFormValue(instance=answer)
-    return render_to_response('helpdesknew/bypass_user.html', {'response': answer, 'response_form': response_form, 'count': ans_count}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/bypass_user.html', {'response': answer, 'response_form': response_form}, context_instance=RequestContext(request))
 
 
 @login_required
