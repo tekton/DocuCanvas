@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
 {% block context_nav %}
-    <a href="/">Dashboard</a>
-    <a href="/accounts/account_settings">Account Settings</a>
+    <a href="/issue/new/{{project.id}}">New Issue</a>
+    <a href="/issue/new/{{project.id}}">New Risk</a>
+    <a href="/checklist/new/{{project.id}}">New Checklist</a>
+    <a href="/project/{{project.id}}/stats">Report</a>
+    <a href="/checklist/project/{{project.id}}">Checklists</a>
+    <a href="/project/{{project.id}}/edit">Edit Project</a>
 {% endblock%}
 
 {% block extra_head%}
@@ -34,7 +38,7 @@
 {% endblock %}
 
 {% block container %}
-<h3>Issue Status Count</h3>
+<h3>Issues</h3>
 <table class="tbl-generic">
         <tr>
             <th>Status</th>
@@ -138,36 +142,23 @@
                 {% endfor %}
     </table>
 
-<h3>Still Active Issues</h3>
+<h3>Still Active</h3>
 <table class="tbl-generic">
-    <tr>
-        <th>
-            Modified
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Issue
-        </th>
-        <th>
-            Assigned To
-        </th>
-    </tr>
     {% for active_issue in active_issues%}
 
         {% if active_issue.status == 'active' %}
         <tr>
-            <td>
-                {{active_issue.modified}}
-            </td>
-            <td>
-                {{active_issue.status}}
-            </td>
-            <td>
+            <td title="issue">
                 <a href="/issue/{{active_issue.id}}">{{active_issue.summary}}</a>
             </td>
-            <td>
+            <td title="status">
+                {{active_issue.status}}
+            </td>
+            
+            <td title="modified date">
+                {{active_issue.modified}}
+            </td>
+            <td title="assigned to">
                 <a href="/auth/user/{{active_issue.assigned_to.id}}">{{active_issue.assigned_to}}</a>
             </td>
         </tr>
@@ -177,16 +168,17 @@
 
         {% if active_issue.status == 'unverified' %}
         <tr>
-            <td>
-                {{active_issue.modified}}
-            </td>
-            <td>
-                {{active_issue.status}}
-            </td>
-            <td>
+            <td title="issue">
                 <a href="/issue/{{active_issue.id}}">{{active_issue.summary}}</a>
             </td>
-            <td>
+            <td title="status">
+                {{active_issue.status}}
+            </td>
+            
+            <td title="modified time">
+                {{active_issue.modified}}
+            </td>
+            <td title="assigned to">
                 <a href="/auth/user/{{active_issue.assigned_to.id}}">{{active_issue.assigned_to}}</a>
             </td>
         </tr>
@@ -194,68 +186,40 @@
     {% endfor %}
 </table><br><br>
 
-<h3>Still Active Bugs</h3>
+<h3>Still Active by criticality</h3>
 <table class="tbl-generic">
-    <tr>
-        <th>
-            Modified
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Issue
-        </th>
-        <th>
-            Assigned to
-        </th>
-    </tr>
     {% for criticality_issue in criticality_issues%}
         <tr>
-            <td>
-                {{criticality_issue.modified}}
-            </td>
-            <td>
-                {{criticality_issue.status}}
-            </td>
-            <td>
+            <td title="issue">
                 <a href="/issue/{{criticality_issue.id}}">{{criticality_issue.summary}}</a>
             </td>
-            <td>
+            <td title="status">
+                {{criticality_issue.status}}
+            </td>
+            <td title="modified time">
+                {{criticality_issue.modified}}
+            </td>
+            <td title="assigned to">
                 <a href="/auth/user/{{criticality_issue.assigned_to.id}}">{{criticality_issue.assigned_to}}</a>
             </td>
         </tr>
     {% endfor %}
 </table><br><br>
 
-<h3>List of bugs for review</h3>
+<h3>For Review</h3>
 <table class="tbl-generic">
-    <tr>
-        <th>
-            Modified
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Issue
-        </th>
-        <th>
-            Assigned To
-        </th>
-    </tr>
     {% for bug_for_review in bugs_for_review%}
         <tr>
-            <td>
-                {{bug_for_review.modified}}
-            </td>
-            <td>
-                {{bug_for_review.status}}
-            </td>
-            <td>
+            <td title="issue">
                 <a href="/issue/{{bug_for_review.id}}">{{bug_for_review.summary}}</a>
             </td>
-            <td>
+            <td title="status">
+                {{bug_for_review.status}}
+            </td>
+            <td title="modified time">
+                {{bug_for_review.modified}}
+            </td>
+            <td title="assigned to">
                 <a href="/auth/user/{{criticality_issue.assigned_to.id}}">{{criticality_issue.assigned_to}}</a>
             </td>
         </tr>
