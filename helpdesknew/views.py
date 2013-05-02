@@ -130,6 +130,7 @@ def mark_as_answer(request, response_id):
         print "no answer"
     try:
         answers = HelpResponse.objects.filter(helprequest=answer.helprequest)
+        ans_count = answers.count()
     except Exception, e:
         print e
     if request.method == 'POST':
@@ -160,7 +161,7 @@ def mark_as_answer(request, response_id):
             return redirect('helpdesknew.views.get_help', help_id)
     else:
         response_form = ResponseFormValue(instance=answer)
-    return render_to_response('helpdesknew/mark_as_answer.html', {'response': answer, 'response_form': response_form}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/mark_as_answer.html', {'response': answer, 'response_form': response_form, 'count': ans_count}, context_instance=RequestContext(request))
 
 
 @login_required
