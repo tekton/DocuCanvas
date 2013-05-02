@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load set_var %}
 
 {% block context_nav %}
     <a href="/">Dashboard</a>
@@ -6,6 +7,7 @@
 {% endblock%}
 
 {% block extra_head%}
+
     <script type="text/javascript">
         $(document).ready(function(){
             $('#active_count').click(function(){
@@ -43,31 +45,36 @@
 {% block container %}
     <b>Email:</b> {{gadget_user.email}}<br><br>
 
+    <b>Status Changes</b></br>
+    <table class="tbl-generic">
+        {% for status_update in status_updates%}
+            {% if newest_status_timestamp != status_update.time_stamp %}
+                {% set newest_status_timestamp = status_update.time_stamp%}
+                    <!--<tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{status_update.time_stamp|date:'M-d-Y'}}</td></tr>-->
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{newest_status_timestamp}}</td></tr>
+            {% endif %}
+            <tr>
+                <td title="issue"><a href="/issue/{{status_update.issue.id}}">{{status_update.issue.summary}}</a></td>
+                <td title="change type">{{status_update.new_status}}</td>
+            </tr>
+            
+        {% endfor %}
+    </table><br><br>
+
     <b>Assigned To:</b><br>
     <table class="tbl-generic">
         {% for issue in issues %}
-            <tr>
-                    <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
-                    <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
-                </tr>
-        {% endfor %}
-    </table><br>
+            {% if newest_project != issue.project %}
+                {% set newest_project = issue.project%}
+                <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{issue.project.name}}</td></tr>
+            {% endif %}
 
-    <b>Status Changes</b></br><br>
-    <table class="tbl-generic">
-        <tr>
-            <th>Date</th>
-            <th>Change Type</th>
-            <th>Issue</th>
-        </tr>
-        {% for status_update in status_updates%}
             <tr>
-                <td>{{status_update.time_stamp}}</td>
-                <td>{{status_update.new_status}}</td>
-                <td><a href="/issue/{{status_update.issue.id}}">{{status_update.issue.summary}}</a></td>
+                <!--<td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>-->
+                <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
             </tr>
         {% endfor %}
-    </table><br><Br>
+    </table><br>
 
     <b>Issue Count</b><br><br>
     <table class="tbl-generic">
