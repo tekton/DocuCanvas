@@ -1,3 +1,5 @@
+import json
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -88,7 +90,7 @@ def submit_response(request, help_id):
         form = HelpFormRequest()
     return redirect('helpdesknew.views.get_help', help_id, permanent=False)
 
-
+'''
 @login_required
 def get_all(request):
     try:
@@ -97,7 +99,7 @@ def get_all(request):
         print "Couldn't find all questions"
         print e
     return render_to_response('helpdesknew/help_all_requests.html', {'form': all_help}, context_instance=RequestContext(request))
-
+'''
 
 @login_required
 def get_pending(request):
@@ -226,3 +228,29 @@ def bypass_user(request, response_id):
     else:
         response_form = ResponseFormValue(instance=answer)
     return render_to_response('helpdesknew/bypass_user.html', {'response': answer, 'response_form': response_form}, context_instance=RequestContext(request))
+
+'''
+@login_required
+def user_page(request):
+    to_json = {}
+    print "loading user's requests"
+    try:
+        myuser = User.objects.get(pk=request.GET['user_id'])
+    except Exception, e:
+        print e
+    try:
+        myrequests = HelpRequest.objects.filter(user=myuser)
+    except Exception, e:
+        print e
+    try:
+        unanswered = myrequests.exclude(status="('resolved', 'Resolved')")
+    except Exception, e:
+        print e
+    try:
+        answered = myrequests.filter(status="('resolved', 'Resolved')")
+    except Exception, e:
+        print e
+    res_count = responses.count()
+    ans_count = answers.count()
+    return render_to_response('helpdesknew/help_user.html', {'responses': responses, 'answers': answers, 'res_count': res_count, 'ans_count': ans_count, "myuser": myuser}, context_instance=RequestContext(request))
+'''
