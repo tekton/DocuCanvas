@@ -36,7 +36,7 @@
 	<table class="tbl-generic tbl-overview">
 		{% for arrow in answer %}
 		<tr class="tbl-rowheader">
-			<td class="tbl-fauxth">Answer:</td>
+			<td class="tbl-fauxth">Answer</td>
 		</tr>
 			<tr>
 				<td class="tbl-comments-description" colspan="2">{{arrow.response}}</td>
@@ -48,7 +48,7 @@
 			<td colspan="2">
 				<form action="/help/response/{{help.id}}" id="submit_response_form" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
-					<b><a id="comment_title">Submit A Response:</a></b><br />
+					<b><a id="comment_title">Submit A Response</a></b><br />
 					<div class="comment_textarea">{{help_response.response}}</div>
 					<input type='hidden' name="helprequest" id="id_helprequest" value='{{help.id}}'/>
 					<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
