@@ -2,6 +2,7 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
     (r'new', 'helpdesknew.views.help_form'),
+    (r'error_page', 'helpdesknew.views.error_page'),
     #(r'all', 'helpdesknew.views.get_all'),
     (r'pending', 'helpdesknew.views.get_pending'),
     (r'resolved', 'helpdesknew.views.get_resolved'),
