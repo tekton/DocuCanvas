@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block context_nav %}
+    <a href="/help/new">Ask a Question</a>
+    <a href="/help/resolved">Resolved Questions</a>
+    <a href="/help/pending">Unresolved Questions</a>
+    <a href="/help/user/{{user.id}}">Your Questions</a>
+{% endblock %}
+
+{% block container %}
+<h2>Error</h2>
+<p>An answer has already been submitted for this question</p>
+<p>Only one answer can be selected per question</p>
+{% endblock %}

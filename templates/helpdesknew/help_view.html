@@ -7,6 +7,12 @@
     <a href="/help/user/{{user.id}}">Your Questions</a>
 {% endblock %}
 
+{% block style %}
+.helpdesk-question{
+	word-break: break-all;
+}
+{% endblock %}
+
 {% block container %}
     <input type="hidden" id="help_id" value="{{help.id}}"/>
 	<table class="tbl-generic tbl-overview">
@@ -25,7 +31,9 @@
 			{% endif %}
 		</tr>
 		<tr>
-			<td>{{help.question}}</td>
+			<td colspan="2">
+				<div class="helpdesk-question">{{help.question}}</div>
+			</td>
 		</tr>
 		{% if help.photo %}
 			<tr>
@@ -36,10 +44,10 @@
 	<table class="tbl-generic tbl-overview">
 		{% for arrow in answer %}
 		<tr class="tbl-rowheader">
-			<td class="tbl-fauxth">Answer</td>
+			<td class="tbl-fauxth"><a href="mark/{{arrow.id}}">Answer</a></td>
 		</tr>
 			<tr>
-				<td class="tbl-comments-description" colspan="2">{{arrow.response}}</td>
+				<td class="tbl-comments-description" colspan="2"><a href="mark/{{arrow.id}}">{{arrow.response}}</a></td>
 			</tr>
 		{% endfor %}
 	</table>

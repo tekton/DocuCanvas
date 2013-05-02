@@ -6,6 +6,18 @@
     <a href="/food/overview">Pending Requests</a>
 {% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+
+<script>
+    $(function() {
+        $( "#id_desired_completion" ).datepicker({dateFormat: 'yy-mm-dd'});
+    });
+</script>
+{% endblock %}
+
 {% block container %}
     <form action="/food/new" method="post" enctype="multipart/form-data">
         {% csrf_token %}
