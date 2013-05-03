@@ -7,6 +7,12 @@
     <a href="/help/user/{{user.id}}">Your Questions</a>
 {% endblock %}
 
+{% block style %}
+.helpdesk-question{
+	word-break: break-all;
+}
+{% endblock %}
+
 {% block container %}
 {% if response.helprequest.user.id != user.id %}
 <p>You don't have access to this page.</p>
@@ -25,7 +31,9 @@
 		<td>Response</td>
 	</tr>
 	<tr>
-		<td>{{response.response}}</td>
+		<td>
+			<div class="helpdesk-question">{{response.response}}</div>
+		</td>
 	</tr>
 </table>
 <form action="{{response.id}}" method="post" enctype="multipart/form-data">
