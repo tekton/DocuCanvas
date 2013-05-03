@@ -138,15 +138,23 @@ def user_overview(request, user_id):
         issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-project')
         issue_status_updates = IssueStatusUpdate.objects.filter(user=gadget_user).order_by('-time_stamp')
 
-        #issue count by status
+        blank_issues = issues.filter(status=None)
+        not_a_bug_issues = issues.filter(status='not_a_bug')
+        wont_fix_issues = issues.filter(status='wont_fix')
+        duplicate_issues = issues.filter(status='duplicate')
+        active_issues = issues.filter(status='active')
+        fixed_issues = issues.filter(status='fixed')
+        retest_issues = issues.filter(status='retest')
+        unverified_issues = issues.filter(status='unverified')
 
-        not_a_bug_count = Issue.objects.filter(assigned_to=gadget_user, status='not_a_bug').count()
-        wont_fix_count = Issue.objects.filter(assigned_to=gadget_user, status='wont_fix').count()
-        duplicate_count = Issue.objects.filter(assigned_to=gadget_user, status='duplicate').count()
-        active_count = Issue.objects.filter(assigned_to=gadget_user, status='active').count()
-        fixed_count = Issue.objects.filter(assigned_to=gadget_user, status='fixed').count()
-        retest_count = Issue.objects.filter(assigned_to=gadget_user, status='retest').count()
-        unverified_count = Issue.objects.filter(assigned_to=gadget_user, status='unverified').count()
+        blank_count = blank_issues.count()
+        not_a_bug_count = not_a_bug_issues.count()
+        wont_fix_count = wont_fix_issues.count()
+        duplicate_count = duplicate_issues.count()
+        active_count = active_issues.count()
+        fixed_count = fixed_issues.count()
+        retest_count = retest_issues.count()
+        unverified_count = unverified_issues.count()
 
         #assignment count by project
         projects = Project.objects.all()
@@ -163,5 +171,5 @@ def user_overview(request, user_id):
     except Exception, e:
         print e
 
-    return render_to_response("user/user_overview.html", {"gadget_user": gadget_user, "issues": issues, "status_updates": issue_status_updates, "project_dict": project_dict , "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": gadget_user.username}, context_instance=RequestContext(request))
+    return render_to_response("user/user_overview.html", {"gadget_user": gadget_user, "issues": issues, "status_updates": issue_status_updates, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues ,"project_dict": project_dict , "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": gadget_user.username}, context_instance=RequestContext(request))
 

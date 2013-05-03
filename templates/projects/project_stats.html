@@ -190,6 +190,9 @@
 <table class="tbl-generic">
     {% for criticality_issue in criticality_issues%}
         <tr>
+            <td title="criticality">
+                {{criticality_issue.criticality}}
+            </td>
             <td title="issue">
                 <a href="/issue/{{criticality_issue.id}}">{{criticality_issue.summary}}</a>
             </td>
