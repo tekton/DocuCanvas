@@ -4,6 +4,13 @@
     <a href="/help/new">Ask a Question</a>
     <a href="/help/resolved">Resolved Questions</a>
     <a href="/help/pending">Unresolved Questions</a>
+    <a href="/help/user/{{user.id}}">Your Questions</a>
+{% endblock %}
+
+{% block style %}
+.helpdesk-question{
+	word-break: break-all;
+}
 {% endblock %}
 
 {% block container %}
@@ -24,7 +31,9 @@
 			{% endif %}
 		</tr>
 		<tr>
-			<td>{{help.question}}</td>
+			<td colspan="2">
+				<div class="helpdesk-question">{{help.question}}</div>
+			</td>
 		</tr>
 		{% if help.photo %}
 			<tr>
@@ -35,10 +44,14 @@
 	<table class="tbl-generic tbl-overview">
 		{% for arrow in answer %}
 		<tr class="tbl-rowheader">
-			<td class="tbl-fauxth">Answer:</td>
+			<td class="tbl-fauxth"><a href="mark/{{arrow.id}}">Answer</a></td>
 		</tr>
 			<tr>
-				<td class="tbl-comments-description" colspan="2">{{arrow.response}}</td>
+				<td class="tbl-comments-description" colspan="2">
+					<a href="mark/{{arrow.id}}">
+						<div class="helpdesk-question">{{arrow.response}}</div>
+					</a>
+				</td>
 			</tr>
 		{% endfor %}
 	</table>
@@ -47,7 +60,7 @@
 			<td colspan="2">
 				<form action="/help/response/{{help.id}}" id="submit_response_form" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
-					<b><a id="comment_title">Submit A Response:</a></b><br />
+					<b><a id="comment_title">Submit A Response</a></b><br />
 					<div class="comment_textarea">{{help_response.response}}</div>
 					<input type='hidden' name="helprequest" id="id_helprequest" value='{{help.id}}'/>
 					<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
@@ -62,7 +75,9 @@
 				<td class="tbl-fauxth tbl-comments-created"><a href="mark/{{comment.id}}">{{comment.created}}</a></td>
 			</tr>
 			<tr>
-				<td class="tbl-comments-description" colspan="2">{{comment.response}}</td>
+				<td class="tbl-comments-description" colspan="2">
+					<div class="helpdesk-question">{{comment.response}}</div>
+				</td>
 			</tr>
 		{% endfor %}
 

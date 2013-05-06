@@ -1,5 +1,8 @@
+import json
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
@@ -87,7 +90,7 @@ def submit_response(request, help_id):
         form = HelpFormRequest()
     return redirect('helpdesknew.views.get_help', help_id, permanent=False)
 
-
+'''
 @login_required
 def get_all(request):
     try:
@@ -96,7 +99,7 @@ def get_all(request):
         print "Couldn't find all questions"
         print e
     return render_to_response('helpdesknew/help_all_requests.html', {'form': all_help}, context_instance=RequestContext(request))
-
+'''
 
 @login_required
 def get_pending(request):
@@ -132,14 +135,17 @@ def mark_as_answer(request, response_id):
     if request.method == 'POST':
         response_form = ResponseFormValue(request.POST, instance=answer)
         if request.POST['value'] == 'answer':
-            answer.mark_answer()
-            try:
-                answer.save()
-            except Exception, e:
-                print "answer didn't save"
-            help = HelpRequest.objects.get(pk=answer.helprequest.id)
-            help.update_status(2)
-            help.save()
+            if answer.helprequest.status == "('resolved', 'Resolved')":
+                return redirect('helpdesknew.views.error_page')
+            else:
+                answer.mark_answer()
+                try:
+                    answer.save()
+                except Exception, e:
+                    print "answer didn't save"
+                help = HelpRequest.objects.get(pk=answer.helprequest.id)
+                help.update_status(2)
+                help.save()
         else:
             answer.mark_input()
             try:
@@ -158,3 +164,78 @@ def mark_as_answer(request, response_id):
     else:
         response_form = ResponseFormValue(instance=answer)
     return render_to_response('helpdesknew/mark_as_answer.html', {'response': answer, 'response_form': response_form}, context_instance=RequestContext(request))
+
+
+@login_required
+def user_help(request, user_id):
+    try:
+        myuser = User.objects.get(pk=user_id)
+    except Exception, e:
+        print e
+        print "no myuser object"
+    try:
+        requests_from_user = HelpRequest.objects.filter(user=myuser)
+    except Exception, e:
+        print e
+    try:
+        responses = requests_from_user.exclude(status="('resolved', 'Resolved')")
+    except Exception, e:
+        print e
+    try:
+        answers = requests_from_user.filter(status="('resolved', 'Resolved')")
+    except Exception, e:
+        print e
+    res_count = responses.count()
+    ans_count = answers.count()
+    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user, 'responses': responses, 'answers': answers, 'res_count': res_count, 'ans_count': ans_count, "myuser": myuser}, context_instance=RequestContext(request))
+
+
+@login_required
+def bypass_user(request, response_id):
+    try:
+        answer = HelpResponse.objects.get(pk=response_id)
+        print "it works the first time around"
+    except Exception, e:
+        print e
+        print "no answer"
+    try:
+        answers = HelpResponse.objects.filter(helprequest=answer.helprequest)
+    except Exception, e:
+        print e
+    if request.method == 'POST':
+        response_form = ResponseFormValue(request.POST, instance=answer)
+        if request.POST['value'] == 'answer':
+            if answer.helprequest.status == "('resolved', 'Resolved')":
+                return redirect('helpdesknew.views.error_page')
+            else:
+                answer.mark_answer()
+                try:
+                    answer.save()
+                except Exception, e:
+                    print "answer didn't save"
+                help = HelpRequest.objects.get(pk=answer.helprequest.id)
+                help.update_status(2)
+                help.save()
+        else:
+            answer.mark_input()
+            try:
+                answer.save()
+            except Exception, e:
+                print "input didn't save"
+            help = HelpRequest.objects.get(pk=answer.helprequest.id)
+            if help.status == "('resolved', 'Resolved')":
+                help.update_status(3)
+            else:
+                help.update_status(1)
+            help.save()
+        if answer.id:
+            help_id = answer.helprequest.id
+            return redirect('helpdesknew.views.get_help', help_id)
+    else:
+        response_form = ResponseFormValue(instance=answer)
+    return render_to_response('helpdesknew/bypass_user.html', {'response': answer, 'response_form': response_form}, context_instance=RequestContext(request))
+
+
+@login_required
+def error_page(request):
+    return render_to_response('helpdesknew/error_page.html', context_instance=RequestContext(request))

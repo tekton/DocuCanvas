@@ -4,6 +4,7 @@
     <a href="/help/new">Ask a Question</a>
     <a href="/help/resolved">Resolved Questions</a>
     <a href="/help/pending">Unresolved Questions</a>
+    <a href="/help/user/{{user.id}}">Your Questions</a>
 {% endblock %}
 
 {% block container %}
@@ -11,8 +12,8 @@
 <table class="tbl-generic tbl-overview">
     <tr class="tbl-rowheader">
         <td class="tbl-fauxth">Summary</td>
-        <td class="tbl-fauxth">Asked By:</td>
-        <td class="tbl-fauxth">Date Asked:</td>
+        <td class="tbl-fauxth">Asked By</td>
+        <td class="tbl-fauxth">Date Asked</td>
     </tr>
     {% for help in form %}
     <tr>

@@ -4,6 +4,33 @@
     <a href="/help/new">Ask a Question</a>
     <a href="/help/resolved">Resolved Questions</a>
     <a href="/help/pending">Unresolved Questions</a>
+    <a href="/help/user/{{user.id}}">Your Questions</a>
+{% endblock %}
+
+{% block style %}
+#image_upload_preview{
+    opacity: 0;
+}
+{% endblock %}
+
+{% block extra_head%}
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#id_photo').click(function(){
+            $('#image_upload_preview').fadeTo("fast", 1);
+        });
+    });
+    function readImage(input){
+        if(input.files && input.files[0]){
+            var reader = new FileReader();
+            reader.onload = function(e){
+                $('#image_upload_preview').attr('src', e.target.result).width('100').height('100');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 {% endblock %}
 
 {% block container %}
@@ -15,8 +42,12 @@
         {{form.name}}</br>
         <b>Description:</b></br>
         {{form.question}}</br>
+        <!--<b>Upload a Screenshot:</b></br>
+        {{form.photo}}</br>-->
         <b>Upload a Screenshot:</b></br>
-        {{form.photo}}</br>
+        <form id="help-screenshot" action="/temp" method="post">
+        <input type='file' id='id_photo' name='photo' onchange="readImage(this);" /></br>
+        <img id="image_upload_preview" src="noimage.jpg" alt="your image" border="1" />
     </table>
     <input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
     <input type="submit" value="Submit"/>
