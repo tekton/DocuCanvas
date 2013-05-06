@@ -28,6 +28,6 @@ urlpatterns = patterns('',
     url(r'^reports/', include('daily_reports.urls')),
     url(r'^auth/', include('auth.urls')),
     url(r'^food/', include('food.urls')),
-    url(r'^help/', include('helpdesk.urls')),
+    url(r'^help/', include('helpdesknew.urls')),
     url(r'^gapps/', include('gapps.urls')),
 )

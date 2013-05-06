@@ -16,7 +16,7 @@ class FoodRequest(models.Model):
     quantity = models.FloatField(default=0)  # amount of item being requested
     quantity_type = models.CharField(max_length=3, choices=quantity_choices, default=(1, 1))  # type of quantity ex. lbs, ltr, gal
     request_initiated = models.DateField(auto_now_add=True, null=True, blank=True)  # when request was initated
-    desired_completion = models.DateField(blank=True, null=True)  # when user wants request completed
+    desired_completion = models.DateTimeField(blank=True, null=True)  # when user wants request completed
     request_completed_bool = models.NullBooleanField(default=False)  # bool for whether or not request has been completed
     request_completed_date = models.DateField(auto_now=True, blank=True, null=True)  # date request was handled
     cost_per_quantity = models.FloatField(default=0)  # cost per unit of item requested

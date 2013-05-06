@@ -295,22 +295,45 @@ def meta_issue_stats(request, meta_issue_id):
     try:
         meta_issue = MetaIssue.objects.get(pk=meta_issue_id)
 
-        not_a_bug_count = Issue.objects.filter(meta_issues=meta_issue, status='not_a_bug').count()
-        wont_fix_count = Issue.objects.filter(meta_issues=meta_issue, status='wont_fix').count()
-        duplicate_count = Issue.objects.filter(meta_issues=meta_issue, status='duplicate').count()
-        active_count = Issue.objects.filter(meta_issues=meta_issue, status='active').count()
-        fixed_count = Issue.objects.filter(meta_issues=meta_issue, status='fixed').count()
-        retest_count = Issue.objects.filter(meta_issues=meta_issue, status='retest').count()
-        unverified_count = Issue.objects.filter(meta_issues=meta_issue, status='unverified').count()
 
-        active_issues = Issue.objects.filter(Q(meta_issues=meta_issue) & (Q(status='active') | Q(status='unverified') | Q(status='duplicate')))
+        issues = Issue.objects.filter(meta_issues=meta_issue)
+
+
+        '''
+        not_a_bug_issues = Issue.objects.filter(meta_issues=meta_issue, status='not_a_bug')
+        wont_fix_issues = Issue.objects.filter(meta_issues=meta_issue, status='wont_fix')
+        duplicate_issues = Issue.objects.filter(meta_issues=meta_issue, status='duplicate')
+        active_issues = Issue.objects.filter(meta_issues=meta_issue, status='active')
+        fixed_issues = Issue.objects.filter(meta_issues=meta_issue, status='fixed')
+        retest_issues = Issue.objects.filter(meta_issues=meta_issue, status='retest')
+        unverified_issues = Issue.objects.filter(meta_issues=meta_issue, status='unverified')
+        '''
+
+        blank_issues = issues.filter(status=None)
+        not_a_bug_issues = issues.filter(status='not_a_bug')
+        wont_fix_issues = issues.filter(status='wont_fix')
+        duplicate_issues = issues.filter(status='duplicate')
+        active_issues = issues.filter(status='active')
+        fixed_issues = issues.filter(status='fixed')
+        retest_issues = issues.filter(status='retest')
+        unverified_issues = issues.filter(status='unverified')
+
+        blank_count = blank_issues.count()
+        not_a_bug_count = not_a_bug_issues.count()
+        wont_fix_count = wont_fix_issues.count()
+        duplicate_count = duplicate_issues.count()
+        active_count = active_issues.count()
+        fixed_count = fixed_issues.count()
+        retest_count = retest_issues.count()
+        unverified_count = unverified_issues.count()
+
         criticality_issues = Issue.objects.filter(Q(meta_issues=meta_issue) & (Q(status='active') | Q(status='unverified') | Q(status='duplicate'))).order_by('-criticality')
-        bugs_for_review = Issue.objects.filter(Q(meta_issues=meta_issue) & (Q(status='wont_fix')|Q(status='not_a_bug')|Q(status='retest')))
+        bugs_for_review = Issue.objects.filter(Q(meta_issues=meta_issue) & (Q(status='wont_fix') | Q(status='not_a_bug') | Q(status='retest')))
 
     except Exception, e:
         print e
 
-    return render_to_response('issues/meta_issue_stats.html', {"criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "active_issues": active_issues, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": meta_issue.title, "page_value":"Report"}, context_instance=RequestContext(request))
+    return render_to_response('issues/meta_issue_stats.html', {"criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues, "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": meta_issue.title, "page_value": "Report"}, context_instance=RequestContext(request))
 
 
 @login_required
