@@ -38,7 +38,7 @@ def get_help(request, help_id):
 		print "something went horribly horribly wrong"
 		print e
 	try:
-		comments = HelpResponse.objects.filter(helprequest=help).order_by('-created')
+		comments = HelpResponse.objects.filter(helprequest=help).order_by('-id')
 	except Exception, e:
 		print "couldn't find input objects"
 	try:
@@ -115,16 +115,16 @@ def get_pending(request):
 @login_required
 def get_resolved(request):
 	try:
-		resolved = HelpRequest.objects.filter(status="('resolved', 'Resolved')").order_by('-request_init')
+		resolved = HelpRequest.objects.filter(status="('resolved', 'Resolved')").order_by('-id')
 	except Exception, e:
 		print e
 	try:
-		closed = HelpRequest.objects.filter(status="('closed', 'Closed')").order_by('-request_init')
+		closed = HelpRequest.objects.filter(status="('closed', 'Closed')").order_by('-id')
 	except Exception, e:
 		print e
 	return render_to_response('helpdesknew/help_resolved.html', {'form': resolved, 'closed': closed}, context_instance=RequestContext(request))
 
-
+'''
 @login_required
 def mark_as_answer(request, response_id):
 	try:
@@ -175,7 +175,7 @@ def mark_as_answer(request, response_id):
 		else:
 			response_form = ResponseFormValue(instance=answer)
 	return render_to_response('helpdesknew/mark_as_answer.html', {'response': answer, 'response_form': response_form}, context_instance=RequestContext(request))
-
+'''
 
 @login_required
 def user_help(request, user_id):
