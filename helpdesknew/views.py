@@ -303,8 +303,10 @@ def mark_the_answer(request, response_id):
 	except Exception, e:
 		print e
 	if request.method == 'POST':
-		if answer.helprequest.status == "('resolved', 'Resolved')" or answer.helprequest.status == "('closed', 'Closed')":
+		if answer.helprequest.status == "('resolved', 'Resolved')":
 			return redirect('helpdesknew.views.error_page', 1)
+		elif answer.helprequest.status == "('closed', 'Closed')":
+			return redirect('helpdesknew.views.error_page', 2)
 		else:
 			answer.mark_answer()
 			answer.helprequest.update_status(2)
