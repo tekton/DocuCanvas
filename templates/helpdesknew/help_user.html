@@ -14,7 +14,7 @@
     <p>You don't have access to this page.</p>
     <p>To view all of your question, <a href="/help/user/{{user.id}}"><b>click here!</b></a></p>
 {% else %}
-    {% if res_count or ans_count %}
+    {% if res_count or ans_count or clo_count %}
         <table class="tbl-generic tbl-overview">
             <tr class="tbl-rowheader">
                 <td class="tbl-fauxth" colspan=3>Resolved</td>
@@ -52,12 +52,14 @@
                         <td><a href="/help/{{help.id}}">{{help.request_init}}</a></td>
                         {% if help.status == '(1, 1)' %}
                             <td><a href="/help/{{help.id}}">No Responses</a></td>
-                        {% elif help.status = "('active', 'Active Responses')" %}
+                        {% elif help.status == "('active', 'Active Responses')" %}
                             <td><a href="/help/{{help.id}}">Active</a></td>
-                        {% elif help.status = "('reopened', 'Re-Opened')" %}
+                        {% elif help.status == "('reopened', 'Re-Opened')" %}
                             <td><a href="/help/{{help.id}}">Re-Opened</a></td>
-                        {% elif help.status = "('resolved', 'Resolved')" %}
+                        {% elif help.status == "('resolved', 'Resolved')" %}
                             <td><a href="/help/{{help.id}}">Resolved</a></td>
+                        {% elif help.status == "('closed', 'Closed')" %}
+                            <td><a href="/help/{{help.id}}">Solved & Sealed</a></td>
                         {% else %}
                             <td><a href="/help/{{help.id}}">{{help.status}}</a></td>
                         {% endif %}
@@ -67,6 +69,27 @@
                 <tr>
                     <td colspan=3>There are no pending question objects.</td>
                 </tr>
+            {% endif %}
+            {% if clo_count != 0 %}
+            <tr class="tbl-rowheader">
+                <td class="tbl-fauxth" colspan=3>Solved & Sealed</td>
+            </tr>
+            <tr class="tbl-rowheader">
+                <td class="tbl-fauxth">Summary</td>
+                <td class="tbl-fauxth">Date Asked</td>
+                <td class="tbl-fauxth">Status</td>
+            </tr>
+            {% for close in more_answers %}
+            <tr>
+                <td><a href="/help/{{close.id}}">{{close.name}}</a></td>
+                <td><a href="/help/{{close.id}}">{{close.request_init}}</a></td>
+                <td><a href="/help/{{close.id}}">Solved & Sealed</a></td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan=3></td>
+            </tr>
             {% endif %}
         </table>
     {% else %}

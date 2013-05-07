@@ -11,6 +11,9 @@
 <h2>Resolved Questions</h2>
 <table class="tbl-generic tbl-overview">
     <tr class="tbl-rowheader">
+        <td class="tbl-fauxth" colspan=3>Resolved</td>
+    </tr>
+    <tr class="tbl-rowheader">
         <td class="tbl-fauxth">Summary</td>
         <td class="tbl-fauxth">Asked By</td>
         <td class="tbl-fauxth">Date Asked</td>
@@ -20,6 +23,21 @@
         <td><a href="/help/{{help.id}}">{{help.name}}</a></td>
         <td><a href="/help/{{help.id}}">{{help.user}}</a></td>
         <td><a href="/help/{{help.id}}">{{help.request_init}}</a></td>
+    </tr>
+    {% endfor %}
+    <tr class="tbl-rowheader">
+        <td class="tbl-fauxth" colspan=3>Solved & Sealed</td>
+    </tr>
+    <tr class="tbl-rowheader">
+        <td class="tbl-fauxth">Summary</td>
+        <td class="tbl-fauxth">Asked By</td>
+        <td class="tbl-fauxth">Date Asked</td>
+    </tr>
+    {% for close in closed %}
+    <tr>
+        <td><a href="/help/{{close.id}}">{{close.name}}</a></td>
+        <td><a href="/help/{{close.id}}">{{close.user}}</a></td>
+        <td><a href="/help/{{close.id}}">{{close.request_init}}</a></td>
     </tr>
     {% endfor %}
 </table>

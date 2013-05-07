@@ -20,12 +20,14 @@
 			<td class="tbl-fauxth">{{help.name}}</td>
 			{% if help.status == '(1, 1)' %}
 				<td class="tbl-fauxth">Status: No Responses</td>
-			{% elif help.status = "('active', 'Active Responses')" %}
+			{% elif help.status == "('active', 'Active Responses')" %}
 				<td class="tbl-fauxth">Status: Active</td>
-			{% elif help.status = "('resolved', 'Resolved')" %}
+			{% elif help.status == "('resolved', 'Resolved')" %}
 				<td class="tbl-fauxth">Status: Resolved</td>
-			{% elif help.status = "('reopened', 'Re-Opened')" %}
+			{% elif help.status == "('reopened', 'Re-Opened')" %}
 				<td class="tbl-fauxth">Status: Re-Opened</td>
+			{% elif help.status == "('closed', 'Closed')" %}
+				<td class="tbl-fauxth">Status: Solved & Sealed</td>
 			{% else %}
 				<td class="tbl-fauxth">Status: {{help.status}}</td>
 			{% endif %}
