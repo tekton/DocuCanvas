@@ -261,7 +261,6 @@ def bypass_user(request, response_id):
 
 @login_required
 def error_page(request, error_id):
-	print error_id
 	return render_to_response('helpdesknew/error_page.html', {'error_id': error_id}, context_instance=RequestContext(request))
 
 
