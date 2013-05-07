@@ -30,7 +30,7 @@ a.popup:hover span{
     word-break: break-all;
 }
 .tbl-answer-id{
-	font-size:x-small;
+	font-size:xx-small;
 	text-align:right;
 }
 #helpstatus{
@@ -72,7 +72,7 @@ a.popup:hover span{
 		{% for arrow in answer %}
 			<tr class="tbl-rowheader">
 				<td class="tbl-fauxth">
-					{% if user.id == help.user.id %}
+					{% if user.id == help.user.id and help.status != "('closed', 'Closed')" %}
 						<a class="popup">Answer
 							<span>
 								<form action="/help/mark_the_input/{{arrow.id}}" id="submit_input_form" method="post" enctype="multipart/form-data">
@@ -116,7 +116,7 @@ a.popup:hover span{
 		{% for comment in comments %}
 			<tr class="tbl-rowheader">
 				<td class="tbl-fauxth tbl-comments-user">
-					{% if user.id == help.user.id %}
+					{% if user.id == help.user.id and help.status != "('closed', 'Closed')" %}
 						<a class='popup'><b>{{comment.user}}</b>
 							<span>
 								<form action="/help/mark_the_answer/{{comment.id}}" id="submit_answer_form" method="post" enctype="multipart/form-data">
