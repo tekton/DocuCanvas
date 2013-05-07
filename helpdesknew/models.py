@@ -9,6 +9,7 @@ class HelpRequest(models.Model):
 		('active', 'Active Responses'),
 		('resolved', 'Resolved'),
 		('reopened', 'Re-Opened'),
+		('closed', 'Closed'),
 	)
 	user = models.ForeignKey(User)
 	name = models.CharField(max_length=140)
@@ -28,6 +29,8 @@ class HelpRequest(models.Model):
 			self.status = self.help_state[3]
 		elif n==2:
 			self.status = self.help_state[2]
+		elif n==4:
+			self.status = self.help_state[4]
 		else:
 			self.status = self.help_state[1]
 		print "status updated"

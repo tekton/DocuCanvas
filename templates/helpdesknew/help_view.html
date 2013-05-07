@@ -11,6 +11,34 @@
 .helpdesk-question{
 	word-break: break-all;
 }
+a.popup{
+    position:relative;
+    z-index:0;
+    text-decoration:none;
+}
+a.popup:hover{
+    z-index:0;
+}
+a.popup span{
+    display:none;
+}
+a.popup:hover span{
+    display:block;
+    position:absolute;
+    top:15px;
+    width:200px;
+    padding:3px;
+    border:1px solid #000000;
+    background-color:#FFFFFF;
+    word-break: break-all;
+}
+.tbl-answer-id{
+	font-size:x-small;
+	text-align:right;
+}
+#helpstatus{
+	text-align:right;
+}
 {% endblock %}
 
 {% block container %}
@@ -19,15 +47,17 @@
 		<tr class="tbl-rowheader">
 			<td class="tbl-fauxth">{{help.name}}</td>
 			{% if help.status == '(1, 1)' %}
-				<td class="tbl-fauxth">Status: No Responses</td>
-			{% elif help.status = "('active', 'Active Responses')" %}
-				<td class="tbl-fauxth">Status: Active</td>
-			{% elif help.status = "('resolved', 'Resolved')" %}
-				<td class="tbl-fauxth">Status: Resolved</td>
-			{% elif help.status = "('reopened', 'Re-Opened')" %}
-				<td class="tbl-fauxth">Status: Re-Opened</td>
+				<td class="tbl-fauxth" id="helpstatus">Status: No Responses</td>
+			{% elif help.status == "('active', 'Active Responses')" %}
+				<td class="tbl-fauxth" id="helpstatus">Status: Active</td>
+			{% elif help.status == "('resolved', 'Resolved')" %}
+				<td class="tbl-fauxth" id="helpstatus">Status: Resolved</td>
+			{% elif help.status == "('reopened', 'Re-Opened')" %}
+				<td class="tbl-fauxth" id="helpstatus">Status: Re-Opened</td>
+			{% elif help.status == "('closed', 'Closed')" %}
+				<td class="tbl-fauxth" id="helpstatus">Status: Solved & Sealed</td>
 			{% else %}
-				<td class="tbl-fauxth">Status: {{help.status}}</td>
+				<td class="tbl-fauxth" id="helpstatus">Status: {{help.status}}</td>
 			{% endif %}
 		</tr>
 		<tr>
@@ -40,17 +70,34 @@
 				<td><img src="/static/{{help.photo}}"></td>
 			</tr>
 		{% endif %}
-	</table>
-	<table class="tbl-generic tbl-overview">
+		</table>
+		<table class="tbl-generic tbl-overview">
 		{% for arrow in answer %}
-		<tr class="tbl-rowheader">
-			<td class="tbl-fauxth"><a href="mark/{{arrow.id}}">Answer</a></td>
-		</tr>
+			<tr class="tbl-rowheader">
+				<td class="tbl-fauxth">
+					{% if user.id == help.user.id %}
+						<a class="popup">Answer
+							<span>
+								<form action="/help/mark_the_input/{{arrow.id}}" id="submit_input_form" method="post" enctype="multipart/form-data">
+									{% csrf_token %}
+									<input type="submit" value="Remove Answer" id="remove_answer_button"/>
+								</form>
+							</span>
+						</a>
+					{% else %}
+						Answer
+					{% endif %}
+					</a>
+				</td>
+			</tr>
 			<tr>
 				<td class="tbl-comments-description" colspan="2">
-					<a href="mark/{{arrow.id}}">
-						<div class="helpdesk-question">{{arrow.response}}</div>
-					</a>
+					<div class="helpdesk-question">{{arrow.response}}</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="tbl-answer-id" colspan="2">
+					{{arrow.id}}
 				</td>
 			</tr>
 		{% endfor %}
@@ -69,9 +116,22 @@
 				<br>
 			</td>
 		</tr>
-		{% for comment in comments%}
+		{% for comment in comments %}
 			<tr class="tbl-rowheader">
-				<td class="tbl-fauxth tbl-comments-user"><a href="mark/{{comment.id}}"><b>{{comment.user}}</b></a></td>
+				<td class="tbl-fauxth tbl-comments-user">
+					{% if user.id == help.user.id %}
+						<a class='popup'><b>{{comment.user}}</b>
+							<span>
+								<form action="/help/mark_the_answer/{{comment.id}}" id="submit_answer_form" method="post" enctype="multipart/form-data">
+									{% csrf_token %}
+									<input type="submit" value="Mark as Answer" id="submit_answer_button"/>
+								</form>
+							</span>
+						</a>
+					{% else %}
+						<b>{{comment.user}}</b>
+					{% endif %}
+				</td>
 				<td class="tbl-fauxth tbl-comments-created"><a href="mark/{{comment.id}}">{{comment.created}}</a></td>
 			</tr>
 			<tr>
@@ -79,7 +139,11 @@
 					<div class="helpdesk-question">{{comment.response}}</div>
 				</td>
 			</tr>
+			<tr>
+				<td class="tbl-answer-id" colspan="2">
+					{{comment.id}}
+				</td>
+			</tr>
 		{% endfor %}
-
 	</table>
 {% endblock %}
