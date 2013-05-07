@@ -20,6 +20,7 @@ a.popup span{
     display:none;
 }
 a.popup:hover span{
+    font-size:small;
     display:block;
     position:absolute;
     top:35px;
@@ -28,6 +29,11 @@ a.popup:hover span{
     padding:3px;
     border:1px solid #000000;
     background-color:#FFFFFF;
+    word-break: break-all;
+}
+img.pending-image-help{
+    width:200px;
+    height:200px;
 }
 {% endblock %}
 
@@ -36,13 +42,27 @@ a.popup:hover span{
 <table class="tbl-generic tbl-overview">
     <tr class="tbl-rowheader">
         <td class="tbl-fauxth">Summary</td>
+        <td class="tbl-fauxth">Image Attached</td>
         <td class="tbl-fauxth">Asked By</td>
         <td class="tbl-fauxth">Date Asked</td>
         <td class="tbl-fauxth">Status</td>
     </tr>
     {% for help in form %}
         <tr id="pending-help-rowelement">
-            <td><a href="/help/{{help.id}}"><a class='popup' href="/help/{{help.id}}">{{help.name}}<span>{{help.question}}</span></a></a></td>
+            <td>
+                <a href="/help/{{help.id}}">
+                    <a class='popup' href="/help/{{help.id}}">
+                        {{help.name}}<span>{{help.question}}</span>
+                    </a>
+                </a>
+            </td>
+            <td>
+                {% if help.photo %}
+                <a href="/help/{{help.id}}"><a class='popup' href="/help/{{help.id}}">Yes<span><img class="pending-image-help" src="/static/{{help.photo}}"></span></a></a>
+                {% else %}
+                <a href="/help/{{help.id}}">No</a>
+                {% endif %}
+            </td>
             <td><a href="/help/{{help.id}}">{{help.user}}</a></td>
             <td><a href="/help/{{help.id}}">{{help.request_init}}</a></td>
             {% if help.status == '(1, 1)' %}

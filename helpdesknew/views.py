@@ -294,3 +294,39 @@ def close_question(request, help_id):
 		else:
 			return redirect('helpdesknew.views.error_page', 3)
 	return render_to_response('helpdesknew/close_question.html', {'help': help}, context_instance=RequestContext(request))
+
+
+@login_required
+def mark_the_answer(request, response_id):
+	try:
+		answer = HelpResponse.objects.get(pk=response_id)
+	except Exception, e:
+		print e
+	if request.method == 'POST':
+		if answer.helprequest.status == "('resolved', 'Resolved')" or answer.helprequest.status == "('closed', 'Closed')":
+			return redirect('helpdesknew.views.error_page', 1)
+		else:
+			answer.mark_answer()
+			answer.helprequest.update_status(2)
+			answer.save()
+			answer.helprequest.save()
+			return redirect('helpdesknew.views.get_help', answer.helprequest.id)
+	return redirect('helpdesknew.views.get_help', answer.helprequest.id, permanent=False)
+
+
+@login_required
+def mark_the_input(request, response_id):
+	try:
+		answer = HelpResponse.objects.get(pk=response_id)
+	except Exception, e:
+		print e
+	if request.method == 'POST':
+		if answer.helprequest.status == "('closed', 'Closed')":
+			return redirect('helpdesknew.views.error_page', 2)
+		else:
+			answer.mark_input()
+			answer.helprequest.update_status(3)
+			answer.save()
+			answer.helprequest.save()
+			return redirect('helpdesknew.views.get_help', answer.helprequest.id)
+	return redirect('helpdesknew.views.get_help', answer.helprequest.id, permanent=False)
