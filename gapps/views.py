@@ -31,7 +31,7 @@ def create_user(request):
         email_signature = userForm.email_signature
         newEmail = email_address + "@" + domain_name
         # prevent errors if there are no groups to add to
-        if add_to_groups != "":
+        if add_to_groups:
             add_to_groups = userForm.add_to_groups.split(', ')
 
         # Excludes the line with mobile number if one is not entered
@@ -40,8 +40,18 @@ def create_user(request):
         else:
             mobile_number = ''
 
+        if extension:
+            extension = ' - Ext: ' + extension
+        else:
+            extension = ""
+
+        if job_title:
+            job_title = '<font size = "1" face = "sans-serif">' + job_title + ' </font></strong><br />'
+        else:
+            job_title = ""
+
         # prevent errors if there is no email signature
-        if email_signature != "":
+        if email_signature:
             email_signature = userForm.email_signature % (first_name, last_name, job_title, extension, mobile_number, newEmail, newEmail)
 
         # create connection to change simple email settings
@@ -63,8 +73,9 @@ def create_user(request):
         client.CreateUser(email_address, last_name, first_name, temp_pass, change_password='true')
 
         # add user to groups
-        for i in add_to_groups:
-            groupClient.AddMemberToGroup(i, newEmail)
+        if add_to_groups:
+            for i in add_to_groups:
+                groupClient.AddMemberToGroup(i, newEmail)
 
         emailClient.UpdateSignature(username=email_address, signature=email_signature)
         if d_bug:
