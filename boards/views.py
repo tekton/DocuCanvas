@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from forms import *
 from boards.models import *
+from issues.models import *
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.http import Http404
@@ -120,8 +121,9 @@ def board_edit(request, board_id):
 @login_required
 def board_display(request, board_id):
     board_nodes = BoardNode.objects.all()
+    issues = Issue.objects.all()
     try:
         p = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
         raise Http404
-    return render_to_response('boards/board_display.html', {'board': p, "board_nodes": board_nodes}, context_instance=RequestContext(request))
+    return render_to_response('boards/board_display.html', {'board': p, 'board_nodes': board_nodes, 'issues': issues}, context_instance=RequestContext(request))
