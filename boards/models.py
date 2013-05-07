@@ -16,7 +16,7 @@ class Board(models.Model):
 
 class BoardNote(models.Model):
     board = models.ForeignKey(Board)
-    user = models.ForeignKey(User)
+    user = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 

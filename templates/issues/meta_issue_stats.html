@@ -8,6 +8,9 @@
 {% block extra_head%}
     <script type="text/javascript">
         $(document).ready(function(){
+            $('#blank_count').click(function(){
+                $('.tbl-meta-issue-blank-count').fadeToggle('slow', function(){});
+            });
             $('#active_count').click(function(){
                 $('.tbl-meta-issue-active-count').fadeToggle('slow', function(){});
             });
@@ -40,6 +43,21 @@
             <th>Status</th>
             <th>Count</th>
         </tr>
+
+        <tr>
+            <td>None</td>
+            <td id="blank_count" class="meta-issue-status-count">{{blank_count}}</td>
+        </tr>
+            {% for issue in blank_issues%}
+                <tr class="tbl-project-status-count tbl-meta-issue-blank-count">
+                    <td>
+                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
+                    </td>
+                    <td>
+                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                    </td>
+                </tr>
+            {% endfor %}
 
         <tr>
             <td>Not a Bug</td>

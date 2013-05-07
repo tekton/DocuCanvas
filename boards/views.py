@@ -59,6 +59,7 @@ def boards_node_form(request):
 
         if form.is_valid():
             try:
+                boardNode.user
                 boardNode = form.save()
                 return HttpResponseRedirect('boards/new_node')
             except:
@@ -89,10 +90,14 @@ def boards(request):
 def board_edit(request, board_id):
     board_nodes = BoardNode.objects.all()
     print "Submitting board..."
+    nodeId = request.POST.get('id', "")
     if request.method == 'POST':
-        boardNode = BoardNode()
-        form = BoardNodeForm(request.POST, instance=boardNode)
+        if nodeId:
+            boardNode = BoardNode.objects.get(pk=nodeId)
+        else:
+            boardNode = BoardNode()
 
+        form = BoardNodeForm(request.POST, instance=boardNode)
         if form.is_valid():
             try:
                 boardNode = form.save()
