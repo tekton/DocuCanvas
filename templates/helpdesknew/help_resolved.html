@@ -63,6 +63,7 @@ img.pending-image-help{
         <td><a href="/help/{{help.id}}">{{help.request_init}}</a></td>
     </tr>
     {% endfor %}
+    {% if closed %}
     <tr class="tbl-rowheader">
         <td class="tbl-fauxth" colspan=4>Solved & Sealed</td>
     </tr>
@@ -86,5 +87,6 @@ img.pending-image-help{
         <td><a href="/help/{{close.id}}">{{close.request_init}}</a></td>
     </tr>
     {% endfor %}
+    {% endif %}
 </table>
 {% endblock %}
