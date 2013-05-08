@@ -38,7 +38,7 @@ def get_help(request, help_id):
 		print "something went horribly horribly wrong"
 		print e
 	try:
-		comments = HelpResponse.objects.filter(helprequest=help).order_by('-id')
+		comments = HelpResponse.objects.filter(helprequest=help).order_by('id')
 	except Exception, e:
 		print "couldn't find input objects"
 	try:
