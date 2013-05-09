@@ -42,10 +42,8 @@
         {{form.name}}</br>
         <b>Description:</b></br>
         {{form.question}}</br>
-        <!--<b>Upload a Screenshot:</b></br>
-        {{form.photo}}</br>-->
         <b>Upload a Screenshot:</b></br>
-        <form id="help-screenshot" action="/temp" method="post">
+        <!--<form id="help-screenshot" action="/temp" method="post">-->
         <input type='file' id='id_photo' name='photo' onchange="readImage(this);" /></br>
         <img id="image_upload_preview" src="noimage.jpg" alt="your image" border="1" />
     </table>
