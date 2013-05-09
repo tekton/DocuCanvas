@@ -54,7 +54,7 @@
                 shapesLayer.add(bgImage);
 
                 // Function to add a bug to canvas
-                function bugNote(x, y, bugText, divId){
+                function bugNote(x, y, noteText, divId){
                     var tooltipId = "#" + divId;
                     var bugListId = "#bugListNo" + divId;
 
@@ -79,30 +79,67 @@
                     });
 
                     shapesLayer.add(circle);
-                    $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + tooltipWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: grey; text-align: left'>" + bugText + "</p><p style = 'text-align: right;'><a style = 'color: yellow' href = 'http://www.google.com'>THIS IS A LINK</a></p></div>");
+                    $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + tooltipWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: grey; text-align: left'>" + noteText + "</p><p style = 'text-align: right;'></p></div>");
                     $('body').append("<div id = 'triangle" + divId + "'; style = 'position: absolute; width: 0; height: 0; border-right: 10px solid black; border-bottom: 10px solid transparent; border-top: 10px solid transparent;  opacity: 0.9; visibility: hidden; z-index: 1; top:" + (y-10) + "px; left: " + (x+14) + "px;'></div> ");
-                    $('#bugList').append("<div id = bugListNo" + divId + ">" + bugText + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><font id = 'bugListLink" + divId + "'>SHOW</font></a><br /><br />");
+                    $('#bugList').append("<div id = bugListNo" + divId + ">" + noteText + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><font id = 'bugListLink" + divId + "'>SHOW</font></a><br /><br />");
+                //};
+                };
+                function issueNote(x, y, summary, description, link, divId){
+                    var tooltipId = "#" + divId;
+                    var bugListId = "#bugListNo" + divId;
+
+                    var circle = new Kinetic.Circle({
+                        x: x,
+                        y: y,
+                        radius: 8,
+                        fill: '#00d2ff',
+                        stroke: 'black',
+                        strokeWidth: 4,
+                    });
+
+                    circle.on('mouseover', function(){
+                        document.body.style.cursor = 'pointer';
+                    });
+                    circle.on('mouseout', function(){
+                        document.body.style.cursor = 'default';
+                    });
+
+                    circle.on('mousedown', function(){
+                        toggleInfoBox(divId);
+                    });
+
+                    shapesLayer.add(circle);
+                    $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + tooltipWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: white; text-align: left; position: relative; top: -15px'>" + summary + "</p><p style = 'color: grey; text-align: left'>" + description + "</p><p style = 'text-align: right;'><a style = 'color: yellow; position: relative; bottom: -15px' href = '" + link + "'>THIS IS A LINK</a></p></div>");
+                    $('body').append("<div id = 'triangle" + divId + "'; style = 'position: absolute; width: 0; height: 0; border-right: 10px solid black; border-bottom: 10px solid transparent; border-top: 10px solid transparent;  opacity: 0.9; visibility: hidden; z-index: 1; top:" + (y-10) + "px; left: " + (x+14) + "px;'></div> ");
+                    $('#bugList').append("<div id = bugListNo" + divId + ">" + summary + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><font id = 'bugListLink" + divId + "'>SHOW</font></a><br /><br />");
                 //};
                 };
                 // End bugNote function
 
                 // test loop for creating multiple notes
-                {% if issues %}
+                /*{% if issues %}
                     {% for i in issues %}
                         $('body').append('{{i.description}}');
-                    {% endfor %}
+                    {% endfor %}*/
                 {% endif %}
                 {% if board_nodes %}
                 var circleId = 0;
 					{% for i in board_nodes %}
+                    $('body').append("i: " + {{i}} + "<br />");
                         if("{{i.board}}" == "{{board.title}}"){
     						var newCircle = "circle" + circleId;
                             if("{{i.nodeType}}" == "issue"){
-                                issueNodeLink = "{{i.nodeLink}}";
-                                issues = "{{issues.0.id}}"
-                                $('body').append(issues)
+                                {% for x in issues %}
+                                    if({{x.id}} == {{i.nodeLink}}){
+                                        newCircle = new issueNote({{i.x}}, {{i.y}}, "{{x.summary|linebreaksbr}}", "{{x.description|linebreaksbr}}","/issue/"+{{i.nodeLink}}, circleId);
+                                    };
+                                {% endfor %}
+                                    /*issueNodeLink = "{{i.nodeLink}}";
+                                    z = issueNodeLink - 1;
+                                    issues = "{{issues.x.id}}";
+                                    $('body').append("Z: " + z + "<br />" + "issues: " +  issues + "<br />" + "issueNodeLink: " + issueNodeLink + "<br />issues summary: {{issues.1.summary}}<br /> issues description {{issues.1.description}}<br />")*/
                             }else{
-    						  newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.description|linebreaksbr}}", circleId);
+    						  newCircle = new bugNote({{i.x}}, {{i.y}},"{{i.noteText|linebreaksbr}}", circleId);
                             };
     						circleId ++;
                         };
