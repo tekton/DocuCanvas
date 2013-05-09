@@ -7,6 +7,11 @@ class HelpForm(forms.ModelForm):
 		model = HelpRequest
 		fields = ('user', 'question', 'photo', 'name')
 
+class AckForm(forms.ModelForm):
+	class Meta:
+		model = HelpRequest
+		fields = ('user', 'ack_response', 'name')
+
 
 class HelpFormResponse(forms.ModelForm):
 	class Meta:

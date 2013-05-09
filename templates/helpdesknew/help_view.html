@@ -45,6 +45,10 @@ a.popup:hover span{
 	font-size:x-small;
 	text-align:center;
 }
+.tbl-ack-response{
+	font-size:xx-small;
+	text-align:center;
+}
 {% endblock %}
 
 {% block container %}
@@ -85,7 +89,7 @@ a.popup:hover span{
 		<table class="tbl-generic tbl-overview">
 		{% for arrow in answer %}
 			<tr class="tbl-rowheader">
-				<td class="tbl-fauxth" colspan="2">
+				<td class="tbl-fauxth" colspan="3">
 					{% if user.id == help.user.id and help.status != "('closed', 'Closed')" %}
 						<a class="popup">Answer (Submitted By {{arrow.user}})
 							<span>
@@ -102,7 +106,7 @@ a.popup:hover span{
 				</td>
 			</tr>
 			<tr>
-				<td class="tbl-comments-description" colspan="2">
+				<td class="tbl-comments-description" colspan="3">
 					<div class="helpdesk-question">{{arrow.response}}</div>
 				</td>
 			</tr>
@@ -110,10 +114,31 @@ a.popup:hover span{
 				<td class="tbl-answer-edit">
 					<a href="/help/cmmtedit/{{user.id}}/{{arrow.id}}">-EDIT-</a>
 				</td>
+				<td class="tbl-ack-response">
+					{% if user.id == help.user.id %}
+						{% if help.ack_response %}
+							<a href="/help/acknowledge/{{user.id}}/{{arrow.id}}">-Edit Response-</a>
+						{% else %}
+							<a href="/help/acknowledge/{{user.id}}/{{arrow.id}}">-Respond to Answer-</a>
+						{% endif %}
+					{% endif %}
+				</td>
 				<td class="tbl-answer-id">
 					{{arrow.id}}
 				</td>
 			</tr>
+			{% if help.ack_response %}
+			<tr class="tbl-rowheader">
+				<td class="tbl-fauxth" colspan="3">
+					Response to Answer (from {{help.user}})
+				</td>
+			</tr>
+			<tr>
+				<td class="tbl-comments-description" colspan="3">
+					<div class="helpdesk-question">{{help.ack_response}}</div>
+				</td>
+			</tr>
+			{% endif %}
 		{% endfor %}
 	</table>
 	<table class="tbl-generic tbl-comments">

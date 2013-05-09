@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
-from helpdesknew.forms import HelpForm, HelpFormResponse, ResponseFormValue
+from helpdesknew.forms import HelpForm, HelpFormResponse, ResponseFormValue, AckForm
 from helpdesknew.models import HelpRequest, HelpResponse
 
 
@@ -388,3 +388,32 @@ def edit_comment(request, user_id, response_id):
         return render_to_response('helpdesknew/edit_comment.html', {'comment': comment, 'form': comment_form}, context_instance=RequestContext(request))
     else:
         return redirect('helpdesknew.views.get_help', respondeez.helprequest.id)
+
+
+@login_required
+def ack_answer(request, user_id, response_id):
+    user = User.objects.get(pk=user_id)
+    answer = HelpResponse.objects.get(pk=response_id)
+    print answer.value
+    if user.id == answer.helprequest.user.id:
+        answer = HelpResponse.objects.get(pk=response_id)
+        if request.method == 'POST':
+            answer = HelpResponse.objects.get(pk=response_id)
+            help = answer.helprequest
+            helpform = AckForm(request.POST, instance=help)
+            if helpform.is_valid():
+                try:
+                    help = helpform.save()
+                except Exception, e:
+                    print 
+                if help.id:
+                    return redirect('helpdesknew.views.get_help', answer.helprequest.id)
+                else:
+                    return render_to_response('helpdesknew/ack_answer.html', {'help': help, 'answer': answer, 'form': helpform}, context_instance=RequestContext(request))
+        else:
+            answer = HelpResponse.objects.get(pk=response_id)
+            help = answer.helprequest
+            helpform = AckForm(instance=help)
+        return render_to_response('helpdesknew/ack_answer.html', {'help': help, 'answer': answer, 'form': helpform}, context_instance=RequestContext(request))
+    else:
+        return redirect('helpdesknew.views.get_help', answer.helprequest.id)

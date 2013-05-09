@@ -18,6 +18,7 @@ class HelpRequest(models.Model):
 	photo = models.ImageField(upload_to="help/img", null=True, blank=True)
 	status = models.CharField(max_length=255, choices=help_state, default=(1, 1))
 	edit_status_bool = models.NullBooleanField(default=False)
+	ack_response = models.TextField(blank=True, null=True)
 
 	def __unicode__(self):
 		return self.user.username
@@ -28,6 +29,7 @@ class HelpRequest(models.Model):
 			self.status = self.help_state[1]
 		elif n==3:
 			self.status = self.help_state[3]
+			self.ack_response = ""
 		elif n==2:
 			self.status = self.help_state[2]
 		elif n==4:
