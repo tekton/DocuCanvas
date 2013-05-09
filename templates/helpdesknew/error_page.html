@@ -9,16 +9,16 @@
 
 {% block container %}
 {% if error_id == '1' %}
-<h2>Error - Answer could not be submitted</h2>
-<p>An answer has already been submitted for this question</p>
-<p>Only one answer can be selected per question</p>
+	<h2>Error - Answer could not be submitted</h2>
+	<p>An answer has already been submitted for this question</p>
+	<p>Only one answer can be selected per question</p>
 {% elif error_id == '2' %}
-<h2>Error - Question is locked</h2>
-<p>This question has been locked, so the answer can no longer be changed</p>
+	<h2>Error - Question is locked</h2>
+	<p>This question has been locked, so the answer can no longer be changed</p>
 {% elif error_id == '3' %}
-<h2>Error - No Answer Submitted</h2>
-<p>You cannot lock a question until it has been resolved</p>
+	<h2>Error - No Answer Submitted</h2>
+	<p>You cannot lock a question until it has been resolved</p>
 {% else %}
-<h2>Error</h2>
+	<h2>Error</h2>
 {% endif %}
 {% endblock %}

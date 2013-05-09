@@ -190,15 +190,15 @@ def user_help(request, user_id):
 		print e
 	try:
 		responses = requests_from_user.exclude(status="('resolved', 'Resolved')")
-		responses = responses.exclude(status="('closed', 'Closed')")
+		responses = responses.exclude(status="('closed', 'Closed')").order_by("-id")
 	except Exception, e:
 		print e
 	try:
-		answers = requests_from_user.filter(status="('resolved', 'Resolved')")
+		answers = requests_from_user.filter(status="('resolved', 'Resolved')").order_by('-id')
 	except Exception, e:
 		print e
 	try:
-		more_answers = requests_from_user.filter(status="('closed', 'Closed')")
+		more_answers = requests_from_user.filter(status="('closed', 'Closed')").order_by('-id')
 	except Exception, e:
 		print e
 	res_count = responses.count()
@@ -332,3 +332,71 @@ def mark_the_input(request, response_id):
 			answer.helprequest.save()
 			return redirect('helpdesknew.views.get_help', answer.helprequest.id)
 	return redirect('helpdesknew.views.get_help', answer.helprequest.id, permanent=False)
+
+'''
+@login_required
+def edit_question(request, help_id):
+	try:
+		help = HelpRequest.objects.get(pk=help_id)
+	except Exception, e:
+		print e
+		print "No help object!"
+	if request.method == 'POST':
+		print request.POST['help-summary']
+		print request.POST['help-edit']
+		try:
+			help.name = request.POST['help-summary']
+			help.description = request.POST['help-edit']
+		except Exception, e:
+			print e
+			print "Help Form didn't save!"
+		try:
+			help.save()
+			print "HELP HAS BEEN SAVED"
+		except Exception, e:
+			print e
+			print "HELP DID NOT SAVE"
+		redirect('helpdesknew.views.get_help', help.id)
+	return render_to_response('helpdesknew/edit_question.html', {'help': help}, context_instance=RequestContext(request))
+'''
+
+@login_required
+def edit_question(request, help_id):
+	if request.method == 'POST':
+		help = HelpRequest.objects.get(pk=help_id)
+		helpform = HelpForm(request.POST, instance=help)
+		if helpform.is_valid():
+			help.question_is_edit()
+			try:
+				help = helpform.save()
+			except Exception, e:
+				print e
+			if help.id:
+				print "hi again!"
+				return redirect('helpdesknew.views.get_help', help.id)
+			else:
+				return render_to_response('helpdesknew/edit_question.html', {'help': help, 'form': helpform}, context_instance=RequestContext(request))
+	else:
+		help = HelpRequest.objects.get(pk=help_id)
+		helpform = HelpForm(instance=help)
+	return render_to_response('helpdesknew/edit_question.html', {'help': help, 'form': helpform}, context_instance=RequestContext(request))
+
+
+@login_required
+def edit_comment(request, response_id):
+	if request.method == 'POST':
+		comment = HelpResponse.objects.get(pk=response_id)
+		comment_form = HelpFormResponse(request.POST, instance=comment)
+		if comment_form.is_valid():
+			try:
+				comment = comment_form.save()
+			except Exception, e:
+				print e
+			if comment.id:
+				return redirect('helpdesknew.views.get_help' comment.helprequest.id)
+			else:
+				return render_to_response('helpdesknew/edit_comment.html', {'comment': comment, 'form': comment_form}, context_instance=RequestContext(request))
+	else:
+		comment = HelpResponse.objects.get(pk=response_id)
+		comment_form = HelpFormResopnse(isntance=comment)
+	return render_to_response('helpdesknew/edit_comment.html', {'comment': comment, 'form': comment_form}, context_instance=RequestContext(request))

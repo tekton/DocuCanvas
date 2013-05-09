@@ -17,6 +17,7 @@ class HelpRequest(models.Model):
 	request_init = models.DateField(auto_now_add=True, null=True, blank=True)
 	photo = models.ImageField(upload_to="help/img", null=True, blank=True)
 	status = models.CharField(max_length=255, choices=help_state, default=(1, 1))
+	edit_status_bool = models.NullBooleanField(default=False)
 
 	def __unicode__(self):
 		return self.user.username
@@ -34,6 +35,9 @@ class HelpRequest(models.Model):
 		else:
 			self.status = self.help_state[1]
 		print "status updated"
+
+	def question_is_edit(self):
+		self.edit_status_bool = True
 
 
 class HelpResponse(models.Model):

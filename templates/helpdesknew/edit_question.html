@@ -34,20 +34,19 @@
 {% endblock %}
 
 {% block container %}
-<h2>Ask A Question</h2>
-<form action="/help/new" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <table>
-        <b>Summary (required):</b></br>
-        {{form.name}}</br>
-        <b>Description:</b></br>
-        {{form.question}}</br>
-        <b>Upload a Screenshot:</b></br>
-        <!--<form id="help-screenshot" action="/temp" method="post">-->
-        <input type='file' id='id_photo' name='photo' onchange="readImage(this);" /></br>
-        <img id="image_upload_preview" src="noimage.jpg" alt="your image" border="1" />
-    </table>
-    <input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
-    <input type="submit" value="Submit"/>
+<h2>Question Edit</h2>
+<form action="{{help.id}}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<b>Edit Summary</b></br>
+	{{form.name}}</br>
+	<!--<input type="text" name="help-summary" maxlength="255" id="id_name" value="{{help.name}}"></br>-->
+	<b>Edit Description</b></br>
+	{{form.question}}</br>
+	<!--<input type="textarea" name="help-edit" id="id_question" rows="10" cols="20">{{help.question}}</textarea></br>-->
+	<!--<b>Upload New Image Will Overwrite Current Image)</b></br>
+	<input type='file' id='id_photo' name='photo' onchange="readImage(this);" value="{{help.photo}}"/></br>
+    <img id="image_upload_preview" src="noimage.jpg" alt="your image" border="1" /></br>-->
+    <input type='hidden' name="user" id="id_user" value='{{help.user.id}}'/><br>
+	<input type="submit" value="Submit Changes">
 </form>
 {% endblock %}

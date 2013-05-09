@@ -40,8 +40,8 @@ img.pending-image-help{
 {% block container %}
 <h2>Resolved Questions</h2>
 <table class="tbl-generic tbl-overview">
-    <tr class="tbl-rowheader">
-        <td class="tbl-fauxth" colspan=4>Resolved</td>
+    <tr>
+        <td class="tbl-fauxth" colspan=4><h3>Resolved</h3></td>
     </tr>
     <tr class="tbl-rowheader">
         <td class="tbl-fauxth">Summary</td>
@@ -51,21 +51,34 @@ img.pending-image-help{
     </tr>
     {% for help in form %}
     <tr>
-        <td><a class='popup' href="/help/{{help.id}}">{{help.name}}<span>{{help.question}}</span></a></td>
+        <td>
+            {% if help.edit_status_bool %}
+                <a class='popup' href="/help/{{help.id}}">{{help.name}} [*EDITED*]<span>{{help.question|truncatechars:80}}</span></a></td>
+            {% else %}
+                <a class='popup' href="/help/{{help.id}}">{{help.name}}<span>{{help.question|truncatechars:80}}</span></a></td>
+            {% endif %}
         <td>
             {% if help.photo %}
-            <a href="/help/{{help.id}}"><a class='popup' href="/help/{{help.id}}">Yes<span><img class="pending-image-help" src="/static/{{help.photo}}"></span></a></a>
+            <a href="/help/{{help.id}}">
+                <a class='popup' href="/help/{{help.id}}">
+                    Yes<span><img class="pending-image-help" src="/static/{{help.photo}}"></span>
+                </a>
+            </a>
             {% else %}
             <a href="/help/{{help.id}}">No</a>
             {% endif %}
         </td>
-        <td><a href="/help/{{help.id}}">{{help.user}}</a></td>
-        <td><a href="/help/{{help.id}}">{{help.request_init}}</a></td>
+        <td>
+            <a href="/help/{{help.id}}">{{help.user}}</a>
+        </td>
+        <td>
+            <a href="/help/{{help.id}}">{{help.request_init}}</a>
+        </td>
     </tr>
     {% endfor %}
     {% if closed %}
-    <tr class="tbl-rowheader">
-        <td class="tbl-fauxth" colspan=4>Solved & Sealed</td>
+    <tr>
+        <td class="tbl-fauxth" colspan=4><h3>Solved & Sealed</h3></td>
     </tr>
     <tr class="tbl-rowheader">
         <td class="tbl-fauxth">Summary</td>
@@ -75,16 +88,30 @@ img.pending-image-help{
     </tr>
     {% for close in closed %}
     <tr>
-        <td><a href="/help/{{close.id}}"><a class='popup' href="/help/{{close.id}}">{{close.name}}<span>{{close.question}}</span></a></a></td>
+        <td>
+            <a href="/help/{{close.id}}">
+                <a class='popup' href="/help/{{close.id}}">
+                    {{close.name}}<span>{{close.question|truncatechars:80}}</span>
+                </a>
+            </a>
+        </td>
         <td>
             {% if close.photo %}
-            <a href="/help/{{close.id}}"><a class='popup' href="/help/{{close.id}}">Yes<span><img class="pending-image-help" src="/static/{{close.photo}}"></span></a></a>
+            <a href="/help/{{close.id}}">
+                <a class='popup' href="/help/{{close.id}}">
+                    Yes<span><img class="pending-image-help" src="/static/{{close.photo}}"></span>
+                </a>
+            </a>
             {% else %}
             <a href="/help/{{close.id}}">No</a>
             {% endif %}
         </td>
-        <td><a href="/help/{{close.id}}">{{close.user}}</a></td>
-        <td><a href="/help/{{close.id}}">{{close.request_init}}</a></td>
+        <td>
+            <a href="/help/{{close.id}}">{{close.user}}</a>
+        </td>
+        <td>
+            <a href="/help/{{close.id}}">{{close.request_init}}</a>
+        </td>
     </tr>
     {% endfor %}
     {% endif %}
