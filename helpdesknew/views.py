@@ -339,6 +339,8 @@ def edit_question(request, user_id, help_id):
     helpdeez = HelpRequest.objects.get(pk=help_id)
     user = User.objects.get(pk=user_id)
     if user.id == helpdeez.user.id:
+        if helpdeez.status == "('closed', 'Closed')":
+            return redirect('helpdesknew.views.error_page', 5)
         if request.method == 'POST':
             help = HelpRequest.objects.get(pk=help_id)
             helpform = HelpForm(request.POST, instance=help)
@@ -366,6 +368,8 @@ def edit_comment(request, user_id, response_id):
     respondeez = HelpResponse.objects.get(pk=response_id)
     user = User.objects.get(pk=user_id)
     if user.id == respondeez.user.id:
+        if respondeez.value == "('answer', 'Answer')":
+            return redirect('helpdesknew.views.error_page', 4)
         if request.method == 'POST':
             comment = HelpResponse.objects.get(pk=response_id)
             comment_form = HelpFormResponse(request.POST, instance=comment)
