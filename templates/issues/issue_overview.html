@@ -268,7 +268,7 @@ s{% block container %}
 			<td class="tbl-fauxth">Description</td>
 		</tr>
 		<tr>
-			<td>{{issue.description|markdown:"safe"}}</td>
+			<td>{{issue.description|markdown:"safe"|linebreaksbr}}</td>
 		</tr>
 	</table>
 {% endblock %}
