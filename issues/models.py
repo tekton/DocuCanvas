@@ -44,7 +44,9 @@ class Issue(models.Model):
     #
     issue_type = models.CharField(max_length=255, blank=True, null=True, choices=ISSUETYPE)  # bug, task, suggestion
     #
-    assigned_to = models.ForeignKey(User, blank=True, null=True)
+    assigned_to = models.ForeignKey(User, blank=True, null=True, related_name='assigned_to')
+    created_by = models.ForeignKey(User, blank=True, null=True, related_name='created_by')
+    point_of_contact = models.ForeignKey(User, blank=True, null=True, related_name='poc')
     # basic information
     title = models.CharField(max_length=255, blank=True, null=True)
     summary = models.CharField(max_length=140, default="No Summary")

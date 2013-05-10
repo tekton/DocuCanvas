@@ -347,6 +347,11 @@ def issue_form(request):
             except Exception, e:
                 print e
                 print form.errors
+            try:
+                issue.created_by = request.user
+                issue.save()
+            except Exception, e:
+                print e
             if issue.id:
                 return redirect('issues.views.issue_overview', issue.id)
             else:
