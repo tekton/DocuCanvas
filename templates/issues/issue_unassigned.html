@@ -12,15 +12,15 @@
             if ( data.success ) {
                 if ( data.assigned_to == "self" ) {
                     $(this).text( "Unassign" );
-                    alert( "Issue now assigned to you." );
+                    // alert( "Issue now assigned to you." );
                 }
                 else if ( data.assigned_to == "none" ) {
                     $(this).text( "Take" );
-                    alert( "Issue unassigned." );
+                    // alert( "Issue unassigned." );
                 }
                 else if ( data.assigned_to == "user" ) {
                     $(this).text( "Take" );
-                    alert( "Issue successfully assigned." );
+                    // alert( "Issue successfully assigned." );
                 }
             }
             else {
