@@ -53,6 +53,7 @@
             <tr>
                 <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</td>
                 <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
+                <td><a href="/issue/{{issue.id}}">{{issue.due_date}}</td>
                 <td><a href="/issue/assign/{{ issue.id }}" class="assign_issue">Take</a></td>
             </tr>
         {% endfor%}
