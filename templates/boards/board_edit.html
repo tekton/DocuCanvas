@@ -77,7 +77,7 @@
 
 
                             placementLock = true;
-                            $('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; width: " + noteDivWidth + "px; background-color: gray'><form action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><input id='id_nodeType' type='text' name='nodeType' value='note' maxlength='255' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                            $('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; width: " + noteDivWidth + "px; background-color: gray'><form action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' ><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
                             $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
                             var circle = new Kinetic.Circle({
                                 x: x,
@@ -132,7 +132,7 @@
                         };
 
                         
-                            $(divToUpdate).css({left:x,top:y});
+                            $(divToUpdate).css({left:x+24,top:y-20});
                             $(formToUpdateX).val(x);
                             $(formToUpdateY).val(y);
                             updateLock = true
@@ -171,6 +171,15 @@
                     var tooltipId = "#" + divId;
                     var bugListId = "#bugListNo" + divId;
                     var noteDivWidth = 300;
+                    var issueSelected = ""
+                    var noteSelected = ""
+                    //if checks to determine what nodeLink type is selected in edit div below
+                    if(nodeType=='note'){
+                        noteSelected = "selected"
+                    };
+                    if(nodeType=='issue'){
+                        issueSelected = "selected"
+                    };
 
                     var circle = new Kinetic.Circle({
                         x: x,
@@ -193,9 +202,9 @@
                     circle.on('mousedown', function(){
                         toggleInfoBox(divId);
                     });
-
+                    // edit div for updating nodes
                     shapesLayer.add(circle);
-                    $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + noteDivWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><input id='id_nodeType' type='text' name='nodeType' value=" + nodeType + " maxlength='255' /></td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + circleId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                    $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + noteDivWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' ><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + circleId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
                 //};
                 };
 

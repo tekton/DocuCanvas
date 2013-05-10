@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block container %}
+<h2>Respond to Answer</h2>
+<b>Question</b></br>
+{{help.name}}</br>
+<b>Description</b></br>
+{{help.question}}</br>
+<b>Answer</b></br>
+{{answer.response}}</br>
+<form action="{{help.id}}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{form.ack_response}}</br>
+	<input type="hidden" name="name" id="id_name" value="{{help.name}}">
+	<input type="hidden" name="user" id="id_user" value="{{help.user.id}}">
+	<input type="submit" value="Submit">
+</form>
+{% endblock %}

@@ -109,3 +109,32 @@ def view_reports(request, year=0, month=0, day=0):
         return render_to_response("daily_reports/daily_report_overview.html", {'globalReport': qg[0], 'reports': q, 'date': d}, context_instance=RequestContext(request))
     else:
         return render_to_response("daily_reports/daily_report_overview.html", {'globalReports': None, 'reports': q, 'date': d}, context_instance=RequestContext(request))
+
+
+def mail_report():
+    d = date.today()
+    try:
+        q = UserDailyReport.objects.filter(date=d)
+        qg = DailyReport.objects.filter(date=d)
+    except Exception, e:
+        print "Exception: " + str(e)
+        raise e
+    return render_to_response("daily_reports/daily_report_overview.html", {'globalReport': qg[0], 'reports': q, 'date': d}, context_instance=RequestContext(request))
+
+    email_subject = "Daily Report " + str(d)
+    email_sender = "test@replace_me.com"
+    try:
+        email_recipients = ["generic@brand.net"]
+        htmly = get_template('daily_reports/daily_report_overview.html')
+
+        text_content = 'Todays daily report'
+        d = Context({'globalReport': qg[0], 'reports': q, 'date': d})
+
+        html_content = htmly.render(d)
+        msg = EmailMultiAlternatives(email_subject, text_content, email_sender, email_recipients)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+        return True
+    except:
+        return False
+

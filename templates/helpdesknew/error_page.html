@@ -9,16 +9,25 @@
 
 {% block container %}
 {% if error_id == '1' %}
-<h2>Error - Answer could not be submitted</h2>
-<p>An answer has already been submitted for this question</p>
-<p>Only one answer can be selected per question</p>
+	<h2>Error - Answer could not be submitted</h2>
+	<p>An answer has already been submitted for this question</p>
+	<p>Only one answer can be selected per question</p>
 {% elif error_id == '2' %}
-<h2>Error - Question is locked</h2>
-<p>This question has been locked, so the answer can no longer be changed</p>
+	<h2>Error - Question is locked</h2>
+	<p>This question has been locked, so the answer can no longer be changed</p>
 {% elif error_id == '3' %}
-<h2>Error - No Answer Submitted</h2>
-<p>You cannot lock a question until it has been resolved</p>
+	<h2>Error - No Answer Submitted</h2>
+	<p>You cannot lock a question until it has been resolved</p>
+{% elif error_id == '4' %}
+	<h2>Error - Cannot Edit Answer</h2>
+	<p>You cannot edit a comment that is currently being used as an answer</p>
+{% elif error_id == '5' %}
+	<h2>Error - Cannot Edit A 'Sealed' Question</h2>
+	<p>Once a question has been sealed, the question itself can no longer be edited</p>
+{% elif error_id == '6' %}
+	<h2>Error - Cannot Submit Acknowledgement</h2>
+	<p>You can only respond to the answer</p>
 {% else %}
-<h2>Error</h2>
+	<h2>Error</h2>
 {% endif %}
 {% endblock %}

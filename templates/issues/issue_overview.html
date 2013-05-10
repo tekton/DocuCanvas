@@ -268,7 +268,7 @@ s{% block container %}
 			<td class="tbl-fauxth">Description</td>
 		</tr>
 		<tr>
-			<td>{{issue.description|markdown:"safe"}}</td>
+			<td>{{issue.description|markdown:"safe"|linebreaksbr}}</td>
 		</tr>
 	</table>
 {% endblock %}
@@ -302,6 +302,9 @@ s{% block container %}
 	<!--<b>Screen Shot:</b> {{issue.screen_shot}}<br/>
 	<b>Wireframe:</b> {{issue.wireframe}}<br/>
 	<b>URI to Test:</b> {{issue.uri_to_test}}-->
+	<b>Created By:</b> {{issue.created_by}}<br />
+	<b>Modified By</b> {{issue.modified_by}}<br />
+	<b>Point of Contact:</b> {{issue.point_of_contact}}<br />
 	{% if related_issues %}
 		<br><b>Related Issues</b> <br>
 			<table id="relation_table">
