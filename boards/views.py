@@ -92,16 +92,15 @@ def board_edit(request, board_id):
     board_nodes = BoardNode.objects.all()
     print "Submitting board..."
     nodeId = request.POST.get('id', "")
+    nodeType = request.POST.get('nodeType', "")
+    print nodeType
+    #if nodeType == 'note':
     if request.method == 'POST':
-        if nodeId:
-            boardNode = BoardNode.objects.get(pk=nodeId)
-        else:
-            boardNode = BoardNode()
-
-        form = BoardNodeForm(request.POST, instance=boardNode)
+        boardNote = BoardNote()
+        form = BoardNoteForm(request.POST, instance=boardNote)
         if form.is_valid():
             try:
-                boardNode = form.save()
+                boardNote = form.save()
             except Exception, e:
                 print e
                 print 'unable to save node'
@@ -110,7 +109,28 @@ def board_edit(request, board_id):
             print form.errors
 
     else:
-        form = BoardNodeForm()
+        form = BoardNoteForm()
+    '''else: 
+        print 'IT\'S PROBABLY AN ISSUE'
+        if request.method == 'POST':
+            if nodeId:
+                boardNode = BoardNode.objects.get(pk=nodeId)
+            else:
+                boardNode = BoardNode()
+
+            form = BoardNodeForm(request.POST, instance=boardNode)
+            if form.is_valid():
+                try:
+                    boardNode = form.save()
+                except Exception, e:
+                    print e
+                    print 'unable to save node'
+                    print form.errors
+            else:
+                print form.errors
+
+        else:
+            form = BoardNodeForm()'''
     try:
         p = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
