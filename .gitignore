@@ -9,3 +9,4 @@ celerybeat-schedule.db
 celerybeat-schedule
 *.idea
 *celery.log
+*.orig
