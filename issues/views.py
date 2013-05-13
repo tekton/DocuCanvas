@@ -347,6 +347,11 @@ def issue_form(request):
             except Exception, e:
                 print e
                 print form.errors
+            try:
+                issue.created_by = request.user
+                issue.save()
+            except Exception, e:
+                print e
             if issue.id:
                 return redirect('issues.views.issue_overview', issue.id)
             else:
@@ -375,6 +380,7 @@ def issue_form_project(request, project_id):
 
 @login_required
 def issue_overview(request, issue_id):
+    issue = Issue()
     try:
         issue = Issue.objects.get(pk=issue_id)
         comments = IssueComment.objects.filter(issue=issue).order_by('-created')
@@ -388,7 +394,6 @@ def issue_overview(request, issue_id):
     except Exception, e:
         print "Somebody messed up the issue overview"
         print e
-
 
     try:
         users = User.objects.all()
@@ -439,6 +444,11 @@ def edit(request, issue_id):
             except Exception, e:
                 print e
                 print form.errors
+            try:
+                issue.modified_by = request.user
+                issue.save()
+            except Exception, e:
+                print e
             if issue.id:
                 return redirect('issues.views.issue_overview', issue.id)
             else:
@@ -541,5 +551,5 @@ def submit_comment(request, issue_id):
 
 @login_required
 def unassigned_issues(request):
-    q = Issue.objects.filter(Q(assigned_to__isnull = True) & (Q(status = "active") | Q(status = "retest") | Q(status = "unverified") | Q(status__isnull=True))).order_by('-created')
+    q = Issue.objects.filter(Q(assigned_to__isnull=True) & (Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True))).order_by('-created')
     return render_to_response('issues/issue_unassigned.html', {'issues': q}, context_instance=RequestContext(request))

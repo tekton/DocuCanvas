@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 
+{% block context_nav %}
+    <a href="/help/new">Ask a Question</a>
+    <a href="/help/resolved">Resolved Questions</a>
+    <a href="/help/pending">Unresolved Questions</a>
+    <a href="/help/user/{{user.id}}">Your Questions</a>
+{% endblock %}
+
 {% block container %}
+{% if user.id == help.user.id %}
 <h2>Respond to Answer</h2>
 <b>Question</b></br>
 {{help.name}}</br>
@@ -8,11 +16,15 @@
 {{help.question}}</br>
 <b>Answer</b></br>
 {{answer.response}}</br>
-<form action="{{help.id}}" method="post" enctype="multipart/form-data">
-	{% csrf_token %}
-	{{form.ack_response}}</br>
-	<input type="hidden" name="name" id="id_name" value="{{help.name}}">
-	<input type="hidden" name="user" id="id_user" value="{{help.user.id}}">
-	<input type="submit" value="Submit">
-</form>
+	<form action="{{help.id}}" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		{{form.ack_response}}</br>
+		<input type="hidden" name="name" id="id_name" value="{{help.name}}">
+		<input type="hidden" name="user" id="id_user" value="{{help.user.id}}">
+		<input type="submit" value="Submit">
+	</form>
+{% else %}
+	<h2>Error - You do not have access to this page</h2>
+	<p>Only the account that submitted the original question has access to this feature</p>
+{% endif %}
 {% endblock %}
