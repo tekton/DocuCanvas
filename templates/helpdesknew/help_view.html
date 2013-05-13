@@ -6,6 +6,9 @@
     <a href="/help/pending">Unresolved Questions</a>
     <a href="/help/user/{{user.id}}">Your Questions</a>
     <a href="/help/edit/{{user.id}}/{{help.id}}">Edit Question</a>
+    {% if user.is_staff %}
+    <a href="/help/close_question_91990/{{help.id}}">Admin - Close Question</a>
+    {% endif %}
 {% endblock %}
 
 {% block style %}
@@ -99,6 +102,15 @@ a.popup:hover span{
 								</form>
 							</span>
 						</a>
+					{% elif user.is_staff %}
+						<a class="popup">Answer (Submitted By {{arrow.user}})
+							<span>
+								<form action="/help/mark_the_input/{{arrow.id}}" id="submit_input_form" method="post" enctype="multipart/form-data">
+									{% csrf_token %}
+									<input type="submit" value="Remove Answer" id="remove_answer_button"/>
+								</form>
+							</span>
+						</a>
 					{% else %}
 						Answer
 					{% endif %}
@@ -159,6 +171,15 @@ a.popup:hover span{
 			<tr class="tbl-rowheader">
 				<td class="tbl-fauxth tbl-comments-user">
 					{% if user.id == help.user.id and help.status != "('closed', 'Closed')" %}
+						<a class='popup'><b>{{comment.user}}</b>
+							<span>
+								<form action="/help/mark_the_answer/{{comment.id}}" id="submit_answer_form" method="post" enctype="multipart/form-data">
+									{% csrf_token %}
+									<input type="submit" value="Mark as Answer" id="submit_answer_button"/>
+								</form>
+							</span>
+						</a>
+					{% elif user.is_staff %}
 						<a class='popup'><b>{{comment.user}}</b>
 							<span>
 								<form action="/help/mark_the_answer/{{comment.id}}" id="submit_answer_form" method="post" enctype="multipart/form-data">
