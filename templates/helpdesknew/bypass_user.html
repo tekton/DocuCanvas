@@ -14,6 +14,7 @@
 {% endblock %}
 
 {% block container %}
+{% if user.is_staff %}
 <table class="tbl-generic tbl-overview">
     <tr class="tbl-rowheader">
     	<td class="tbl-fauxth">Question</td>
@@ -44,4 +45,7 @@
 	<!--<input type="checkbox" name="value" value="answer">Answer-->
 	<input type="submit" value="Submit"/>
 </form>
+{% else %}
+<h2>Administrator Access Required</h2>
+{% endif %}
 {% endblock %}
