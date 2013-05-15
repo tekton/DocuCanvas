@@ -10,7 +10,7 @@
 {% block container %}
 	{% for report in reports %}
 		<div class="dashboard_container_section">
-			<div style="padding: 5px; background-color: #ddd; width: 100%; margin: 0;">{{report.user.username}} <!--({{report.user.first_name}} {{report.user.last_name}})--></div>
+			<div style="padding: 5px; background-color: #ddd; width: 100%; margin: 0;">{{report.user.username}} ({{report.date}}) <!--({{report.user.first_name}} {{report.user.last_name}})--></div>
 			<div>{{report.description|markdown:"safe"}}</div>
 		</div>
 		{% empty %}
