@@ -9,11 +9,11 @@ class UserForm(forms.ModelForm):
     last_name = forms.CharField(max_length=100, help_text="New employee's last name.")
     email_address = forms.CharField(max_length=100, help_text="Desired email address for new employee.")
     temp_pass = forms.CharField(max_length=100, help_text="Temporary password for new employee.")
-    job_title = forms.CharField(max_length=100, help_text="New employee's job title.")
-    extension = forms.CharField(max_length=100, help_text="New employee's extension.")
-    mobile_number = forms.CharField(max_length=100, help_text="New employee's alternate contact number.")
+    job_title = forms.CharField(max_length=100, help_text="New employee's job title.", required=False)
+    extension = forms.CharField(max_length=100, help_text="New employee's extension.", required=False)
+    mobile_number = forms.CharField(max_length=100, help_text="New employee's alternate contact number.", required=False)
 
-    add_to_groups = forms.CharField(widget=forms.Textarea(), help_text="Separate by commas.  No need to include the 'everyone' group")
+    add_to_groups = forms.CharField(widget=forms.Textarea(), help_text="Separate by commas.", required=False)
 
     class Meta:
         model = createUser

@@ -10,6 +10,8 @@
             var imageHeight = {{board.height}};
             var noteCounter = 1
             var placementLock = false
+            var updateLock = true
+            var divToUpdate = ""
 
             // Create Background image
             var imageObj = new Image();
@@ -26,7 +28,7 @@
                 // Test function for getting mouse position
                 bgImage.on('mousedown', function(){
                     createNoteForm(noteCounter);
-
+                    updateNoteForm();
                 });
 
                 var stage = new Kinetic.Stage({
@@ -43,7 +45,7 @@
                     {% for i in board_nodes %}
                         if("{{i.board}}" == "{{board.title}}"){
                         var newCircle = "circle" + circleId;
-                        newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", circleId);
+                        newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", circleId, {{i.id}});
                         circleId ++;
                     };
                 {% endfor %}
@@ -54,116 +56,199 @@
                 stage.add(shapesLayer);
 
                 function createNoteForm(counter){
-
-                    var mousePos = stage.getMousePosition();
-                    var x = mousePos.x ;
-                    var y = mousePos.y ;
-                    var noteDivWidth = 300;
-                    var noteDivY = y - 4;
-                    if(imageWidth - x <= noteDivWidth){
-                        var noteDivX = x - 305;
-                    }else{
-                        var noteDivX = x + 20;
-                    };
-                    if(imageHeight - y <= 70){
-                        var noteDivY = y - 70;
-                    }else if(y < 10){
-                        var noteDivY = y + 10;
-                    }else{
-                        var noteDivY = y - 4;
-                    };
-
                     if(placementLock == false){
-                        $('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; width: " + noteDivWidth + "px; background-color: gray'><form action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><input id='id_nodeType' type='text' name='nodeType' value='note' maxlength='255' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
-                        placementLock = true
-                        $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
-                        var circle = new Kinetic.Circle({
-                            x: x,
-                            y: y,
-                            radius: 8,
-                            fill: '#00d2ff',
-                            stroke: 'black',
-                            strokeWidth: 4,
-                         });
+                        var mousePos = stage.getMousePosition();
+                        var x = mousePos.x ;
+                        var y = mousePos.y ;
+                        var noteDivWidth = 300;
+                        var noteDivY = y - 4;
+                        if(imageWidth - x <= noteDivWidth){
+                            var noteDivX = x - 305;
+                        }else{
+                            var noteDivX = x + 20;
+                        };
+                        if(imageHeight - y <= 70){
+                            var noteDivY = y - 70;
+                        }else if(y < 10){
+                            var noteDivY = y + 10;
+                        }else{
+                            var noteDivY = y - 4;
+                        };
 
-                        circle.on('mouseover', function(){
-                            document.body.style.cursor = 'pointer';
-                        });
-                        circle.on('mouseout', function(){
-                            document.body.style.cursor = 'default';
-                        });
 
-                        circle.on('mousedown', function(){
-                            if(placementLock == false){
-                                toggleNoteForm(counter)
-                            };
-                        });
+                            placementLock = true;
+                            $('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; width: " + noteDivWidth + "px; background-color: gray'><form action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' ><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                            $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
+                            var circle = new Kinetic.Circle({
+                                x: x,
+                                y: y,
+                                radius: 8,
+                                fill: '#00d2ff',
+                                stroke: 'black',
+                                strokeWidth: 4,
+                                opacity: 0.7,
+                             });
 
-                        shapesLayer.add(circle);
-                        shapesLayer.draw();
-                        noteCounter += 1;
+                            circle.on('mouseover', function(){
+                                document.body.style.cursor = 'pointer';
+                            });
+                            circle.on('mouseout', function(){
+                                document.body.style.cursor = 'default';
+                            });
+
+                            circle.on('mousedown', function(){
+                                if(placementLock == false){
+                                    toggleNoteForm(counter)
+                                };
+                            });
+
+                            shapesLayer.add(circle);
+                            shapesLayer.draw();
+                            noteCounter += 1;
                     };
 
                 };
 
-                    function bugNote(x, y, nodeLink, nodeType, divId){
-                        var tooltipId = "#" + divId;
-                        var bugListId = "#bugListNo" + divId;
+                function updateNoteForm(){
+                    if(updateLock == false){
+                        var formToUpdateX = divToUpdate + " #id_x";
+                        var formToUpdateY = divToUpdate + " #id_y";
+                        var mousePos = stage.getMousePosition();
+                        var x = mousePos.x ;
+                        var y = mousePos.y ;
                         var noteDivWidth = 300;
+                        var noteDivY = y - 4;
+                        if(imageWidth - x <= noteDivWidth){
+                            var noteDivX = x - 305;
+                        }else{
+                            var noteDivX = x + 20;
+                        };
+                        if(imageHeight - y <= 70){
+                            var noteDivY = y - 70;
+                        }else if(y < 10){
+                            var noteDivY = y + 10;
+                        }else{
+                            var noteDivY = y - 4;
+                        };
 
-                        var circle = new Kinetic.Circle({
-                            x: x,
-                            y: y,
-                            radius: 8,
-                            fill: '#00d2ff',
-                            stroke: 'black',
-                            strokeWidth: 4,
-                            name: divId,
-                        });
+                        
+                            $(divToUpdate).css({left:x+24,top:y-20});
+                            $(formToUpdateX).val(x);
+                            $(formToUpdateY).val(y);
+                            updateLock = true
+                            $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
+                            var circle = new Kinetic.Circle({
+                                x: x,
+                                y: y,
+                                radius: 8,
+                                fill: '#00d2ff',
+                                stroke: 'black',
+                                strokeWidth: 4,
+                                opacity: 0.7,
+                             });
 
-                        circle.on('mouseover', function(){
-                            document.body.style.cursor = 'pointer';
-                        });
-                        circle.on('mouseout', function(){
-                            document.body.style.cursor = 'default';
-                        });
+                            circle.on('mouseover', function(){
+                                document.body.style.cursor = 'pointer';
+                            });
+                            circle.on('mouseout', function(){
+                                document.body.style.cursor = 'default';
+                            });
 
-                        circle.on('mousedown', function(){
-                            toggleInfoBox(divId);
-                        });
+                            circle.on('mousedown', function(){
+                                if(placementLock == false){
+                                    toggleNoteForm(counter)
+                                };
+                            });
 
-                        shapesLayer.add(circle);
-                        $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + noteDivWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><form action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><input id='id_nodeType' type='text' name='nodeType' value=" + nodeType + " maxlength='255' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
-                //};
+                            shapesLayer.add(circle);
+                            shapesLayer.draw();
+                            noteCounter += 1;
                     };
 
-                    function toggleInfoBox(divId){
-                        var toggleTooltipDiv = document.getElementById(divId);
-                        var tooltipId = "#" + divId;
-                        var bugListId = "#bugListNo" + divId;
-                        var triangleId = "triangle" + divId;
-                        var bugListLinkId = "#bugListLink" + divId;
-                        var toggleTriangleDiv = document.getElementById(triangleId);
-                            if(toggleTooltipDiv.style.visibility == 'visible'){
-                                toggleTooltipDiv.style.visibility = 'hidden';
-                                //toggleTriangleDiv.style.visibility = 'hidden';
-                                $(tooltipId).css('visibility', 'hidden');
-                                $(bugListId).css('background-color', 'green');
-                                $(bugListLinkId).text("Show");
+                };
 
-                            }else{
-                                toggleTooltipDiv.style.visibility = 'visible';
-                                //toggleTriangleDiv.style.visibility = 'visible';
-                                $(tooltipId).css('visibility', 'visible');
-                                $(bugListId).css('background-color', 'yellow');
-                                $(bugListLinkId).text("Hide");
-                            };
-                    };                
+                function bugNote(x, y, nodeLink, nodeType, divId, Id){
+                    var tooltipId = "#" + divId;
+                    var bugListId = "#bugListNo" + divId;
+                    var noteDivWidth = 300;
+                    var issueSelected = ""
+                    var noteSelected = ""
+                    //if checks to determine what nodeLink type is selected in edit div below
+                    if(nodeType=='note'){
+                        noteSelected = "selected"
+                    };
+                    if(nodeType=='issue'){
+                        issueSelected = "selected"
+                    };
 
+                    var circle = new Kinetic.Circle({
+                        x: x,
+                        y: y,
+                        radius: 8,
+                        fill: '#00d2ff',
+                        stroke: 'black',
+                        strokeWidth: 4,
+                        name: divId,
+                        opacity: 0.7,
+                    });
+
+                    circle.on('mouseover', function(){
+                            document.body.style.cursor = 'pointer';
+                    });
+                    circle.on('mouseout', function(){
+                        document.body.style.cursor = 'default';
+                    });
+
+                    circle.on('mousedown', function(){
+                        toggleInfoBox(divId);
+                    });
+                    // edit div for updating nodes
+                    shapesLayer.add(circle);
+                    $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + noteDivWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' ><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + circleId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                //};
+                };
+
+
+                function toggleInfoBox(divId){
+                    var toggleTooltipDiv = document.getElementById(divId);
+                    var tooltipId = "#" + divId;
+                    var bugListId = "#bugListNo" + divId;
+                    var triangleId = "triangle" + divId;
+                    var bugListLinkId = "#bugListLink" + divId;
+                    var toggleTriangleDiv = document.getElementById(triangleId);
+                        if(toggleTooltipDiv.style.visibility == 'visible'){
+                            placementLock = false;
+                            toggleTooltipDiv.style.visibility = 'hidden';
+                            //toggleTriangleDiv.style.visibility = 'hidden';
+                            $(tooltipId).css('visibility', 'hidden');
+                            $(bugListId).css('background-color', 'green');
+                            $(bugListLinkId).text("Show");
+
+                        }else{
+                            placementLock = true;
+                            toggleTooltipDiv.style.visibility = 'visible';
+                            //toggleTriangleDiv.style.visibility = 'visible';
+                            $(tooltipId).css('visibility', 'visible');
+                            $(bugListId).css('background-color', 'yellow');
+                            $(bugListLinkId).text("Hide");
+                        };
+                };
             };
             imageObj.src = '/static/{{board.image}}';
 
-
+            function getValues(i){
+                var formNodeLinkId = "#form" + i + " #id_nodeLink";
+                var formNodeTypeId = "#form" + i + " #id_nodeType";
+                var formNodeBoardId = "#form" + i + " #id_board";
+                var formNodeXId = "#form" + i + " #id_x";
+                var formNodeYId = "#form" + i + " #id_y";
+                var printNodeLink = $(formNodeLinkId).val();
+                var printNodeType = $(formNodeTypeId).val();
+                var printNodeBoard = $(formNodeBoardId).val();
+                var printNodeX = $(formNodeXId).val();
+                var printNodeY = $(formNodeYId).val();
+                $('body').append(printNodeLink + "<br />" + printNodeType + "<br />" + printNodeBoard + "<br />" + printNodeX + "<br />" + printNodeY + "<br />");
+            }; 
 
             function toggleNoteForm(divId){
                 var noteFormNo = "noteNo" + divId;
@@ -175,6 +260,13 @@
                         toggleNoteFormDiv.style.visibility = 'visible';
                         placementLock = true;
                     };
+            };
+
+            function updateParams(div){
+                updateLock = false;
+                placementLock = true;
+                divToUpdate = "#" + div;
+                console.log(divToUpdate);
             };
 /*
             function cancelForm(divId){

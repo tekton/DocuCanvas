@@ -50,7 +50,9 @@
 
 h3 {
     margin:0 0 0.5em;
-    width:10%;
     height:100%;
-    float:left;
+}
+
+table {
+    width: 100%;
 }

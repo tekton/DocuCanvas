@@ -7,30 +7,94 @@
     <a href="/help/user/{{user.id}}">Your Questions</a>
 {% endblock %}
 
+{% block style %}
+a.popup{
+    position:relative;
+    z-index:24;
+    text-decoration:none;
+}
+a.popup:hover{
+    z-index:25;
+}
+a.popup span{
+    display:none;
+}
+a.popup:hover span{
+    font-size:small;
+    display:block;
+    position:absolute;
+    top:35px;
+    left:15px;
+    width:200px;
+    padding:3px;
+    border:1px solid #000000;
+    background-color:#FFFFFF;
+    word-break: break-all;
+}
+img.pending-image-help{
+    width:200px;
+    height:200px;
+}
+{% endblock %}
+
 {% block container %}
 <h2>Unresolved Questions</h2>
 <table class="tbl-generic tbl-overview">
     <tr class="tbl-rowheader">
         <td class="tbl-fauxth">Summary</td>
+        <td class="tbl-fauxth">Image Attached</td>
         <td class="tbl-fauxth">Asked By</td>
         <td class="tbl-fauxth">Date Asked</td>
         <td class="tbl-fauxth">Status</td>
     </tr>
     {% for help in form %}
-    <tr>
-        <td><a href="/help/{{help.id}}">{{help.name}}</a></td>
-        <td><a href="/help/{{help.id}}">{{help.user}}</a></td>
-        <td><a href="/help/{{help.id}}">{{help.request_init}}</a></td>
-        {% if help.status == '(1, 1)' %}
-            <td><a href="/help/{{help.id}}">No Responses</a></td>
-        {% elif help.status = "('active', 'Active Responses')" %}
-            <td><a href="/help/{{help.id}}">Active</a></td>
-        {% elif help.status = "('reopened', 'Re-Opened')" %}
-            <td><a href="/help/{{help.id}}">Re-Opened</a></td>
-        {% else %}
-            <td><a href="/help/{{help.id}}">{{help.status}}</a></td>
-        {% endif %}
-    </tr>
+        <tr id="pending-help-rowelement">
+            <td>
+                {% if help.edit_status_bool %}
+                <a href="/help/{{help.id}}">
+                    <a class='popup' href="/help/{{help.id}}">
+                        {{help.name}} [*EDITED*]<span>{{help.question|truncatechars:80}}</span>
+                    </a>
+                </a>
+                {% else %}
+                <a href="/help/{{help.id}}">
+                    <a class='popup' href="/help/{{help.id}}">
+                        {{help.name}}<span>{{help.question|truncatechars:80}}</span>
+                    </a>
+                </a>
+                {% endif %}
+            </td>
+            <td>
+                {% if help.photo %}
+                <a href="/help/{{help.id}}"><a class='popup' href="/help/{{help.id}}">Yes<span><img class="pending-image-help" src="/static/{{help.photo}}"></span></a></a>
+                {% else %}
+                <a href="/help/{{help.id}}">No</a>
+                {% endif %}
+            </td>
+            <td>
+                <a href="/help/{{help.id}}">{{help.user}}</a>
+            </td>
+            <td>
+                <a href="/help/{{help.id}}">{{help.request_init}}</a>
+            </td>
+            {% if help.status == '(1, 1)' %}
+                <td>
+                    <a href="/help/{{help.id}}">No Responses</a>
+                </td>
+            {% elif help.status = "('active', 'Active Responses')" %}
+                <td>
+                    <a href="/help/{{help.id}}">Active</a>
+                </td>
+            {% elif help.status = "('reopened', 'Re-Opened')" %}
+                <td>
+                    <a href="/help/{{help.id}}">Re-Opened</a>
+                </td>
+            {% else %}
+                <td>
+                    <a href="/help/{{help.id}}">{{help.status}}</a>
+                </td>
+            {% endif %}
+        </tr>
     {% endfor %}
 </table>
 {% endblock %}

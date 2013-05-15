@@ -31,7 +31,7 @@
             }
 
             body {
-                /*width: 900px;*/
+                _width: 900px;
                 padding: 30px 20px 50px;
                 border-width: 0 1px;
                 border-style: solid;
@@ -83,12 +83,11 @@
                 border-color:#bbb;
             }
 
-
             .container {
                 /*max-width: 1000px;*/
                 _width: 380px;
-                margin: 0 0 30px auto;
-                margin-right: 330px;
+                margin: 0 auto;
+                margin-right: 225px;
                 padding: 30px 20px 50px;
                 border: 1px solid white;
                 border-radius: 4px;
@@ -120,17 +119,15 @@
             }
 
             .spiffy_box {
-                width: 275px;
-                _width: 275px;
+                max-width: 150px;
+                _width: 150px;
                 margin: 0 auto;
 
                 padding: 30px 20px 50px;
                 border: 1px solid white;
                 border-radius: 4px;
                 box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
-                background: #fcfcfc;
-
-                font-size: .8em;           
+                background: #fcfcfc;             
             }
 
             .left {
@@ -157,18 +154,8 @@
                 cursor:pointer;
             }
 
-            .issue_popup{
-                display:none;
-                height:10em;
-                width:40%;
-                margin:0 auto;
-                position:absolute;
-                padding: 30px 20px 50px;
-                border: 1px solid white;
-                border-radius: 4px;
-                box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
-                background: #fcfcfc;
-                z-index:11;
+            /* navigation bar */
+            #advanced_search{
             }
 
             #context_nav {
@@ -217,13 +204,6 @@
                 display:none;
             }
 
-            #relation_table th{
-                text-align:left;
-            }
-
-            #relation_table td a:hover{
-                cursor:pointer;
-            }
             /* google search */
 
             #goog-fixurl ul {
@@ -306,11 +286,11 @@
     font-size: 30px;
 }
 {% include "include/table.css" %}
-
         {% block style %}{% endblock %}
         </style>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script><!-- shoudl be changed to local source?-->
+        <script src="/static/scripts/jquery-ui.min.js"></script>
         <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
 
         <script type="text/javascript">
@@ -351,10 +331,11 @@
                     !(/^(\/\/|http:|https:).*/.test(url));
             }
 
+
             /* Nav Menu - START */
 {% include "include/NavMenu.js" %}
             /* Nav Menu - END */
-            
+
             $(document).ready(function(){
                 csrftoken = getCookie('csrftoken');
                 $.ajaxSetup({
@@ -364,10 +345,10 @@
                             }
                         }
                 });
-
+                
                 NavMenu.Init();
 
-                /* OLD nav menu
+                /* OLD nav Menu 
                     $('#account').click(function(){
                         $('#account_nav').slideToggle();
                     });
@@ -383,7 +364,6 @@
                     $('#search_icon').click(function(){
                         $('#search_nav').slideToggle();
                     });
-
                     //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
 
                     $(document).click(function(event) { 
@@ -416,6 +396,7 @@
                         }
                     });
                 */
+
             });
 
 
@@ -427,50 +408,44 @@
     <body>
         <div id="top_nav" class="both">
             <form action="/issue/search" method="POST">{% csrf_token %}
-             <div class="left"><a href="/" class="ui-icon ui-icon-home" id="home_icon"></a></div>
-             <div class="right"> 
-                <div class="main_nav_button navitem" id="context">Context Drop Down </div> | 
-                <div class="main_nav_button navitem" id="projects_list">Project List </div>|
-                <div class="main_nav_button navitem"><a id="account">{{user|truncatechars:15}} </a></div>|
-                <a class="ui-icon ui-icon-search navitem" id="search_icon" a href="/issue/advsearch"></a>
-                <div class="main_nav_button navitem"><input type="text" name="searchText" id="search"/><input type="submit" value="search"/></div>
+            <div class="left"><a href="/" class="ui-icon ui-icon-home" id="home_icon"></a></div>
+            <div class="right"> 
+                <div class="main_nav_button" id="context">Context Drop Down </div> | 
+                <div class="main_nav_button" id="projects_list">Project List </div>|
+                <div class="main_nav_button"><a id="account">{{user|truncatechars:15}} </a></div>|
+                <a class="ui-icon ui-icon-search" id="search_icon" href="/issue/advsearch"></a>
+                <div class="main_nav_button"><input type="text" name="searchText" id="search"/><input type="submit" value="search"/></div>
             </div>
             </form>
-            <div id="context_nav" class="container_nav navitem"> 
+            <div id="context_nav" class="container_nav"> 
                 {% block context_nav %}{% endblock %}  
             </div>
-            <div id="projects_nav" class="container_nav navitem"> 
+            <div id="projects_nav" class="container_nav"> 
                 {% for project in projects%}
                    <a href="/project/{{project.id}}">{{project.name}}</a>
                 {% endfor %}
                 <a href="/project/new">New Project</a>
             </div>
-            <div id="account_nav" class="container_nav navitem">   
+            <div id="account_nav" class="container_nav">   
                 <a href="/accounts/account_settings">Account Settings</a>
                 <a href="/accounts/logout/?next=/">Logout</a>
             </div>
-            <!--<div id="search_nav" class="container_nav navitem">   
+            <!--<div id="search_nav" class="container_nav">   
                 <a href="/issue/advsearch">Advanced Search</a>
             </div>-->
-        </div>
-        <h1 id="mainheader" class="both">{{page_type}} 
-            <span>:: {{page_value}}
-            {% if issue%}
-             :: {{issue.status}}
-            {% endif %}
-             </span>
-        </h1>
-        <div class="issue_popup" id="link_issue_duplicate_popup">{% block duplicate_issue_popup %}{% endblock %}</div>
-        <div class="issue_popup" id="set_related_to_popup">{% block select_related_issue_popup %}{% endblock %}</div>
-        <div class="both">&nbsp;</div>
-        <div class="spiffy_box right">{% block spiffy_box_right %}{% endblock %}</div>
-        <div class="container">
-            {% block container %}{% endblock %}
+            
             
         </div>
-        <div class="container" id="container_bottom_clear">
-            {% block container_bottom_clear %}{% endblock %}
-        </div>
         <p class="both"></p>
+        <h1>
+        {% if page_type %}
+            {{page_type}} 
+        {% endif %}
+        {% if page_value %}
+        <span>:: {{page_value}}</span>
+        {% endif %}
+        </h1>
+        <div class="both">&nbsp;</div>
+            {% block container %}{% endblock %}
     </body>
 </html>

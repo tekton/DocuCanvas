@@ -9,6 +9,7 @@ class HelpRequest(models.Model):
 		('active', 'Active Responses'),
 		('resolved', 'Resolved'),
 		('reopened', 'Re-Opened'),
+		('closed', 'Closed'),
 	)
 	user = models.ForeignKey(User)
 	name = models.CharField(max_length=140)
@@ -16,6 +17,8 @@ class HelpRequest(models.Model):
 	request_init = models.DateField(auto_now_add=True, null=True, blank=True)
 	photo = models.ImageField(upload_to="help/img", null=True, blank=True)
 	status = models.CharField(max_length=255, choices=help_state, default=(1, 1))
+	edit_status_bool = models.NullBooleanField(default=False)
+	ack_response = models.TextField(blank=True, null=True)
 
 	def __unicode__(self):
 		return self.user.username
@@ -26,11 +29,17 @@ class HelpRequest(models.Model):
 			self.status = self.help_state[1]
 		elif n==3:
 			self.status = self.help_state[3]
+			self.ack_response = ""
 		elif n==2:
 			self.status = self.help_state[2]
+		elif n==4:
+			self.status = self.help_state[4]
 		else:
 			self.status = self.help_state[1]
 		print "status updated"
+
+	def question_is_edit(self):
+		self.edit_status_bool = True
 
 
 class HelpResponse(models.Model):
