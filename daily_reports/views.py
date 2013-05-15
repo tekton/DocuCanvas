@@ -109,3 +109,8 @@ def view_reports(request, year=0, month=0, day=0):
         return render_to_response("daily_reports/daily_report_overview.html", {'globalReport': qg[0], 'reports': q, 'date': d}, context_instance=RequestContext(request))
     else:
         return render_to_response("daily_reports/daily_report_overview.html", {'globalReports': None, 'reports': q, 'date': d}, context_instance=RequestContext(request))
+
+
+def index(request):
+    reports = UserDailyReport.objects.filter(user=request.user).order_by('-date')[:5]
+    return render_to_response("daily_reports/report_index.html", {"reports": reports}, context_instance=RequestContext(request))
