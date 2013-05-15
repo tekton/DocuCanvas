@@ -7,38 +7,37 @@ from south.modelsinspector import add_introspection_rules
 
 from oauth2client.django_orm import CredentialsField
 
+class RecordPermissionManager(models.Manager):
+
+    def get_for_model_user(self, model, user, save_new=False):
+        try:
+            key = model.pk
+        except NameError:
+            raise TypeError('Not a valid model')
+
+        if key is None:
+            raise ValueError('Model must already be persisted to the database')
+
+        if type(key) is not int:
+            raise TypeError("Model must have an integer primary key")
+
+        cType = ContentType.objects.get_for_model(model.__class__)
+
+        if save_new:
+            perm, created = self.get_or_create(contentType=cType, user=user, recordID=key)
+        else:
+            try:
+                perm = self.get(contentType=cType, user=user, recordID=key)
+            except RecordPermission.DoesNotExist:
+                perm = RecordPermission()
+                perm.contentType = cType
+                perm.user = user
+                perm.recordID = key
+
+        return perm
+
 
 class RecordPermission(models.Model):
-
-    class RecordPermissionManager(models.Manager):
-
-        def get_for_model_user(self, model, user, save_new=False):
-            try:
-                key = model.pk
-            except NameError:
-                raise TypeError('Not a valid model')
-
-            if key is None:
-                raise ValueError('Model must already be persisted to the database')
-
-            if type(key) is not int:
-                raise TypeError("Model must have an integer primary key")
-
-            cType = ContentType.objects.get_for_model(model.__class__)
-
-            if save_new:
-                perm, created = self.get_or_create(contentType=cType, user=user, recordID=key)
-            else:
-                try:
-                    perm = self.get(contentType=cType, user=user, recordID=key)
-                except RecordPermission.DoesNotExist:
-                    perm = RecordPermission()
-                    perm.contentType = cType
-                    perm.user = user
-                    perm.recordID = key
-
-            return perm
-
 
     contentType = models.ForeignKey(ContentType)
     user = models.ForeignKey(User)
