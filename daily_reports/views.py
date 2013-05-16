@@ -138,3 +138,7 @@ def mail_report():
     except:
         return False
 
+
+def index(request):
+    reports = UserDailyReport.objects.filter(user=request.user).order_by('-date')[:5]
+    return render_to_response("daily_reports/report_index.html", {"reports": reports}, context_instance=RequestContext(request))

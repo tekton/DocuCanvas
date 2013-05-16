@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load markup %}
+{% load staticfiles %}
+
+{% block extra_head %}
+<script src="{% static 'scripts/daily_reports.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}"/>
+{% endblock %}
+
+{% block container %}
+	{% for report in reports %}
+		<div class="dashboard_container_section">
+			<div style="padding: 5px; background-color: #ddd; width: 100%; margin: 0;">{{report.user.username}} ({{report.date}}) <!--({{report.user.first_name}} {{report.user.last_name}})--></div>
+			<div>{{report.description|markdown:"safe"}}</div>
+		</div>
+		{% empty %}
+			<div>There are no reports for this user.</div></div>
+	{% endfor %}
+{% endblock %}
