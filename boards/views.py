@@ -60,7 +60,6 @@ def boards_node_form(request):
 
         if form.is_valid():
             try:
-                boardNode.user
                 boardNode = form.save()
                 return HttpResponseRedirect('boards/new_node')
             except:
@@ -92,25 +91,57 @@ def board_edit(request, board_id):
     board_nodes = BoardNode.objects.all()
     print "Submitting board..."
     nodeId = request.POST.get('id', "")
-    if request.method == 'POST':
-        if nodeId:
-            boardNode = BoardNode.objects.get(pk=nodeId)
-        else:
-            boardNode = BoardNode()
-
-        form = BoardNodeForm(request.POST, instance=boardNode)
-        if form.is_valid():
-            try:
-                boardNode = form.save()
-            except Exception, e:
-                print e
-                print 'unable to save node'
+    nodeType = request.POST.get('nodeType', "")
+    print nodeType
+    if nodeType == 'note':
+        if request.method == 'POST':
+            if nodeId:
+                boardNode = BoardNode.objects.get(pk=nodeId)
+            else:
+                boardNode = BoardNode()
+            boardNote = BoardNote()
+            form = BoardNoteForm(request.POST, instance=boardNote)
+            bform = BoardNodeForm(request.POST, instance=boardNode)
+            if form.is_valid():
+                try:
+                    boardNode.x = request.POST.get('x', '')
+                    boardNode.y = request.POST.get('y', '')
+                    boardNode.nodeLink = request.POST.get('nodeLink', '')
+                    boardNode.nodeType = request.POST.get('nodeType', '')
+                    boardNode.board = Board.objects.get(pk=board_id)
+                    boardNode = bform.save()
+                    boardNote.user = request.user
+                    boardNote = form.save()
+                except Exception, e:
+                    print e
+                    print 'unable to save node'
+                    print form.errors
+            else:
                 print form.errors
-        else:
-            print form.errors
 
+        else:
+            form = BoardNoteForm()
     else:
-        form = BoardNodeForm()
+        print 'IT\'S PROBABLY AN ISSUE'
+        if request.method == 'POST':
+            if nodeId:
+                boardNode = BoardNode.objects.get(pk=nodeId)
+            else:
+                boardNode = BoardNode()
+
+            form = BoardNodeForm(request.POST, instance=boardNode)
+            if form.is_valid():
+                try:
+                    boardNode = form.save()
+                except Exception, e:
+                    print e
+                    print 'unable to save node'
+                    print form.errors
+            else:
+                print form.errors
+
+        else:
+            form = BoardNodeForm()
     try:
         p = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
