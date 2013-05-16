@@ -446,3 +446,4 @@ def ack_answer(request, response_id):
         return render_to_response('helpdesknew/ack_answer.html', {'help': help, 'answer': answer, 'form': helpform}, context_instance=RequestContext(request))
     else:
         return redirect('helpdesknew.views.get_help', answer.helprequest.id)
+

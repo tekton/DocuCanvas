@@ -72,3 +72,4 @@ class HelpImageFile(models.Model):
 
 admin.site.register(HelpRequest)
 admin.site.register(HelpResponse)
+
