@@ -77,7 +77,8 @@
 
 
                             placementLock = true;
-                            $('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; width: " + noteDivWidth + "px; background-color: gray'><form action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' ><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                            $('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; width: " + noteDivWidth + "px; background-color: gray'><form id = 'submitForm'" + counter + "' style = 'visibility: visible;' action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label style = 'display:block' for='id_title' id='id_title_label'>Title:</label></th><td><input style = 'display:block' type='text' name='title' id='id_title' /></td></tr><tr><th><label style = 'display:block' for='id_description' id='id_description_label'>Description:</label></th><td><input style = 'display:block' type='text' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                            
                             $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
                             var circle = new Kinetic.Circle({
                                 x: x,
@@ -99,6 +100,7 @@
                             circle.on('mousedown', function(){
                                 if(placementLock == false){
                                     toggleNoteForm(counter)
+                                    toggleNoteForm(counter);
                                 };
                             });
 
@@ -156,7 +158,6 @@
 
                             circle.on('mousedown', function(){
                                 if(placementLock == false){
-                                    toggleNoteForm(counter)
                                 };
                             });
 
@@ -201,17 +202,18 @@
 
                     circle.on('mousedown', function(){
                         toggleInfoBox(divId);
+                        updateFormFields('#bugNote' +divId);
                     });
                     // edit div for updating nodes
                     shapesLayer.add(circle);
-                    $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + noteDivWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' ><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + circleId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                    $('body').append("<div id = 'bugNote" + divId + "' style = 'z-index: 2; width: " + noteDivWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeLink'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label style = 'display:block' for='id_title' id='id_title_label'>Title:</label></th><td><input style = 'display:block' type='text' name='title' id='id_title' /></td></tr><tr><th><label style = 'display:block' for='id_description' id='id_description_label'>Description:</label></th><td><input style = 'display:block' type='text' name='description' id='id_description' /></td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + circleId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
                 //};
                 };
 
 
                 function toggleInfoBox(divId){
-                    var toggleTooltipDiv = document.getElementById(divId);
-                    var tooltipId = "#" + divId;
+                    var toggleTooltipDiv = document.getElementById('bugNote' + divId);
+                    var tooltipId = "#bugNote" + divId;
                     var bugListId = "#bugListNo" + divId;
                     var triangleId = "triangle" + divId;
                     var bugListLinkId = "#bugListLink" + divId;
@@ -233,6 +235,8 @@
                             $(bugListLinkId).text("Hide");
                         };
                 };
+
+
             };
             imageObj.src = '/static/{{board.image}}';
 
@@ -260,6 +264,23 @@
                         toggleNoteFormDiv.style.visibility = 'visible';
                         placementLock = true;
                     };
+            };
+
+            function updateFormFields(divId){
+                console.log(divId);
+                if ($(divId).find('#id_nodeType').val() == 'note'){
+                    $(divId).find('#id_title_label').css('display', 'block');
+                    $(divId).find('#id_title').css('display', 'block');
+                    $(divId).find('#id_description_label').css('display', 'block');
+                    $(divId).find('#id_description').css('display', 'block');
+                    console.log('NOTE');
+                }else if ($(divId).find('#id_nodeType').val() == 'issue'){
+                    $(divId).find('#id_title_label').css('display', 'none');
+                    $(divId).find('#id_title').css('display', 'none');
+                    $(divId).find('#id_description_label').css('display', 'none');
+                    $(divId).find('#id_description').css('display', 'none');
+                    console.log('ISSUE');
+                };
             };
 
             function updateParams(div){
