@@ -12,6 +12,12 @@
 #image_upload_preview{
     opacity: 0;
 }
+#summary_textfield{
+    width: 100%;
+}
+#id_name{
+    width: 100%;
+}
 {% endblock %}
 
 {% block extra_head%}
@@ -44,7 +50,7 @@
             <td>Summary (required):</td>
         </tr>
         <tr>
-            <td>{{form.name}}</td>
+            <td><div id="summary_textfield">{{form.name}}</div></td>
         </tr>
         <tr>
             <td>Description:</td>
@@ -70,7 +76,7 @@
         </tr>
         <tr>
             <td><img id="image_upload_preview" src="" alt="your image" border="1" /></td>
-        <tr>
+        </tr>
     </table>
     <input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
     <input type="submit" name='submit' value="Submit"/>
