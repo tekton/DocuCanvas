@@ -13,3 +13,4 @@ django-pylibmc-sasl==0.2.4
 markdown==2.3.1
 google-api-python-client==1.1
 gdata==2.0.17
+pil==1.1.7
