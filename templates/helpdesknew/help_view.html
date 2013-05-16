@@ -4,8 +4,8 @@
     <a href="/help/new">Ask a Question</a>
     <a href="/help/resolved">Resolved Questions</a>
     <a href="/help/pending">Unresolved Questions</a>
-    <a href="/help/user/{{user.id}}">Your Questions</a>
-    <a href="/help/edit/{{user.id}}/{{help.id}}">Edit Question</a>
+    <a href="/help/user">Your Questions</a>
+    <a href="/help/edit/{{help.id}}">Edit Question</a>
     {% if user.is_staff %}
     <a href="/help/close_question_91990/{{help.id}}">Admin - Close Question</a>
     {% endif %}
@@ -59,9 +59,9 @@ a.popup:hover span{
 	<table class="tbl-generic tbl-overview">
 		<tr class="tbl-rowheader">
 			{% if help.edit_status_bool %}
-				<td class="tbl-fauxth">{{help.name}} [*EDITED*]</td>
+				<td class="tbl-fauxth"><a href="/help/edit/{{help.id}}">{{help.name}} [*EDITED*]</a></td>
 			{% else %}
-				<td class="tbl-fauxth">{{help.name}}</td>
+				<td class="tbl-fauxth"><a href="/help/edit/{{help.id}}">{{help.name}}</a></td>
 			{% endif %}
 			{% if help.status == '(1, 1)' %}
 				<td class="tbl-fauxth" id="helpstatus">Status: No Responses</td>
@@ -87,7 +87,6 @@ a.popup:hover span{
 				<td><img src="/static/{{help.photo}}"></td>
 			</tr>
 		{% endif %}
-		<tr><td class="helpdesk-edit" colspan="2"><a href="/help/edit/{{user.id}}/{{help.id}}">-EDIT POST-</a></td></tr>
 		</table>
 		<table class="tbl-generic tbl-overview">
 		{% for arrow in answer %}
@@ -112,7 +111,7 @@ a.popup:hover span{
 							</span>
 						</a>
 					{% else %}
-						Answer
+						Answer (Submitted By {{arrow.user}})
 					{% endif %}
 					</a>
 				</td>
@@ -123,15 +122,12 @@ a.popup:hover span{
 				</td>
 			</tr>
 			<tr>
-				<td class="tbl-answer-edit">
-					<a href="/help/cmmtedit/{{user.id}}/{{arrow.id}}">-EDIT-</a>
-				</td>
 				<td class="tbl-ack-response">
 					{% if user.id == help.user.id %}
 						{% if help.ack_response %}
-							<a href="/help/acknowledge/{{user.id}}/{{arrow.id}}">-Edit Response-</a>
+							<a href="/help/acknowledge/{{arrow.id}}">-Edit Response-</a>
 						{% else %}
-							<a href="/help/acknowledge/{{user.id}}/{{arrow.id}}">-Respond to Answer-</a>
+							<a href="/help/acknowledge/{{arrow.id}}">-Respond to Answer-</a>
 						{% endif %}
 					{% endif %}
 				</td>
@@ -158,7 +154,7 @@ a.popup:hover span{
 			<td colspan="2">
 				<form action="/help/response/{{help.id}}" id="submit_response_form" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
-					<b><a id="comment_title">Submit A Response</a></b><br />
+					<b><a id="comment_title">Submit A Response</a></b></br>
 					<div class="comment_textarea">{{help_response.response}}</div>
 					<input type='hidden' name="helprequest" id="id_helprequest" value='{{help.id}}'/>
 					<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
@@ -171,7 +167,8 @@ a.popup:hover span{
 			<tr class="tbl-rowheader">
 				<td class="tbl-fauxth tbl-comments-user">
 					{% if user.id == help.user.id and help.status != "('closed', 'Closed')" %}
-						<a class='popup'><b>{{comment.user}}</b>
+						<a class='popup'>
+							<b>{{comment.user}}</b>
 							<span>
 								<form action="/help/mark_the_answer/{{comment.id}}" id="submit_answer_form" method="post" enctype="multipart/form-data">
 									{% csrf_token %}
@@ -188,6 +185,8 @@ a.popup:hover span{
 								</form>
 							</span>
 						</a>
+					{% elif user.id == comment.user.id %}
+						<a href="/help/cmmtedit/{{comment.id}}"><b>{{comment.user}}</b></a>
 					{% else %}
 						<b>{{comment.user}}</b>
 					{% endif %}
@@ -203,7 +202,7 @@ a.popup:hover span{
 			</tr>
 			<tr>
 				<td class="tbl-answer-edit">
-					<a href="/help/cmmtedit/{{user.id}}/{{comment.id}}">-EDIT-</a>
+					<a href="/help/cmmtedit/{{comment.id}}">-EDIT-</a>
 				</td>
 				<td class="tbl-answer-id">
 					{{comment.id}}

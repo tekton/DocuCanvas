@@ -23,3 +23,10 @@ class ResponseFormValue(forms.ModelForm):
 	class Meta:
 		model = HelpResponse
 		fields = ('user', 'helprequest', 'value')
+
+'''
+class HelpPhotoForm(forms.ModelForm):
+	class Meta:
+		model = HelpImageFile
+		fields = ('helprequest', 'photo')
+'''

@@ -4,7 +4,7 @@
     <a href="/help/new">Ask a Question</a>
     <a href="/help/resolved">Resolved Questions</a>
     <a href="/help/pending">Unresolved Questions</a>
-    <a href="/help/user/{{user.id}}">Your Questions</a>
+    <a href="/help/user">Your Questions</a>
 {% endblock %}
 
 {% block style %}
@@ -37,6 +37,7 @@
 <h2>Ask A Question</h2>
 <form action="/help/new" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    <!--{{photoset.management_form}}-->
     <table class="tbl-generic tbl-comments">
         <tr>
             <td>Summary (required):</td>
@@ -51,17 +52,26 @@
             <td><div class="comment_textarea">{{form.question}}</div></td>
         </tr>
         <tr>
-            <td>Upload a Screenshot:</td>
+            <td>Upload Screenshot(s):</td>
+        </tr>
+        <!--
+        {% for photo in photoset %}
+        <tr>
+            <td><input title='Upload a Screenshot' type='submit' name='add_help_screenshot' value='Add screenshot'/></td>
         </tr>
         <tr>
-        <!--<form id="help-screenshot" action="/temp" method="post">-->
+            <td><input type='file' id='id_photo' name='photo' onchange='readImage(this);' /></td>
+        </tr>
+        {% endfor %}
+        -->
+        <tr>
             <td><input type='file' id='id_photo' name='photo' onchange="readImage(this);" /></td>
         </tr>
         <tr>
-            <td><img id="image_upload_preview" src="noimage.jpg" alt="your image" border="1" /></td>
+            <td><img id="image_upload_preview" src="" alt="your image" border="1" /></td>
         <tr>
     </table>
     <input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
-    <input type="submit" value="Submit"/>
+    <input type="submit" name='submit' value="Submit"/>
 </form>
 {% endblock %}
