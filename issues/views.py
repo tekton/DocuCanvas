@@ -254,6 +254,7 @@ def issue_to_issue_link(request):
 
 @login_required
 def meta_issue_form(request, issue_id=-1):
+    print "meta issue"
     if request.method == "GET":
         if issue_id == -1:
             return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True}, context_instance=RequestContext(request))
@@ -271,6 +272,8 @@ def meta_issue_form(request, issue_id=-1):
             except MetaIssue.DoesNotExist:
                 raise Http404
             form = MetaIssueForm(data=request.POST, instance=mi)
+            print form
+            print form.errors
         else:
             form = MetaIssueForm(data=request.POST)
 
@@ -287,7 +290,7 @@ def meta_issue_form(request, issue_id=-1):
                 return redirect('issues.views.meta_issue_form')
 
         else:
-            return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': form.instance is None}, context_instance=RequestContext(request))
+            return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': True}, context_instance=RequestContext(request))
 
 
 @login_required
