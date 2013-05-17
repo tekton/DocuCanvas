@@ -5,10 +5,35 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
+from django.forms.models import inlineformset_factory
 
 from helpdesknew.forms import HelpForm, HelpFormResponse, ResponseFormValue, AckForm
 from helpdesknew.models import HelpRequest, HelpResponse
 
+'''
+@login_required
+def help_form(request):
+    photoFormset = inlineformset_factory(HelpRequest, HelpImageFile, can_delete=False, extra=1)
+    helpRequest = HelpRequest()
+    if request.method == 'POST':
+        if 'add_help_screenshot' in request.POST:
+            cp = request.POST.copy()
+            cp['helpimagefile_set-TOTAL_FORMS'] = int(cp['helpimagefile_set-TOTAL_FORMS']) + 1
+            formset = photoFormset(cp, request.FILES, instance=helpRequest)
+        elif 'submit' in request.POST:
+            helpForm = HelpForm(request.POST, instance=helpRequest)
+            formset = photoFormset(request.POST, request.FILES, instance=helpRequest)
+            print helpForm.is_valid()
+            print "trying to save"
+            if helpForm.is_valid() and formset.is_valid():
+                helpRequest = helpForm.save()
+                formset.save()
+                return redirect('helpdesknew.views.get_help', helpRequest.id)
+    else:
+        formset = photoFormset(instance=helpRequest)
+    helpForm = HelpForm(instance=helpRequest)
+    return render_to_response('helpdesknew/help_form.html', {'form': helpForm, 'photoset': formset}, context_instance=RequestContext(request))
+'''
 
 @login_required
 def help_form(request):
@@ -36,6 +61,10 @@ def get_help(request, help_id):
         help = HelpRequest.objects.get(pk=help_id)
     except Exception, e:
         print "something went horribly horribly wrong"
+        print e
+    try:
+        images = HelpImageFile.objects.get(helprequest=help)
+    except Exception, e:
         print e
     try:
         comments = HelpResponse.objects.filter(helprequest=help).order_by('id')
@@ -178,9 +207,9 @@ def mark_as_answer(request, response_id):
 '''
 
 @login_required
-def user_help(request, user_id):
+def user_help(request):
     try:
-        myuser = User.objects.get(pk=user_id)
+        myuser = User.objects.get(pk=request.user.id)
     except Exception, e:
         print e
         print "no myuser object"
@@ -335,9 +364,9 @@ def mark_the_input(request, response_id):
 
 
 @login_required
-def edit_question(request, user_id, help_id):
+def edit_question(request, help_id):
     helpdeez = HelpRequest.objects.get(pk=help_id)
-    user = User.objects.get(pk=user_id)
+    user = User.objects.get(pk=request.user.id)
     if user.id == helpdeez.user.id:
         if helpdeez.status == "('closed', 'Closed')":
             return redirect('helpdesknew.views.error_page', 5)
@@ -364,9 +393,9 @@ def edit_question(request, user_id, help_id):
 
 
 @login_required
-def edit_comment(request, user_id, response_id):
+def edit_comment(request, response_id):
     respondeez = HelpResponse.objects.get(pk=response_id)
-    user = User.objects.get(pk=user_id)
+    user = User.objects.get(pk=request.user.id)
     if user.id == respondeez.user.id:
         if respondeez.value == "('answer', 'Answer')":
             return redirect('helpdesknew.views.error_page', 4)
@@ -391,8 +420,8 @@ def edit_comment(request, user_id, response_id):
 
 
 @login_required
-def ack_answer(request, user_id, response_id):
-    user = User.objects.get(pk=user_id)
+def ack_answer(request, response_id):
+    user = User.objects.get(pk=request.user.id)
     answer = HelpResponse.objects.get(pk=response_id)
     print answer.value
     if user.id == answer.helprequest.user.id:
@@ -417,3 +446,4 @@ def ack_answer(request, user_id, response_id):
         return render_to_response('helpdesknew/ack_answer.html', {'help': help, 'answer': answer, 'form': helpform}, context_instance=RequestContext(request))
     else:
         return redirect('helpdesknew.views.get_help', answer.helprequest.id)
+

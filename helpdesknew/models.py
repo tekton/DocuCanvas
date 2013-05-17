@@ -64,6 +64,12 @@ class HelpResponse(models.Model):
 		self.value = self.response_value[0]
 		print "response set as input"
 
+'''
+class HelpImageFile(models.Model):
+	helprequest = models.ForeignKey(HelpRequest, null=True, blank=True)
+	photo = models.ImageField(upload_to="help/img", null=True, blank=True)
+'''
 
 admin.site.register(HelpRequest)
 admin.site.register(HelpResponse)
+
