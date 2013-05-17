@@ -89,6 +89,7 @@ def boards(request):
 @login_required
 def board_edit(request, board_id):
     board_nodes = BoardNode.objects.all()
+    board_notes = BoardNote.objects.all()
     print "Submitting board..."
     nodeId = request.POST.get('id', "")
     nodeType = request.POST.get('nodeType', "")
@@ -101,17 +102,19 @@ def board_edit(request, board_id):
                 boardNode = BoardNode()
             boardNote = BoardNote()
             form = BoardNoteForm(request.POST, instance=boardNote)
-            bform = BoardNodeForm(request.POST, instance=boardNode)
             if form.is_valid():
                 try:
-                    boardNode.x = request.POST.get('x', '')
-                    boardNode.y = request.POST.get('y', '')
-                    boardNode.nodeLink = request.POST.get('nodeLink', '')
-                    boardNode.nodeType = request.POST.get('nodeType', '')
-                    boardNode.board = Board.objects.get(pk=board_id)
-                    boardNode = bform.save()
                     boardNote.user = request.user
                     boardNote = form.save()
+                    nodeLinkId = boardNote.id
+                    print nodeLinkId
+                    boardNode.x = request.POST.get('x', '')
+                    boardNode.y = request.POST.get('y', '')
+                    boardNode.nodeLink = nodeLinkId
+                    boardNode.nodeType = request.POST.get('nodeType', '')
+                    boardNode.board = Board.objects.get(pk=board_id)
+                    boardNode.save()
+
                 except Exception, e:
                     print e
                     print 'unable to save node'
@@ -146,15 +149,16 @@ def board_edit(request, board_id):
         p = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
         raise Http404
-    return render_to_response('boards/board_edit.html', {'board': p, 'form': form, 'board_nodes': board_nodes}, context_instance=RequestContext(request))
+    return render_to_response('boards/board_edit.html', {'board': p, 'form': form, 'board_nodes': board_nodes, 'board_notes': board_notes}, context_instance=RequestContext(request))
 
 
 @login_required
 def board_display(request, board_id):
     board_nodes = BoardNode.objects.all()
+    board_notes = BoardNote.objects.all()
     issues = Issue.objects.all()
     try:
         p = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
         raise Http404
-    return render_to_response('boards/board_display.html', {'board': p, 'board_nodes': board_nodes, 'issues': issues}, context_instance=RequestContext(request))
+    return render_to_response('boards/board_display.html', {'board': p, 'board_nodes': board_nodes, 'board_notes': board_notes, 'issues': issues}, context_instance=RequestContext(request))
