@@ -9,14 +9,11 @@
         </style>
     </head>
     <body>
-        <div id = "container" style = 'overflow:scroll; overflow-y:hidden; margin-right:200px;' > </div>
+        <div id = "container" style = 'overflow:scroll; overflow-y:hidden; width:800px; z-index:1' > </div>
          <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
           <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
           <script src = '/static/scripts/board_functions.js'></script>
            <script>
-
-            // Temporary hash for making a test loop to place multiple notes
-            var tooltipInfo = [{"x":400,"y":500,"text": "THIS IS A BUG"}, {"x":200,"y":200,"text": "THIS IS ANOTHER BUG asdf adf adf asdf asdf asdf"}, {"x": 150, "y":400, "text": "ANOTHER BUG"}]
 
             //Test variables for placing notes, most will be contained in database when finished
             var imageWidth = {{board.width}};
@@ -82,7 +79,6 @@
                     $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + tooltipWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: grey; text-align: left'>" + noteText + "</p><p style = 'text-align: right;'></p></div>");
                     $('body').append("<div id = 'triangle" + divId + "'; style = 'position: absolute; width: 0; height: 0; border-right: 10px solid black; border-bottom: 10px solid transparent; border-top: 10px solid transparent;  opacity: 0.9; visibility: hidden; z-index: 1; top:" + (y-10) + "px; left: " + (x+14) + "px;'></div> ");
                     $('#bugList').append("<div id = bugListNo" + divId + ">" + noteText + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><font id = 'bugListLink" + divId + "'>SHOW</font></a><br /><br />");
-                //};
                 };
                 function issueNote(x, y, summary, description, link, divId){
                     var tooltipId = "#" + divId;
@@ -115,20 +111,10 @@
                     $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + tooltipWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: white; text-align: left; position: relative; top: -15px'>" + summary + "</p><p style = 'color: grey; text-align: left'>" + description + "</p>" + issueLink + "</div>");
                     $('body').append("<div id = 'triangle" + divId + "'; style = 'position: absolute; width: 0; height: 0; border-right: 10px solid black; border-bottom: 10px solid transparent; border-top: 10px solid transparent;  opacity: 0.9; visibility: hidden; z-index: 1; top:" + (y-10) + "px; left: " + (x+14) + "px;'></div> ");
                     $('#bugList').append("<div id = bugListNo" + divId + ">" + summary + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><font id = 'bugListLink" + divId + "'>SHOW</font></a><br /><br />");
-                //};
                 };
-                // End bugNote function
-
-                // test loop for creating multiple notes
-                /*{% if issues %}
-                    {% for i in issues %}
-                        $('body').append('{{i.description}}');
-                    {% endfor %}*/
-                {% endif %}
                 {% if board_nodes %}
                 var circleId = 0;
 					{% for i in board_nodes %}
-                    //$('body').append("i: " + {{i}} + "<br />");
                         if("{{i.board}}" == "{{board.title}}"){
     						var newCircle = "circle" + circleId;
                             if("{{i.nodeType}}" == "issue"){
@@ -137,11 +123,7 @@
                                         newCircle = new issueNote({{i.x}}, {{i.y}}, "{{x.summary|linebreaksbr}}", "{{x.description|linebreaksbr}}","/issue/"+{{i.nodeLink}}, circleId);
                                     };
                                 {% endfor %}
-                                    /*issueNodeLink = "{{i.nodeLink}}";
-                                    z = issueNodeLink - 1;
-                                    issues = "{{issues.x.id}}";
-                                    $('body').append("Z: " + z + "<br />" + "issues: " +  issues + "<br />" + "issueNodeLink: " + issueNodeLink + "<br />issues summary: {{issues.1.summary}}<br /> issues description {{issues.1.description}}<br />")*/
-                            }else if('{{i.nodeType}}' == 'note'){
+                             }else if('{{i.nodeType}}' == 'note'){
                                 {% for y in board_notes %}
                                     if("{{y.id}}" == "{{i.nodeLink}}"){
     						          newCircle = new issueNote({{i.x}}, {{i.y}},"{{y.title|linebreaksbr}}", "{{y.description|linebreaksbr}}","", circleId);
@@ -150,18 +132,11 @@
                             };
     						circleId ++;
                         };
-				{% endfor %}
+				    {% endfor %}
 				{% else %}
 					$('body').append('<p>No Board nodes</p>');
 				{% endif %}
-                /*for (var i=0;i<tooltipInfo.length;i++){
-                    var newCircle = "circle" + i;
-                    newCircle = new bugNote(tooltipInfo[i]["x"], tooltipInfo[i]["y"],tooltipInfo[i]["text"], i);
-
-                };
-                */
                 stage.add(shapesLayer);
-
              };
             imageObj.src = '/static/{{board.image}}';
 
@@ -198,9 +173,10 @@
                     $('#toggler').text("Hide");
                 };
             };
-
+            /*$('body').append("<div  style = 'position: fixed; width: 200px; height: 50px; top: 0px; left:" + (imageWidth+300) + "px; background-color: blue; z-index: 10'><a id = 'toggler' href = '#' onclick='toggleBugListDiv()'>Hide</a></div>");
+            $('body').append("<div id = 'bugList' style = 'position: fixed; width: 190px; top: 50px; left: 1383px; padding: 5px; background-color: green; visibility: visible; overflow:scroll;'></div>")*/
          </script>
-         <div  style = 'position: fixed; width: 200px; height: 50px; top: 0px; right: 0px; background-color: blue'><a id = "toggler" href = "#" onclick="toggleBugListDiv()">Hide</a></div>
-         <div id = 'bugList' style = 'position: fixed; width: 190px; height: 700px; top: 50px; right: 0px; padding: 5px; background-color: green; visibility: visible;'></div>
+         <div  style = 'position: fixed; width: 200px; height: 50px; top: 0px; left:800px; background-color: blue;'><a id = "toggler" href = "#" onclick="toggleBugListDiv()">Hide</a></div>
+         <div id = 'bugList' style = 'position: fixed; width: 190px; height:500px; top: 50px; left: 800px; padding: 5px; background-color: green; visibility: visible; overflow:scroll;'></div> 
     </body>
 </html>

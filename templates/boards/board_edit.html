@@ -18,6 +18,7 @@
 
             // Most everything occurs inside the image onload function
             imageObj.onload = function() {
+                // Create and size background image
                 var bgImage = new Kinetic.Image({
                     image: imageObj,
                     width: imageWidth,
@@ -25,7 +26,6 @@
                     id: 'backgroundImage',
                   });
 
-                // Test function for getting mouse position
                 bgImage.on('mousedown', function(){
                     createNoteForm(noteCounter);
                     updateNoteForm();
@@ -39,9 +39,11 @@
                 var shapesLayer = new Kinetic.Layer();
                 var messageLayer = new Kinetic.Layer();
                 shapesLayer.add(bgImage);
-
+                // check to see if there are any board_node objects
                 {% if board_nodes %}
-
+                    /* Loops through board node objects and only pulls the nodes that match the board.  
+                    Checks the type of the node and creates a circle button and bugNote which is formatted slightly differently depending on type.
+                    */
                     {% for i in board_nodes %}
                         if("{{i.board}}" == "{{board.title}}"){
                             if("{{i.nodeType}}" == 'issue'){
@@ -66,6 +68,7 @@
 
                 stage.add(shapesLayer);
 
+                //used for creating new nodes
                 function createNoteForm(counter){
                     if(placementLock == false){
                         var mousePos = stage.getMousePosition();
@@ -85,10 +88,8 @@
                         }else{
                             var noteDivY = y - 4;
                         };
-
-
-                            placementLock = true;
-                            $('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; width: " + noteDivWidth + "px; background-color: gray'><form id = 'submitForm'" + counter + "' style = 'visibility: visible;' action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label' style = 'display:none'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' style = 'display:none'/></td></tr><tr><th><label style = 'display:block' for='id_title' id='id_title_label'>Title:</label></th><td><input style = 'display:block' type='text' name='title' id='id_title' /></td></tr><tr><th><label style = 'display:block' for='id_description' id='id_description_label'>Description:</label></th><td><input style = 'display:block' type='text' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                        placementLock = true;
+                            $('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; width: " + noteDivWidth + "px; background-color: gray'><form id = 'submitForm'" + counter + "' style = 'visibility: visible;' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label' style = 'display:none'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' style = 'display:none'/></td></tr><tr><th><label style = 'display:block' for='id_title' id='id_title_label'>Title:</label></th><td><input style = 'display:block' type='text' name='title' id='id_title' /></td></tr><tr><th><label style = 'display:block' for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' style = 'display:block; resize: none;' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
                             
                             $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
                             var circle = new Kinetic.Circle({
@@ -110,7 +111,6 @@
 
                             circle.on('mousedown', function(){
                                 if(placementLock == false){
-                                    toggleNoteForm(counter)
                                     toggleNoteForm(counter);
                                 };
                             });
@@ -122,6 +122,7 @@
 
                 };
 
+                //used for updating position of node
                 function updateNoteForm(){
                     if(updateLock == false){
                         var formToUpdateX = divToUpdate + " #id_x";
@@ -149,7 +150,6 @@
                             $(formToUpdateX).val(x);
                             $(formToUpdateY).val(y);
                             updateLock = true
-                            $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
                             var circle = new Kinetic.Circle({
                                 x: x,
                                 y: y,
@@ -179,6 +179,7 @@
 
                 };
 
+                // used for displaying nodes
                 function bugNote(x, y, nodeLink, nodeType, noteTitle, noteDescription, divId, Id){
                     var tooltipId = "#" + divId;
                     var bugListId = "#bugListNo" + divId;
@@ -215,13 +216,13 @@
                         toggleInfoBox(divId);
                         updateFormFields('#bugNote' +divId);
                     });
-                    // edit div for updating nodes
                     shapesLayer.add(circle);
-                    $('body').append("<div id = 'bugNote" + divId + "' style = 'z-index: 2; width: " + noteDivWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label style = 'display:block' for='id_title' id='id_title_label'>Title:</label></th><td><input style = 'display:block' type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label style = 'display:block' for='id_description' id='id_description_label'>Description:</label></th><td><input style = 'display:block' type='text' name='description' id='id_description' value = '" + noteDescription + "' /></td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                    // edit div for updating nodes
+                    $('body').append("<div id = 'bugNote" + divId + "' style = 'z-index: 2; width: " + noteDivWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: grey; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(bugNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label style = 'display:block' for='id_title' id='id_title_label'>Title:</label></th><td><input style = 'display:block' type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label style = 'display:block' for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' style = 'display:block; resize:none;' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
                 //};
                 };
 
-
+                //used for toggling node divs and "triangle" attachments
                 function toggleInfoBox(divId){
                     var toggleTooltipDiv = document.getElementById('bugNote' + divId);
                     var tooltipId = "#bugNote" + divId;
@@ -232,7 +233,6 @@
                         if(toggleTooltipDiv.style.visibility == 'visible'){
                             placementLock = false;
                             toggleTooltipDiv.style.visibility = 'hidden';
-                            //toggleTriangleDiv.style.visibility = 'hidden';
                             $(tooltipId).css('visibility', 'hidden');
                             $(bugListId).css('background-color', 'green');
                             $(bugListLinkId).text("Show");
@@ -240,7 +240,6 @@
                         }else{
                             placementLock = true;
                             toggleTooltipDiv.style.visibility = 'visible';
-                            //toggleTriangleDiv.style.visibility = 'visible';
                             $(tooltipId).css('visibility', 'visible');
                             $(bugListId).css('background-color', 'yellow');
                             $(bugListLinkId).text("Hide");
@@ -251,20 +250,7 @@
             };
             imageObj.src = '/static/{{board.image}}';
 
-            function getValues(i){
-                var formNodeLinkId = "#form" + i + " #id_nodeLink";
-                var formNodeTypeId = "#form" + i + " #id_nodeType";
-                var formNodeBoardId = "#form" + i + " #id_board";
-                var formNodeXId = "#form" + i + " #id_x";
-                var formNodeYId = "#form" + i + " #id_y";
-                var printNodeLink = $(formNodeLinkId).val();
-                var printNodeType = $(formNodeTypeId).val();
-                var printNodeBoard = $(formNodeBoardId).val();
-                var printNodeX = $(formNodeXId).val();
-                var printNodeY = $(formNodeYId).val();
-                $('body').append(printNodeLink + "<br />" + printNodeType + "<br />" + printNodeBoard + "<br />" + printNodeX + "<br />" + printNodeY + "<br />");
-            }; 
-
+            // used for toggling visibility of existing node forms
             function toggleNoteForm(divId){
                 var noteFormNo = "noteNo" + divId;
                 var toggleNoteFormDiv = document.getElementById(noteFormNo);
@@ -277,6 +263,7 @@
                     };
             };
 
+            // used for toggling which form fields are visible depending on nodeType
             function updateFormFields(divId){
                 console.log(divId);
                 if ($(divId).find('#id_nodeType').val() == 'note'){
@@ -298,25 +285,31 @@
                 };
             };
 
+            // used for checking that form fields are not over the maximum length
+            function checkFormData(divId){
+                titleCheck = ""
+                descriptionCheck = ""
+                if($(divId).find('#id_title').val().length > 255 || $(divId).find('#id_description').val().length > 255){
+                    if($(divId).find('#id_title').val().length > 255){
+                        titleCheck = "Title cannot be more than 255 characters."
+                    };
+                    if($(divId).find('#id_description').val().length > 255){
+                        descriptionCheck = "Description cannot be more than 255 characters."
+                    };
+                alert(titleCheck + " " + descriptionCheck);
+                return false;
+                }else{
+                    return true;
+                };
+            };
+
+            // helper function for updating node location
             function updateParams(div){
                 updateLock = false;
                 placementLock = true;
                 divToUpdate = "#bugNote" + div;
                 console.log(divToUpdate);
             };
-/*
-            function cancelForm(divId){
-                var noteFormNo = "noteNo" + divId;
-                var toggleNoteFormDiv = document.getElementById(noteFormNo);
-                var toggleCircle = createStage.stage.get('.'+divId);
-                toggleCircle.destroy();
-                //var toggleCircle = divId.toString();
-                toggleNoteFormDiv.style.visibility = 'hidden';
-                //toggleCircle.remove();
-                placementLock = false;
-                    
-            };            
-*/
          </script>
 </body>
 {% endblock %}
