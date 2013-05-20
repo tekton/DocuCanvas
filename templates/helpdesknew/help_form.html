@@ -44,7 +44,7 @@
 <h2>Ask A Question</h2>
 <form action="/help/new" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <!--{{photoset.management_form}}-->
+    {{photoset.management_form}}
     <table class="tbl-generic tbl-comments">
         <tr>
             <td>Summary (required):</td>
@@ -61,19 +61,23 @@
         <tr>
             <td>Upload Screenshot(s):</td>
         </tr>
-        <!--
+    
         {% for photo in photoset %}
+        {{photo}}
+    <!--
         <tr>
-            <td><input title='Upload a Screenshot' type='submit' name='add_help_screenshot' value='Add screenshot'/></td>
+            {<td><input type='file' id='id_photo' name='photo' onchange='readImage(this);' /></td>}
         </tr>
-        <tr>
-            <td><input type='file' id='id_photo' name='photo' onchange='readImage(this);' /></td>
-        </tr>
+    -->
         {% endfor %}
-        -->
+        <tr>
+            <td><input title='Upload a Screenshot' type='submit' name='add_help_screenshot' value='Add Another Screenshot'/></td>
+        </tr>
+    <!--
         <tr>
             <td><input type='file' id='id_photo' name='photo' onchange="readImage(this);" /></td>
         </tr>
+    -->
         <tr>
             <td><img id="image_upload_preview" src="" alt="your image" border="1" /></td>
         </tr>

@@ -43,7 +43,6 @@ img.pending-image-help{
 <table class="tbl-generic tbl-overview">
     <tr class="tbl-rowheader">
         <td class="tbl-fauxth">Summary</td>
-        <td class="tbl-fauxth">Image Attached</td>
         <td class="tbl-fauxth">Asked By</td>
         <td class="tbl-fauxth">Date Asked</td>
         <td class="tbl-fauxth">Status</td>
@@ -63,13 +62,6 @@ img.pending-image-help{
                         {{help.name}}<span>{{help.question|truncatechars:80}}</span>
                     </a>
                 </a>
-                {% endif %}
-            </td>
-            <td>
-                {% if help.photo %}
-                <a href="/help/{{help.id}}"><a class='popup' href="/help/{{help.id}}">Yes<span><img class="pending-image-help" src="/static/{{help.photo}}"></span></a></a>
-                {% else %}
-                <a href="/help/{{help.id}}">No</a>
                 {% endif %}
             </td>
             <td>

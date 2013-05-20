@@ -7,10 +7,10 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.forms.models import inlineformset_factory
 
-from helpdesknew.forms import HelpForm, HelpFormResponse, ResponseFormValue, AckForm
-from helpdesknew.models import HelpRequest, HelpResponse
+from helpdesknew.forms import HelpForm, HelpFormResponse, ResponseFormValue, AckForm, HelpPhotoForm
+from helpdesknew.models import HelpRequest, HelpResponse, HelpImageFile
 
-'''
+
 @login_required
 def help_form(request):
     photoFormset = inlineformset_factory(HelpRequest, HelpImageFile, can_delete=False, extra=1)
@@ -24,6 +24,7 @@ def help_form(request):
             helpForm = HelpForm(request.POST, instance=helpRequest)
             formset = photoFormset(request.POST, request.FILES, instance=helpRequest)
             print helpForm.is_valid()
+            print formset.is_valid()
             print "trying to save"
             if helpForm.is_valid() and formset.is_valid():
                 helpRequest = helpForm.save()
@@ -33,8 +34,8 @@ def help_form(request):
         formset = photoFormset(instance=helpRequest)
     helpForm = HelpForm(instance=helpRequest)
     return render_to_response('helpdesknew/help_form.html', {'form': helpForm, 'photoset': formset}, context_instance=RequestContext(request))
-'''
 
+'''
 @login_required
 def help_form(request):
     if request.method == 'POST':
@@ -53,7 +54,7 @@ def help_form(request):
     else:
         helpform = HelpForm()
     return render_to_response('helpdesknew/help_form.html', {'form': helpform}, context_instance=RequestContext(request))
-
+'''
 
 @login_required
 def get_help(request, help_id):
@@ -63,7 +64,7 @@ def get_help(request, help_id):
         print "something went horribly horribly wrong"
         print e
     try:
-        images = HelpImageFile.objects.get(helprequest=help)
+        images = HelpImageFile.objects.filter(helprequest=help)
     except Exception, e:
         print e
     try:
@@ -80,7 +81,7 @@ def get_help(request, help_id):
         help_form = HelpForm(instance=help)
     except Exception, e:
         print e
-    return render_to_response('helpdesknew/help_view.html', {'help': help, 'form': help_form, 'help_response': help_response, 'comments': comments, 'answer': answer}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/help_view.html', {'help': help, 'form': help_form, 'help_response': help_response, 'comments': comments, 'answer': answer, 'images': images}, context_instance=RequestContext(request))
 
 
 @login_required
