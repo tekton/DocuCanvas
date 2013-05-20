@@ -9,39 +9,39 @@
 {% endblock %}
 
 {% block container %}
-{% if user.is_staff %}
-{% if help.status == "('resolved', 'Resolved')" %}
-<form action="{{help.id}}" method="post" enctype="multipart/form-data">
-	{% csrf_token %}
-	<table>
-		<tr>
-			<td>
-				{{help.name}}
-			</td>
-		</tr>
-		<tr>
-			<td>{{help.questiom}}</td>
-		</tr>
-	</table>
-	<input type="submit" value="Lock Question"/>
-</form>
-{% else %}
-<form action="{{help.id}}" method="post" enctype="multipart/form-data">
-	{% csrf_token %}
-	<table>
-		<tr>
-			<td>
-				{{help.name}}
-			</td>
-		</tr>
-		<tr>
-			<td>{{help.questiom}}</td>
-		</tr>
-	</table>
-	<input type="submit" value="Unlock Question"/>
-</form>
-{% endif %}
-{% else %}
-<h2>Administrator Access Required</h2>
-{% endif %}
+	{% if user.is_staff %}
+		{% if help.status == "('resolved', 'Resolved')" %}
+			<form action="{{help.id}}" method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				<table>
+					<tr>
+						<td>
+							{{help.name}}
+						</td>
+					</tr>
+					<tr>
+						<td>{{help.questiom}}</td>
+					</tr>
+				</table>
+				<input type="submit" value="Lock Question"/>
+			</form>
+		{% else %}
+			<form action="{{help.id}}" method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				<table>
+					<tr>
+						<td>
+							{{help.name}}
+						</td>
+					</tr>
+					<tr>
+						<td>{{help.questiom}}</td>
+					</tr>
+				</table>
+				<input type="submit" value="Unlock Question"/>
+			</form>
+		{% endif %}
+	{% else %}
+		<h2>Administrator Access Required</h2>
+	{% endif %}
 {% endblock %}

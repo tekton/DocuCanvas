@@ -201,13 +201,20 @@ img.pending-image-help{
 				</td>
 			</tr>
 			<tr>
-				<td class="tbl-comments-description" colspan="2">
-					<div class="helpdesk-question">{{comment.response}}</div>
-				</td>
+				{% if user.id == comment.user.id %}
+					<td class="tbl-comments-description" colspan="2">
+						<a href="help/cmmtedit/{{comment.id}}"><div class="helpdesk-question">{{comment.response}}</div></a>
+					</td>
+				{% else %}
+					<td class="tbl-comments-description" colspan="2">
+						<div class="helpdesk-question">{{comment.response}}</div>
+					</td>
+				{% endif %}
 			</tr>
 			<tr>
 				<td class="tbl-answer-edit">
-					<a href="/help/cmmtedit/{{comment.id}}">-EDIT-</a>
+					<!--<a href="/help/cmmtedit/{{comment.id}}">-EDIT-</a>-->
+					<div></div>
 				</td>
 				<td class="tbl-answer-id">
 					{{comment.id}}

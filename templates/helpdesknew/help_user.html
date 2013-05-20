@@ -40,11 +40,6 @@ img.pending-image-help{
 
 {% block container %}
 <h2>All Questions from {{myuser.username}}</h2>
-<!--{% if user.id != myuser.id %}
-	<p>You're not <b>{{myuser.username}}</b>!</p>
-	<p>You don't have access to this page.</p>
-	<p>To view all of your question, <a href="/help/user/{{user.id}}"><b>click here!</b></a></p>
-{% else %}-->
 	{% if res_count or ans_count or clo_count %}
 		<table class="tbl-generic tbl-overview">
 			<tr>
@@ -154,5 +149,4 @@ img.pending-image-help{
 		<p>You have not submitted any questions yet.</p>
 		<p>To ask a question, <a href="/help/new"><b>click here!</b></a></p>
 	{% endif %}
-<!--{% endif %}-->
 {% endblock %}
