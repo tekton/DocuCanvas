@@ -1,5 +1,5 @@
 from django import forms
-from helpdesknew.models import HelpRequest, HelpResponse
+from helpdesknew.models import HelpRequest, HelpResponse, HelpImageFile
 
 
 class HelpForm(forms.ModelForm):
@@ -24,9 +24,8 @@ class ResponseFormValue(forms.ModelForm):
 		model = HelpResponse
 		fields = ('user', 'helprequest', 'value')
 
-'''
+
 class HelpPhotoForm(forms.ModelForm):
 	class Meta:
 		model = HelpImageFile
 		fields = ('helprequest', 'photo')
-'''

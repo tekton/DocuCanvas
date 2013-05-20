@@ -53,6 +53,10 @@ a.popup:hover span{
 	font-size:xx-small;
 	text-align:center;
 }
+img.pending-image-help{
+    width:100px;
+    height:100px;
+}
 {% endblock %}
 
 {% block container %}
@@ -83,11 +87,11 @@ a.popup:hover span{
 				<div class="helpdesk-question">{{help.question}}</div>
 			</td>
 		</tr>
-		{% if help.photo %}
-			<tr>
-				<td><img src="/static/{{help.photo}}"></td>
-			</tr>
-		{% endif %}
+		<tr><td>
+		{% for image in images %}
+				<a target="_blank" href="/static/{{image.photo}}"><img class="pending-image-help" src="/static/{{image.photo}}"></a>
+		{% endfor %}
+	</td></tr>
 		</table>
 		<table class="tbl-generic tbl-overview">
 		{% for arrow in answer %}
