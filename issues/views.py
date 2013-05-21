@@ -7,8 +7,11 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.db.models import Q
+from accounts.forms import PermissionForm
+from accounts.utils import get_permission_form_for_model, set_permissions_for_model
 
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate
+from accounts import utils as rputils
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm
 
@@ -257,29 +260,42 @@ def meta_issue_form(request, issue_id=-1):
     print "meta issue"
     if request.method == "GET":
         if issue_id == -1:
-            return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True}, context_instance=RequestContext(request))
+            # TODO: Check if user has permission to create meta issues
+            return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True, 'pform': PermissionForm()}, context_instance=RequestContext(request))
 
         try:
             mi = MetaIssue.objects.get(pk=issue_id)
         except MetaIssue.DoesNotExist:
             raise Http404
 
-        return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(instance=mi), 'new': False}, context_instance=RequestContext(request))
+        pv, pu, pd = rputils.user_permissions(request.user, mi)
+        if not pv or not pu:
+            return HttpResponse("Unauthorized", status=401)
+
+        return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(instance=mi), 'new': False, 'canDelete': pd, 'pform': get_permission_form_for_model(mi)}, context_instance=RequestContext(request))
     else:
         if issue_id != -1:
             try:
                 mi = MetaIssue.objects.get(pk=issue_id)
             except MetaIssue.DoesNotExist:
                 raise Http404
+
+            if not rputils.user_can_update(request.user, mi):
+                return HttpResponse("Unauthorized", status=401)
             form = MetaIssueForm(data=request.POST, instance=mi)
+            pform = PermissionForm(data=request.POST)
             print form
             print form.errors
         else:
+            # TODO: As above, check for permission to create meta issues
             form = MetaIssueForm(data=request.POST)
+            pform = PermissionForm(data=request.POST)
 
         if form.is_valid():
             try:
                 mi = form.save()
+                if pform.is_valid():
+                    set_permissions_for_model(mi, view_users=pform.cleaned_data['view_users'], update_users=pform.cleaned_data['update_users'], delete_users=pform.cleaned_data['update_users'])
             except Exception as e:
                 print e
                 raise e
@@ -290,7 +306,7 @@ def meta_issue_form(request, issue_id=-1):
                 return redirect('issues.views.meta_issue_form')
 
         else:
-            return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': True}, context_instance=RequestContext(request))
+            return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': True, 'pform': pform}, context_instance=RequestContext(request))
 
 
 @login_required

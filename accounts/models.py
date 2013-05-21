@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.generic import GenericForeignKey
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
@@ -8,6 +9,22 @@ from south.modelsinspector import add_introspection_rules
 from oauth2client.django_orm import CredentialsField
 
 class RecordPermissionManager(models.Manager):
+
+    def get_for_model(self, model):
+        try:
+            key = model.pk
+        except NameError:
+            raise TypeError('Not a valid model')
+
+        if key is None:
+            raise ValueError('Model must already be persisted to the database')
+
+        if type(key) is not int:
+            raise TypeError("Model must have an integer primary key")
+
+        cType = ContentType.objects.get_for_model(model.__class__)
+
+        return self.filter(contentType=cType, recordID=key)
 
     def get_for_model_user(self, model, user, save_new=False):
         try:
@@ -41,7 +58,8 @@ class RecordPermission(models.Model):
 
     contentType = models.ForeignKey(ContentType)
     user = models.ForeignKey(User)
-    recordID = models.IntegerField()
+    recordID = models.PositiveIntegerField()
+    record = GenericForeignKey("contentType", "recordID")
     canView = models.BooleanField(default=False)
     canUpdate = models.BooleanField(default=False)
     canDelete = models.BooleanField(default=False)
@@ -85,4 +103,5 @@ class GoogleAccount(models.Model):
 add_introspection_rules([], ["^oauth2client\.django_orm\.CredentialsField"])
 
 admin.site.register(GoogleAccount)
+admin.site.register(RecordPermission)
 #admin.site.register(RecordPermission)
