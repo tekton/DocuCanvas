@@ -54,7 +54,7 @@
                                 {% for x in board_notes %}
                                     if("{{x.id}}" == "{{i.nodeLink}}"){
                                         var newCircle = "circle" + circleId;
-                                        newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", "{{x.title}}", "{{x.description}}", circleId, {{i.id}});
+                                        newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", "{{x.title}}", "{{x.description|linebreaksbr}}", circleId, {{i.id}});
                                         circleId ++;
                                     };
                                 {% endfor %}
