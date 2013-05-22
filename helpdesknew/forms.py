@@ -5,7 +5,7 @@ from helpdesknew.models import HelpRequest, HelpResponse, HelpImageFile
 class HelpForm(forms.ModelForm):
 	class Meta:
 		model = HelpRequest
-		fields = ('user', 'question', 'photo', 'name')
+		fields = ('user', 'question', 'name')
 
 class AckForm(forms.ModelForm):
 	class Meta:

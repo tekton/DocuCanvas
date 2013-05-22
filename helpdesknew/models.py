@@ -15,7 +15,6 @@ class HelpRequest(models.Model):
 	name = models.CharField(max_length=140)
 	question = models.TextField(blank=True, null=True)
 	request_init = models.DateField(auto_now_add=True, null=True, blank=True)
-	photo = models.ImageField(upload_to="help/img", null=True, blank=True)
 	status = models.CharField(max_length=255, choices=help_state, default=(1, 1))
 	edit_status_bool = models.NullBooleanField(default=False)
 	ack_response = models.TextField(blank=True, null=True)
