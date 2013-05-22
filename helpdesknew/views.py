@@ -35,26 +35,6 @@ def help_form(request):
     helpForm = HelpForm(instance=helpRequest)
     return render_to_response('helpdesknew/help_form.html', {'form': helpForm, 'photoset': formset}, context_instance=RequestContext(request))
 
-'''
-@login_required
-def help_form(request):
-    if request.method == 'POST':
-        help = HelpRequest()
-        helpform = HelpForm(request.POST, request.FILES, instance=help)
-        try:
-            help = helpform.save()
-        except Exception, e:
-            print "could not save help form"
-            print e
-        if help.id:
-            return redirect('helpdesknew.views.get_help', help.id)
-        else:
-            print "something went wrong"
-            print help
-    else:
-        helpform = HelpForm()
-    return render_to_response('helpdesknew/help_form.html', {'form': helpform}, context_instance=RequestContext(request))
-'''
 
 @login_required
 def get_help(request, help_id):
@@ -120,16 +100,6 @@ def submit_response(request, help_id):
         form = HelpFormRequest()
     return redirect('helpdesknew.views.get_help', help_id, permanent=False)
 
-'''
-@login_required
-def get_all(request):
-    try:
-        all_help = HelpRequest.objects.all()
-    except Exception, e:
-        print "Couldn't find all questions"
-        print e
-    return render_to_response('helpdesknew/help_all_requests.html', {'form': all_help}, context_instance=RequestContext(request))
-'''
 
 @login_required
 def get_pending(request):
@@ -154,58 +124,6 @@ def get_resolved(request):
         print e
     return render_to_response('helpdesknew/help_resolved.html', {'form': resolved, 'closed': closed}, context_instance=RequestContext(request))
 
-'''
-@login_required
-def mark_as_answer(request, response_id):
-    try:
-        answer = HelpResponse.objects.get(pk=response_id)
-        print "it works the first time around"
-    except Exception, e:
-        print e
-        print "no answer"
-    try:
-        answers = HelpResponse.objects.filter(helprequest=answer.helprequest)
-    except Exception, e:
-        print e
-    if answer.helprequest.status == "('closed', 'Closed')":
-        return redirect('helpdesknew.views.error_page', 2)
-    else:
-        if request.method == 'POST':
-            response_form = ResponseFormValue(request.POST, instance=answer)
-            # if answer.helprequest.status == "('closed', 'Closed')":
-            #     return redirect('helpdesknew.views.error_page', 2)
-            # else:
-            if request.POST['value'] == 'answer':
-                if answer.helprequest.status == "('resolved', 'Resolved')":
-                    return redirect('helpdesknew.views.error_page', 1)
-                else:
-                    answer.mark_answer()
-                    try:
-                        answer.save()
-                    except Exception, e:
-                        print "answer didn't save"
-                    help = HelpRequest.objects.get(pk=answer.helprequest.id)
-                    help.update_status(2)
-                    help.save()
-            else:
-                answer.mark_input()
-                try:
-                    answer.save()
-                except Exception, e:
-                    print "input didn't save"
-                help = HelpRequest.objects.get(pk=answer.helprequest.id)
-                if help.status == "('resolved', 'Resolved')":
-                    help.update_status(3)
-                else:
-                    help.update_status(1)
-                help.save()
-            if answer.id:
-                help_id = answer.helprequest.id
-                return redirect('helpdesknew.views.get_help', help_id)
-        else:
-            response_form = ResponseFormValue(instance=answer)
-    return render_to_response('helpdesknew/mark_as_answer.html', {'response': answer, 'response_form': response_form}, context_instance=RequestContext(request))
-'''
 
 @login_required
 def user_help(request):
