@@ -23,9 +23,6 @@ def help_form(request):
         elif 'submit' in request.POST:
             helpForm = HelpForm(request.POST, instance=helpRequest)
             formset = photoFormset(request.POST, request.FILES, instance=helpRequest)
-            print helpForm.is_valid()
-            print formset.is_valid()
-            print "trying to save"
             if helpForm.is_valid() and formset.is_valid():
                 helpRequest = helpForm.save()
                 formset.save()
@@ -41,7 +38,6 @@ def get_help(request, help_id):
     try:
         help = HelpRequest.objects.get(pk=help_id)
     except Exception, e:
-        print "something went horribly horribly wrong"
         print e
     try:
         images = HelpImageFile.objects.filter(helprequest=help)
@@ -50,11 +46,11 @@ def get_help(request, help_id):
     try:
         comments = HelpResponse.objects.filter(helprequest=help).order_by('id')
     except Exception, e:
-        print "couldn't find input objects"
+        print e
     try:
         answer = HelpResponse.objects.filter(helprequest=help).filter(value="('answer', 'Answer')")
     except Exception, e:
-        print "couldn't find answer objects"
+        print e
     try:
         help_me = HelpResponse(helprequest=help)
         help_response = HelpFormResponse(instance=help_me)
@@ -83,19 +79,14 @@ def submit_response(request, help_id):
                     help_me = form.save()
                 except Exception, e:
                     print e
-                    print "couldn't validate comment"
                 state = help.status
                 if state == '(1, 1)':
                     help.update_status(1)
                     help.save()
-                    print "updated object saved"
                 else:
                     print help.status
-            else:
-                print "fix your form"
         except Exception, e:
             print e
-            print "couldn't create comment"
     else:
         form = HelpFormRequest()
     return redirect('helpdesknew.views.get_help', help_id, permanent=False)
@@ -107,7 +98,6 @@ def get_pending(request):
         requests_pending = HelpRequest.objects.exclude(status="('resolved', 'Resolved')")
         requests_pending = requests_pending.exclude(status="('closed', 'Closed')")
     except Exception, e:
-        print "Couldn't find all pending questions"
         print e
     return render_to_response('helpdesknew/pending_help.html', {'form': requests_pending}, context_instance=RequestContext(request))
 
@@ -131,7 +121,6 @@ def user_help(request):
         myuser = User.objects.get(pk=request.user.id)
     except Exception, e:
         print e
-        print "no myuser object"
     try:
         requests_from_user = HelpRequest.objects.filter(user=myuser)
     except Exception, e:
@@ -159,10 +148,8 @@ def user_help(request):
 def bypass_user(request, response_id):
     try:
         answer = HelpResponse.objects.get(pk=response_id)
-        print "it works the first time around"
     except Exception, e:
         print e
-        print "no answer"
     try:
         answers = HelpResponse.objects.filter(helprequest=answer.helprequest)
     except Exception, e:
@@ -183,7 +170,7 @@ def bypass_user(request, response_id):
                     try:
                         answer.save()
                     except Exception, e:
-                        print "answer didn't save"
+                        print e
                     help = HelpRequest.objects.get(pk=answer.helprequest.id)
                     help.update_status(2)
                     help.save()
@@ -192,7 +179,7 @@ def bypass_user(request, response_id):
                 try:
                     answer.save()
                 except Exception, e:
-                    print "input didn't save"
+                    print e
                 help = HelpRequest.objects.get(pk=answer.helprequest.id)
                 if help.status == "('resolved', 'Resolved')":
                     help.update_status(3)
@@ -299,7 +286,6 @@ def edit_question(request, help_id):
                 except Exception, e:
                     print e
                 if help.id:
-                    print "hi again!"
                     return redirect('helpdesknew.views.get_help', help.id)
                 else:
                     return render_to_response('helpdesknew/edit_question.html', {'help': help, 'form': helpform}, context_instance=RequestContext(request))
@@ -365,4 +351,3 @@ def ack_answer(request, response_id):
         return render_to_response('helpdesknew/ack_answer.html', {'help': help, 'answer': answer, 'form': helpform}, context_instance=RequestContext(request))
     else:
         return redirect('helpdesknew.views.get_help', answer.helprequest.id)
-
