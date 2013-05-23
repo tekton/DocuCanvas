@@ -25,7 +25,7 @@
 				</table>
 				<input type="submit" value="Lock Question"/>
 			</form>
-		{% else %}
+		{% elif help.status == "('closed', 'Closed')" %}
 			<form action="{{help.id}}" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 				<table>
@@ -40,6 +40,9 @@
 				</table>
 				<input type="submit" value="Unlock Question"/>
 			</form>
+		{% else %}
+			<p>A question must be either CLOSED or RESOLVED to use this feature</p>
+			<a href="/help/{{help.id}}">Click here to return to question overview</a>
 		{% endif %}
 	{% else %}
 		<h2>Administrator Access Required</h2>

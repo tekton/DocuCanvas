@@ -96,7 +96,7 @@ def submit_response(request, help_id):
 def get_pending(request):
     try:
         requests_pending = HelpRequest.objects.exclude(status="('resolved', 'Resolved')")
-        requests_pending = requests_pending.exclude(status="('closed', 'Closed')")
+        requests_pending = requests_pending.exclude(status="('closed', 'Closed')").order_by("-id")
     except Exception, e:
         print e
     return render_to_response('helpdesknew/pending_help.html', {'form': requests_pending}, context_instance=RequestContext(request))
