@@ -3,6 +3,7 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, Http404
@@ -260,7 +261,8 @@ def meta_issue_form(request, issue_id=-1):
     print "meta issue"
     if request.method == "GET":
         if issue_id == -1:
-            # TODO: Check if user has permission to create meta issues
+            if not request.user.has_perm("issues.add_metaissue"):
+                raise PermissionDenied
             return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True, 'pform': PermissionForm()}, context_instance=RequestContext(request))
 
         try:
@@ -269,8 +271,8 @@ def meta_issue_form(request, issue_id=-1):
             raise Http404
 
         pv, pu, pd = rputils.user_permissions(request.user, mi)
-        if not pv or not pu:
-            return HttpResponse("Unauthorized", status=401)
+        if not request.user.has_perm("issues.change_metaissue") or not pv or not pu:
+            raise PermissionDenied
 
         return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(instance=mi), 'new': False, 'canDelete': pd, 'pform': get_permission_form_for_model(mi)}, context_instance=RequestContext(request))
     else:
@@ -280,14 +282,15 @@ def meta_issue_form(request, issue_id=-1):
             except MetaIssue.DoesNotExist:
                 raise Http404
 
-            if not rputils.user_can_update(request.user, mi):
-                return HttpResponse("Unauthorized", status=401)
+            if not request.user.has_perm("issues.change_metaissue") or not rputils.user_can_update(request.user, mi):
+                raise PermissionDenied
             form = MetaIssueForm(data=request.POST, instance=mi)
             pform = PermissionForm(data=request.POST)
             print form
             print form.errors
         else:
-            # TODO: As above, check for permission to create meta issues
+            if not request.user.has_perm("issues.add_metaissue"):
+                raise PermissionDenied
             form = MetaIssueForm(data=request.POST)
             pform = PermissionForm(data=request.POST)
 
