@@ -525,6 +525,21 @@ def issue_search_advanced(request):
 
 
 @login_required
+def edit_comment(request):
+    to_json = {'success': True}
+
+    try:
+        comment = IssueComment.objects.get(pk=request.POST['comment_id'])
+        comment.description = request.POST['comment']
+        comment.save()
+    except Exception, e:
+        print e
+        to_json['success'] = False
+
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
+
+
+@login_required
 def submit_comment(request, issue_id):
     """
         Bad assumption: will only be called with POST...
