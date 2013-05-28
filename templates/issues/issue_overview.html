@@ -152,11 +152,6 @@
 
         	});
 
-            $('.tbl-comments-description').click(function(){
-                $(this).css('display', 'none');
-                $(this).next().css('display', 'block');
-            });
-
 		});
 
 	function unlink_issue(secondary_issue){
@@ -205,10 +200,30 @@
 
 	}
 
+    function edit_comment(comment, comment_user){
+        if (comment_user == '{{user}}'){
+            comment.css('display', 'none');
+            comment.next().css('display', 'block');
+        }
+    }
+
     function submit_comment_edit(comment){
-        comment.parent().css('display', 'none');
-        comment.parent().prev().text(comment.prev().val());
-        comment.parent().prev().css('display', 'block');
+        $.ajax({
+            type:"POST",
+                    url:"/issue/edit_comment",
+                    data:{
+                        comment_id: comment.attr('id'),
+                        comment: comment.prev().val(),
+                    },
+            success: function(data){       
+                        comment.parent().css('display', 'none');
+                        comment.parent().prev().text(comment.prev().val());
+                        comment.parent().prev().css('display', 'block');
+                    },
+            error: function(data){
+                        alert("Server side error");
+            }
+        });
     }
 	</script>
 {% endblock %}
@@ -364,10 +379,10 @@ s{% block container %}
 				<td class="tbl-fauxth tbl-comments-created">{{comment.created}}</td
 >			</tr>
 			<tr>
-				<td class="tbl-comments-description" colspan="2">{{comment.description|markdown:"safe"}}</td>
+				<td class="tbl-comments-description" colspan="2" onClick="edit_comment($(this), '{{comment.user}}')">{{comment.description|markdown:"safe"}}</td>
                 <td style="display:none" class="tbl-comments-description-edit" colspan="2">
                     <input type="text"   value="{{comment.description}}"/>
-                    <input type="button" onClick="submit_comment_edit($(this))" value="submit"/>
+                    <input type="button" onClick="submit_comment_edit($(this))" value="submit" id="{{comment.id}}"/>
                 </td>
 			</tr>
 		{% endfor %}
