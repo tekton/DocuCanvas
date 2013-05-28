@@ -80,7 +80,15 @@
     padding: .2em;
 }
 
+.tbl-comments .tbl-comments-description:hover {
+    cursor: pointer;
+}
 
+.tbl-comments-description-edit{
+    font-size: 1em;
+    width: 100%;
+    padding: .2em;
+}
 /*
  * Dashboard Table
  * 
