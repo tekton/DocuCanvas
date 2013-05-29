@@ -304,7 +304,6 @@ def edit_comment(request, response_id):
 @login_required
 def ack_answer(request, response_id):
     answer = HelpResponse.objects.get(pk=response_id)
-    print answer.value
     if request.user.id == answer.helprequest.user.id:
         answer = HelpResponse.objects.get(pk=response_id)
         if request.method == 'POST':
