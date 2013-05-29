@@ -3,11 +3,13 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from forms import ReportForm
+from projects.models import Project
 from models import *
 
 
 @login_required
 def edit_report(request, year=0, month=0, day=0):
+    projects = Project.objects.all()
     if request.method == 'POST':
         form = ReportForm(request.POST)
         if form.is_valid():
@@ -21,7 +23,7 @@ def edit_report(request, year=0, month=0, day=0):
                 print e
                 return render_to_response('daily_reports/daily_report_form.html', {'form': form}, context_instance=RequestContext(request))
         else:
-            return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': False}, context_instance=RequestContext(request))
+            return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': False, "projects": projects}, context_instance=RequestContext(request))
 
     else:
         d = date.today()
@@ -45,11 +47,12 @@ def edit_report(request, year=0, month=0, day=0):
             form = ReportForm(initial={"date": d, "personalReport": q[0].description})
         else:
             form = ReportForm(initial={"date": d})
-        return render_to_response("daily_reports/daily_report_form.html", {'form': form, 'global': False}, context_instance=RequestContext(request))
+        return render_to_response("daily_reports/daily_report_form.html", {'form': form, 'global': False, "projects": projects}, context_instance=RequestContext(request))
 
 
 @login_required
 def edit_global_report(request, year=0, month=0, day=0):
+    projects = Project.objects.all()
     if request.method == 'POST':
         form = ReportForm(request.POST)
         if form.is_valid():
@@ -61,9 +64,9 @@ def edit_global_report(request, year=0, month=0, day=0):
                 return redirect('daily_reports.views.edit_global_report')
             except Exception, e:
                 print e
-                return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': True}, context_instance=RequestContext(request))
+                return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': True, "projects": projects}, context_instance=RequestContext(request))
         else:
-            return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': True}, context_instance=RequestContext(request))
+            return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': True, "projects": projects}, context_instance=RequestContext(request))
 
     else:
         d = date.today()
@@ -86,11 +89,12 @@ def edit_global_report(request, year=0, month=0, day=0):
             form = ReportForm(initial={"date": d, "personalReport": q[0].description})
         else:
             form = ReportForm(initial={"date": d})
-        return render_to_response("daily_reports/daily_report_form.html", {'form': form, 'global': True}, context_instance=RequestContext(request))
+        return render_to_response("daily_reports/daily_report_form.html", {'form': form, 'global': True, "projects": projects}, context_instance=RequestContext(request))
 
 
 @login_required
 def view_reports(request, year=0, month=0, day=0):
+    projects = Project.objects.all()
     d = date.today()
     if (year != 0):
         try:
@@ -106,12 +110,13 @@ def view_reports(request, year=0, month=0, day=0):
         raise e
 
     if qg:
-        return render_to_response("daily_reports/daily_report_overview.html", {'globalReport': qg[0], 'reports': q, 'date': d}, context_instance=RequestContext(request))
+        return render_to_response("daily_reports/daily_report_overview.html", {'globalReport': qg[0], 'reports': q, 'date': d, "projects": projects}, context_instance=RequestContext(request))
     else:
-        return render_to_response("daily_reports/daily_report_overview.html", {'globalReports': None, 'reports': q, 'date': d}, context_instance=RequestContext(request))
+        return render_to_response("daily_reports/daily_report_overview.html", {'globalReports': None, 'reports': q, 'date': d, "projects": projects}, context_instance=RequestContext(request))
 
 
 def mail_report():
+    projects = Project.objects.all()
     d = date.today()
     try:
         q = UserDailyReport.objects.filter(date=d)
@@ -119,7 +124,7 @@ def mail_report():
     except Exception, e:
         print "Exception: " + str(e)
         raise e
-    return render_to_response("daily_reports/daily_report_overview.html", {'globalReport': qg[0], 'reports': q, 'date': d}, context_instance=RequestContext(request))
+    return render_to_response("daily_reports/daily_report_overview.html", {'globalReport': qg[0], 'reports': q, 'date': d, "projects": projects}, context_instance=RequestContext(request))
 
     email_subject = "Daily Report " + str(d)
     email_sender = "test@replace_me.com"
@@ -140,5 +145,6 @@ def mail_report():
 
 
 def index(request):
+    projects = Project.objects.all()
     reports = UserDailyReport.objects.filter(user=request.user).order_by('-date')[:5]
-    return render_to_response("daily_reports/report_index.html", {"reports": reports}, context_instance=RequestContext(request))
+    return render_to_response("daily_reports/report_index.html", {"reports": reports, "projects": projects}, context_instance=RequestContext(request))
