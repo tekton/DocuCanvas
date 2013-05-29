@@ -38,7 +38,7 @@ def get_help(request, help_id):
     try:
         help = HelpRequest.objects.get(pk=help_id)
     except Exception, e:
-        return redirect('helpdesknew.views.error_page', 7)
+        return render_to_response('helpdesknew/error_page.html', {'error_id': "7"}, context_instance=RequestContext(request))
     try:
         images = HelpImageFile.objects.filter(helprequest=help)
     except Exception, e:
@@ -64,7 +64,7 @@ def submit_response(request, help_id):
     try:
         help = HelpRequest.objects.get(pk=help_id)
     except Exception, e:
-        return redirect('helpdesknew.views.error_page', 7)
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     help_me = HelpResponse(helprequest=help)
     if request.method == 'POST':
         try:
@@ -73,7 +73,7 @@ def submit_response(request, help_id):
                 try:
                     help_me = form.save()
                 except Exception, e:
-                    return redirect('helpdesknew.views.error_page', 8)
+                    return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
                 state = help.status
                 if state == '(1, 1)':
                     help.update_status(1)
@@ -90,7 +90,7 @@ def get_pending(request):
     try:
         requests_pending = HelpRequest.objects.exclude(status="('resolved', 'Resolved')").exclude(status="('closed', 'Closed')").order_by("-id")
     except Exception, e:
-        return redirect('helpdesknew.views.error_page', 7)
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     return render_to_response('helpdesknew/pending_help.html', {'form': requests_pending}, context_instance=RequestContext(request))
 
 
@@ -112,19 +112,19 @@ def user_help(request):
     try:
         requests_from_user = HelpRequest.objects.filter(user=request.user)
     except Exception, e:
-        return redirect('helpdesknew.views.error_page', 7)
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     try:
         responses = requests_from_user.exclude(status="('resolved', 'Resolved')").exclude(status="('closed', 'Closed')").order_by("-id")
     except Exception, e:
-        return redirect('helpdesknew.views.error_page', 7)
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     try:
         answers = requests_from_user.filter(status="('resolved', 'Resolved')").order_by('-id')
     except Exception, e:
-        return redirect('helpdesknew.views.error_page', 7)
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     try:
         more_answers = requests_from_user.filter(status="('closed', 'Closed')").order_by('-id')
     except Exception, e:
-        return redirect('helpdesknew.views.error_page', 7)
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user, 'responses': responses, 'answers': answers, "myuser": request.user, "more_answers": more_answers}, context_instance=RequestContext(request))
 
 
@@ -139,13 +139,13 @@ def bypass_user(request, response_id):
     except Exception, e:
         print e
     if answer.helprequest.status == "('closed', 'Closed')":
-        return redirect('helpdesknew.views.error_page', 2)
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '2'}, context_instance=RequestContext(request))
     else:
         if request.method == 'POST':
             response_form = ResponseFormValue(request.POST, instance=answer)
             if request.POST['value'] == 'answer':
                 if answer.helprequest.status == "('resolved', 'Resolved')":
-                    return redirect('helpdesknew.views.error_page', 1)
+                    return render_to_response('helpdesknew/error_page.html', {'error_id': '1'}, context_instance=RequestContext(request))
                 else:
                     answer.mark_answer()
                     try:
@@ -185,7 +185,7 @@ def close_question(request, help_id):
     try:
         help = HelpRequest.objects.get(pk=help_id)
     except Exception, e:
-        return redirect('helpdesknew.views.error_page', 7)
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     if request.method == 'POST':
         if help.status == "('resolved', 'Resolved')":
             try:
@@ -208,7 +208,7 @@ def close_question(request, help_id):
                 print e
             return redirect('helpdesknew.views.get_help', help_id)
         else:
-            return redirect('helpdesknew.views.error_page', 3)
+            return render_to_response('helpdesknew/error_page.html', {'error_id': '3'}, context_instance=RequestContext(request))
     return render_to_response('helpdesknew/close_question.html', {'help': help}, context_instance=RequestContext(request))
 
 
@@ -217,12 +217,12 @@ def mark_the_answer(request, response_id):
     try:
         answer = HelpResponse.objects.get(pk=response_id)
     except Exception, e:
-        return redirect('helpdesknew.views.error_page', 7)
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     if request.method == 'POST':
         if answer.helprequest.status == "('resolved', 'Resolved')":
-            return redirect('helpdesknew.views.error_page', 1)
+            return render_to_response('helpdesknew/error_page.html', {'error_id': '1'}, context_instance=RequestContext(request))
         elif answer.helprequest.status == "('closed', 'Closed')":
-            return redirect('helpdesknew.views.error_page', 2)
+            return render_to_response('helpdesknew/error_page.html', {'error_id': '2'}, context_instance=RequestContext(request))
         else:
             answer.mark_answer()
             answer.helprequest.update_status(2)
@@ -237,10 +237,10 @@ def mark_the_input(request, response_id):
     try:
         answer = HelpResponse.objects.get(pk=response_id)
     except Exception, e:
-        return redirect('helpdesknew.views.error_page', 7)
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
     if request.method == 'POST':
         if answer.helprequest.status == "('closed', 'Closed')":
-            return redirect('helpdesknew.views.error_page', 2)
+            return render_to_response('helpdesknew/error_page.html', {'error_id': '2'}, context_instance=RequestContext(request))
         else:
             answer.mark_input()
             answer.helprequest.update_status(3)
@@ -255,7 +255,7 @@ def edit_question(request, help_id):
     helpdeez = HelpRequest.objects.get(pk=help_id)
     if request.user.id == helpdeez.user.id:
         if helpdeez.status == "('closed', 'Closed')":
-            return redirect('helpdesknew.views.error_page', 5)
+            return render_to_response('helpdesknew/error_page.html', {'error_id': '5'}, context_instance=RequestContext(request))
         if request.method == 'POST':
             help = HelpRequest.objects.get(pk=help_id)
             helpform = HelpForm(request.POST, instance=help)
@@ -264,7 +264,7 @@ def edit_question(request, help_id):
                 try:
                     help = helpform.save()
                 except Exception, e:
-                    return redirect('helpdesknew.views.get_help', 8)
+                    return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
                 return redirect('helpdesknew.views.get_help', help.id)
         else:
             help = HelpRequest.objects.get(pk=help_id)
@@ -279,7 +279,7 @@ def edit_comment(request, response_id):
     respondeez = HelpResponse.objects.get(pk=response_id)
     if request.user.id == respondeez.user.id:
         if respondeez.value == "('answer', 'Answer')":
-            return redirect('helpdesknew.views.error_page', 4)
+            return render_to_response('helpdesknew/error_page.html', {'error_id': '4'}, context_instance=RequestContext(request))
         if request.method == 'POST':
             comment = HelpResponse.objects.get(pk=response_id)
             comment_form = HelpFormResponse(request.POST, instance=comment)
@@ -287,7 +287,7 @@ def edit_comment(request, response_id):
                 try:
                     comment = comment_form.save()
                 except Exception, e:
-                    return redirect('helpdesknew.views.error_page', 8)
+                    return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
                 return redirect('helpdesknew.views.get_help', comment.helprequest.id)
         else:
             comment = HelpResponse.objects.get(pk=response_id)
@@ -310,7 +310,7 @@ def ack_answer(request, response_id):
                 try:
                     help = helpform.save()
                 except Exception, e:
-                    return redirect('helpdesknew.views.error_page', 8)
+                    return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
                 return redirect('helpdesknew.views.get_help', answer.helprequest.id)
         else:
             answer = HelpResponse.objects.get(pk=response_id)
