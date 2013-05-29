@@ -99,11 +99,11 @@ def get_resolved(request):
     try:
         resolved = HelpRequest.objects.filter(status="('resolved', 'Resolved')").order_by('-id')
     except Exception, e:
-        print e
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     try:
         closed = HelpRequest.objects.filter(status="('closed', 'Closed')").order_by('-id')
     except Exception, e:
-        print e
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     return render_to_response('helpdesknew/help_resolved.html', {'form': resolved, 'closed': closed}, context_instance=RequestContext(request))
 
 
