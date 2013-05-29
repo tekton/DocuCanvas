@@ -215,7 +215,7 @@
                         comment_id: comment.attr('id'),
                         comment: comment.prev().val(),
                     },
-            success: function(data){       
+            success: function(data){
                         comment.parent().css('display', 'none');
                         comment.parent().prev().text(comment.prev().val());
                         comment.parent().prev().css('display', 'block');

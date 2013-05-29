@@ -9,7 +9,7 @@
 			<td>Owner</td>
 			<td>Name</td>
 		</tr>
-		{% for project in projects %}
+		{% for project in owned_projects %}
 			<tr>
 				<td>{{project.product_owner}}</td>
 				<td><a href="/project/{{project.id}}">{{project.name}}</a></td>
