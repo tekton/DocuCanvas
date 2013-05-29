@@ -130,21 +130,21 @@
                 box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
                 background: #fcfcfc;
 
-                font-size: .8em;           
+                font-size: .8em;
             }
 
             .left {
                 float: left;
             }
-            
+
             .right {
                 float: right;
             }
-            
+
             .right-avoid {
-                
+
             }
-            
+
             .both {
                 clear: both;
             }
@@ -200,7 +200,6 @@
                 width: 135px;
                 padding: 1em;
                 position: absolute;
-                height: 2em;
                 overflow: hidden;
                 z-index:10;
                 font-size:0.7em;
@@ -294,11 +293,11 @@
             }
         /* titles and stuff */
         .title {
-            
+
         }
-        
+
         .sub-title {
-            
+
         }
 
 #mainheader {
@@ -354,7 +353,7 @@
             /* Nav Menu - START */
 {% include "include/NavMenu.js" %}
             /* Nav Menu - END */
-            
+
             $(document).ready(function(){
                 csrftoken = getCookie('csrftoken');
                 $.ajaxSetup({
@@ -384,35 +383,35 @@
                         $('#search_nav').slideToggle();
                     });
 
-                    //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
+                    //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();})
 
-                    $(document).click(function(event) { 
+                    $(document).click(function(event) {
                         if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
 
                             if($('#account_nav').css('display') != "none"){
-                                $('#account_nav').slideToggle(); 
-                            }                
+                                $('#account_nav').slideToggle();
+                            }
                         }
 
                         if($(event.target).index($('#projects_nav')) == -1 && $(event.target).attr('id') != "projects_list"){
 
                             if($('#projects_nav').css('display') != "none"){
-                                $('#projects_nav').slideToggle(); 
-                            }                
+                                $('#projects_nav').slideToggle();
+                            }
                         }
 
                         if($(event.target).index($('#context_nav')) == -1 && $(event.target).attr('id') != "context"){
 
                             if($('#context_nav').css('display') != "none"){
-                                $('#context_nav').slideToggle(); 
-                            }                
+                                $('#context_nav').slideToggle();
+                            }
                         }
 
                         if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search_icon"){
 
                             if($('#search_nav').css('display') != "none"){
-                                $('#search_nav').slideToggle(); 
-                            }                
+                                $('#search_nav').slideToggle();
+                            }
                         }
                     });
                 */
@@ -428,32 +427,33 @@
         <div id="top_nav" class="both">
             <form action="/issue/search" method="POST">{% csrf_token %}
              <div class="left"><a href="/" class="ui-icon ui-icon-home" id="home_icon"></a></div>
-             <div class="right"> 
-                <div class="main_nav_button navitem" id="context">Context Drop Down </div> | 
+             <div class="right">
+                <div class="main_nav_button navitem" id="context">Context Drop Down </div> |
                 <div class="main_nav_button navitem" id="projects_list">Project List </div>|
                 <div class="main_nav_button navitem"><a id="account">{{user|truncatechars:15}} </a></div>|
                 <a class="ui-icon ui-icon-search navitem" id="search_icon" a href="/issue/advsearch"></a>
                 <div class="main_nav_button navitem"><input type="text" name="searchText" id="search"/><input type="submit" value="search"/></div>
             </div>
             </form>
-            <div id="context_nav" class="container_nav navitem"> 
-                {% block context_nav %}{% endblock %}  
+            <div id="context_nav" class="container_nav navitem">
+                {% block context_nav %}{% endblock %}
             </div>
-            <div id="projects_nav" class="container_nav navitem"> 
+            <div id="projects_nav" class="container_nav navitem">
                 {% for project in projects%}
                    <a href="/project/{{project.id}}">{{project.name}}</a>
                 {% endfor %}
                 <a href="/project/new">New Project</a>
             </div>
-            <div id="account_nav" class="container_nav navitem">   
+            <div id="account_nav" class="container_nav navitem">
+                <a href="/reports/edit">Daily Reports</a>
                 <a href="/accounts/account_settings">Account Settings</a>
                 <a href="/accounts/logout/?next=/">Logout</a>
             </div>
-            <!--<div id="search_nav" class="container_nav navitem">   
+            <!--<div id="search_nav" class="container_nav navitem">
                 <a href="/issue/advsearch">Advanced Search</a>
             </div>-->
         </div>
-        <h1 id="mainheader" class="both">{{page_type}} 
+        <h1 id="mainheader" class="both">{{page_type}}
             <span>:: {{page_value}}
             {% if issue%}
              :: {{issue.status}}
@@ -466,7 +466,7 @@
         <div class="spiffy_box right">{% block spiffy_box_right %}{% endblock %}</div>
         <div class="container">
             {% block container %}{% endblock %}
-            
+
         </div>
         <div class="container" id="container_bottom_clear">
             {% block container_bottom_clear %}{% endblock %}

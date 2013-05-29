@@ -10,6 +10,12 @@
     </script>
 {% endblock%}-->
 
+{% block context_nav %}
+    <a href="/issue/unassigned" >Unassigned Issues</a>
+    <a href="issue/new">New Issue</a>
+
+{% endblock %}
+
 {% block container %}
     <form action="/issue/new" method="post" enctype="multipart/form-data">
         {% csrf_token %}
