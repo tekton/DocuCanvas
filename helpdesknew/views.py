@@ -79,7 +79,7 @@ def submit_response(request, help_id):
                     help.update_status(1)
                     help.save()
         except Exception, e:
-            print e
+            return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
     else:
         form = HelpFormRequest()
     return redirect('helpdesknew.views.get_help', help_id, permanent=False)
@@ -129,53 +129,6 @@ def user_help(request):
 
 
 @login_required
-def bypass_user(request, response_id):
-    try:
-        answer = HelpResponse.objects.get(pk=response_id)
-    except Exception, e:
-        print e
-    try:
-        answers = HelpResponse.objects.filter(helprequest=answer.helprequest)
-    except Exception, e:
-        print e
-    if answer.helprequest.status == "('closed', 'Closed')":
-        return render_to_response('helpdesknew/error_page.html', {'error_id': '2'}, context_instance=RequestContext(request))
-    else:
-        if request.method == 'POST':
-            response_form = ResponseFormValue(request.POST, instance=answer)
-            if request.POST['value'] == 'answer':
-                if answer.helprequest.status == "('resolved', 'Resolved')":
-                    return render_to_response('helpdesknew/error_page.html', {'error_id': '1'}, context_instance=RequestContext(request))
-                else:
-                    answer.mark_answer()
-                    try:
-                        answer.save()
-                    except Exception, e:
-                        print e
-                    help = HelpRequest.objects.get(pk=answer.helprequest.id)
-                    help.update_status(2)
-                    help.save()
-            else:
-                answer.mark_input()
-                try:
-                    answer.save()
-                except Exception, e:
-                    print e
-                help = HelpRequest.objects.get(pk=answer.helprequest.id)
-                if help.status == "('resolved', 'Resolved')":
-                    help.update_status(3)
-                else:
-                    help.update_status(1)
-                help.save()
-            if answer.id:
-                help_id = answer.helprequest.id
-                return redirect('helpdesknew.views.get_help', help_id)
-        else:
-            response_form = ResponseFormValue(instance=answer)
-    return render_to_response('helpdesknew/bypass_user.html', {'response': answer, 'response_form': response_form}, context_instance=RequestContext(request))
-
-
-@login_required
 def error_page(request, error_id):
     return render_to_response('helpdesknew/error_page.html', {'error_id': error_id}, context_instance=RequestContext(request))
 
@@ -195,7 +148,7 @@ def close_question(request, help_id):
             try:
                 help.save()
             except Exception, e:
-                print e
+                return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
             return redirect('helpdesknew.views.get_help', help_id)
         elif help.status == "('closed', 'Closed')":
             try:
@@ -205,7 +158,7 @@ def close_question(request, help_id):
             try:
                 help.save()
             except Exception, e:
-                print e
+                return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
             return redirect('helpdesknew.views.get_help', help_id)
         else:
             return render_to_response('helpdesknew/error_page.html', {'error_id': '3'}, context_instance=RequestContext(request))
