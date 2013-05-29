@@ -42,15 +42,15 @@ def get_help(request, help_id):
     try:
         images = HelpImageFile.objects.filter(helprequest=help)
     except Exception, e:
-        print e
+        return render_to_response('helpdesknew/error_page.html', {'error_id': "7"}, context_instance=RequestContext(request))
     try:
         comments = HelpResponse.objects.filter(helprequest=help).order_by('id')
     except Exception, e:
-        print e
+        return render_to_response('helpdesknew/error_page.html', {'error_id': "7"}, context_instance=RequestContext(request))
     try:
         answer = HelpResponse.objects.filter(helprequest=help).filter(value="('answer', 'Answer')")
     except Exception, e:
-        print e
+        return render_to_response('helpdesknew/error_page.html', {'error_id': "7"}, context_instance=RequestContext(request))
     try:
         help_response = HelpFormResponse(instance=HelpResponse(helprequest=help))
         help_form = HelpForm(instance=help)
@@ -144,7 +144,7 @@ def close_question(request, help_id):
             try:
                 help.update_status(4)
             except Exception, e:
-                print e
+                return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
             try:
                 help.save()
             except Exception, e:
@@ -154,7 +154,7 @@ def close_question(request, help_id):
             try:
                 help.update_status(2)
             except Exception, e:
-                print e
+                return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
             try:
                 help.save()
             except Exception, e:
