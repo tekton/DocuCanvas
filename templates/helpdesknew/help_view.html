@@ -171,7 +171,7 @@ img.pending-image-help{
 		{% for comment in comments %}
 			<tr class="tbl-rowheader">
 				<td class="tbl-fauxth tbl-comments-user">
-					{% if user.id == help.user.id and help.status != "('closed', 'Closed')" %}
+					{% if user.id == help.user.id and help.status != "('closed', 'Closed')" and help.status != "('resolved', 'Resolved')" %}
 						<a class='popup'>
 							<b>{{comment.user}}</b>
 							<span>
@@ -181,7 +181,7 @@ img.pending-image-help{
 								</form>
 							</span>
 						</a>
-					{% elif user.is_staff %}
+					{% elif user.is_staff and help.status != "('closed', 'Closed')" and help.status != "('resolved', 'Resolved')" %}
 						<a class='popup'><b>{{comment.user}}</b>
 							<span>
 								<form action="/help/mark_the_answer/{{comment.id}}" id="submit_answer_form" method="post" enctype="multipart/form-data">
