@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block context_nav %}
-    <a href="/">Dashboard</a>
-    <a href="/project">Projects</a>
+    <a href="/issue/new">New Issue</a>
+    <a href="/issue/unassigned">Unassigned Issues</a>
+    <a href="/food/all">Food Requests</a>
+    <a href="/reports/edit">Daily Reports</a>
+    <a href="/help/user/{{user.id}}">Help</a>
 {% endblock%}
 
 {% block container %}

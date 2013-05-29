@@ -45,16 +45,17 @@ def register(request):
     else:
         form = RegisterForm()
         next = request.GET.get("next", "/")
-     # Add CSRF context token to response.
+    # Add CSRF context token to response.
     # return render_to_response("registration/registration.html", {'form': form, 'next': next}, context_instance=RequestContext(request))
     # return render_to_response("registration/registration.html", {'r_form': form, 'next': next}, context_instance=RequestContext(request))
     return render_to_response("registration/login.html", {}, context_instance=RequestContext(request))
 
 
 def login_func(request):
-    next = request.POST.get("next", "/")
+    next = request.GET.get("next", "/")
     state = ""
     if request.method == 'POST':
+	next = request.POST.get("next", "/")  # in theory we could take the default from before, but in case a url gets weird lets set a real default
         try:
             form = AuthenticationForm(data=request.POST)
             if form.is_valid():
@@ -69,7 +70,7 @@ def login_func(request):
                     state = "Your username and/or password were incorrect."
                 login(request, user)
                 #return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
-                return redirect('dashboard.views.home')
+                return redirect(next)
             else:
                 #to_json = {"error": "error with username and/or password"}
                 #return HttpResponse(simplejson.dumps(to_json), mimetype='application/json', status=400)
@@ -85,7 +86,11 @@ def login_func(request):
 
 
 def account_settings(request):
-    return render_to_response("registration/account_settings.html", {}, context_instance=RequestContext(request))
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    return render_to_response("registration/account_settings.html", {"projects": projects}, context_instance=RequestContext(request))
 
 
 def change_password(request):
