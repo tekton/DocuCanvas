@@ -9,9 +9,13 @@ from issues.models import *
 
 @login_required
 def home(request):
-    projects = Project.objects.all()
-    owned_projects = Project.objects.filter(product_owner=request.user)
-    return render_to_response("projects/projects.html", {'owned_projects': owned_projects, 'projects': projects, "page_type": "Project"}, context_instance=RequestContext(request))
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+        projects = []
+    #owned_projects = Project.objects.filter(product_owner=request.user)
+    return render_to_response("projects/projects.html", {'projects': projects, "page_type": "Projects"}, context_instance=RequestContext(request))
 
 
 @login_required
