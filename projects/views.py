@@ -9,8 +9,9 @@ from issues.models import *
 
 @login_required
 def home(request):
-    projects = Project.objects.filter(product_owner=request.user)
-    return render_to_response("projects/projects.html", {'projects': projects, "page_type": "Project"}, context_instance=RequestContext(request))
+    projects = Project.objects.all()
+    owned_projects = Project.objects.filter(product_owner=request.user)
+    return render_to_response("projects/projects.html", {'owned_projects': owned_projects, 'projects': projects, "page_type": "Project"}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -63,6 +64,7 @@ def project_overview(request, project_id):
 
 @login_required
 def project_stats(request, project_id):
+    projects = Project.objects.all()
     try:
         project = Project.objects.get(pk=project_id)
 
@@ -91,11 +93,12 @@ def project_stats(request, project_id):
     except Exception, e:
         print e
 
-    return render_to_response("projects/project_stats.html", {"project": project, "criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues, "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": project.name, "page_value":"Report"}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_stats.html", {"project": project, "projects": projects, "criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues, "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": project.name, "page_value":"Report"}, context_instance=RequestContext(request))
 
 
 @login_required
 def edit(request, project_id):
+    projects = Project.objects.all()
     if request.method == 'POST':
         project = Project.objects.get(pk=project_id)
         form = ProjectForm(request.POST, instance=project)
@@ -113,7 +116,7 @@ def edit(request, project_id):
     else:
         project = Project.objects.get(pk=project_id)
         form = ProjectForm(instance=project)
-    return render_to_response("projects/project_edit.html", {"form": form, "project": project, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_edit.html", {"form": form, "project": project, "projects": projects, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
 
 
 def CodeNames(request):

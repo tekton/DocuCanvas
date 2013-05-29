@@ -258,6 +258,7 @@ def issue_to_issue_link(request):
 
 @login_required
 def meta_issue_form(request, issue_id=-1):
+    projects = Project.objects.all()
     print "meta issue"
 
     try:
@@ -270,6 +271,7 @@ def meta_issue_form(request, issue_id=-1):
         if issue_id == -1:
             if not request.user.has_perm("issues.add_metaissue"):
                 raise PermissionDenied
+
             return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True, 'pform': PermissionForm(), "projects": projects}, context_instance=RequestContext(request))
 
         try:
@@ -282,6 +284,7 @@ def meta_issue_form(request, issue_id=-1):
             raise PermissionDenied
 
         return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(instance=mi), 'new': False, 'canDelete': pd, 'pform': get_permission_form_for_model(mi), "projects": projects}, context_instance=RequestContext(request))
+
     else:
         if issue_id != -1:
             try:
@@ -316,6 +319,7 @@ def meta_issue_form(request, issue_id=-1):
                 return redirect('issues.views.meta_issue_form')
 
         else:
+
             return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': True, 'pform': pform, "projects": projects}, context_instance=RequestContext(request))
 
 
@@ -595,5 +599,6 @@ def submit_comment(request, issue_id):
 
 @login_required
 def unassigned_issues(request):
+    projects = Project.objects.all()
     q = Issue.objects.filter(Q(assigned_to__isnull=True) & (Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True))).order_by('created')
-    return render_to_response('issues/issue_unassigned.html', {'issues': q}, context_instance=RequestContext(request))
+    return render_to_response('issues/issue_unassigned.html', {'issues': q, 'projects': projects}, context_instance=RequestContext(request))
