@@ -40,12 +40,12 @@ img.pending-image-help{
 
 {% block container %}
 <h2>All Questions from {{myuser.username}}</h2>
-	{% if res_count or ans_count or clo_count %}
+	{% if responses or answers or more_answers %}
 		<table class="tbl-generic tbl-overview">
 			<tr>
 				<td class="tbl-fauxth" colspan=3><h3>Pending</h3></td>
 			</tr>
-			{% if res_count != 0 %}
+			{% if responses %}
 				<tr class="tbl-rowheader">
 					<td class="tbl-fauxth">Summary</td>
 					<td class="tbl-fauxth">Date Asked</td>
@@ -88,7 +88,7 @@ img.pending-image-help{
 			<tr>
 				<td class="tbl-fauxth" colspan=3><h3>Resolved</h3></td>
 			</tr>
-			{% if ans_count != 0 %}
+			{% if answers %}
 				<tr class="tbl-rowheader">
 					<td class="tbl-fauxth">Summary</td>
 					<td class="tbl-fauxth">Image Attached</td>
@@ -117,7 +117,7 @@ img.pending-image-help{
 					<td colspan=3>There are no resolved question objects.</td>
 				</tr>
 			{% endif %}
-			{% if clo_count != 0 %}
+			{% if more_answers %}
 			<tr>
 				<td class="tbl-fauxth" colspan=3><h3>Solved & Sealed</h3></td>
 			</tr>

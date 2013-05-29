@@ -19,7 +19,7 @@ def help_form(request):
         if 'add_help_screenshot' in request.POST:
             cp = request.POST.copy()
             cp['helpimagefile_set-TOTAL_FORMS'] = int(cp['helpimagefile_set-TOTAL_FORMS']) + 1
-            formset = photoFormset(cp)
+            formset = photoFormset(cp, request.FILES)
         elif 'submit' in request.POST:
             helpForm = HelpForm(request.POST, instance=helpRequest)
             formset = photoFormset(request.POST, request.FILES, instance=helpRequest)
@@ -112,24 +112,20 @@ def user_help(request):
     try:
         requests_from_user = HelpRequest.objects.filter(user=request.user)
     except Exception, e:
-        print e
+        return redirect('helpdesknew.views.error_page', 7)
     try:
-        responses = requests_from_user.exclude(status="('resolved', 'Resolved')")
-        responses = responses.exclude(status="('closed', 'Closed')").order_by("-id")
+        responses = requests_from_user.exclude(status="('resolved', 'Resolved')").exclude(status="('closed', 'Closed')").order_by("-id")
     except Exception, e:
-        print e
+        return redirect('helpdesknew.views.error_page', 7)
     try:
         answers = requests_from_user.filter(status="('resolved', 'Resolved')").order_by('-id')
     except Exception, e:
-        print e
+        return redirect('helpdesknew.views.error_page', 7)
     try:
         more_answers = requests_from_user.filter(status="('closed', 'Closed')").order_by('-id')
     except Exception, e:
-        print e
-    res_count = responses.count()
-    ans_count = answers.count()
-    clo_count = more_answers.count()
-    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user, 'responses': responses, 'answers': answers, 'res_count': res_count, 'ans_count': ans_count, "myuser": request.user, "more_answers": more_answers, "clo_count": clo_count}, context_instance=RequestContext(request))
+        return redirect('helpdesknew.views.error_page', 7)
+    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user, 'responses': responses, 'answers': answers, "myuser": request.user, "more_answers": more_answers}, context_instance=RequestContext(request))
 
 
 @login_required
