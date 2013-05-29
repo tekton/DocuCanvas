@@ -35,7 +35,7 @@ def project_checklists(request, project_id):
             print e
             print 'Checklist Instance not found'
 
-    return render_to_response("checklists/checklists.html", {"checklists": checklists, "checklist_instances": checklist_instances, "project": project, "projects": projects,  "project_id": project_id, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
+    return render_to_response("checklists/checklists.html", {"checklists": checklists, "checklist_instances": checklist_instances, "project": project, "projects": projects,  "project_id": project_id, "page_type": project.name, "page_value": "Checklists"}, context_instance=RequestContext(request))
 
 
 @login_required
