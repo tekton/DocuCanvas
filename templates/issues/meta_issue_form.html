@@ -15,6 +15,26 @@
 
 {% endblock %}
 
+{% block context_nav %}
+    {% if form.project.value %}
+    <a href="/issue/new/{{form.project.value}}">New Issue</a>
+    <a href="/issue/meta/new">New Meta Issue</a>
+    <a href="/issue/new/{{form.project.value}}">New Risk</a>
+    <a href="/checklist/new/{{form.project.value}}">New Checklist</a>
+    <a href="/project/{{form.project.value}}/stats">Report</a>
+    <a href="/checklist/project/{{form.project.value}}">Checklists</a>
+    <a href="/project/{{form.project.value}}/edit">Edit Project</a>
+
+    {% else %}
+    <a href="/issue/new">New Issue</a>
+    <a href="/issue/unassigned">Unassigned Issues</a>
+    <a href="/food/all">Food Requests</a>
+    <a href="/reports/edit">Daily Reports</a>
+    <a href="/help/user/{{user.id}}">Help</a>
+    {% endif %}
+{% endblock%}
+
+
 {% block container %}
     <form id="miform" action="/issue/meta/{% if new %}new{% else %}{{ form.instance.id }}/edit{% endif %}" method="post">
         {% csrf_token %}

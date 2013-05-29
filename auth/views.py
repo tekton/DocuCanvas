@@ -85,7 +85,11 @@ def login_func(request):
 
 
 def account_settings(request):
-    return render_to_response("registration/account_settings.html", {}, context_instance=RequestContext(request))
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    return render_to_response("registration/account_settings.html", {"projects": projects}, context_instance=RequestContext(request))
 
 
 def change_password(request):
