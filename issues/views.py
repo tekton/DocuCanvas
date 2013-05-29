@@ -259,11 +259,18 @@ def issue_to_issue_link(request):
 @login_required
 def meta_issue_form(request, issue_id=-1):
     print "meta issue"
+
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+        projects = []
+
     if request.method == "GET":
         if issue_id == -1:
             if not request.user.has_perm("issues.add_metaissue"):
                 raise PermissionDenied
-            return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True, 'pform': PermissionForm()}, context_instance=RequestContext(request))
+            return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True, 'pform': PermissionForm(), "projects": projects}, context_instance=RequestContext(request))
 
         try:
             mi = MetaIssue.objects.get(pk=issue_id)
@@ -274,7 +281,7 @@ def meta_issue_form(request, issue_id=-1):
         if not request.user.has_perm("issues.change_metaissue") or not pv or not pu:
             raise PermissionDenied
 
-        return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(instance=mi), 'new': False, 'canDelete': pd, 'pform': get_permission_form_for_model(mi)}, context_instance=RequestContext(request))
+        return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(instance=mi), 'new': False, 'canDelete': pd, 'pform': get_permission_form_for_model(mi), "projects": projects}, context_instance=RequestContext(request))
     else:
         if issue_id != -1:
             try:
@@ -309,7 +316,7 @@ def meta_issue_form(request, issue_id=-1):
                 return redirect('issues.views.meta_issue_form')
 
         else:
-            return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': True, 'pform': pform}, context_instance=RequestContext(request))
+            return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': True, 'pform': pform, "projects": projects}, context_instance=RequestContext(request))
 
 
 @login_required
