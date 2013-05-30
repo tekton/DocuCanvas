@@ -129,11 +129,6 @@ def user_help(request):
 
 
 @login_required
-def error_page(request, error_id):
-    return render_to_response('helpdesknew/error_page.html', {'error_id': error_id}, context_instance=RequestContext(request))
-
-
-@login_required
 def close_question(request, help_id):
     try:
         help = HelpRequest.objects.get(pk=help_id)

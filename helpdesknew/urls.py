@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
     (r'^new$', 'helpdesknew.views.help_form'),
-    (r'^error_page/([A-Za-z0-9_\.-]+)$', 'helpdesknew.views.error_page'),
+    # (r'^error_page/([A-Za-z0-9_\.-]+)$', 'helpdesknew.views.error_page'),
     (r'^pending$', 'helpdesknew.views.get_pending'),
     (r'^resolved$', 'helpdesknew.views.get_resolved'),
     (r'^acknowledge/([A-Za-z0-9_\.-]+)$', 'helpdesknew.views.ack_answer'),
