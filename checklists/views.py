@@ -47,6 +47,12 @@ def checklist_edit(request, checklist_id):
         formset = ChecklistForm()
         checklist = Checklist()
 
+    try:
+        num_checklist_layout_items = CheckListLayoutItems.objects.filter(Checklist=checklist).count()
+    except Exception, e:
+        print e
+        print 'couldnt count number of checklistlayoutitems'
+
     ChecklistLayoutItemsFormset = inlineformset_factory(Checklist, CheckListLayoutItems, can_delete=False, extra=0)
 
     if request.method == 'POST':
@@ -60,7 +66,8 @@ def checklist_edit(request, checklist_id):
         formset = ChecklistLayoutItemsFormset(instance=checklist)
 
     checklist_form = ChecklistForm(instance=checklist)
-    return render_to_response("checklists/checklist_overview.html", {"formset": formset, "checklist_form": checklist_form, "checklist": checklist, "page_type": checklist.project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
+
+    return render_to_response("checklists/checklist_overview.html", {"formset": formset, "checklist_form": checklist_form, "checklist": checklist, "num_checklist_items": num_checklist_layout_items, "page_type": checklist.project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
 @login_required
