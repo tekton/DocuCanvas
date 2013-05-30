@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.db.models import Q
+from django.forms.models import model_to_dict
 from accounts.forms import PermissionForm
 from accounts.utils import get_permission_form_for_model, set_permissions_for_model
 
@@ -146,27 +147,17 @@ def subscribe(request, issue_id):
 @login_required
 def set_bug_state(request):
     to_json = {}
-    print 'trying to set bug state'
-    print request.POST['issue']
-    print request.POST['status']
+
     try:
         issue = Issue.objects.get(pk=request.POST['issue'])
         old_status = issue.status
         issue.status = request.POST['status']
-        issue.save()
+        issue.save(request.user)
         to_json["status"] = "Bug status set"
-        try:
-            issue_status_update = IssueStatusUpdate()
-            issue_status_update.issue = issue
-            issue_status_update.user = request.user
-            issue_status_update.old_status = old_status
-            issue_status_update.new_status = request.POST['status']
-            issue_status_update.save()
-        except Exception, e:
-            print e
         if request.POST['status'] == 'fixed':
             return submit_comment(request, issue.id)
-    except:
+    except Exception, e:
+        print e
         to_json["status"] = "Unable to set bug state"
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
