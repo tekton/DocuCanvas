@@ -92,7 +92,7 @@ def assign(request, issue_id, user_id=-1):
 
     if issue:
         try:
-            issue.save()
+            issue.save(request.user)
         except Exception as e:
             to_json['success'] = False
             to_json['error'] = str(e)
@@ -176,7 +176,7 @@ def unlink_issues(request):
                 issue_to_issue_link.delete()
                 if primary_issue.status == 'duplicate':
                     primary_issue.status = None
-                    primary_issue.save()
+                    primary_issue.save(request.user)
                 to_json['response'] = 'Unlinked Issue ' + str(request.POST['primary_issue']) + ' and Issue ' + str(request.POST['secondary_issue'])
 
             except Exception, e:
@@ -219,7 +219,7 @@ def issue_to_issue_link(request):
 
                         if request.POST['link_type'] == 'duplicate':
                             primary_issue.status = request.POST['link_type']
-                            primary_issue.save()
+                            primary_issue.save(request.user)
 
                         to_json['response'] = 'Changed old link from ' + str(old_link_type) + ' to ' + str(request.POST['link_type'])
 
@@ -232,7 +232,7 @@ def issue_to_issue_link(request):
 
                     if request.POST['link_type'] == 'duplicate':
                         primary_issue.status = request.POST['link_type']
-                        primary_issue.save()
+                        primary_issue.save(request.user)
 
                     to_json['response'] = 'Linked Issue: ' + str(request.POST['primary_issue']) + ' to Issue: ' + str(request.POST['secondary_issue']) + ' as ' + str(request.POST['link_type'])
 
@@ -367,15 +367,18 @@ def issue_form(request):
         form = IssueForm(request.POST, instance=issue)
         if form.is_valid():
             try:
+                issue.created_by = request.user
                 issue = form.save()
             except Exception, e:
                 print e
                 print form.errors
+
             try:
                 issue.created_by = request.user
-                issue.save()
+                issue.save(request.user)
             except Exception, e:
                 print e
+
             if issue.id:
                 return redirect('issues.views.issue_overview', issue.id)
             else:
@@ -464,15 +467,20 @@ def edit(request, issue_id):
         form = IssueFullForm(request.POST, instance=issue)
         if form.is_valid():
             try:
-                issue = form.save()
+                issue.modified_by = request.user
+                issue = form.save(request.user)
+                print 'issue is'
+                print issue
             except Exception, e:
                 print e
                 print form.errors
+            '''
             try:
-                issue.modified_by = request.user
-                issue.save()
+                print 'editing issue'
+                issue.save(request.user)
             except Exception, e:
                 print e
+            '''
             if issue.id:
                 return redirect('issues.views.issue_overview', issue.id)
             else:

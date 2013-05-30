@@ -73,41 +73,56 @@ class Issue(models.Model):
     wireframe = models.CharField(max_length=255, blank=True, null=True)  # for suggestions, tasks, features, etc
     uri_to_test = models.CharField(max_length=255, blank=True, null=True)  # where they're having the issue
 
-    def save(self, *args, **kwargs):
-        ### create issue status update object if status changed
-        try:
-            user = args[0]
+    def save(self, user=None, *args, **kwargs):
+        if self.pk:
+            if user:
+                try:
+                    old_issue = Issue.objects.get(pk=self.id)
+
+                    for field in self._meta.fields:
+                        if getattr(self, field.attname) != getattr(old_issue, field.attname):
+                            try:
+                                ### create issue field update object if field changed
+                                issue_field_update = IssueFieldUpdate()
+                                issue_field_update.issue = self
+                                issue_field_update.user = user
+                                issue_field_update.field = field.attname
+                                issue_field_update.old_value = getattr(old_issue, field.attname)
+                                issue_field_update.new_value = getattr(self, field.attname)
+                                issue_field_update.save()
+                            except Exception, e:
+                                print 'couldnt save status update'
+                                print e
+
+                            if field.attname == 'status':
+                                if self.status != old_issue.status:
+                                    try:
+                                        ### create issue status update object if status changed
+                                        issue_status_update = IssueStatusUpdate()
+                                        issue_status_update.issue = self
+                                        issue_status_update.user = user
+                                        issue_status_update.old_status = old_issue.status
+                                        issue_status_update.new_status = self.status
+                                        issue_status_update.save()
+                                    except Exception, e:
+                                        print 'couldnt save status update'
+                                        print e
+
+                except Exception, e:
+                    print 'couldnt get old issue'
+                    print e
+
+            ### create historical issue object based on this new change
             try:
-                old_issue = Issue.objects.get(pk=self.id)
-                if self.status != old_issue.status:
-                    try:
-                        issue_status_update = IssueStatusUpdate()
-                        issue_status_update.issue = self
-                        issue_status_update.user = user
-                        issue_status_update.old_status = old_issue.status
-                        issue_status_update.new_status = self.status
-                        issue_status_update.save()
-                    except Exception, e:
-                        print 'couldnt save status update'
-                        print e
+                issue_historical = IssueHistorical()
+                issue_historical.issue = self
+                for field in self._meta.fields:
+                    if field.attname != 'id':
+                        setattr(issue_historical, field.attname, getattr(self, field.attname))
+                issue_historical.save()
             except Exception, e:
-                print 'couldnt get old issue'
+                'couldnt save historical issue'
                 print e
-
-        except:
-            pass
-
-        ### create historical issue object based on this new change
-        try:
-            issue_historical = IssueHistorical()
-            issue_historical.issue = self
-            for field in self._meta.fields:
-                if field.attname != 'id':
-                    setattr(issue_historical, field.attname, getattr(self, field.attname))
-            issue_historical.save()
-        except Exception, e:
-            'couldnt save historical issue'
-            print e
 
         super(Issue, self).save()
 
@@ -161,13 +176,22 @@ class IssueHistorical(models.Model):
     uri_to_test = models.CharField(max_length=255, blank=True, null=True)  # where they're having the issue
 
     def __unicode__(self):
-        return 'Issue ' + str(self.issue.id) + ':' + self.description + ':' + str(self.modified)
+        return 'Issue ' + str(self.issue) + ':' + self.description + ':' + str(self.modified)
 
 '''
 class FinishedIssue(models.Model):
     finished_issue = models.ForeignKey(Issue) #fk
     status = models.CharField(max_length=255, blank=True, null=True, choices=BUGSTATE)
 '''
+
+
+class IssueFieldUpdate(models.Model):
+    issue = models.ForeignKey(Issue)  # fk
+    user = models.ForeignKey(User)  # fk
+    field = models.CharField(max_length=255, blank=True, null=True)
+    old_value = models.CharField(max_length=255, blank=True, null=True)
+    new_value = models.CharField(max_length=255, blank=True, null=True)
+    created = models.DateField(auto_now_add=True)
 
 
 class IssueStatusUpdate(models.Model):
