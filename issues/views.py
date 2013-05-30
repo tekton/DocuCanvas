@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.db.models import Q
+from django.forms.models import model_to_dict
 from accounts.forms import PermissionForm
 from accounts.utils import get_permission_form_for_model, set_permissions_for_model
 
@@ -166,7 +167,8 @@ def set_bug_state(request):
             print e
         if request.POST['status'] == 'fixed':
             return submit_comment(request, issue.id)
-    except:
+    except Exception, e:
+        print e
         to_json["status"] = "Unable to set bug state"
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
