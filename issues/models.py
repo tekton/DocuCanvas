@@ -74,17 +74,42 @@ class Issue(models.Model):
     uri_to_test = models.CharField(max_length=255, blank=True, null=True)  # where they're having the issue
 
     def save(self, *args, **kwargs):
+        ### create issue status update object if status changed
+        try:
+            user = args[0]
+            try:
+                old_issue = Issue.objects.get(pk=self.id)
+                if self.status != old_issue.status:
+                    try:
+                        issue_status_update = IssueStatusUpdate()
+                        issue_status_update.issue = self
+                        issue_status_update.user = user
+                        issue_status_update.old_status = old_issue.status
+                        issue_status_update.new_status = self.status
+                        issue_status_update.save()
+                    except Exception, e:
+                        print 'couldnt save status update'
+                        print e
+            except Exception, e:
+                print 'couldnt get old issue'
+                print e
+
+        except:
+            pass
+
+        ### create historical issue object based on this new change
         try:
             issue_historical = IssueHistorical()
             issue_historical.issue = self
             for field in self._meta.fields:
-                setattr(issue_historical, field.attname, getattr(self, field.attname))
-            issue_historical.save(force_insert=True)
+                if field.attname != 'id':
+                    setattr(issue_historical, field.attname, getattr(self, field.attname))
+            issue_historical.save()
         except Exception, e:
+            'couldnt save historical issue'
             print e
-            #attrs[field.attname] = getattr(instance, field.attname)
 
-        super(Issue, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Issue, self).save()
 
 
 class IssueHistorical(models.Model):
@@ -135,6 +160,8 @@ class IssueHistorical(models.Model):
     wireframe = models.CharField(max_length=255, blank=True, null=True)  # for suggestions, tasks, features, etc
     uri_to_test = models.CharField(max_length=255, blank=True, null=True)  # where they're having the issue
 
+    def __unicode__(self):
+        return 'Issue ' + str(self.issue.id) + ':' + self.description + ':' + str(self.modified)
 
 '''
 class FinishedIssue(models.Model):
