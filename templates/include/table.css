@@ -105,6 +105,23 @@
 }
 
 /*
+*
+* Issue History Table
+*
+*
+*/
+.tbl-issue-history {}
+.tbl-issue-history .tbl-issue-history-third{
+    width:33%;
+}
+.tbl-issue-history .tbl-issue-history-header{
+    font-weight:bold;
+}
+.tbl-issue-history .tbl-issue-historical-object:hover{
+    cursor:pointer;
+}
+
+/*
 *   Project Status Count Table
 *
 *

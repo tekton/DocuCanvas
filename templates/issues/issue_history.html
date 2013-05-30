@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load set_var%}
+
+{% block extra_head%}
+    <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css"/>
+    <script type="text/javascript" src="/static/scripts/ajax_tools.js"></script>
+    <script type="text/javascript">
+        function toggleHistoricalIssue(historical_issue_id){
+            var historical_issue_class = '.historical_issue_' + historical_issue_id;
+            $(historical_issue_class).fadeToggle('slow', function(){});
+        }
+
+        $(document).ready(function(){
+            $('#blank_count').click(function(){
+                $('.tbl-project-blank-count').fadeToggle('slow', function(){});
+            });
+        })
+        
+
+    </script>
+
+{% endblock %}
+
+{% block context_nav %}
+    <a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a>
+    <a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a>
+    <a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
+    <a href="/issue/assign/{{ issue.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a>
+
+    <a>Assign To:
+        <select id="assigned_user">
+            {% for user in users%}<option value="{{user.id}}">{{user.username}}</option>
+            {% endfor%}
+        </select>
+        <input data-url="/issue/assign/{{ issue.id }}/" type="button" id="assign_issue_to" value="Assign"/>
+    </a>
+    <a>Status:
+        {{form.status}}
+        <input type="button" id="set_bug_status" value="Set"/>
+    </a>
+    <a class="set_related_issue">Set Related To...</a>
+    <a href="/issue/{{issue.id}}/edit">Edit</a>
+{% endblock %}
+
+{% block container %}
+
+        <div class="dashboard_container_section">
+            <h3>Status Updates</h3>
+            <table class="dashboard_table tbl-generic tbl-generic tbl-issue-history">
+                <tr>
+                    <td class="tbl-issue-history-header">Old Status</td>
+                    <td class="tbl-issue-history-header">New Status</td>
+                </tr>
+            {% for status_update in issue_status_updates%}
+
+                {% if newest_status_update != status_update.timestamp %}
+                    {% set newest_status_update = status_update.timestamp%}
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{status_update.timestamp}}</td></tr>
+                {% endif %}
+
+                <tr>
+                    <td class="tbl-project">{{status_update.old_status}}</td>
+                    <td class="tbl-project">{{status_update.new_status}}</td>
+                </tr>
+            {% endfor%}
+            </table>
+        </div>
+        <div class="dashboard_container_section">
+            <h3>Field Updates</h3>
+            <table class="dashboard_table tbl-generic tbl-issue-history">
+                <tr>
+                    <td class="tbl-issue-history-third tbl-issue-history-header">Field</td>
+                    <td class="tbl-issue-history-third tbl-issue-history-header">Old Value</td>
+                    <td class="tbl-issue-history-third tbl-issue-history-header">New Value</td>
+                </tr>
+            {% for field_update in issue_field_updates%}
+                {% if newest_field_update != field_update.created %}
+                    {% set newest_field_update = field_update.created %}
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{field_update.created}}</td></tr>
+                {% endif %}
+
+                <tr>
+                    <td class="tbl-issue-history-third">{{field_update.field}}</td>
+                    <td class="tbl-issue-history-third">{{field_update.old_value}}</td>
+                    <td class="tbl-issue-history-third">{{field_update.new_value}}</td>
+                </tr>
+            {% endfor%}
+            </table>
+        </div>
+        <div class="dashboard_container_section">
+            <h3>Historical Issues</h3>
+            <table class="dashboard_table tbl-generic tbl-issue-history">
+            {% for historical_issue in historical_issues%}
+
+                {% if newest_historical_issue != historical_issue.created %}
+                    {% set newest_historical_issue = historical_issue.created%}
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{historical_issue.created}}</td></tr>
+                {% endif %}
+
+                <tr>
+                    <td class="tbl-project tbl-issue-historical-object" onClick="toggleHistoricalIssue({{historical_issue.id}})">Version:{{historical_issue.id}}</a></td>
+                </tr>
+
+                {% for key, value in historical_issue.items%}
+                <tr class="historical_issue_{{historical_issue.id}}" style="display:none">
+                    <td class="tbl-issue-history-header">{{key}}</td>
+                    {% if value%}
+                    <td>{{value}}</td>
+                    {% else%}
+                    <td>None</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            {% endfor%}
+            </table>
+        </div>
+        
+
+{% endblock%}
