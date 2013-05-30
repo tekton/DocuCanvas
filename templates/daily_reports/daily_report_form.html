@@ -5,6 +5,11 @@
 <script src="/static/scripts/daily_reports.js"></script>
 {% endblock %}
 
+{% block context_nav %}
+<a href="/reports/edit">Daily Reports</a>
+<a href="/reports/view">View Daily Reports</a>
+{% endblock %}
+
 {% block container %}
 	<h2>Edit {% if global %}Global{% else %}Personal{% endif %} Daily Report</h2>
 

@@ -295,6 +295,11 @@ s{% block container %}
 		<tr>
 			<td>{{issue.description|markdown:"safe"}}</td>
 		</tr>
+		<tr>
+			{% for image in images %}
+				<td><img src="/static/{{image.screenshot}}"></td>
+			{% endfor %}
+		</tr>
 	</table>
 {% endblock %}
 
