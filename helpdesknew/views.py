@@ -218,6 +218,12 @@ def edit_question(request, help_id):
                     help = helpform.save()
                 except Exception as e:
                     return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
+                for afile in request.FILES.getlist('myfiles'):
+                    image = HelpImageFile(photo=afile, helprequest=help)
+                    try:
+                        image.save()
+                    except:
+                        return render_to-response('helpdesknew/error_page.html', {'error_id': "8"}, context_instance=RequestContext(request))
                 return redirect('helpdesknew.views.get_help', help.id)
         else:
             help = HelpRequest.objects.get(pk=help_id)
