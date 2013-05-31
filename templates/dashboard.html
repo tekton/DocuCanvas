@@ -94,7 +94,24 @@
             {% endfor%}
             </table>
         </div>
+        <div class="dashboard_container_section">
+            <h3>Assigned</h3>
+            <table class="dashboard_table tbl-generic tbl-dashboard">
+            {% for issue in issues%}
+                {% if newest_assigned != issue.created %}
+                    {% set newest_assigned = issue.created %}
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{issue.created}}</td></tr>
+                {% endif %}
 
+                <tr>
+                    <td class="tbl-project"><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
+                    <td class="tbl-summary"><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
+                    <td class="tbl-assigned_to"><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
+                    <td class="tbl-ui-trigger"><a href="/issue/assign/{{ issue.id }}" class="assign_issue"><div class="add_remove ui-icon ui-icon-closethick"></div></a></td>
+                </tr>
+            {% endfor%}
+            </table>
+        </div>
         <div class="dashboard_container_section">
             <h3>Pinned</h3>
             <table class="dashboard_table tbl-generic tbl-dashboard">
@@ -110,24 +127,6 @@
                     <td class="tbl-summary"><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
                     <td class="tbl-assigned_to"><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
                     <td class="tbl-ui-trigger"><a href="/issue/pin/{{ issue.id }}" class="pin_issue"><div class="add_remove ui-icon ui-icon-closethick"></div></a></td>
-                </tr>
-            {% endfor%}
-            </table>
-        </div>
-        <div class="dashboard_container_section">
-            <h3>Assigned</h3>
-            <table class="dashboard_table tbl-generic tbl-dashboard">
-            {% for issue in issues%}
-                {% if newest_assigned != issue.created %}
-                    {% set newest_assigned = issue.created %}
-                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{issue.created}}</td></tr>
-                {% endif %}
-
-                <tr>
-                    <td class="tbl-project"><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
-                    <td class="tbl-summary"><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
-                    <td class="tbl-assigned_to"><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
-                    <td class="tbl-ui-trigger"><a href="/issue/assign/{{ issue.id }}" class="assign_issue"><div class="add_remove ui-icon ui-icon-closethick"></div></a></td>
                 </tr>
             {% endfor%}
             </table>
