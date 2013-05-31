@@ -60,8 +60,12 @@ def checklist_edit(request, checklist_id):
         formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
 
         if checklist_form.is_valid() and formset.is_valid():
+            print 'success'
             checklist_form.save()
             formset.save()
+        else:
+            print checklist_form.errors
+            print formset.errors
     else:
         formset = ChecklistLayoutItemsFormset(instance=checklist)
 
