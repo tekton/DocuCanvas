@@ -107,7 +107,7 @@ class CommentForm(forms.ModelForm):
                 news_feed_item.user = user
                 news_feed_item.issue = self.instance.issue
                 news_feed_item.project = self.instance.issue.project
-                news_feed_item.description = str(user.username) + ' commented on ' + str(self.instance.issue.description) + ' from ' + str(self.instance.issue.project.name) + ': "' + self.instance.description + '"'
+                news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' commented on <a href="/issue/' + str(self.instance.issue.id) + '">' + str(self.instance.issue.description) + '</a> from ' + '<a href="/project/' + str(self.instace.issue.project.id)+ '">' + str(self.instance.issue.project.name) + '</a>' + ': "' + self.instance.description + '"'
                 news_feed_item.save()
             except Exception, e:
                 print e

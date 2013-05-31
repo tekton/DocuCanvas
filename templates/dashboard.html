@@ -89,7 +89,7 @@
                 {% endif %}
 
                 <tr>
-                    <td class="tbl-project">{{newsfeed.description}}</td>
+                    <td class="tbl-project">{{newsfeed.description|safe}}</td>
                 </tr>
             {% endfor%}
             </table>
