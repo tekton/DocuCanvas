@@ -9,14 +9,6 @@
             var historical_issue_class = '.historical_issue_' + historical_issue_id;
             $(historical_issue_class).fadeToggle('slow', function(){});
         }
-
-        $(document).ready(function(){
-            $('#blank_count').click(function(){
-                $('.tbl-project-blank-count').fadeToggle('slow', function(){});
-            });
-        })
-        
-
     </script>
 
 {% endblock %}
@@ -98,7 +90,7 @@
                 {% endif %}
 
                 <tr>
-                    <td class="tbl-project tbl-issue-historical-object" onClick="toggleHistoricalIssue({{historical_issue.id}})">Version:{{historical_issue.id}}</a></td>
+                    <td class="tbl-project tbl-issue-historical-object" onClick="toggleHistoricalIssue({{historical_issue.id}})">Version:{{historical_issue.id}}:{{historical_issue.modified}}</a></td>
                 </tr>
 
                 {% for key, value in historical_issue.items%}

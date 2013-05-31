@@ -518,6 +518,7 @@ def history(request, issue_id):
             historical_issues_json = []
             for historical_issue in historical_issues:
                 historical_issue_dict = model_to_dict(historical_issue)
+                historical_issue_dict['modified'] = historical_issue.modified
                 historical_issue_dict['projected_start'] = str(historical_issue_dict['projected_start'])
                 historical_issue_dict['projected_end'] = str(historical_issue_dict['projected_end'])
                 historical_issue_dict['actual_start'] = str(historical_issue_dict['actual_start'])
