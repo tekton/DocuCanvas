@@ -14,13 +14,23 @@ class ProjectForm(forms.ModelForm):
 
     def save(self, user=None, *args, **kwargs):
         if user:
-            try:
-                news_feed_item = NewsFeedItem()
-                news_feed_item.user = user
-                news_feed_item.project = self.instance
-                news_feed_item.description = str(user.username) + ' made new project ' + str(self.instance.name)
-                news_feed_item.save()
-            except Exception, e:
-                print e
+            if self.instance.pk:
+                try:
+                    news_feed_item = NewsFeedItem()
+                    news_feed_item.user = user
+                    news_feed_item.project = self.instance
+                    news_feed_item.description = str(user.username) + ' edited project ' + str(self.instance.name)
+                    news_feed_item.save()
+                except Exception, e:
+                    print e
+            else:
+                try:
+                    news_feed_item = NewsFeedItem()
+                    news_feed_item.user = user
+                    news_feed_item.project = self.instance
+                    news_feed_item.description = str(user.username) + ' made new project ' + str(self.instance.name)
+                    news_feed_item.save()
+                except Exception, e:
+                    print e
         super(ProjectForm, self).save(*args, **kwargs)
         return self.instance
