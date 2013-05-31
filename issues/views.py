@@ -529,7 +529,21 @@ def history(request, issue_id):
             print e
     except Exception, e:
         print e
-    return render_to_response("issues/issue_history.html", {"issue": issue, "issue_status_updates": issue_status_updates, "issue_field_updates": issue_field_updates, "historical_issues": historical_issues_json, "page_type": "History", "page_value": issue.title}, context_instance=RequestContext(request))
+
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+
+    try:
+        users = User.objects.all()
+    except Exception, e:
+        print "Unable to get user list"
+        print e
+
+    form = IssueFullForm(instance=issue)
+
+    return render_to_response("issues/issue_history.html", {"issue": issue, "issue_status_updates": issue_status_updates, "issue_field_updates": issue_field_updates, "historical_issues": historical_issues_json, "form": form, "users": users, "projects": projects, "page_type": "History", "page_value": issue.title}, context_instance=RequestContext(request))
 
 @login_required
 def issue_search_simple(request):
