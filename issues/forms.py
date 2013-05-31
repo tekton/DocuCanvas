@@ -68,7 +68,15 @@ class IssueFullForm(forms.ModelForm):
                                     except Exception, e:
                                         print 'couldnt save status update'
                                         print e
-
+                    try:
+                        news_feed_item = NewsFeedItem()
+                        news_feed_item.user = user
+                        news_feed_item.issue = self.instance
+                        news_feed_item.project = self.instance.project
+                        news_feed_item.description = str(user.username) + ' edited issue ' + str(self.instance.description) + ' for ' + str(self.instance.project.name)
+                        news_feed_item.save()
+                    except Exception, e:
+                        print e
                 except Exception, e:
                     print 'couldnt get old issue'
                     print e
