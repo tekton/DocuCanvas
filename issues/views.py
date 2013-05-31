@@ -541,7 +541,7 @@ def edit_comment(request):
     try:
         comment = IssueComment.objects.get(pk=request.POST['comment_id'])
         comment.description = request.POST['comment']
-        comment.save()
+        comment.save(request.user)
     except Exception, e:
         print e
         to_json['success'] = False
@@ -576,7 +576,7 @@ def submit_comment(request, issue_id):
             #
             if form.is_valid():
                 try:
-                    comment = form.save()  # save the modelform's model!
+                    comment = form.save(request.user)  # save the modelform's model!
                 except Exception, e:
                     print "Error saving form"
                     print e

@@ -77,6 +77,19 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = IssueComment
 
+    def save(self, user=None, *args, **kwargs):
+        if user:
+            try:
+                news_feed_item = NewsFeedItem()
+                news_feed_item.user = user
+                news_feed_item.issue = self.instance.issue
+                news_feed_item.project = self.instance.issue.project
+                news_feed_item.description = str(user.username) + ' commented on ' + str(self.instance.issue.description) + ' from ' + str(self.instance.issue.project.name) + ': "' + self.instance.description + '"'
+                news_feed_item.save()
+            except Exception, e:
+                print e
+        super(CommentForm, self).save(*args, **kwargs)
+        return self.instance
 
 class MetaIssueForm(forms.ModelForm):
     class Meta:
