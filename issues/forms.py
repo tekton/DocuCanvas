@@ -24,7 +24,7 @@ class IssueForm(forms.ModelForm):
                 news_feed_item.user = user
                 news_feed_item.issue = self.instance
                 news_feed_item.project = self.instance.project
-                news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' made new issue ' + '<a href="/issue/' + str(self.instance.id) + '">' + str(self.instance.summary) + '</a>' + ' for <a href="/project/' + str(self.instance.project.id) + '">' + str(self.instance.project.name) + '</a>'
+                news_feed_item.newsfeed_type = 'create_issue'
                 news_feed_item.save()
             except Exception, e:
                 print e
@@ -68,15 +68,20 @@ class IssueFullForm(forms.ModelForm):
                                     except Exception, e:
                                         print 'couldnt save status update'
                                         print e
-                    try:
-                        news_feed_item = NewsFeedItem()
-                        news_feed_item.user = user
-                        news_feed_item.issue = self.instance
-                        news_feed_item.project = self.instance.project
-                        news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' edited issue ' + '<a href="/issue/' + str(self.instance.id) + '">' + str(self.instance.summary) + '</a>' + ' for <a href="/project/' + str(self.instance.project.id) + '">' + str(self.instance.project.name) + '</a>'
-                        news_feed_item.save()
-                    except Exception, e:
-                        print e
+
+                            if getattr(self.instance, field.attname) != '' and getattr(old_issue, field.attname) != '':
+                                try:
+                                    news_feed_item = NewsFeedItem()
+                                    news_feed_item.user = user
+                                    news_feed_item.issue = self.instance
+                                    news_feed_item.project = self.instance.project
+                                    news_feed_item.field_change = field.attname
+                                    news_feed_item.old_value = getattr(old_issue, field.attname)
+                                    news_feed_item.new_value = getattr(self.instance, field.attname)
+                                    news_feed_item.newsfeed_type = 'update_issue'
+                                    news_feed_item.save()
+                                except Exception, e:
+                                    print e
                 except Exception, e:
                     print 'couldnt get old issue'
                     print e
@@ -107,7 +112,8 @@ class CommentForm(forms.ModelForm):
                 news_feed_item.user = user
                 news_feed_item.issue = self.instance.issue
                 news_feed_item.project = self.instance.issue.project
-                news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' commented on <a href="/issue/' + str(self.instance.issue.id) + '">' + str(self.instance.issue.summary) + '</a> from ' + '<a href="/project/' + str(self.instance.issue.project.id)+ '">' + str(self.instance.issue.project.name) + '</a>' + ': "' + self.instance.description + '"'
+                news_feed_item.comment = self.instance.description
+                news_feed_item.newsfeed_type = 'comment'
                 news_feed_item.save()
             except Exception, e:
                 print e

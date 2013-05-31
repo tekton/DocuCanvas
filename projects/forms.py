@@ -24,7 +24,7 @@ class ProjectForm(forms.ModelForm):
                     news_feed_item = NewsFeedItem()
                     news_feed_item.user = user
                     news_feed_item.project = self.instance
-                    news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' made new project <a href="/project/' + str(self.instance.id) + '">' + str(self.instance.name) + '</a>'
+                    news_feed_item.newsfeed_type = 'create_project'
                     news_feed_item.save()
                 except Exception, e:
                     print e
@@ -33,7 +33,7 @@ class ProjectForm(forms.ModelForm):
                     news_feed_item = NewsFeedItem()
                     news_feed_item.user = user
                     news_feed_item.project = self.instance
-                    news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' edited <a href="/project/' + str(self.instance.id) + '">' + str(self.instance.name) + '</a>'
+                    news_feed_item.newsfeed_type = 'update_project'
                     news_feed_item.save()
                 except Exception, e:
                     print e
