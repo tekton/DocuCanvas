@@ -17,7 +17,7 @@ def home(request):
     #pins = PinIssue.objects.select_related().filter(user=request.user)
     pins = Issue.objects.filter(pinissue__user=request.user).order_by('-created')
     subscribed = Issue.objects.filter(subscriptiontoissue__user=request.user).order_by('-created')
-    newsfeeds = NewsFeedItem.objects.all()[:10]
+    newsfeeds = NewsFeedItem.objects.all().order_by('-id')[:10]
     #projects = Project.objects.filter(lead_developer=request.user).order_by('-created')
     projects = Project.objects.all()
     #subscribed = SubscriptionToIssue.objects.select_related().filter(user=request.user)
