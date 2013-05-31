@@ -368,7 +368,7 @@ def issue_form(request):
         if form.is_valid():
             try:
                 issue.created_by = request.user
-                issue = form.save()
+                issue = form.save(request.user)
             except Exception, e:
                 print e
                 print form.errors

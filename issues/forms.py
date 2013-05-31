@@ -4,6 +4,7 @@ from issues.models import *
 from projects.models import Project
 from customfields import *
 from django.forms.models import model_to_dict
+from newsfeed.models import *
 
 '''
 Forms for submitting bug reports and suggestions
@@ -14,6 +15,20 @@ class IssueForm(forms.ModelForm):
     class Meta:
         model = Issue
         fields = ('project', 'summary', 'description')
+
+    def save(self, user=None, *args, **kwargs):
+        if user:
+            try:
+                news_feed_item = NewsFeedItem()
+                news_feed_item.user = user
+                news_feed_item.issue = self.instance
+                news_feed_item.project = self.instance.project
+                news_feed_item.description = str(user.username) + ' made new issue ' + str(self.instance.description) + ' for ' + str(self.instance.project.name)
+                news_feed_item.save()
+            except Exception, e:
+                print e
+        super(IssueForm, self).save(*args, **kwargs)
+        return self.instance
 
 
 class IssueFullForm(forms.ModelForm):
