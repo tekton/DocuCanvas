@@ -543,8 +543,9 @@ def history(request, issue_id):
         print e
 
     form = IssueFullForm(instance=issue)
+    page_type = "Issue " + str(issue.id) + ':' + str(issue.summary) + ':History'
 
-    return render_to_response("issues/issue_history.html", {"issue": issue, "issue_status_updates": issue_status_updates, "issue_field_updates": issue_field_updates, "historical_issues": historical_issues_json, "form": form, "users": users, "projects": projects, "page_type": "History", "page_value": issue.title}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_history.html", {"issue": issue, "issue_status_updates": issue_status_updates, "issue_field_updates": issue_field_updates, "historical_issues": historical_issues_json, "form": form, "users": users, "projects": projects, "page_type": page_type, "page_value": issue.title}, context_instance=RequestContext(request))
 
 @login_required
 def issue_search_simple(request):
