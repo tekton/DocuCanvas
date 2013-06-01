@@ -17,17 +17,17 @@ class IssueForm(forms.ModelForm):
         fields = ('project', 'summary', 'description')
 
     def save(self, user=None, *args, **kwargs):
+        super(IssueForm, self).save(*args, **kwargs)
         if user:
             try:
                 news_feed_item = NewsFeedItem()
                 news_feed_item.user = user
                 news_feed_item.issue = self.instance
                 news_feed_item.project = self.instance.project
-                news_feed_item.description = str(user.username) + ' made new issue ' + str(self.instance.description) + ' for ' + str(self.instance.project.name)
+                news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' made new issue ' + '<a href="/issue/' + str(self.instance.id) + '">' + str(self.instance.summary) + '</a>' + ' for <a href="/project/' + str(self.instance.project.id) + '">' + str(self.instance.project.name) + '</a>'
                 news_feed_item.save()
             except Exception, e:
                 print e
-        super(IssueForm, self).save(*args, **kwargs)
         return self.instance
 
 
@@ -73,7 +73,7 @@ class IssueFullForm(forms.ModelForm):
                         news_feed_item.user = user
                         news_feed_item.issue = self.instance
                         news_feed_item.project = self.instance.project
-                        news_feed_item.description = str(user.username) + ' edited issue ' + str(self.instance.description) + ' for ' + str(self.instance.project.name)
+                        news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' edited issue ' + '<a href="/issue/' + str(self.instance.id) + '">' + str(self.instance.summary) + '</a>' + ' for <a href="/project/' + str(self.instance.project.id) + '">' + str(self.instance.project.name) + '</a>'
                         news_feed_item.save()
                     except Exception, e:
                         print e
@@ -107,7 +107,7 @@ class CommentForm(forms.ModelForm):
                 news_feed_item.user = user
                 news_feed_item.issue = self.instance.issue
                 news_feed_item.project = self.instance.issue.project
-                news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' commented on <a href="/issue/' + str(self.instance.issue.id) + '">' + str(self.instance.issue.description) + '</a> from ' + '<a href="/project/' + str(self.instace.issue.project.id)+ '">' + str(self.instance.issue.project.name) + '</a>' + ': "' + self.instance.description + '"'
+                news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' commented on <a href="/issue/' + str(self.instance.issue.id) + '">' + str(self.instance.issue.summary) + '</a> from ' + '<a href="/project/' + str(self.instance.issue.project.id)+ '">' + str(self.instance.issue.project.name) + '</a>' + ': "' + self.instance.description + '"'
                 news_feed_item.save()
             except Exception, e:
                 print e

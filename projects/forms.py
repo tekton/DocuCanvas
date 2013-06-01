@@ -13,13 +13,18 @@ class ProjectForm(forms.ModelForm):
         model = Project
 
     def save(self, user=None, *args, **kwargs):
+        new_project = False
         if user:
-            if self.instance.pk:
+            if not self.instance.pk:
+                new_project = True
+        super(ProjectForm, self).save(*args, **kwargs)
+        if user:
+            if new_project:
                 try:
                     news_feed_item = NewsFeedItem()
                     news_feed_item.user = user
                     news_feed_item.project = self.instance
-                    news_feed_item.description = str(user.username) + ' edited project ' + str(self.instance.name)
+                    news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' made new project <a href="/project/' + str(self.instance.id) + '">' + str(self.instance.name) + '</a>'
                     news_feed_item.save()
                 except Exception, e:
                     print e
@@ -28,9 +33,8 @@ class ProjectForm(forms.ModelForm):
                     news_feed_item = NewsFeedItem()
                     news_feed_item.user = user
                     news_feed_item.project = self.instance
-                    news_feed_item.description = str(user.username) + ' made new project ' + str(self.instance.name)
+                    news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' edited <a href="/project/' + str(self.instance.id) + '">' + str(self.instance.name) + '</a>'
                     news_feed_item.save()
                 except Exception, e:
                     print e
-        super(ProjectForm, self).save(*args, **kwargs)
         return self.instance

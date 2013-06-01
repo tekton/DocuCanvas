@@ -98,7 +98,7 @@ class Issue(models.Model):
                                     news_feed_item.user = user
                                     news_feed_item.issue = self
                                     news_feed_item.project = self.project
-                                    news_feed_item.description = str(user.username) + ' updated issue ' + str(self.id) + ' from project ' + str(self.project.name) + ' on field ' + str(field.attname) + ' from ' + str(getattr(old_issue, field.attname)) + ' to ' + str(getattr(self, field.attname))
+                                    news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' updated issue ' +  '<a href="/issue/' + str(self.id) + '">' + str(self.summary) + '</a>' + ' from <a href="/project/' + str(self.project.id) + '">' + str(self.project.name) + '</a>' + ' on field ' + str(field.attname) + ' from ' + str(getattr(old_issue, field.attname)) + ' to ' + str(getattr(self, field.attname))
                                     news_feed_item.save()
                                 except e:
                                     print e 
@@ -260,8 +260,8 @@ class IssueComment(models.Model):
                 news_feed_item.user = user
                 news_feed_item.issue = self.issue
                 news_feed_item.project = self.issue.project
-                news_feed_item.description = str(user.username) + ' commented on ' + str(self.issue.description) + ' from ' + str(self.issue.project.name) + ': "' + self.description + '"'
+                news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' edited issue ' + '<a href="/issue/' + str(self.id) + '">' + str(self.description) + '</a>' + ' for <a href="/project/' + str(self.project.id) + '">' + str(self.project.name) + '</a>'
                 news_feed_item.save()
             except Exception, e:
-                print e 
+                print e
         super(IssueComment, self).save(*args, **kwargs)
