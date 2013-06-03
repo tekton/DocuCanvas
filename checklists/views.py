@@ -183,18 +183,16 @@ def checklist_form_project(request, project_id):
     checklist = Checklist()
 
     if request.method == 'POST':
-        if 'add_checklist_item' in request.POST:
-            cp = request.POST.copy()
-            cp['checklistlayoutitems_set-TOTAL_FORMS'] = int(cp['checklistlayoutitems_set-TOTAL_FORMS']) + 1
-            formset = ChecklistLayoutItemsFormset(cp, instance=checklist)
-        elif 'submit' in request.POST:
-            checklist_form = ChecklistForm(request.POST, instance=checklist)
-            formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
-            if checklist_form.is_valid() and formset.is_valid():
-                c = checklist_form.save()
-                formset.save()
-                return redirect('checklists.views.project_checklists', c.project.id)
-
+        checklist_form = ChecklistForm(request.POST, instance=checklist)
+        formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
+        if checklist_form.is_valid() and formset.is_valid():
+            c = checklist_form.save()
+            formset.save()
+            print 'saving form'
+            return redirect('checklists.views.project_checklists', c.project.id)
+        else:
+            print checklist_form.errors
+            print formset.errors
     else:
         formset = ChecklistLayoutItemsFormset(instance=checklist)
 
