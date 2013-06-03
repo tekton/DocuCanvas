@@ -35,7 +35,6 @@
 
 {% block context_nav %}
     <a href="issue/new">New Issue</a>
-    <a href="reports/edit">Daily Reports</a>
 {% endblock %}
 
 {% block container %}
@@ -43,7 +42,7 @@
 <div class="dashboard_container_section">
     <h3>Unassigned Issues</h3>
     <table class="dashboard_table">
-        {% for issue in issues %}
+        {% for issue in issues reversed %}
             {% if newest_unassigned != issue.created %}
                 {% set newest_unassigned = issue.created %}
                 <tr class="date_header"><td colspan="4">{{issue.created}}</td></tr>

@@ -128,21 +128,21 @@
                 border: 1px solid white;
                 border-radius: 4px;
                 box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
-                background: #fcfcfc;             
+                background: #fcfcfc;
             }
 
             .left {
                 float: left;
             }
-            
+
             .right {
                 float: right;
             }
-            
+
             .right-avoid {
-                
+
             }
-            
+
             .both {
                 clear: both;
             }
@@ -188,7 +188,6 @@
                 width: 135px;
                 padding: 1em;
                 position: absolute;
-                height: 2em;
                 overflow: hidden;
                 z-index:10;
                 font-size:0.7em;
@@ -275,11 +274,11 @@
             }
         /* titles and stuff */
         .title {
-            
+
         }
-        
+
         .sub-title {
-            
+
         }
 
 #mainheader {
@@ -290,8 +289,8 @@
         {% block style %}{% endblock %}
         </style>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script><!-- shoudl be changed to local source?-->
-        <script src="/static/scripts/jquery-ui.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
         <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
 
         <script type="text/javascript">
@@ -346,10 +345,10 @@
                             }
                         }
                 });
-                
+
                 NavMenu.Init();
 
-                /* OLD nav Menu 
+                /* OLD nav Menu
                     $('#account').click(function(){
                         $('#account_nav').slideToggle();
                     });
@@ -365,35 +364,35 @@
                     $('#search_icon').click(function(){
                         $('#search_nav').slideToggle();
                     });
-                    //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();}) 
+                    //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();})
 
-                    $(document).click(function(event) { 
+                    $(document).click(function(event) {
                         if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
 
                             if($('#account_nav').css('display') != "none"){
-                                $('#account_nav').slideToggle(); 
-                            }                
+                                $('#account_nav').slideToggle();
+                            }
                         }
 
                         if($(event.target).index($('#projects_nav')) == -1 && $(event.target).attr('id') != "projects_list"){
 
                             if($('#projects_nav').css('display') != "none"){
-                                $('#projects_nav').slideToggle(); 
-                            }                
+                                $('#projects_nav').slideToggle();
+                            }
                         }
 
                         if($(event.target).index($('#context_nav')) == -1 && $(event.target).attr('id') != "context"){
 
                             if($('#context_nav').css('display') != "none"){
-                                $('#context_nav').slideToggle(); 
-                            }                
+                                $('#context_nav').slideToggle();
+                            }
                         }
 
                         if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search_icon"){
 
                             if($('#search_nav').css('display') != "none"){
-                                $('#search_nav').slideToggle(); 
-                            }                
+                                $('#search_nav').slideToggle();
+                            }
                         }
                     });
                 */
@@ -410,37 +409,38 @@
         <div id="top_nav" class="both">
             <form action="/issue/search" method="POST">{% csrf_token %}
             <div class="left"><a href="/" class="ui-icon ui-icon-home" id="home_icon"></a></div>
-            <div class="right"> 
-                <div class="main_nav_button" id="context">Context Drop Down </div> | 
+            <div class="right">
+                <div class="main_nav_button" id="context">Context Drop Down </div> |
                 <div class="main_nav_button" id="projects_list">Project List </div>|
                 <div class="main_nav_button"><a id="account">{{user|truncatechars:15}} </a></div>|
                 <a class="ui-icon ui-icon-search" id="search_icon" href="/issue/advsearch"></a>
                 <div class="main_nav_button"><input type="text" name="searchText" id="search"/><input type="submit" value="search"/></div>
             </div>
             </form>
-            <div id="context_nav" class="container_nav"> 
-                {% block context_nav %}{% endblock %}  
+            <div id="context_nav" class="container_nav">
+                {% block context_nav %}{% endblock %}
             </div>
-            <div id="projects_nav" class="container_nav"> 
+            <div id="projects_nav" class="container_nav">
                 {% for project in projects%}
                    <a href="/project/{{project.id}}">{{project.name}}</a>
                 {% endfor %}
                 <a href="/project/new">New Project</a>
             </div>
-            <div id="account_nav" class="container_nav">   
+            <div id="account_nav" class="container_nav">
+                <a href="/reports/edit">Daily Reports</a>
                 <a href="/accounts/account_settings">Account Settings</a>
                 <a href="/accounts/logout/?next=/">Logout</a>
             </div>
-            <!--<div id="search_nav" class="container_nav">   
+            <!--<div id="search_nav" class="container_nav">
                 <a href="/issue/advsearch">Advanced Search</a>
             </div>-->
-            
-            
+
+
         </div>
         <p class="both"></p>
         <h1>
         {% if page_type %}
-            {{page_type}} 
+            {{page_type}}
         {% endif %}
         {% if page_value %}
         <span>:: {{page_value}}</span>

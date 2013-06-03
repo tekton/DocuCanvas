@@ -17,13 +17,10 @@
 {% endblock %}
 
 {% block context_nav %}
-    <a href="/project/{{project.id}}">{{project.name}}</a>
+    <!--<a href="/project/{{project.id}}">{{project.name}}</a>-->
     <a href="/checklist/new/{{project.id}}">New Checklist</a>
-    <a href="/issue/new/{{project_O.id}}">New Issue</a>
-    <a href="/issue/meta/new">New Meta Issue</a>
-    <a href="/issue/new/{{project_O.id}}">New Risk</a>
-    <a href="/project/{{project_O.id}}/stats">Report</a>
-    <a href="/project/{{project_O.id}}/edit">Edit Project</a>
+    <a href="/checklist/project/{{project.id}}">Project Checklists</a>
+
 {% endblock%}
 
 {% block container %}

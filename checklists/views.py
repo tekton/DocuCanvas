@@ -14,6 +14,7 @@ from checklists.forms import *
 def project_checklists(request, project_id):
     print 'in project checklists'
     try:
+        projects = Project.objects.all()
         project = Project.objects.get(pk=project_id)
     except Exception, e:
         print e
@@ -34,7 +35,7 @@ def project_checklists(request, project_id):
             print e
             print 'Checklist Instance not found'
 
-    return render_to_response("checklists/checklists.html", {"checklists": checklists, "checklist_instances": checklist_instances, "project": project,  "project_id": project_id, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
+    return render_to_response("checklists/checklists.html", {"checklists": checklists, "checklist_instances": checklist_instances, "project": project, "projects": projects,  "project_id": project_id, "page_type": project.name, "page_value": "Checklists"}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -171,6 +172,7 @@ def new_instance(request, checklist_id):
 @login_required
 def checklist_form_project(request, project_id):
     try:
+        projects = Project.objects.all()
         project = Project.objects.get(pk=project_id)
 
     except Exception, e:
@@ -181,23 +183,21 @@ def checklist_form_project(request, project_id):
     checklist = Checklist()
 
     if request.method == 'POST':
-        if 'add_checklist_item' in request.POST:
-            cp = request.POST.copy()
-            cp['checklistlayoutitems_set-TOTAL_FORMS'] = int(cp['checklistlayoutitems_set-TOTAL_FORMS']) + 1
-            formset = ChecklistLayoutItemsFormset(cp, instance=checklist)
-        elif 'submit' in request.POST:
-            checklist_form = ChecklistForm(request.POST, instance=checklist)
-            formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
-            if checklist_form.is_valid() and formset.is_valid():
-                c = checklist_form.save()
-                formset.save()
-                return redirect('checklists.views.project_checklists', c.project.id)
-
+        checklist_form = ChecklistForm(request.POST, instance=checklist)
+        formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
+        if checklist_form.is_valid() and formset.is_valid():
+            c = checklist_form.save()
+            formset.save()
+            print 'saving form'
+            return redirect('checklists.views.project_checklists', c.project.id)
+        else:
+            print checklist_form.errors
+            print formset.errors
     else:
         formset = ChecklistLayoutItemsFormset(instance=checklist)
 
     checklist_form = ChecklistForm(instance=checklist, initial={"project": project}, auto_id=False)
-    return render_to_response("checklists/checklist_form.html", {'formset': formset, "checklist_form": checklist_form, "project": project, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
+    return render_to_response("checklists/checklist_form.html", {'formset': formset, "checklist_form": checklist_form, "project": project, "projects": projects, "page_type": project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 
 
 @login_required

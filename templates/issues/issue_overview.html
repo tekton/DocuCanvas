@@ -94,7 +94,7 @@
         		else if(statusVal == 'duplicate' ){
         			if($('#link_issue_duplicate_popup').css('display') == "none"){
 	                        $('#link_issue_duplicate_popup').fadeToggle();
-	                }   
+	                }
         		}
 
         		else{
@@ -107,7 +107,7 @@
 					    },
 					    success: function(data){
 					    	// Hides nav menu only after successfull submission
-				    		NavMenu.HideAll();	
+				    		NavMenu.HideAll();
 
 					    	alert(data['status']);
 					    },
@@ -124,7 +124,7 @@
         		$('#link_issue_duplicate_popup').fadeToggle();
         		return false;
     		});
-			
+
 			$('a.set_related_issue').click(function(e){
         		e.preventDefault();
         		$('#set_related_to_popup').fadeToggle();
@@ -140,14 +140,14 @@
 	                if($('#set_related_to_popup').css('display') != "none" ){
 
 	                        $('#set_related_to_popup').fadeToggle();
-	                }                
+	                }
 	            }
 
 	            if($(event.target).attr('id') != "link_issue_duplicate_popup" && $(event.target).parent().attr('id') != "link_issue_duplicate_popup" && $(event.target).attr('id') != "set_bug_status"){
 
 	                if($('#link_issue_duplicate_popup').css('display') != "none"){
 	                        $('#link_issue_duplicate_popup').fadeToggle();
-	                }                
+	                }
 	            }
 
         	});
@@ -162,7 +162,7 @@
                         primary_issue:"{{issue.id}}",
                         secondary_issue:secondary_issue
                     },
-            success: function(data){       
+            success: function(data){
                         alert(data['response']);
                     },
             error: function(data){
@@ -181,7 +181,7 @@
 		else{
 			secondary_issue = $('[name="related_issue_id"]').val();
 		}
-		
+
 		$.ajax({
             type:"POST",
                     url:"/issue/link",
@@ -190,7 +190,7 @@
                         secondary_issue:secondary_issue,
                         link_type:type
                     },
-            success: function(data){       
+            success: function(data){
                         alert(data['response']);
                     },
             error: function(data){
@@ -200,7 +200,31 @@
 
 	}
 
+    function edit_comment(comment, comment_user){
+        if (comment_user == '{{user}}'){
+            comment.css('display', 'none');
+            comment.next().css('display', 'block');
+        }
+    }
 
+    function submit_comment_edit(comment){
+        $.ajax({
+            type:"POST",
+                    url:"/issue/edit_comment",
+                    data:{
+                        comment_id: comment.attr('id'),
+                        comment: comment.prev().val(),
+                    },
+            success: function(data){
+                        comment.parent().css('display', 'none');
+                        comment.parent().prev().text(comment.prev().val());
+                        comment.parent().prev().css('display', 'block');
+                    },
+            error: function(data){
+                        alert("Server side error");
+            }
+        });
+    }
 	</script>
 {% endblock %}
 
@@ -230,7 +254,7 @@
 
 {% block duplicate_issue_popup %}
 <h2>Duplicate Issue</h2>
-Duplicate Issue ID: 
+Duplicate Issue ID:
 <input type="text" id="duplicate_issue_id"/>
 <input type="button" value="Link" id="duplicate_issue_id_button" onClick="issue_to_issue_link('duplicate', $('#duplicate_issue_id').val())" />
 {% endblock%}
@@ -244,7 +268,7 @@ Current issue {{issue.id}} is a
 	<option value="child">Child</option>
 	<option value="parent">Parent</option>
 </select>
-of Issue  
+of Issue
 
 <select  name="related_issue_id">
     {% for project_issue in project_issues%}
@@ -268,12 +292,13 @@ s{% block container %}
 			<td class="tbl-fauxth">Description</td>
 		</tr>
 		<tr>
-			<td>{{issue.description|markdown:"safe"|linebreaksbr}}</td>
+			<td>{{issue.description|markdown:"safe"}}</td>
 		</tr>
 	</table>
 {% endblock %}
 
 {% block spiffy_box_right %}
+    <b>Issue Id:</b> {{issue.id}}<br>
 	<b>Assigned To:</b> <a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a><br/>
 	<b>Meta Issue:</b> {{issue.meta_issues.title}}<br/>
 	<!--
@@ -352,10 +377,14 @@ s{% block container %}
 		{% for comment in comments%}
 			<tr class="tbl-rowheader">
 				<td class="tbl-fauxth tbl-comments-user"><b>{{comment.user}}</b></td>
-				<td class="tbl-fauxth tbl-comments-created">{{comment.created}}</td>
-			</tr>
+				<td class="tbl-fauxth tbl-comments-created">{{comment.created}}</td
+>			</tr>
 			<tr>
-				<td class="tbl-comments-description" colspan="2">{{comment.description|markdown:"safe"}}</td>
+				<td class="tbl-comments-description" colspan="2" onClick="edit_comment($(this), '{{comment.user}}')">{{comment.description|markdown:"safe"}}</td>
+                <td style="display:none" class="tbl-comments-description-edit" colspan="2">
+                    <input type="text"   value="{{comment.description}}"/>
+                    <input type="button" onClick="submit_comment_edit($(this))" value="submit" id="{{comment.id}}"/>
+                </td>
 			</tr>
 		{% endfor %}
 

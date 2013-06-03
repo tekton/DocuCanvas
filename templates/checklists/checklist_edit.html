@@ -34,13 +34,13 @@ textarea{
                         checklist_tag_id:id,
                         all_checked:all_checked
                     },
-            success: function(data){       
+            success: function(data){
                         //alert(data['status']);
                     },
             error: function(data){
                 //alert("Server side error");
             }
-        });  
+        });
     }
 
     function submit_comment(id){
@@ -53,13 +53,13 @@ textarea{
                         checklist_tag_id:id,
                         comment:$(id_string).val()
                     },
-            success: function(data){           
+            success: function(data){
                         //alert(data['status']);
                     },
             error: function(data){
                 //alert("Server side error");
             }
-        });  
+        });
     }
 
 </script>
@@ -77,9 +77,9 @@ textarea{
         {% csrf_token %}
         {{form.management_form}}
         <table>
-        
 
-        {% for f in form%}
+
+        {% for f in form %}
                 {{f.id.as_hidden}}
                 {{f.checklist_instance.as_hidden}}
             <tr>

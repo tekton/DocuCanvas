@@ -79,20 +79,17 @@
 {% block container %}
 
         <div class="dashboard_container_section">
-            <h3>Pinned</h3>
+            <h3>Newsfeed</h3>
             <table class="dashboard_table tbl-generic tbl-dashboard">
-            {% for issue in pins%}
+            {% for newsfeed in newsfeeds%}
 
-                {% if newest_pin != issue.created %}
-                    {% set newest_pin = issue.created%}
-                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{issue.created}}</td></tr>
+                {% if newest_newsfeed != newsfeed.timestamp %}
+                    {% set newest_newsfeed = newsfeed.timestamp%}
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{newsfeed.timestamp}}</td></tr>
                 {% endif %}
 
                 <tr>
-                    <td class="tbl-project"><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
-                    <td class="tbl-summary"><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
-                    <td class="tbl-assigned_to"><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
-                    <td class="tbl-ui-trigger"><a href="/issue/pin/{{ issue.id }}" class="pin_issue"><div class="add_remove ui-icon ui-icon-closethick"></div></a></td>
+                    <td class="tbl-project">{{newsfeed.description|safe}}</td>
                 </tr>
             {% endfor%}
             </table>
@@ -115,6 +112,26 @@
             {% endfor%}
             </table>
         </div>
+        <div class="dashboard_container_section">
+            <h3>Pinned</h3>
+            <table class="dashboard_table tbl-generic tbl-dashboard">
+            {% for issue in pins%}
+
+                {% if newest_pin != issue.created %}
+                    {% set newest_pin = issue.created%}
+                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{issue.created}}</td></tr>
+                {% endif %}
+
+                <tr>
+                    <td class="tbl-project"><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
+                    <td class="tbl-summary"><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
+                    <td class="tbl-assigned_to"><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
+                    <td class="tbl-ui-trigger"><a href="/issue/pin/{{ issue.id }}" class="pin_issue"><div class="add_remove ui-icon ui-icon-closethick"></div></a></td>
+                </tr>
+            {% endfor%}
+            </table>
+        </div>
+        
         <div class="dashboard_container_section">
             <h3>Subscribed</h3>
             <table class="dashboard_table tbl-generic tbl-dashboard">

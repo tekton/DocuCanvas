@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.db.models import Q
+from django.forms.models import model_to_dict
 from accounts.forms import PermissionForm
 from accounts.utils import get_permission_form_for_model, set_permissions_for_model
 
@@ -91,7 +92,7 @@ def assign(request, issue_id, user_id=-1):
 
     if issue:
         try:
-            issue.save()
+            issue.save(request.user)
         except Exception as e:
             to_json['success'] = False
             to_json['error'] = str(e)
@@ -146,27 +147,17 @@ def subscribe(request, issue_id):
 @login_required
 def set_bug_state(request):
     to_json = {}
-    print 'trying to set bug state'
-    print request.POST['issue']
-    print request.POST['status']
+
     try:
         issue = Issue.objects.get(pk=request.POST['issue'])
         old_status = issue.status
         issue.status = request.POST['status']
-        issue.save()
+        issue.save(request.user)
         to_json["status"] = "Bug status set"
-        try:
-            issue_status_update = IssueStatusUpdate()
-            issue_status_update.issue = issue
-            issue_status_update.user = request.user
-            issue_status_update.old_status = old_status
-            issue_status_update.new_status = request.POST['status']
-            issue_status_update.save()
-        except Exception, e:
-            print e
         if request.POST['status'] == 'fixed':
             return submit_comment(request, issue.id)
-    except:
+    except Exception, e:
+        print e
         to_json["status"] = "Unable to set bug state"
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
@@ -185,7 +176,7 @@ def unlink_issues(request):
                 issue_to_issue_link.delete()
                 if primary_issue.status == 'duplicate':
                     primary_issue.status = None
-                    primary_issue.save()
+                    primary_issue.save(request.user)
                 to_json['response'] = 'Unlinked Issue ' + str(request.POST['primary_issue']) + ' and Issue ' + str(request.POST['secondary_issue'])
 
             except Exception, e:
@@ -228,7 +219,7 @@ def issue_to_issue_link(request):
 
                         if request.POST['link_type'] == 'duplicate':
                             primary_issue.status = request.POST['link_type']
-                            primary_issue.save()
+                            primary_issue.save(request.user)
 
                         to_json['response'] = 'Changed old link from ' + str(old_link_type) + ' to ' + str(request.POST['link_type'])
 
@@ -241,7 +232,7 @@ def issue_to_issue_link(request):
 
                     if request.POST['link_type'] == 'duplicate':
                         primary_issue.status = request.POST['link_type']
-                        primary_issue.save()
+                        primary_issue.save(request.user)
 
                     to_json['response'] = 'Linked Issue: ' + str(request.POST['primary_issue']) + ' to Issue: ' + str(request.POST['secondary_issue']) + ' as ' + str(request.POST['link_type'])
 
@@ -258,12 +249,21 @@ def issue_to_issue_link(request):
 
 @login_required
 def meta_issue_form(request, issue_id=-1):
+    projects = Project.objects.all()
     print "meta issue"
+
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+        projects = []
+
     if request.method == "GET":
         if issue_id == -1:
             if not request.user.has_perm("issues.add_metaissue"):
                 raise PermissionDenied
-            return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True, 'pform': PermissionForm()}, context_instance=RequestContext(request))
+
+            return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True, 'pform': PermissionForm(), "projects": projects}, context_instance=RequestContext(request))
 
         try:
             mi = MetaIssue.objects.get(pk=issue_id)
@@ -274,7 +274,8 @@ def meta_issue_form(request, issue_id=-1):
         if not request.user.has_perm("issues.change_metaissue") or not pv or not pu:
             raise PermissionDenied
 
-        return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(instance=mi), 'new': False, 'canDelete': pd, 'pform': get_permission_form_for_model(mi)}, context_instance=RequestContext(request))
+        return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(instance=mi), 'new': False, 'canDelete': pd, 'pform': get_permission_form_for_model(mi), "projects": projects}, context_instance=RequestContext(request))
+
     else:
         if issue_id != -1:
             try:
@@ -309,7 +310,8 @@ def meta_issue_form(request, issue_id=-1):
                 return redirect('issues.views.meta_issue_form')
 
         else:
-            return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': True, 'pform': pform}, context_instance=RequestContext(request))
+
+            return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': True, 'pform': pform, "projects": projects}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -365,15 +367,18 @@ def issue_form(request):
         form = IssueForm(request.POST, instance=issue)
         if form.is_valid():
             try:
-                issue = form.save()
+                issue.created_by = request.user
+                issue = form.save(request.user)
             except Exception, e:
                 print e
                 print form.errors
+
             try:
                 issue.created_by = request.user
-                issue.save()
+                issue.save(request.user)
             except Exception, e:
                 print e
+
             if issue.id:
                 return redirect('issues.views.issue_overview', issue.id)
             else:
@@ -462,15 +467,20 @@ def edit(request, issue_id):
         form = IssueFullForm(request.POST, instance=issue)
         if form.is_valid():
             try:
-                issue = form.save()
+                issue.modified_by = request.user
+                issue = form.save(request.user)
+                print 'issue is'
+                print issue
             except Exception, e:
                 print e
                 print form.errors
+            '''
             try:
-                issue.modified_by = request.user
-                issue.save()
+                print 'editing issue'
+                issue.save(request.user)
             except Exception, e:
                 print e
+            '''
             if issue.id:
                 return redirect('issues.views.issue_overview', issue.id)
             else:
@@ -525,6 +535,21 @@ def issue_search_advanced(request):
 
 
 @login_required
+def edit_comment(request):
+    to_json = {'success': True}
+
+    try:
+        comment = IssueComment.objects.get(pk=request.POST['comment_id'])
+        comment.description = request.POST['comment']
+        comment.save(request.user)
+    except Exception, e:
+        print e
+        to_json['success'] = False
+
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
+
+
+@login_required
 def submit_comment(request, issue_id):
     """
         Bad assumption: will only be called with POST...
@@ -551,7 +576,7 @@ def submit_comment(request, issue_id):
             #
             if form.is_valid():
                 try:
-                    comment = form.save()  # save the modelform's model!
+                    comment = form.save(request.user)  # save the modelform's model!
                 except Exception, e:
                     print "Error saving form"
                     print e
@@ -573,5 +598,6 @@ def submit_comment(request, issue_id):
 
 @login_required
 def unassigned_issues(request):
-    q = Issue.objects.filter(Q(assigned_to__isnull=True) & (Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True))).order_by('-created')
-    return render_to_response('issues/issue_unassigned.html', {'issues': q}, context_instance=RequestContext(request))
+    projects = Project.objects.all()
+    q = Issue.objects.filter(Q(assigned_to__isnull=True) & (Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True))).order_by('created')
+    return render_to_response('issues/issue_unassigned.html', {'issues': q, 'projects': projects}, context_instance=RequestContext(request))

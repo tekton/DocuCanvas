@@ -6,20 +6,44 @@
 {% endblock%}
 
 {% block container %}
-    <form action="/checklist/new/{{project.id}}" method="post" enctype="multipart/form-data">
+<div id="formContainer">
+    <form action="/checklist/new/{{project.id}}" id = "checkListForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{formset.management_form}}
-        <table>
-            {{checklist_form.as_table}}
-
-            {% for form in formset.forms %}
-                <table>
-                    Checklist Item: <input title='Add a new checklist item' type='submit' name='add_checklist_item' value='Add Item' /><br>
-                    {{ form }}
-                </table>
-            {% endfor %}
-        </table>
-    <input type="submit" name="submit" value="Submit"/>
+        <input id="id_checklistlayoutitems_set-TOTAL_FORMS" name="checklistlayoutitems_set-TOTAL_FORMS" type="hidden" value="1" /><input id="id_checklistlayoutitems_set-INITIAL_FORMS" name="checklistlayoutitems_set-INITIAL_FORMS" type="hidden" value="0" /><input id="id_checklistlayoutitems_set-MAX_NUM_FORMS" name="checklistlayoutitems_set-MAX_NUM_FORMS" type="hidden" value="1000" />
+        Name: <input maxlength="255" name="name" type="text" /><br />
+        Project: <select name="project">
+        <option value="">---------</option>
+        {% for i in projects %}
+            <option value="{{forloop.counter}}">{{i.name}}</option>
+        {% endfor %}
+        </select><br />
+        <div id="checklistContainer">
+            <div><label for="id_checklistlayoutitems_set-0-title">Title: </label><input id="id_checklistlayoutitems_set-0-title" maxlength="255" name="checklistlayoutitems_set-0-title" type="text" /><input id="sort" name="checklistlayoutitems_set-0-order" type="hidden" value = "0"/></div><input id="id_checklistlayoutitems_set-0-Checklist" name="checklistlayoutitems_set-0-Checklist" type="hidden" /><input id="id_checklistlayoutitems_set-0-id" name="checklistlayoutitems_set-0-id" type="hidden" />
+        </div>
+        <input title='Add a new checklist item' type='button' name='add_checklist_item' value='Add Item' onclick = 'addCheckListItem()'/>
+        <input type="submit" name="submit" value="Submit"/>
     </form>
-
+</div>
+<script>
+var checklistNumber = 1;
+function addCheckListItem(){
+    $('#checklistContainer').append("<div><label for='id_checklistlayoutitems_set-"+checklistNumber+"-title'>Title: </label><input id='id_checklistlayoutitems_set-"+checklistNumber+"-title' maxlength='255' name='checklistlayoutitems_set-"+checklistNumber+"-title' type='text' /><input id='sort' name='checklistlayoutitems_set-"+checklistNumber+"-order' type='hidden' value = '"+checklistNumber+"' /></div><input id='id_checklistlayoutitems_set-"+checklistNumber+"-Checklist' name='checklistlayoutitems_set-"+checklistNumber+"-Checklist' type='hidden' /><input id='id_checklistlayoutitems_set-"+checklistNumber+"-id' name='checklistlayoutitems_set-"+checklistNumber+"-id' type='hidden' />");
+    checklistNumber ++;
+    $('#id_checklistlayoutitems_set-TOTAL_FORMS').val(function(i, oldval){
+        return ++oldval;
+    });
+    console.log($('#id_checklistlayoutitems_set-TOTAL_FORMS').val());
+    //$('#checkListTable').append('<input type="submit" name="submit" value="Submit">');
+};
+$(function() {
+    $("#checklistContainer").sortable({
+      stop: function(e, ui){
+         $('#checklistContainer input[type="hidden"][id="sort"]').each(function(i){
+          this.value = i
+        })
+      }
+    });
+    $("#checklistContainer").disableSelection();
+  });
+</script>
 {% endblock %}
