@@ -13,14 +13,17 @@ textarea{
 <script type="text/javascript">
 
     function toggle_status(id) {
-        var total_forms = $('#id_checklisttag_set-TOTAL_FORMS').val(), total_checked = 0, all_checked = false;
-
+        var total_forms = 0;
+        var total_checked = 0;
+        var all_checked = false;
+        total_forms = $('#id_checklisttag_set-TOTAL_FORMS').val()
+        //console.log($('checkbox:checked'));
         $('[type="checkbox"]').each(function(){
-            if( $(this).attr('checked') == "checked"){
+            //console.log($(this).attr('checked'));
+            if( $(this).is(':checked')){
                 total_checked++;
             }
         })
-
         if( total_checked == total_forms){
             all_checked = true;
         }
