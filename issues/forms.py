@@ -4,6 +4,7 @@ from issues.models import *
 from projects.models import Project
 from customfields import *
 from django.forms.models import model_to_dict
+from newsfeed.models import *
 
 '''
 Forms for submitting bug reports and suggestions
@@ -14,6 +15,20 @@ class IssueForm(forms.ModelForm):
     class Meta:
         model = Issue
         fields = ('project', 'summary', 'description')
+
+    def save(self, user=None, *args, **kwargs):
+        super(IssueForm, self).save(*args, **kwargs)
+        if user:
+            try:
+                news_feed_item = NewsFeedItem()
+                news_feed_item.user = user
+                news_feed_item.issue = self.instance
+                news_feed_item.project = self.instance.project
+                news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' made new issue ' + '<a href="/issue/' + str(self.instance.id) + '">' + str(self.instance.summary) + '</a>' + ' for <a href="/project/' + str(self.instance.project.id) + '">' + str(self.instance.project.name) + '</a>'
+                news_feed_item.save()
+            except Exception, e:
+                print e
+        return self.instance
 
 
 class IssueFullForm(forms.ModelForm):
@@ -53,7 +68,15 @@ class IssueFullForm(forms.ModelForm):
                                     except Exception, e:
                                         print 'couldnt save status update'
                                         print e
-
+                    try:
+                        news_feed_item = NewsFeedItem()
+                        news_feed_item.user = user
+                        news_feed_item.issue = self.instance
+                        news_feed_item.project = self.instance.project
+                        news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' edited issue ' + '<a href="/issue/' + str(self.instance.id) + '">' + str(self.instance.summary) + '</a>' + ' for <a href="/project/' + str(self.instance.project.id) + '">' + str(self.instance.project.name) + '</a>'
+                        news_feed_item.save()
+                    except Exception, e:
+                        print e
                 except Exception, e:
                     print 'couldnt get old issue'
                     print e
@@ -77,6 +100,19 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = IssueComment
 
+    def save(self, user=None, *args, **kwargs):
+        if user:
+            try:
+                news_feed_item = NewsFeedItem()
+                news_feed_item.user = user
+                news_feed_item.issue = self.instance.issue
+                news_feed_item.project = self.instance.issue.project
+                news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' commented on <a href="/issue/' + str(self.instance.issue.id) + '">' + str(self.instance.issue.summary) + '</a> from ' + '<a href="/project/' + str(self.instance.issue.project.id)+ '">' + str(self.instance.issue.project.name) + '</a>' + ': "' + self.instance.description + '"'
+                news_feed_item.save()
+            except Exception, e:
+                print e
+        super(CommentForm, self).save(*args, **kwargs)
+        return self.instance
 
 class MetaIssueForm(forms.ModelForm):
     class Meta:

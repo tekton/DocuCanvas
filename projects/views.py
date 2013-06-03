@@ -27,7 +27,7 @@ def project_form(request):
             if form.is_valid():
 
                 try:
-                    project = form.save()
+                    project = form.save(request.user)
                 except:
                     print 'unable to save project'
                 if project.id:
@@ -108,7 +108,7 @@ def edit(request, project_id):
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
             try:
-                project = form.save()
+                project = form.save(request.user)
             except Exception, e:
                 print e
                 print form.errors

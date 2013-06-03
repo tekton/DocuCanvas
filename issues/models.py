@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
+from newsfeed.models import NewsFeedItem
 # from django.utils.translation import ugettext as _
 from projects.models import Project
 
@@ -90,6 +91,17 @@ class Issue(models.Model):
                                 issue_field_update.old_value = getattr(old_issue, field.attname)
                                 issue_field_update.new_value = getattr(self, field.attname)
                                 issue_field_update.save()
+
+                                ### create a newsfeed item for this status update
+                                try:
+                                    news_feed_item = NewsFeedItem()
+                                    news_feed_item.user = user
+                                    news_feed_item.issue = self
+                                    news_feed_item.project = self.project
+                                    news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' updated issue ' +  '<a href="/issue/' + str(self.id) + '">' + str(self.summary) + '</a>' + ' from <a href="/project/' + str(self.project.id) + '">' + str(self.project.name) + '</a>' + ' on field ' + str(field.attname) + ' from ' + str(getattr(old_issue, field.attname)) + ' to ' + str(getattr(self, field.attname))
+                                    news_feed_item.save()
+                                except e:
+                                    print e 
                             except Exception, e:
                                 print 'couldnt save status update'
                                 print e
@@ -240,3 +252,16 @@ class IssueComment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
     description = models.TextField(max_length=255, blank=False)  # note: do not use the word 'text' as a field name
+
+    def save(self, user=None, *args, **kwargs):
+        if user:
+            try:
+                news_feed_item = NewsFeedItem()
+                news_feed_item.user = user
+                news_feed_item.issue = self.issue
+                news_feed_item.project = self.issue.project
+                news_feed_item.description = '<a href="/auth/user/' + str(user.id) + '">' + str(user.username) + '</a>' + ' edited issue ' + '<a href="/issue/' + str(self.id) + '">' + str(self.description) + '</a>' + ' for <a href="/project/' + str(self.project.id) + '">' + str(self.project.name) + '</a>'
+                news_feed_item.save()
+            except Exception, e:
+                print e
+        super(IssueComment, self).save(*args, **kwargs)
