@@ -8,7 +8,7 @@
 {% block container %}
 <div id="formContainer">
     <form action="/checklist/new/{{project.id}}" id = "checkListForm" method="post" enctype="multipart/form-data">
-        <input type='hidden' name='csrfmiddlewaretoken' value='WoEJQLX5LHW1N6PABBS9SrjI7ezwCrqL' />
+        {% csrf_token %}
         <input id="id_checklistlayoutitems_set-TOTAL_FORMS" name="checklistlayoutitems_set-TOTAL_FORMS" type="hidden" value="8" /><input id="id_checklistlayoutitems_set-INITIAL_FORMS" name="checklistlayoutitems_set-INITIAL_FORMS" type="hidden" value="0" /><input id="id_checklistlayoutitems_set-MAX_NUM_FORMS" name="checklistlayoutitems_set-MAX_NUM_FORMS" type="hidden" value="1000" />
         Name: <input maxlength="255" name="name" type="text" /><br />
         Project: <select name="project">
