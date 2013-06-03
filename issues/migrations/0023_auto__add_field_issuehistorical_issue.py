@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'IssueHistorical.issue'
         db.add_column(u'issues_issuehistorical', 'issue',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['issues.Issue']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['issues.Issue'], null=True),
                       keep_default=False)
 
 
