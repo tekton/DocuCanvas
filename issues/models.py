@@ -4,6 +4,7 @@ from django.forms.models import model_to_dict
 from newsfeed.models import NewsFeedItem
 # from django.utils.translation import ugettext as _
 from projects.models import Project
+from django.contrib import admin
 
 ISSUETOISSUETYPE = (('duplicated', 'Duplicate'), ('related', 'Related'), ('child', 'Child'), ('parent', 'Parent'))
 ISSUETYPE = (("bug", "Bug"), ("task", "Task"), ("suggestion", "Suggestion"))
@@ -265,3 +266,11 @@ class IssueComment(models.Model):
             except Exception, e:
                 print e
         super(IssueComment, self).save(*args, **kwargs)
+
+
+class IssueScreenshot(models.Model):
+    issue = models.ForeignKey(Issue)
+    screenshot = models.ImageField(upload_to="issues/img", blank=True, null=True)
+
+
+admin.site.register(IssueScreenshot)

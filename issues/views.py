@@ -12,7 +12,7 @@ from django.forms.models import model_to_dict
 from accounts.forms import PermissionForm
 from accounts.utils import get_permission_form_for_model, set_permissions_for_model
 
-from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate
+from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueScreenshot
 from accounts import utils as rputils
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm
@@ -379,6 +379,13 @@ def issue_form(request):
             except Exception, e:
                 print e
 
+            for afile in request.FILES.getlist('myfiles'):
+                image = IssueScreenshot(issue=issue, screenshot=afile)
+                try:
+                    image.save()
+                except Exception, e:
+                    print e
+
             if issue.id:
                 return redirect('issues.views.issue_overview', issue.id)
             else:
@@ -411,6 +418,7 @@ def issue_overview(request, issue_id):
     try:
         issue = Issue.objects.get(pk=issue_id)
         comments = IssueComment.objects.filter(issue=issue).order_by('-created')
+        images = IssueScreenshot.objects.filter(issue=issue)
 
         try:
             project_issues = Issue.objects.filter(project=issue.project)
@@ -457,7 +465,7 @@ def issue_overview(request, issue_id):
 
     form = IssueFullForm(instance=issue)
 
-    return render_to_response("issues/issue_overview.html", {'issue': issue, 'related_issues': related_issues, 'project_issues': project_issues, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue"}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_overview.html", {'issue': issue, 'related_issues': related_issues, 'project_issues': project_issues, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue", "images": images}, context_instance=RequestContext(request))
 
 
 @login_required
