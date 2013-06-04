@@ -65,7 +65,6 @@ def checklist_edit(request, checklist_id):
 
 @login_required
 def instance_edit(request, checklist_instance_id):
-
     try:
         checklist_instance = ChecklistInstance.objects.get(pk=checklist_instance_id)
         # CHECK IF CHECKLIST LAYOUT ITEMS HAS BEEN UPDATED, IF SO UPDATE CHECKLIST INSTANCE TAGS
@@ -75,6 +74,7 @@ def instance_edit(request, checklist_instance_id):
 
     ChecklistTagsFormset = inlineformset_factory(ChecklistInstance, ChecklistTag, can_delete=False, extra=0)
     if request.method == 'POST':
+        print 'hi'
         checklist_instance_form = ChecklistInstanceFullForm(request.POST, instance=checklist_instance)
         formset = ChecklistTagsFormset(request.POST, instance=checklist_instance)
 
@@ -90,6 +90,8 @@ def instance_edit(request, checklist_instance_id):
                 except Exception, e:
                     print e
                 i += 1
+            print completion_count
+            print total_forms
 
             if completion_count == total_forms:
                 checklist_instance.completion_status = True
@@ -122,6 +124,7 @@ def toggle_checkbox(request):
         to_json['status'] = e
 
     if request.POST['all_checked'] == "true":
+        print 'all checked'
         try:
             checklist_instance = ChecklistInstance.objects.get(pk=checklist_tag.checklist_instance.id)
             checklist_instance.completion_status = True
@@ -129,6 +132,10 @@ def toggle_checkbox(request):
             to_json['status'] = "All Checkboxes Checked"
         except Exception, e:
             print e
+    elif request.POST['all_checked'] == "false":
+        checklist_instance = ChecklistInstance.objects.get(pk=checklist_tag.checklist_instance.id)
+        checklist_instance.completion_status = False
+        checklist_instance.save()
 
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
@@ -151,7 +158,7 @@ def submit_tag_comment(request):
 def new_instance(request, checklist_id):
     try:
         checklist = Checklist.objects.get(pk=checklist_id)
-        checklist_layout_items = CheckListLayoutItems.objects.filter(Checklist=checklist)
+        checklist_layout_items = CheckListLayoutItems.objects.filter(Checklist=checklist).order_by('order')
         checklist_instance = ChecklistInstance()
         checklist_instance.checklist = checklist
         checklist_instance.title = checklist.name
