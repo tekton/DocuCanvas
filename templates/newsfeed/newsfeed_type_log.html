@@ -7,7 +7,7 @@
     <script type="text/javascript" src="/static/scripts/__jquery.tablesorter/jquery.tablesorter.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            $("#newsfeed").tablesorter({sortList: [[4,0]]} ); 
+            $("#newsfeed_type").tablesorter({sortList: [[4,0]]} ); 
         });
     </script>
 
@@ -24,7 +24,7 @@
 {% block container %}
 
         <div class="dashboard_container_section">
-            <table class="dashboard_table tbl-generic tbl-generic tbl-dashboard-news_feed">
+            <table class="dashboard_table tbl-generic tbl-generic tbl-dashboard-news_feed" id="newsfeed_type">
                 <thead>
                 <tr class="tbl-fauxth">
                     <th>User</th>
