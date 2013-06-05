@@ -84,7 +84,7 @@
                 <tr class="tbl-fauxth">
                     <td>User</td>
                     <td>Action</td>
-                    <td>Issue/Checklist/Food Request</td>
+                    <td>Item</td>
                     <td>Project</td>
                     <td>Text</td>
                 </tr>
@@ -96,7 +96,7 @@
                         <td>{{newsfeed.newsfeed_type}}</td>
                         <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
-                        <td>{{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
+                        <td>{{newsfeed.field_change|truncatechars:80}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
                     </tr>
                 {% endif %}
 
@@ -116,7 +116,7 @@
                         <td>{{newsfeed.newsfeed_type}}</td>
                         <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
-                        <td>{{newsfeed.comment}}</td>
+                        <td>{{newsfeed.comment|truncatechars:80}}</td>
                     </tr>
                 {% endif %}
                 {% if newsfeed.newsfeed_type == 'update_project' %}
