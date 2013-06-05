@@ -33,5 +33,14 @@ def get_next_newsfeeds(request):
 
 @login_required
 def newsfeed_action(request, newsfeed_type):
-    newsfeeds = NewsFeedItem.objects.filter(newsfeed_type=newsfeed_type)
-    return render_to_response("newsfeed/newsfeed_type_log.html", {"newsfeeds": newsfeeds, "page_type": "Newsfeed Type", "page_value": newsfeed_type}, context_instance=RequestContext(request))
+    try:
+        newsfeeds = NewsFeedItem.objects.filter(newsfeed_type=newsfeed_type)
+    except Exception, e:
+        print e
+
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+
+    return render_to_response("newsfeed/newsfeed_type_log.html", {"newsfeeds": newsfeeds, "projects": projects, "page_type": "Newsfeed Type", "page_value": newsfeed_type}, context_instance=RequestContext(request))

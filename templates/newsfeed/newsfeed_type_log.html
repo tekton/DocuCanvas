@@ -94,6 +94,16 @@
                                 <td>{{newsfeed.timestamp}}</td>
                             </tr>
                         {% endif %}
+
+                        {% if newsfeed.newsfeed_type == 'complete_food_request' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td>None</td>
+                                <td><a href="/food/{{newsfeed.food.id}}">{{newsfeed.food.item}}</a></td>
+                                <td>None</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
                     {% endfor%}
                 </tbody>
             </table>

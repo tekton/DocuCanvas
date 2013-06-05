@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
+
+from newsfeed.models import NewsFeedItem
 # Create your models here.
 
 
@@ -28,5 +30,19 @@ class FoodRequest(models.Model):
     def FindTotal(self):
         self.total_cost = self.quantity * self.cost_per_quantity
 
+    def save(self, user=None, *args, **kwargs):
+        super(FoodRequest, self).save(*args, **kwargs)
+        if user:
+            if self.request_completed_bool:
+                try:
+                    newsfeed = NewsFeedItem()
+                    newsfeed.user = user
+                    newsfeed.food = self
+                    newsfeed.newsfeed_type = 'complete_food_request'
+                    newsfeed.save()
+                except Exception, e:
+                    print 'Unable to save new food'
+                    print e
+        return self
 
 admin.site.register(FoodRequest)
