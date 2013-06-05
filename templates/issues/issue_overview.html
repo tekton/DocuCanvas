@@ -135,7 +135,7 @@
 	            var el = evt.target;
 
 
-	            if($(event.target).attr('id') != "set_related_to_popup" && $(event.target).parent().attr('id') != "set_related_to_popup"){
+	            if($(evt.target).attr('id') != "set_related_to_popup" && $(evt.target).parent().attr('id') != "set_related_to_popup"){
 
 	                if($('#set_related_to_popup').css('display') != "none" ){
 
@@ -143,7 +143,7 @@
 	                }
 	            }
 
-	            if($(event.target).attr('id') != "link_issue_duplicate_popup" && $(event.target).parent().attr('id') != "link_issue_duplicate_popup" && $(event.target).attr('id') != "set_bug_status"){
+	            if($(evt.target).attr('id') != "link_issue_duplicate_popup" && $(evt.target).parent().attr('id') != "link_issue_duplicate_popup" && $(evt.target).attr('id') != "set_bug_status"){
 
 	                if($('#link_issue_duplicate_popup').css('display') != "none"){
 	                        $('#link_issue_duplicate_popup').fadeToggle();
