@@ -7,6 +7,11 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}"/>
 {% endblock %}
 
+{% block context_nav %}
+<a href="/reports/edit">Daily Reports</a>
+<a href="/reports/view">View Daily Reports</a>
+{% endblock %}
+
 {% block container %}
 
 	<h2>Daily Reports</h2>

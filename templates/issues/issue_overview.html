@@ -150,6 +150,26 @@
 	                }
 	            }
 
+                //alert($(el).parent().attr('class'));
+                if($(el).parent().attr('class') != 'tbl-comments-description' && $(el).parent().attr('class') != 'tbl-comments-description-edit' && $(el).attr('type') != 'button' ){
+
+                    $('.tbl-comments-description').each(function(){
+                        //alert($(this).css('display'));
+                        if($(this).css('display') == 'none'){
+                            $(this).css('display', 'block');
+                        }
+                    });
+
+                    $('.tbl-comments-description-edit').each(function(){
+                        if($(this).css('display') == 'block'){
+                            $(this).css('display', 'none');
+                        }
+                    });
+
+                    //$('.tbl-comments-description').css('display', 'block');
+                    //$('.tbl-comments-description-edit').css('display', 'none');
+                }
+
         	});
 
 		});
@@ -217,7 +237,7 @@
                     },
             success: function(data){
                         comment.parent().css('display', 'none');
-                        comment.parent().prev().text(comment.prev().val());
+                        comment.parent().prev().children().text(comment.prev().val());
                         comment.parent().prev().css('display', 'block');
                     },
             error: function(data){
@@ -249,6 +269,7 @@
 		<input type="button" id="set_bug_status" value="Set"/>
 	</a>
 	<a class="set_related_issue">Set Related To...</a>
+    <a href="/issue/{{issue.id}}/history">History</a>
 	<a href="/issue/{{issue.id}}/edit">Edit</a>
 {% endblock%}
 

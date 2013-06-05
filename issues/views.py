@@ -12,7 +12,7 @@ from django.forms.models import model_to_dict
 from accounts.forms import PermissionForm
 from accounts.utils import get_permission_form_for_model, set_permissions_for_model
 
-from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueScreenshot
+from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot
 from accounts import utils as rputils
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm
@@ -499,6 +499,53 @@ def edit(request, issue_id):
         form = IssueFullForm(instance=issue,initial={"project": issue.project}, auto_id=False)
     return render_to_response("issues/issue_edit.html", {"form": form, "issue": issue, "page_type": "Edit", "page_value": issue.title}, context_instance=RequestContext(request))
 
+
+@login_required
+def history(request, issue_id):
+    try:
+        issue = Issue.objects.get(pk=issue_id)
+        try:
+            issue_status_updates = IssueStatusUpdate.objects.filter(issue=issue)
+        except Exception, e:
+            print e
+        try:
+            issue_field_updates = IssueFieldUpdate.objects.filter(issue=issue)
+        except Exception, e:
+            print e
+        try:
+            historical_issues = IssueHistorical.objects.filter(issue=issue)
+
+            historical_issues_json = []
+            for historical_issue in historical_issues:
+                historical_issue_dict = model_to_dict(historical_issue)
+                historical_issue_dict['modified'] = historical_issue.modified
+                historical_issue_dict['projected_start'] = str(historical_issue_dict['projected_start'])
+                historical_issue_dict['projected_end'] = str(historical_issue_dict['projected_end'])
+                historical_issue_dict['actual_start'] = str(historical_issue_dict['actual_start'])
+                historical_issue_dict['actual_end'] = str(historical_issue_dict['actual_end'])
+                historical_issue_dict['due_date'] = str(historical_issue_dict['due_date'])
+                historical_issue_dict['date_reported'] = str(historical_issue_dict['date_reported'])
+                historical_issues_json.append(historical_issue_dict)
+        except Exception, e:
+            print e
+    except Exception, e:
+        print e
+
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+
+    try:
+        users = User.objects.all()
+    except Exception, e:
+        print "Unable to get user list"
+        print e
+
+    form = IssueFullForm(instance=issue)
+    page_type = "Issue " + str(issue.id) + ':' + str(issue.summary) + ':History'
+
+    return render_to_response("issues/issue_history.html", {"issue": issue, "issue_status_updates": issue_status_updates, "issue_field_updates": issue_field_updates, "historical_issues": historical_issues_json, "form": form, "users": users, "projects": projects, "page_type": page_type, "page_value": issue.title}, context_instance=RequestContext(request))
 
 @login_required
 def issue_search_simple(request):
