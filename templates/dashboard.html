@@ -78,14 +78,14 @@
 
 {% block container %}
 
-        <div class="dashboard_container_section tbl-dashboard-news_feed">
+        <div class="dashboard_container_section ">
             <h3>Newsfeed</h3>
-            <table class="dashboard_table tbl-generic tbl-dashboard">
+            <table class="dashboard_table tbl-generic tbl-dashboard tbl-dashboard-news_feed">
                 <tr class="tbl-fauxth">
                     <td>User</td>
                     <td>Action</td>
-                    <td>Item</td>
                     <td>Project</td>
+                    <td>Item</td>
                     <td>Text</td>
                 </tr>
             {% for newsfeed in newsfeeds%}
@@ -94,8 +94,8 @@
                     <tr>
                         <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                         <td>{{newsfeed.newsfeed_type}}</td>
-                        <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                        <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                         <td>{{newsfeed.field_change|truncatechars:80}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
                     </tr>
                 {% endif %}
@@ -104,8 +104,8 @@
                     <tr>
                         <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                         <td>{{newsfeed.newsfeed_type}}</td>
-                        <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                        <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                         <td>None</td>
                     </tr>
                 {% endif %}
@@ -114,8 +114,8 @@
                     <tr>
                         <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                         <td>{{newsfeed.newsfeed_type}}</td>
-                        <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                        <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                         <td>{{newsfeed.comment|truncatechars:80}}</td>
                     </tr>
                 {% endif %}
@@ -123,8 +123,8 @@
                     <tr>
                         <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                         <td>{{newsfeed.newsfeed_type}}</td>
-                        <td>None</td>
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                        <td>None</td>
                         <td>None</td>
                     </tr>
                 {% endif %}
@@ -132,8 +132,8 @@
                     <tr>
                         <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                         <td>{{newsfeed.newsfeed_type}}</td>
-                        <td>None</td>
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                        <td>None</td>
                         <td>None</td>
                     </tr>
                 {% endif %}
@@ -142,45 +142,11 @@
                     <tr>
                         <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                         <td>{{newsfeed.newsfeed_type}}</td>
-                        <td><a href="/food/{{newsfeed.food.id}}">{{newsfeed.food.item}}</a></td>
                         <td>None</td>
+                        <td><a href="/food/{{newsfeed.food.id}}">{{newsfeed.food.item}}</a></td>
                         <td>None</td>
                     </tr>
                 {% endif %}
-
-                <!--
-                <tr>
-                    {% if newsfeed.newsfeed_type == 'update_issue' %}
-                        <td class="tbl-project"><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a> edited issue <a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a> for project <a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a> on field {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
-                    {% endif %}
-                </tr>
-                <tr>
-                    {% if newsfeed.newsfeed_type == 'create_issue' %}
-                        <td class="tbl-project"><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a> added issue <a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a> for project <a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
-                    {% endif %}
-                </tr>
-                <tr>
-                    {% if newsfeed.newsfeed_type == 'comment' %}
-                        <td class="tbl-project"><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a> commented on issue <a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a> for project <a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a>: {{newsfeed.comment}}</td>
-                    {% endif %}
-                </tr>
-                <tr>
-                    {% if newsfeed.newsfeed_type == 'update_project' %}
-                        <td class="tbl-project"><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a> edited project <a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
-                    {% endif %}
-                </tr>
-                <tr>
-                    {% if newsfeed.newsfeed_type == 'create_project' %}
-                        <td class="tbl-project"><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a> created project <a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
-                    {% endif %}
-                </tr>
-                <tr>
-                    {% if newsfeed.newsfeed_type == 'create_food_request' %}
-                        <td class="tbl-project"><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a> created food request <a href="/food/{{newsfeed.food.id}}">{{newsfeed.food.item}}</a></td>
-                    {% endif %}
-                </tr>
-                -->
-
             {% endfor%}
             </table>
         </div>
