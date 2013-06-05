@@ -13,7 +13,7 @@ def food_form(request):
         food = FoodRequest()
         form = FoodFormTres(request.POST, instance=food)
         try:
-            food = form.save()
+            food = form.save(request.user)
         except Exception, e:
             print "unable to save food form"
             print e
