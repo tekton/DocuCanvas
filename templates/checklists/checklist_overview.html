@@ -10,16 +10,19 @@
     <form action="/checklist/{{checklist.id}}/edit" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{formset.management_form}}
-        <table>
-            {{checklist_form.as_table}} 
-            {% for form in formset.forms %}
-                <table>
-                    Checklist Item: 
-                    {{ form }}<br>
-                </table>
-            {% endfor %}
-        </table>
-        <div id="checklistContainer">
+        <div>
+            Name: {{checklist_form.name}} <br />
+            project: {{checklist_form.project}}
+            <div id ='checklistContainer'>
+                {% for form in formset.forms %}
+                    <div>
+                        Title: {{ form.title }}
+                        <input id="sort" name="checklistlayoutitems_set-{{forloop.counter0}}-order" type="hidden" value = "{{form.order.value}}"/>
+                        {{ form.id }}
+                    </div>
+                {% endfor %}           
+            </div>
+
         </div>
         <input title='Add a new checklist item' type='button' name='add_checklist_item' value='Add Item' onclick = 'addCheckListItem()'/>
     <input type="submit" name="submit" value="Submit"/>

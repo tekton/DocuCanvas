@@ -17,7 +17,7 @@
             <option value="{{forloop.counter}}">{{i.name}}</option>
         {% endfor %}
         </select><br />
-        <div id="checklistContainer">
+        <div id="checklistContainer" style = 'border: solid 1px'>
             <div><label for="id_checklistlayoutitems_set-0-title">Title: </label><input id="id_checklistlayoutitems_set-0-title" maxlength="255" name="checklistlayoutitems_set-0-title" type="text" /><input id="sort" name="checklistlayoutitems_set-0-order" type="hidden" value = "0"/></div><input id="id_checklistlayoutitems_set-0-Checklist" name="checklistlayoutitems_set-0-Checklist" type="hidden" /><input id="id_checklistlayoutitems_set-0-id" name="checklistlayoutitems_set-0-id" type="hidden" />
         </div>
         <input title='Add a new checklist item' type='button' name='add_checklist_item' value='Add Item' onclick = 'addCheckListItem()'/>
