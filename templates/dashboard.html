@@ -87,6 +87,7 @@
                     <td>Project</td>
                     <td>Item</td>
                     <td>Text</td>
+                    <td>Date</td>
                 </tr>
             {% for newsfeed in newsfeeds%}
                 
@@ -97,6 +98,7 @@
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
                         <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                         <td>{{newsfeed.field_change|truncatechars:80}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
+                        <td>{{newsfeed.timestamp}}</td>
                     </tr>
                 {% endif %}
 
@@ -107,6 +109,7 @@
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
                         <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                         <td>None</td>
+                        <td>{{newsfeed.timestamp}}</td>
                     </tr>
                 {% endif %}
 
@@ -117,6 +120,7 @@
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
                         <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                         <td>{{newsfeed.comment|truncatechars:80}}</td>
+                        <td>{{newsfeed.timestamp}}</td>
                     </tr>
                 {% endif %}
                 {% if newsfeed.newsfeed_type == 'update_project' %}
@@ -126,6 +130,7 @@
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
                         <td>None</td>
                         <td>None</td>
+                        <td>{{newsfeed.timestamp}}</td>
                     </tr>
                 {% endif %}
                 {% if newsfeed.newsfeed_type == 'create_project' %}
@@ -135,6 +140,7 @@
                         <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
                         <td>None</td>
                         <td>None</td>
+                        <td>{{newsfeed.timestamp}}</td>
                     </tr>
                 {% endif %}
 
@@ -145,6 +151,7 @@
                         <td>None</td>
                         <td><a href="/food/{{newsfeed.food.id}}">{{newsfeed.food.item}}</a></td>
                         <td>None</td>
+                        <td>{{newsfeed.timestamp}}</td>
                     </tr>
                 {% endif %}
             {% endfor%}
