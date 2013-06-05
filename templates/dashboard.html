@@ -171,6 +171,26 @@
                                 <td>{{newsfeed.timestamp}}</td>
                             </tr>
                         {% endif %}
+                        {% if newsfeed.newsfeed_type == 'create_checklist' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}">{{newsfeed.newsfeed_type}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/checklist/project/{{newsfeed.project.id}}">{{newsfeed.checklist.name}}</a></td>
+                                <td>None</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+                        {% if newsfeed.newsfeed_type == 'update_checklist' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}">{{newsfeed.newsfeed_type}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/checklist/project/{{newsfeed.project.id}}">{{newsfeed.checklist.name}}</a></td>
+                                <td>None</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
 
                     {% endfor%}
                 </tbody>

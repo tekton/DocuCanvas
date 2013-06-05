@@ -61,7 +61,7 @@ def checklist_edit(request, checklist_id):
 
         if checklist_form.is_valid() and formset.is_valid():
             print 'success'
-            checklist_form.save()
+            checklist_form.save(request.user)
             formset.save()
         else:
             print checklist_form.errors
@@ -204,7 +204,7 @@ def checklist_form_project(request, project_id):
         checklist_form = ChecklistForm(request.POST, instance=checklist)
         formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
         if checklist_form.is_valid() and formset.is_valid():
-            c = checklist_form.save()
+            c = checklist_form.save(request.user)
             formset.save()
             print 'saving form'
             return redirect('checklists.views.project_checklists', c.project.id)
