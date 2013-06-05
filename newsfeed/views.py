@@ -7,6 +7,7 @@ from newsfeed.models import NewsFeedItem
 from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.template import RequestContext
 
 import json
 
@@ -28,3 +29,9 @@ def get_next_newsfeeds(request):
 
     to_json['results'] = results
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
+
+
+@login_required
+def newsfeed_action(request, newsfeed_type):
+    newsfeeds = NewsFeedItem.objects.filter(newsfeed_type=newsfeed_type)
+    return render_to_response("newsfeed/newsfeed_type_log.html", {"newsfeeds": newsfeeds, "page_type": "Newsfeed Type", "page_value": newsfeed_type}, context_instance=RequestContext(request))

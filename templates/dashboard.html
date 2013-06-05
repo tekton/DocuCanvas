@@ -101,7 +101,7 @@
                         {% if newsfeed.newsfeed_type == 'update_issue' %}
                             <tr>
                                 <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
-                                <td>{{newsfeed.newsfeed_type}}</td>
+                                <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}">{{newsfeed.newsfeed_type}}</a></td>
                                 <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
                                 <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                                 <td>{{newsfeed.field_change|truncatechars:80}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
@@ -112,7 +112,7 @@
                         {% if newsfeed.newsfeed_type == 'create_issue' %}
                             <tr>
                                 <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
-                                <td>{{newsfeed.newsfeed_type}}</td>
+                                <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}">{{newsfeed.newsfeed_type}}</a></td>
                                 <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
                                 <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                                 <td>None</td>
@@ -123,7 +123,7 @@
                         {% if newsfeed.newsfeed_type == 'comment' %}
                             <tr>
                                 <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
-                                <td>{{newsfeed.newsfeed_type}}</td>
+                                <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}">{{newsfeed.newsfeed_type}}</a></td>
                                 <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
                                 <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
                                 <td>{{newsfeed.comment|truncatechars:80}}</td>
@@ -133,7 +133,7 @@
                         {% if newsfeed.newsfeed_type == 'update_project' %}
                             <tr>
                                 <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
-                                <td>{{newsfeed.newsfeed_type}}</td>
+                                <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}">{{newsfeed.newsfeed_type}}</a></td>
                                 <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
                                 <td>None</td>
                                 <td>None</td>
@@ -143,7 +143,7 @@
                         {% if newsfeed.newsfeed_type == 'create_project' %}
                             <tr>
                                 <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
-                                <td>{{newsfeed.newsfeed_type}}</td>
+                                <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}">{{newsfeed.newsfeed_type}}</a></td>
                                 <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
                                 <td>None</td>
                                 <td>None</td>
@@ -154,7 +154,7 @@
                         {% if newsfeed.newsfeed_type == 'create_food_request' %}
                             <tr>
                                 <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
-                                <td>{{newsfeed.newsfeed_type}}</td>
+                                <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}">{{newsfeed.newsfeed_type}}</a></td>
                                 <td>None</td>
                                 <td><a href="/food/{{newsfeed.food.id}}">{{newsfeed.food.item}}</a></td>
                                 <td>None</td>
