@@ -212,7 +212,36 @@
                             </tr>
                         {% endif %}
 
-
+                        {% if newsfeed.newsfeed_type == 'create_checklist_instance' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}">{{newsfeed.newsfeed_type}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/checklist/instance/{{newsfeed.comment}}">{{newsfeed.checklist.name}}</a></td>
+                                <td>None</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+                        {% if newsfeed.newsfeed_type == 'update_checklist_instance' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}">{{newsfeed.newsfeed_type}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/checklist/instance/{{newsfeed.comment}}">{{newsfeed.checklist.name}}</a></td>
+                                <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+                        {% if newsfeed.newsfeed_type == 'update_checklist_instance_tag' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}">{{newsfeed.newsfeed_type}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/checklist/instance/{{newsfeed.description}}">{{newsfeed.checklist.name}}</a></td>
+                                <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
                     {% endfor%}
                 </tbody>
             </table>

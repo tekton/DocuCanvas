@@ -7,7 +7,9 @@ from daily_reports.models import UserDailyReport
 NEWSFEEDTYPE = (('update_issue', 'Update Issue'), ('create_issue', 'Create Issue'), ('comment', 'Comment'),
                     ('update_project', 'Update Project'), ('create_project', 'Create Project'), ('create_food_request', 'Create Food Request'),
                     ('complete_food_request', 'Complete Food Request'), ('create_checklist', 'Create Checklist'), ('update_checklist', 'Update Checklist'),
-                    ('create_checklist_item', 'Create Checklist Item'), ('update_checklist_item', 'Update Checklist Item'), ('create_daily_report', 'Create Daily Report'))
+                    ('create_checklist_item', 'Create Checklist Item'), ('update_checklist_item', 'Update Checklist Item'), ('create_checklist_instance', 'Create Checklist Instance'),
+                    ('update_checklist_instance', 'Update Checklist Instance'),('update_checklist_instance_tag', 'Update Checklist Instance Tag'), 
+                    ('create_daily_report', 'Create Daily Report'))
 
 
 class NewsFeedItem(models.Model):

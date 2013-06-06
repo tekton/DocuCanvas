@@ -85,7 +85,6 @@ def instance_edit(request, checklist_instance_id):
 
     ChecklistTagsFormset = inlineformset_factory(ChecklistInstance, ChecklistTag, can_delete=False, extra=0)
     if request.method == 'POST':
-        print 'hi'
         checklist_instance_form = ChecklistInstanceFullForm(request.POST, instance=checklist_instance)
         formset = ChecklistTagsFormset(request.POST, instance=checklist_instance)
 
@@ -101,8 +100,6 @@ def instance_edit(request, checklist_instance_id):
                 except Exception, e:
                     print e
                 i += 1
-            print completion_count
-            print total_forms
 
             if completion_count == total_forms:
                 checklist_instance.completion_status = True
@@ -129,7 +126,7 @@ def toggle_checkbox(request):
         else:
             checklist_tag.completion_status = True
 
-        checklist_tag.save()
+        checklist_tag.save(request.user)
         to_json['status'] = "Completed Check"
     except Exception, e:
         to_json['status'] = e
@@ -139,14 +136,14 @@ def toggle_checkbox(request):
         try:
             checklist_instance = ChecklistInstance.objects.get(pk=checklist_tag.checklist_instance.id)
             checklist_instance.completion_status = True
-            checklist_instance.save()
+            checklist_instance.save(request.user)
             to_json['status'] = "All Checkboxes Checked"
         except Exception, e:
             print e
     elif request.POST['all_checked'] == "false":
         checklist_instance = ChecklistInstance.objects.get(pk=checklist_tag.checklist_instance.id)
         checklist_instance.completion_status = False
-        checklist_instance.save()
+        checklist_instance.save(request.user)
 
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
@@ -158,7 +155,7 @@ def submit_tag_comment(request):
     try:
         checklist_tag = ChecklistTag.objects.get(pk=request.POST['checklist_tag_id'])
         checklist_tag.comment = request.POST['comment']
-        checklist_tag.save()
+        checklist_tag.save(request.user)
         to_json['status'] = "Saved Comment"
     except Exception, e:
         to_json['status'] = e
@@ -173,7 +170,7 @@ def new_instance(request, checklist_id):
         checklist_instance = ChecklistInstance()
         checklist_instance.checklist = checklist
         checklist_instance.title = checklist.name
-        checklist_instance.save()
+        checklist_instance.save(request.user)
         for item in checklist_layout_items:
             checklist_tag = ChecklistTag()
             checklist_tag.checklist_instance = checklist_instance
