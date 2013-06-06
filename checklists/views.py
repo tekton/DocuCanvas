@@ -54,6 +54,7 @@ def checklist_edit(request, checklist_id):
 
     ChecklistLayoutItemsFormset = inlineformset_factory(Checklist, CheckListLayoutItems, can_delete=False, extra=0)
 
+
     if request.method == 'POST':
         checklist_form = ChecklistForm(request.POST, instance=checklist)
         formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
@@ -70,6 +71,7 @@ def checklist_edit(request, checklist_id):
         formset = ChecklistLayoutItemsFormset(instance=checklist)
 
     checklist_form = ChecklistForm(instance=checklist)
+
 
     return render_to_response("checklists/checklist_overview.html", {"formset": formset, "checklist_form": checklist_form, "checklist": checklist, "num_checklist_items": num_checklist_layout_items, "page_type": checklist.project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
 

@@ -12,15 +12,11 @@
         {{formset.management_form}}
         <div>
             Name: {{checklist_form.name}} <br />
-            project: {{checklist_form.project}}
+            project: {{checklist_form.project}}<br />
+            {{formset|length}}
+
             <div id ='checklistContainer'>
-                {% for form in formset.forms %}
-                    <div>
-                        Title: {{ form.title }}
-                        <input id="sort" name="checklistlayoutitems_set-{{forloop.counter0}}-order" type="hidden" value = "{{form.order.value}}"/>
-                        {{ form.id }}
-                    </div>
-                {% endfor %}           
+        
             </div>
 
         </div>
@@ -51,6 +47,17 @@
         });
         $("#checklistContainer").disableSelection();
       });
+    $(document).ready(function(){
+        {% for form in formset %}
+        var positionCounter = {{forloop.counter}};
+        console.log(positionCounter);
+        $('#checklistContainer').append('<div>\
+                        Title: {{ form.title }}\
+                        <input id="sort" name="checklistlayoutitems_set-{{forloop.counter0}}-order" type="hidden" value = "{{form.order.value}}"/>\
+                        {{ form.id }}\
+                    </div>');
+        {% endfor %}
+    });
 </script>
 
 {% endblock %}
