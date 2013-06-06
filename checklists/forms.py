@@ -2,10 +2,14 @@ from django import forms
 
 from checklists.models import Checklist, ChecklistInstance, ChecklistTag, CheckListLayoutItems
 from newsfeed.models import NewsFeedItem
+from django.forms.models import model_to_dict
+
 
 '''
 Forms for submitting bug reports and suggestions
 '''
+
+
 class ChecklistForm(forms.ModelForm):
     class Meta:
         model = Checklist
@@ -17,6 +21,8 @@ class ChecklistForm(forms.ModelForm):
         if user:
             if not self.instance.pk:
                 new_checklist = True
+            else:
+                old_checklist = Checklist.objects.get(pk=self.instance.pk)
         super(ChecklistForm, self).save(*args, **kwargs)
         if user:
             try:
@@ -26,9 +32,23 @@ class ChecklistForm(forms.ModelForm):
                 news_feed_item.checklist = self.instance
                 if new_checklist:
                     news_feed_item.newsfeed_type = 'create_checklist'
+                    news_feed_item.save()
                 else:
-                    news_feed_item.newsfeed_type = 'update_checklist'
-                news_feed_item.save()
+                    try:
+                        if old_checklist.name != self.instance.name:
+                            news_feed_item.newsfeed_type = 'update_checklist'
+                            news_feed_item.field_change = 'name'
+                            news_feed_item.old_value = old_checklist.name
+                            news_feed_item.new_value = self.instance.name
+                            news_feed_item.save()
+                        if old_checklist.project != self.instance.project:
+                            news_feed_item.newsfeed_type = 'update_checklist'
+                            news_feed_item.field_change = 'project'
+                            news_feed_item.old_value = old_checklist.project
+                            news_feed_item.new_value = self.instance.project
+                            news_feed_item.save()
+                    except Exception, e:
+                        print e
             except Exception, e:
                 print e
         return self.instance
