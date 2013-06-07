@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+{% load staticfiles %}
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Gadget</title>
+
+	<link rel="stylesheet" href="{% static "theme/assets/css/bootstrap.css" %}">
+	<link rel="stylesheet" href="{% static "theme/assets/css/bootstrap-responsive.css" %}">
+
+	<style>
+		@media (min-width: 980px) {
+			#globalwrap {
+				padding-top: 65px;
+			}
+		}
+
+		body {
+			font-size: 16spx;
+		}
+		
+		#sitenav .navbar-inner {
+			min-height: 50px;
+			border-bottom: 0;
+			box-shadow: 0 1px 5px #5A5A5A;
+		}
+		#sitenav .brand {
+			padding: 0 5px;
+			margin-left: 0;
+			margin-right: 15px;
+			background-color: #587C91;
+			width: 50px;
+			height: 50px;
+			display: block;
+		}
+		#sitenav .brand .logo {
+			display: block;
+			text-indent: -9999px;
+			width: 50px;
+			height: 50px;
+			background-image: url({% static "theme/assets/img/logo-gadget-sitenav.png" %});
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+		#sitenav .nav {
+			margin-top: 5px;
+		}
+		#sitenav .nav .active {
+			border-bottom: 5px solid #587C91;
+		}
+		#sitenav.navbar-inverse .navbar-inner {
+			background-color: #2B2F32;
+			background-image: none;
+		}
+		#sitenav.navbar-inverse .brand,
+		#sitenav.navbar-inverse .nav > li > a {
+			color: #FFF;
+		}
+		#sitenav #mainnav li {
+			text-transform: uppercase;
+			font-weight: bold;
+		}
+		#sitenav .dropdown-menu > li > a:hover,
+		#sitenav .dropdown-menu > li > a:focus,
+		#sitenav .dropdown-submenu:hover > a,
+		#sitenav .dropdown-submenu:focus > a {
+			background-color: #587C91;
+			background-image: none;
+		}
+
+		#sitenav #search-icon-advanced .icon-search {
+			margin-top: 5px;
+		}
+
+		.panel {
+			border: 1px solid #F2F2F2;
+			padding: 5px 15px;
+			margin: 5px 0 15px;
+
+			border-radius: 5px;
+			box-shadow: 0 1px 4px #5A5A5A;
+		}
+		.navbar-fixed-top .navbar-inner,
+		.navbar-fixed-bottom .navbar-inner {
+			padding: 0;
+		}
+
+		#pagetitle {
+			text-align: center;
+			margin: 15px 0 25px;
+		}
+	</style>
+</head>
+<body>
+	<div id="globalwrap">
+		<div id="sitenav" class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="brand" href="#"><span class="logo">Gadget</span></a>
+					<div class="nav-collapse collapse">
+						<nav id="mainnav">
+							<ul class="nav">
+								<li><a href="/" class="{% if navIndicator == 'dashboard' %}active{% endif %}">Dashboard</a></li>
+								<li class="dropdown">
+									<a href="/project" class="dropdown-toggle {% if navIndicator == 'projects' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
+									</a>
+									<ul class="dropdown-menu">
+										{% for project in projects%}
+											<li><a href="/project/{{project.id}}">{{project.name}}</a></li>
+										{% endfor %}
+										<li><a href="/project/new">New Project</a></li>
+									</ul>
+								</li>
+								<li><a href="/reports" class="{% if navIndicator == 'reports' %}active{% endif %}">Reports</a></li>
+							</ul>
+						</nav>
+						<form class="navbar-search pull-right" action="/issue/search" method="POST">
+			                {% csrf_token %}
+			                <a href="/issue/advsearch" id="search-icon-advanced"><i class="icon-search icon-white"></i></a>
+			                <input type="text" name="searchText" class="search-query" placeholder="Search">
+			                <button type="submit" class="btn">Search</button>
+			            </form>
+						<div class="pull-right">
+				            <ul class="nav">
+				                <li class="dropdown">
+				                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Context <b class="caret"></b></a>
+				                    <ul class="dropdown-menu">
+				                        {% block context_nav %}{% endblock %}
+				                    </ul>
+				                </li>
+				                <li class="dropdown">
+				                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user}} <b class="caret"></b></a>
+				                    <ul class="dropdown-menu">
+				                        <li><a href="/accounts/account_settings">Settings</a></li>
+				                        <li><a href="/accounts/logout/?next=/">Logout</a></li>
+				                    </ul>
+				                </li>
+				            </ul>
+				        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container">	
+			<header>
+				<h1 id="pagetitle">{% if page_type %}<span class="title-pagetype">{{page_type}}</span>{% endif %}{% if page_type and page_value %} <span class="title-separator">::</span> {% endif %}{% if page_value %}<span class="title-pagevalue">{{page_value}}</span>{% endif %}</h1>
+			</header>
+
+			{% block container %}{% endblock %}
+		</div>
+	</div>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<script src="{% static "theme/assets/js/bootstrap.js" %}"></script>
+</body>
+</html>
