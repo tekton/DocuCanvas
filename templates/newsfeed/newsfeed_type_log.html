@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load set_var%}
+
+{% block extra_head%}
+    <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css"/>
+    <script type="text/javascript" src="/static/scripts/ajax_tools.js"></script>
+    <script type="text/javascript" src="/static/scripts/__jquery.tablesorter/jquery.tablesorter.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#newsfeed_type").tablesorter({sortList: [[4,0]]} ); 
+        });
+    </script>
+
+{% endblock %}
+
+{% block context_nav %}
+    <a href="/issue/new">New Issue</a>
+    <a href="/issue/unassigned">Unassigned Issues</a>
+    <a href="/food/all">Food Requests</a>
+    <a href="/reports/edit">Daily Reports</a>
+    <a href="/help/user/{{user.id}}">Help</a>
+{% endblock %}
+
+{% block container %}
+
+        <div class="dashboard_container_section">
+            <table class="dashboard_table tbl-generic tbl-generic tbl-dashboard-news_feed" id="newsfeed_type">
+                <thead>
+                <tr class="tbl-fauxth">
+                    <th>User</th>
+                    <th>Project</th>
+                    <th>Item</th>
+                    <th>Text</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for newsfeed in newsfeeds%}
+                        
+                        {% if newsfeed.newsfeed_type == 'update_issue' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
+                                <td>{{newsfeed.field_change|truncatechars:80}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+
+                        {% if newsfeed.newsfeed_type == 'create_issue' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
+                                <td>None</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+
+                        {% if newsfeed.newsfeed_type == 'comment' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
+                                <td>{{newsfeed.comment|truncatechars:80}}</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+                        {% if newsfeed.newsfeed_type == 'update_project' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td>None</td>
+                                <td>None</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+                        {% if newsfeed.newsfeed_type == 'create_project' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td>None</td>
+                                <td>None</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+
+                        {% if newsfeed.newsfeed_type == 'create_food_request' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td>None</td>
+                                <td><a href="/food/{{newsfeed.food.id}}">{{newsfeed.food.item}}</a></td>
+                                <td>None</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+
+                        {% if newsfeed.newsfeed_type == 'complete_food_request' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td>None</td>
+                                <td><a href="/food/{{newsfeed.food.id}}">{{newsfeed.food.item}}</a></td>
+                                <td>None</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+                        {% if newsfeed.newsfeed_type == 'create_checklist' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/checklist/project/{{newsfeed.project.id}}">{{newsfeed.checklist.name}}</a></td>
+                                <td>None</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+                        {% if newsfeed.newsfeed_type == 'update_checklist' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/checklist/project/{{newsfeed.project.id}}">{{newsfeed.checklist.name}}</a></td>
+                                <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+                        {% if newsfeed.newsfeed_type == 'create_checklist_item' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/checklist/project/{{newsfeed.project.id}}">{{newsfeed.checklist.name}}</a></td>
+                                <td>{{newsfeed.comment}}</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+                        {% if newsfeed.newsfeed_type == 'update_checklist_item' %}
+                            <tr>
+                                <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                                <td><a href="/project/{{newsfeed.project.id}}">{{newsfeed.project.name}}</a></td>
+                                <td><a href="/checklist/project/{{newsfeed.project.id}}">{{newsfeed.checklist.name}}</a></td>
+                                <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
+                                <td>{{newsfeed.timestamp}}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor%}
+                </tbody>
+            </table>
+        </div>
+        
+
+{% endblock%}

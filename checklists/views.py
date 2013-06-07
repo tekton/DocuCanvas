@@ -12,7 +12,6 @@ from checklists.forms import *
 
 @login_required
 def project_checklists(request, project_id):
-    print 'in project checklists'
     try:
         projects = Project.objects.all()
         project = Project.objects.get(pk=project_id)
@@ -61,9 +60,10 @@ def checklist_edit(request, checklist_id):
         formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
 
         if checklist_form.is_valid() and formset.is_valid():
-            print 'success'
-            checklist_form.save()
-            formset.save()
+            checklist_form.save(request.user)
+            for forms in formset:
+                unsaved_form = forms.save(commit=False)
+                unsaved_form.save(request.user)
         else:
             print checklist_form.errors
             print formset.errors
@@ -206,7 +206,7 @@ def checklist_form_project(request, project_id):
         checklist_form = ChecklistForm(request.POST, instance=checklist)
         formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
         if checklist_form.is_valid() and formset.is_valid():
-            c = checklist_form.save()
+            c = checklist_form.save(request.user)
             formset.save()
             print 'saving form'
             return redirect('checklists.views.project_checklists', c.project.id)
