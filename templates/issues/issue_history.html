@@ -14,24 +14,24 @@
 {% endblock %}
 
 {% block context_nav %}
-    <a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a>
-    <a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a>
-    <a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
-    <a href="/issue/assign/{{ issue.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a>
+    <li><a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a></li>
+    <li><a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
+    <li><a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
+    <li><a href="/issue/assign/{{ issue.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
 
-    <a>Assign To:
+    <li><a>Assign To:
         <select id="assigned_user">
             {% for user in users%}<option value="{{user.id}}">{{user.username}}</option>
             {% endfor%}
         </select>
         <input data-url="/issue/assign/{{ issue.id }}/" type="button" id="assign_issue_to" value="Assign"/>
-    </a>
-    <a>Status:
+    </a></li>
+    <li><a>Status:
         {{form.status}}
         <input type="button" id="set_bug_status" value="Set"/>
-    </a>
-    <a class="set_related_issue">Set Related To...</a>
-    <a href="/issue/{{issue.id}}/edit">Edit</a>
+    </a></li>
+    <li><a class="set_related_issue">Set Related To...</a></li>
+    <li><a href="/issue/{{issue.id}}/edit">Edit</a></li>
 {% endblock %}
 
 {% block container %}

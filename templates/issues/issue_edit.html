@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block context_nav %} 
-    <a href="/issue/{{issue.id}}">Back to Issue</a>
-    <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
+    <li><a href="/issue/{{issue.id}}">Back to Issue</a></li>
+    <li><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></li>
 {% endblock%}
 
 {% block container %}

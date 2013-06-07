@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load set_var%}
+{% load set_var %}
 
 {% block extra_head%}
     <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css"/>
@@ -73,15 +73,14 @@
 {% endblock %}
 
 {% block context_nav %}
-    <a href="/issue/new">New Issue</a>
-    <a href="/issue/unassigned">Unassigned Issues</a>
-    <a href="/food/all">Food Requests</a>
-    <a href="/reports/edit">Daily Reports</a>
-    <a href="/help/user/{{user.id}}">Help</a>
+    <li><a href="/issue/new">New Issue</a></li>
+    <li><a href="/issue/unassigned">Unassigned Issues</a></li>
+    <li><a href="/food/all">Food Requests</a></li>
+    <li><a href="/reports/edit">Daily Reports</a></li>
+    <li><a href="/help/user/{{user.id}}">Help</a></li>
 {% endblock %}
 
 {% block container %}
-
         <div class="dashboard_container_section ">
             <h3>Newsfeed</h3>
             <table class="dashboard_table tbl-generic tbl-dashboard tbl-dashboard-news_feed" id="newsfeed">

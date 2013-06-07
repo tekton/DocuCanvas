@@ -17,20 +17,19 @@
 
 {% block context_nav %}
     {% if form.project.value %}
-    <a href="/issue/new/{{form.project.value}}">New Issue</a>
-    <a href="/issue/meta/new">New Meta Issue</a>
-    <a href="/issue/new/{{form.project.value}}">New Risk</a>
-    <a href="/checklist/new/{{form.project.value}}">New Checklist</a>
-    <a href="/project/{{form.project.value}}/stats">Report</a>
-    <a href="/checklist/project/{{form.project.value}}">Checklists</a>
-    <a href="/project/{{form.project.value}}/edit">Edit Project</a>
-
+        <li><a href="/issue/new/{{form.project.value}}">New Issue</a></li>
+        <li><a href="/issue/meta/new">New Meta Issue</a></li>
+        <li><a href="/issue/new/{{form.project.value}}">New Risk</a></li>
+        <li><a href="/checklist/new/{{form.project.value}}">New Checklist</a></li>
+        <li><a href="/project/{{form.project.value}}/stats">Report</a></li>
+        <li><a href="/checklist/project/{{form.project.value}}">Checklists</a></li>
+        <li><a href="/project/{{form.project.value}}/edit">Edit Project</a></li>
     {% else %}
-    <a href="/issue/new">New Issue</a>
-    <a href="/issue/unassigned">Unassigned Issues</a>
-    <a href="/food/all">Food Requests</a>
-    <a href="/reports/edit">Daily Reports</a>
-    <a href="/help/user/{{user.id}}">Help</a>
+        <li><a href="/issue/new">New Issue</a></li>
+        <li><a href="/issue/unassigned">Unassigned Issues</a></li>
+        <li><a href="/food/all">Food Requests</a></li>
+        <li><a href="/reports/edit">Daily Reports</a></li>
+        <li><a href="/help/user/{{user.id}}">Help</a></li>
     {% endif %}
 {% endblock%}
 
