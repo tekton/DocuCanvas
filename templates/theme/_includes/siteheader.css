@@ -150,41 +150,41 @@
 
 
 #maincontent {
-    animation: fadein .5s;
-    -moz-animation: fadein .5s; /* Firefox */
-    -webkit-animation: fadein .5s; /* Safari and Chrome */
-    -o-animation: fadein .5s; /* Opera */
+    -o-animation: fadein .8s;
+    -moz-animation: fadein .8s;
+    -webkit-animation: fadein .8s;
+    animation: fadein .8s;
 }
 
-@keyframes fadein {
+@-o-keyframes fadein {
     from {
-        opacity:.3;
-    }
-    to {
-        opacity:1;
-    }
-}
-@-moz-keyframes fadein { /* Firefox */
-    from {
-        opacity:.3;
-    }
-    to {
-        opacity:1;
-    }
-}
-@-webkit-keyframes fadein { /* Safari and Chrome */
-    from {
-        opacity:.3;
-    }
-    to {
-        opacity:1;
-    }
-}
-@-o-keyframes fadein { /* Opera */
-    from {
-        opacity:.3;
+        opacity:.2;
     }
     to {
         opacity: 1;
     }
 }​
+@-moz-keyframes fadein {
+    from {
+        opacity:.2;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-webkit-keyframes fadein {
+    from {
+        opacity:.2;
+    }
+    to {
+        opacity:1;
+    }
+}
+@keyframes fadein {
+    from {
+        opacity:.2;
+    }
+    to {
+        opacity:1;
+    }
+}

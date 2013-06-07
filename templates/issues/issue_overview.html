@@ -10,8 +10,6 @@
         }
 
         function assignSuccess(data) {
-            // Hides nav menu only after successful submission
-            NavMenu.HideAll();
             if ( data.success ) {
                 if ( data.assigned_to == "self" ) {
                     $(this).text( "Unassign" );
@@ -34,8 +32,6 @@
 		$(document).ready(function(){
 
             $('a.subscribe_to_issue').asAjax( function(data, status) {
-                // Hides nav menu only after successful submission
-                NavMenu.HideAll();
                 if ( data.success ) {
                     if ( data.is_subscribed ) {
                         $(this).text("Unsubscribe");
@@ -52,8 +48,6 @@
             }, ajaxError);
 
             $('a.pin_issue').asAjax(function(data, status) {
-                // Hides nav menu only after successful submission
-                NavMenu.HideAll();
                 if ( data.success ) {
                     if ( data.is_pinned ) {
                         $(this).text("Unpin");
@@ -77,8 +71,6 @@
 
                 var statusVal = $('#id_status').val();
                 if( statusVal == "fixed"){
-					// Hides nav menu
-        			NavMenu.HideAll();
 
         			$('#comment_title').text('Bug Fixed Comment');
         			$('#id_description').focus();
@@ -106,8 +98,6 @@
 					    	status:statusVal
 					    },
 					    success: function(data){
-					    	// Hides nav menu only after successfull submission
-				    		NavMenu.HideAll();
 
 					    	alert(data['status']);
 					    },
