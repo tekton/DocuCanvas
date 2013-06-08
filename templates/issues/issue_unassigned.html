@@ -7,8 +7,6 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('a.assign_issue').asAjax(function(data) {
-            // Hides nav menu only after successful submission
-            NavMenu.HideAll();
             if ( data.success ) {
                 if ( data.assigned_to == "self" ) {
                     $(this).text( "Unassign" );
