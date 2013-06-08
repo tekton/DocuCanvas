@@ -1,4 +1,4 @@
-{% extends "theme/bootstrap.html" %}
+{% extends "theme/base.html" %}
 {% load set_var %}
 
 {% block context_nav %}
@@ -14,7 +14,7 @@
         <header>
             <h3>Newsfeed</h3>
         </header>
-        <table class="table">
+        <table class="table table-sortable">
             <thead>
                 <tr>
                     <th>User</th>
@@ -161,13 +161,13 @@
             <h3>Assigned</h3>
         </header>
         <table class="table">
-            <thead>
+            <!-- <thead>
                 <tr>
                     <td>Name</td>
                     <td>Summary</td>
                     <td colspan="2">Assigned To</td>
                 </tr>
-            </thead>
+            </thead> -->
             <tbody>
             {% for issue in issues%}
                 {% if newest_assigned != issue.created %}
@@ -190,13 +190,13 @@
             <h3>Pinned</h3>
         </header>
         <table class="table">
-            <thead>
+            <!-- <thead>
                 <tr>
                     <td>Name</td>
                     <td>Summary</td>
                     <td colspan="2">Assigned To</td>
                 </tr>
-            </thead>
+            </thead> -->
             <tbody>
             {% for issue in pins%}
                 {% if newest_pin != issue.created %}
@@ -219,13 +219,13 @@
             <h3>Subscribed</h3>
         </header>
         <table class="table">
-            <thead>
+            <!-- <thead>
                 <tr>
                     <td>Name</td>
                     <td>Summary</td>
                     <td colspan="2">Assigned To</td>
                 </tr>
-            </thead>
+            </thead> -->
             <tbody>
             {% for issue in subscribed%}
                 {% if newest_subscribed != issue.created %}

@@ -1,0 +1,434 @@
+{% extends "theme/base.html" %}
+{% load markup %}
+
+{% block extra_head%}
+    <script type="text/javascript" src="/static/scripts/ajax_tools.js"></script>
+	<script type="text/javascript">
+
+        function ajaxError(xhr, status, e) {
+            alert( "Server error: " + e );
+        }
+
+        function assignSuccess(data) {
+            if ( data.success ) {
+                if ( data.assigned_to == "self" ) {
+                    $(this).text( "Unassign" );
+                    alert( "Issue now assigned to you." );
+                }
+                else if ( data.assigned_to == "none" ) {
+                    $(this).text( "Take" );
+                    alert( "Issue unassigned." );
+                }
+                else if ( data.assigned_to == "user" ) {
+                    $(this).text( "Take" );
+                    alert( "Issue successfully assigned." );
+                }
+            }
+            else {
+                alert( "Assigning error: " + data.error );
+            }
+        }
+
+		$(document).ready(function(){
+
+            $('a.subscribe_to_issue').asAjax( function(data, status) {
+                if ( data.success ) {
+                    if ( data.is_subscribed ) {
+                        $(this).text("Unsubscribe");
+                        alert( "Issue subscribed" );
+                    }
+                    else {
+                        $(this).text("Subscribe");
+                        alert( "Issue unsubscribed" );
+                    }
+                }
+                else {
+                    alert( "Subscribe error: " + data.error )
+                }
+            }, ajaxError);
+
+            $('a.pin_issue').asAjax(function(data, status) {
+                if ( data.success ) {
+                    if ( data.is_pinned ) {
+                        $(this).text("Unpin");
+                        alert( "Issue pinned" );
+                    }
+                    else {
+                        $(this).text("Pin");
+                        alert( "Issue unpinned" );
+                    }
+                }
+                else {
+                    alert( "Pinning error: " + data.error )
+                }
+            }, ajaxError);
+
+            $('a.assign_issue').asAjax(assignSuccess, ajaxError);
+
+            $('#assign_issue_to').asAjax( assignSuccess, ajaxError, function() { return $(this).attr('data-url') + $('#assigned_user').val(); } );
+
+            $('#set_bug_status').click(function(){
+
+                var statusVal = $('#id_status').val();
+                if( statusVal == "fixed"){
+
+        			$('#comment_title').text('Bug Fixed Comment');
+        			$('#id_description').focus();
+                    var submitComment = $('#submit_comment_button');
+                    $('<input type="hidden" name="status" value="fixed"></input>').insertBefore('#id_description')
+                    submitComment.val('Fix Bug');
+
+        			submitComment.unbind('click');
+        			$('#submit_comment_form').attr('action', '/issue/set_bug_state');
+
+        		}
+
+        		else if(statusVal == 'duplicate' ){
+        			if($('#link_issue_duplicate_popup').css('display') == "none"){
+	                        $('#link_issue_duplicate_popup').fadeToggle();
+	                }
+        		}
+
+        		else{
+	            	$.ajax({
+					    type:"POST",
+					    url:"/issue/set_bug_state",
+					    data:{
+					    	issue:"{{issue.id}}",
+					    	status:statusVal
+					    },
+					    success: function(data){
+
+					    	alert(data['status']);
+					    },
+					    error: function(data){
+					    	alert("Server side error");
+					    }
+
+					});
+            	}
+        	});
+
+			$('a.link_issue').click(function(e){
+        		e.preventDefault();
+        		$('#link_issue_duplicate_popup').fadeToggle();
+        		return false;
+    		});
+
+			$('a.set_related_issue').click(function(e){
+        		e.preventDefault();
+        		$('#set_related_to_popup').fadeToggle();
+        		return false;
+    		});
+
+			$(document).click(function(evt){
+	            var el = evt.target;
+
+
+	            if($(evt.target).attr('id') != "set_related_to_popup" && $(evt.target).parent().attr('id') != "set_related_to_popup"){
+
+	                if($('#set_related_to_popup').css('display') != "none" ){
+
+	                        $('#set_related_to_popup').fadeToggle();
+	                }
+	            }
+
+	            if($(evt.target).attr('id') != "link_issue_duplicate_popup" && $(evt.target).parent().attr('id') != "link_issue_duplicate_popup" && $(evt.target).attr('id') != "set_bug_status"){
+
+	                if($('#link_issue_duplicate_popup').css('display') != "none"){
+	                        $('#link_issue_duplicate_popup').fadeToggle();
+	                }
+	            }
+
+                //alert($(el).parent().attr('class'));
+                if($(el).parent().attr('class') != 'tbl-comments-description' && $(el).parent().attr('class') != 'tbl-comments-description-edit' && $(el).attr('type') != 'button' ){
+
+                    $('.tbl-comments-description').each(function(){
+                        //alert($(this).css('display'));
+                        if($(this).css('display') == 'none'){
+                            $(this).css('display', 'block');
+                        }
+                    });
+
+                    $('.tbl-comments-description-edit').each(function(){
+                        if($(this).css('display') == 'block'){
+                            $(this).css('display', 'none');
+                        }
+                    });
+
+                    //$('.tbl-comments-description').css('display', 'block');
+                    //$('.tbl-comments-description-edit').css('display', 'none');
+                }
+
+        	});
+
+		});
+
+	function unlink_issue(secondary_issue){
+		$.ajax({
+            type:"POST",
+                    url:"/issue/unlink",
+                    data:{
+                        primary_issue:"{{issue.id}}",
+                        secondary_issue:secondary_issue
+                    },
+            success: function(data){
+                        alert(data['response']);
+                    },
+            error: function(data){
+                		alert("Server side error");
+            }
+        });
+	}
+
+	function issue_to_issue_link(type, duplicate){
+		var secondary_issue;
+
+		if(duplicate){
+			secondary_issue = $('#duplicate_issue_id').val();
+		}
+
+		else{
+			secondary_issue = $('[name="related_issue_id"]').val();
+		}
+
+		$.ajax({
+            type:"POST",
+                    url:"/issue/link",
+                    data:{
+                        primary_issue:"{{issue.id}}",
+                        secondary_issue:secondary_issue,
+                        link_type:type
+                    },
+            success: function(data){
+                        alert(data['response']);
+                    },
+            error: function(data){
+                		alert("Server side error");
+            }
+        });
+
+	}
+
+    function edit_comment(comment, comment_user){
+        if (comment_user == '{{user}}'){
+            comment.css('display', 'none');
+            comment.next().css('display', 'block');
+        }
+    }
+
+    function submit_comment_edit(comment){
+        $.ajax({
+            type:"POST",
+                    url:"/issue/edit_comment",
+                    data:{
+                        comment_id: comment.attr('id'),
+                        comment: comment.prev().val(),
+                    },
+            success: function(data){
+                        comment.parent().css('display', 'none');
+                        comment.parent().prev().children().text(comment.prev().val());
+                        comment.parent().prev().css('display', 'block');
+                    },
+            error: function(data){
+                        alert("Server side error");
+            }
+        });
+    }
+	</script>
+{% endblock %}
+
+{% block context_nav %}
+	<li><a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a></li>
+	<li><a href="/issue/subscribe/{{ issue.id }}">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
+	<li><a href="/issue/pin/{{ issue.id }}">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
+	<li><a href="/issue/assign/{{ issue.id }}">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
+	<li>
+		<a>
+			<form class="form-inline">
+				<label for="assigned_user">Assign To:</label>
+				<select name="assigned_user">
+					{% for user in users %}
+						<option value="{{user.id}}">{{user.username}}</option>
+					{% endfor%}
+				</select>
+				<button type="submit" data-url="/issue/assign/{{ issue.id }}/">Assign</button>
+			</form>
+		</a>
+	</a></li>
+	<li>
+		<a>
+			<form class="form-inline">
+				<label for="assigned_user" for="status">Status:</label>
+				{{form.status}}
+				<button type="submit">Set</button>
+			</form>
+		</a>
+	</li>
+	<li><a href="#" data-target="#modal-issue-related" role="button" data-toggle="modal">Set Related To...</a></li>
+    <li><a href="/issue/{{issue.id}}/history">History</a></li>
+	<li><a href="/issue/{{issue.id}}/edit">Edit</a></li>
+{% endblock%}
+
+{% block container %}
+    <input type="hidden" id="issue_id" value="{{ issue.id }}"/>
+
+	<table class="tbl-generic tbl-overview">
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Summary</td>
+		</tr>
+		<tr>
+			<td>{{issue.summary}}</td>
+		</tr>
+		<tr class="tbl-rowheader">
+			<td class="tbl-fauxth">Description</td>
+		</tr>
+		<tr>
+			<td>{{issue.description|markdown:"safe"}}</td>
+		</tr>
+		<tr>
+			{% for image in images %}
+				<td><img src="/static/{{image.screenshot}}"></td>
+			{% endfor %}
+		</tr>
+	</table>
+
+	<table class="tbl-generic tbl-comments">
+		<tr>
+			<td colspan="2">
+				<form action="/issue/comment/{{ issue.id }}" id="submit_comment_form" method="post">
+					{% csrf_token %}
+					<b><a id="comment_title">Comment:</a></b> {{comment_form.errors}} <br />
+					<div class="comment_textarea">{{comment_form.description}}</div>
+					<input type='hidden' name="issue" id="id_issue" value='{{issue.id}}'/>
+					<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
+					<input type="submit" value="Submit" id="submit_comment_button"/>
+				</form>
+				<br>
+			</td>
+		</tr>
+		{% for comment in comments%}
+			<tr class="tbl-rowheader">
+				<td class="tbl-fauxth tbl-comments-user"><b>{{comment.user}}</b></td>
+				<td class="tbl-fauxth tbl-comments-created">{{comment.created}}</td>
+			</tr>
+			<tr>
+				<td class="tbl-comments-description" colspan="2" onClick="edit_comment($(this), '{{comment.user}}')">{{comment.description|markdown:"safe"}}</td>
+                <td style="display:none" class="tbl-comments-description-edit" colspan="2">
+                    <input type="text"   value="{{comment.description}}"/>
+                    <input type="button" onClick="submit_comment_edit($(this))" value="submit" id="{{comment.id}}"/>
+                </td>
+			</tr>
+		{% endfor %}
+
+	</table>
+
+	<aside>
+		<b>Issue Id:</b> {{issue.id}}<br>
+		<b>Assigned To:</b> <a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a><br/>
+		<b>Meta Issue:</b> {{issue.meta_issues.title}}<br/>
+		<!--
+		<b>Project Name:</b> <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a><br/>
+		<b>State:</b> {{issue.state}}<br />
+		<b>Projected Start:</b> {{issue.projected_start}}<br/>
+		<b>Projected End:</b> {{issue.projected_end}}<br/>
+		<b>Actual Start:</b> {{issue.actual_start}}<br />
+		<b>Actual End:</b> {{issue.actual_end}}<br />-->
+		<b>Date Reported:</b> {{issue.date_reported}}<br/>
+		<b>Created:</b> {{issue.created}}<br/>
+		<b>Modified:</b> {{issue.modified}}<br/>
+		<b>View Type:</b> {{issue.view_type}}<br/>
+		<b>Issue Type:</b> {{issue.issue_type}}<br/>
+		<!--<b>Title:</b> {{issue.title}}<br/>
+		<b>Link Slug:</b> {{issue.link_slug}}<br/>-->
+		<b>Status:</b> {{issue.status}}<br/>
+		<b>Criticality:</b> {{issue.criticality}}<br/>
+		<b>Fixability:</b> {{issue.fixability}}<br/>
+		<!--<b>R &amp; D:</b> {{issue.r_and_d}}<br/>
+		<b>Feature:</b> {{issue.feature}}<br/>-->
+		<b>OS:</b> {{issue.os}}<br/>
+		<b>OS Version:</b> {{issue.os_version}}<br/>
+		<b>Browser:</b> {{issue.browser}}<br/>
+		<b>Browser Version:</b> {{issue.browser_version}}<br/>
+		<!--<b>Screen Shot:</b> {{issue.screen_shot}}<br/>
+		<b>Wireframe:</b> {{issue.wireframe}}<br/>
+		<b>URI to Test:</b> {{issue.uri_to_test}}-->
+		<b>Created By:</b> {{issue.created_by}}<br />
+		<b>Modified By</b> {{issue.modified_by}}<br />
+		<b>Point of Contact:</b> {{issue.point_of_contact}}<br />
+		{% if related_issues %}
+			<br><b>Related Issues</b> <br>
+				<table id="relation_table">
+					<tr>
+						<th>
+							Issue
+						</th>
+						<th>
+							Relation
+						</th>
+					</tr>
+				{% for issue_to_issue in related_issues %}
+					<tr>
+						<td>
+							<a href="/issue/{{issue_to_issue.secondary_issue.id}}">{{issue_to_issue.secondary_issue.description}}</a>
+						</td>
+						<td>
+							{{issue_to_issue.link_type}}
+						</td>
+						<td>
+							<a onClick="unlink_issue('{{issue_to_issue.secondary_issue.id}}')">Unlink</a>
+						</td>
+					</tr>
+				{% endfor %}
+				</table>
+		{% endif %}
+	</aside>
+
+	<div id="modal-issue-duplicate" class="modal hide" role="dialog">
+		<header class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>Duplicate Issue</h3>
+		</header>
+		<div class="modal-body">
+			<form class="form-inline">
+				<label for="duplicate_issue_id">Duplicate Issue ID</label>
+				<input type="text" id="duplicate_issue_id">
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			<button class="btn btn-primary">Link</button>
+		</footer>
+	</div>
+
+	<div id="modal-issue-related" class="modal hide" role="dialog">
+		<header class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>Select Related Issue</h3>
+		</header>
+		<div class="modal-body">
+			<form class="form-horizontal">
+				<p>
+					Current issue {{issue.id}} is a
+					<select id="related_issue_id_type">
+						<option value="duplicate">Duplicate</option>
+						<option value="related">Related</option>
+						<option value="child">Child</option>
+						<option value="parent">Parent</option>
+					</select>
+					of Issue
+				</p>
+
+				<select  name="related_issue_id">
+				    {% for project_issue in project_issues%}
+				        <option value="{{project_issue.id}}">{{project_issue.summary}}</option>
+				    {% endfor %}
+				</select>
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			<button class="btn btn-primary">Link</button>
+		</footer>
+	</div>
+{% endblock %}

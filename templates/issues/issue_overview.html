@@ -393,8 +393,8 @@ s{% block container %}
 		{% for comment in comments%}
 			<tr class="tbl-rowheader">
 				<td class="tbl-fauxth tbl-comments-user"><b>{{comment.user}}</b></td>
-				<td class="tbl-fauxth tbl-comments-created">{{comment.created}}</td
->			</tr>
+				<td class="tbl-fauxth tbl-comments-created">{{comment.created}}</td>
+			</tr>
 			<tr>
 				<td class="tbl-comments-description" colspan="2" onClick="edit_comment($(this), '{{comment.user}}')">{{comment.description|markdown:"safe"}}</td>
                 <td style="display:none" class="tbl-comments-description-edit" colspan="2">
