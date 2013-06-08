@@ -62,8 +62,11 @@ def checklist_edit(request, checklist_id):
         if checklist_form.is_valid() and formset.is_valid():
             checklist_form.save(request.user)
             for forms in formset:
-                unsaved_form = forms.save(commit=False)
-                unsaved_form.save(request.user)
+                try:
+                    unsaved_form = forms.save(commit=False)
+                    unsaved_form.save(request.user)
+                except Exception, e:
+                    print e
         else:
             print checklist_form.errors
             print formset.errors
