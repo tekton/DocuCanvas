@@ -7,7 +7,7 @@
 {% endblock%}
 
 {% block container %}
-    <form action="/checklist/{{checklist.id}}/edit" method="post" enctype="multipart/form-data">
+    <form id = 'checklistForm' action="/checklist/{{checklist.id}}/edit" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{formset.management_form}}
         <div>
@@ -40,7 +40,7 @@
     $(function() {
         $("#checklistContainer").sortable({
           stop: function(e, ui){
-             $('#checklistContainer input[type="hidden"][id="sort"]').each(function(i){
+             $('#checklistContainer input[id$="order"]').each(function(i){
               this.value = i
             })
           }
@@ -48,14 +48,18 @@
         $("#checklistContainer").disableSelection();
       });
     $(document).ready(function(){
-        {% for form in formset %}
-        var positionCounter = {{forloop.counter}};
+        {% for i in formset %}
+        var positionCounter = {{forloop.counter0}};
         console.log(positionCounter);
-        $('#checklistContainer').append('<div>\
-                        Title: {{ form.title }}\
-                        <input id="sort" name="checklistlayoutitems_set-{{forloop.counter0}}-order" type="hidden" value = "{{form.order.value}}"/>\
-                        {{ form.id }}\
-                    </div>');
+            {% for form in formset %}
+             if ({{form.order.value}} == positionCounter){
+                             $('#checklistForm #checklistContainer').append('<div>\
+                                 Title: {{ form.title }}\
+                                 {{form.order}}\
+                                 {{ form.id }}\
+                                 </div>');
+                         }
+            {% endfor %}
         {% endfor %}
     });
 </script>
