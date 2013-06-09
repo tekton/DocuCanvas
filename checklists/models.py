@@ -18,9 +18,12 @@ class CheckListLayoutItems(models.Model):
     title = models.CharField(max_length=255)
     order = models.IntegerField()
 
-    def save(self, user=None, *args, **kwargs):
+    def save(self, user=None, commit=True, *args, **kwargs):
         if user:
-            if not self.pk:
+            print "attempting to save layout item"
+            # print dir(self)
+            print "Title {0} and Order {1}".format(self.title, self.order)
+            if not self.pk:  # for new items being created
                 super(CheckListLayoutItems, self).save(*args, **kwargs)
                 try:
                     news_feed_item = NewsFeedItem()
@@ -32,27 +35,36 @@ class CheckListLayoutItems(models.Model):
                     news_feed_item.save()
                 except Exception, e:
                     print e
-            else:
+            else:  # for updates to items
                 try:
                     old_checklist_item = CheckListLayoutItems.objects.get(pk=self.pk)
                     if old_checklist_item.title != self.title:
-                        super(CheckListLayoutItems, self).save(*args, **kwargs)
+                        f = "title"
+                    elif old_checklist_item.order != self.order:
+                        f = "order"
+                    else:
+                        f = None
+                    super(CheckListLayoutItems, self).save(*args, **kwargs)
+                    try:
+                        news_feed_item = NewsFeedItem()
+                        news_feed_item.user = user
+                        news_feed_item.project = self.Checklist.project
+                        news_feed_item.checklist = self.Checklist
+                        news_feed_item.newsfeed_type = 'update_checklist_item'
                         try:
-                            news_feed_item = NewsFeedItem()
-                            news_feed_item.user = user
-                            news_feed_item.project = self.Checklist.project
-                            news_feed_item.checklist = self.Checklist
-                            news_feed_item.newsfeed_type = 'update_checklist_item'
-                            try:
-                                news_feed_item.field_change = 'checklist item'
+                            news_feed_item.field_change = 'checklist item'
+                            if f == "title":
                                 news_feed_item.old_value = old_checklist_item.title
                                 news_feed_item.new_value = self.title
-                                news_feed_item.save()
-                            except Exception, e:
-                                print e
-                        except Exception, e:
+                            else:
+                                news_feed_item.old_value = old_checklist_item.order
+                                news_feed_item.new_value = self.order
+                            news_feed_item.save()
+                        except Exception, e:  # exception for the try to save news_feed_item
                             print e
-                except Exception, e:
+                    except Exception, e:  # exception for the creation of news_feed_item
+                        print e
+                except Exception, e:  # exception for the get and save lines
                     print e
         else:
             print 'user was not given!'

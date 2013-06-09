@@ -39,6 +39,7 @@ def project_checklists(request, project_id):
 
 @login_required
 def checklist_edit(request, checklist_id):
+    print "checklist edit!"
     try:
         checklist = Checklist.objects.get(pk=checklist_id)
     except:
@@ -46,25 +47,41 @@ def checklist_edit(request, checklist_id):
         formset = ChecklistForm()
         checklist = Checklist()
 
+    # why is this needed?
     try:
         num_checklist_layout_items = CheckListLayoutItems.objects.filter(Checklist=checklist).count()
+        layout_items = CheckListLayoutItems.objects.filter(Checklist=checklist)
     except Exception, e:
         print e
         print 'couldnt count number of checklistlayoutitems'
 
     ChecklistLayoutItemsFormset = inlineformset_factory(Checklist, CheckListLayoutItems, can_delete=False, extra=0)
 
-
     if request.method == 'POST':
+        print "post called"
         checklist_form = ChecklistForm(request.POST, instance=checklist)
         formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
 
         if checklist_form.is_valid() and formset.is_valid():
-            checklist_form.save(request.user)
+            print "both forms valid?"
+            try:
+                checklist_form.save(request.user)
+                print "saving checklist form"
+            except Exception, e:
+                print "unable to save checklist"
+                print e
+
             for forms in formset:
+                print "parsing through forms in the formset for all of the layout items"
                 try:
+                    # print dir(forms)
+                    if forms.is_valid:
+                        # print dir(forms.fields["title"])
+                        print str(forms.cleaned_data["title"]) + " | " + str(forms.cleaned_data["order"])
+                    else:
+                        print "form wasn't valid!"
                     unsaved_form = forms.save(commit=False)
-                    unsaved_form.save(request.user)
+                    unsaved_form.save(request.user, commit=True)
                 except Exception, e:
                     print e
         else:
@@ -72,11 +89,15 @@ def checklist_edit(request, checklist_id):
             print formset.errors
     else:
         formset = ChecklistLayoutItemsFormset(instance=checklist)
+        checklist_form = ChecklistForm(instance=checklist)
 
-    checklist_form = ChecklistForm(instance=checklist)
-
-
-    return render_to_response("checklists/checklist_overview.html", {"formset": formset, "checklist_form": checklist_form, "checklist": checklist, "num_checklist_items": num_checklist_layout_items, "page_type": checklist.project.name, "page_value": "Checklist"}, context_instance=RequestContext(request))
+    return render_to_response("checklists/checklist_overview.html", {"formset": formset,
+                                                                     "checklist_form": checklist_form,
+                                                                     "checklist": checklist,
+                                                                     "num_checklist_items": num_checklist_layout_items,
+                                                                     "page_type": checklist.project.name,
+                                                                     "page_value": "Checklist",
+                                                                     "layout_items": layout_items}, context_instance=RequestContext(request))
 
 
 @login_required

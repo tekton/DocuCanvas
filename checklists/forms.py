@@ -6,7 +6,7 @@ from django.forms.models import model_to_dict
 
 
 '''
-Forms for submitting bug reports and suggestions
+    Forms for submitting checklists
 '''
 
 
