@@ -13,11 +13,11 @@
         <div>
             Name: {{checklist_form.name}} <br />
             project: {{checklist_form.project}}<br />
-            {{formset|length}}
             <div id ='checklistContainer'>
+              <!--{{formset|length}}
               {% for item in layout_items %}
                 {{item.title}} | {{item.order}}<br />
-              {% endfor %}
+              {% endfor %}-->
             </div>
         </div>
         <input title='Add a new checklist item' type='button' name='add_checklist_item' value='Add Item' onclick = 'addCheckListItem()'/>
