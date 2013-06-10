@@ -4,8 +4,6 @@
 {% load staticfiles %}
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="">
-	<meta name="author" content="">
 
 	<title>Gadget</title>
 
@@ -16,7 +14,11 @@
 		body {
 			font-size: 16px;
 		}
-		
+
+		#globalwrap {
+			padding-top: 65px;
+		}
+	
 		#sitenav .navbar-inner {
 			min-height: 50px;
 			border-bottom: 0;
@@ -93,16 +95,36 @@
 			margin: 15px 0 25px;
 		}
 
-		#main {
-		    -o-animation: fadein .8s;
-		    -moz-animation: fadein .8s;
-		    -webkit-animation: fadein .8s;
-		    animation: fadein .8s;
+		#pagetitle .title-separator {
+			display: none;
+		}
+
+
+		#issue-column-main,
+		#issue-column-aside {
+			transition: width .3s;
+		}
+
+		#issue-column-aside .metainfo-hide #issue-metainfo-content  {
+			display: none;
+		}
+		.issue-comment .comment-editbutton {
+			display: none;
+		}
+		.issue-comment:hover .comment-editbutton {
+			display: block;
+		}
+
+		#maincontent {
+		    -o-animation: fadein 1.5s;
+		    -moz-animation: fadein 1.5s;
+		    -webkit-animation: fadein 1.5s;
+		    animation: fadein 1.5s;
 		}
 
 		@-o-keyframes fadein {
 		    from {
-		        opacity:.2;
+		        opacity:0;
 		    }
 		    to {
 		        opacity: 1;
@@ -110,7 +132,7 @@
 		}​
 		@-moz-keyframes fadein {
 		    from {
-		        opacity:.2;
+		        opacity:0;
 		    }
 		    to {
 		        opacity:1;
@@ -118,7 +140,7 @@
 		}
 		@-webkit-keyframes fadein {
 		    from {
-		        opacity:.2;
+		        opacity:0;
 		    }
 		    to {
 		        opacity:1;
@@ -126,7 +148,7 @@
 		}
 		@keyframes fadein {
 		    from {
-		        opacity:.2;
+		        opacity:0;
 		    }
 		    to {
 		        opacity:1;
@@ -134,15 +156,15 @@
 		}
 
 		@media (min-width: 980px) {
-			#globalwrap {
-				padding-top: 65px;
-			}
+			
 		}
 
+		/* Large Desktop */
 		@media (min-width: 1200px) {
 
 		}
-		 
+		
+		/* Portrait tablet to landscape and desktop */
 		@media (min-width: 768px) and (max-width: 979px) {
 			.navbar-fixed-top .navbar-inner,
 			.navbar-fixed-bottom .navbar-inner {
@@ -154,7 +176,8 @@
 				margin-top: 10px;
 			}
 		}
-		 
+		
+		/* Landscape phone to portrait tablet */
 		@media (max-width: 767px) {
 			.navbar-fixed-top .navbar-inner,
 			.navbar-fixed-bottom .navbar-inner {
@@ -166,7 +189,8 @@
 				margin-top: 10px;
 			}
 		}
-		 
+		
+		/* Landscape phones and down */
 		@media (max-width: 480px) {
 			.navbar-fixed-top .navbar-inner,
 			.navbar-fixed-bottom .navbar-inner {

@@ -31,7 +31,7 @@
 		                {% csrf_token %}
 		                <a href="/issue/advsearch" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
 		                <input type="text" name="searchText" class="search-query" placeholder="Search">
-		                <button type="submit" class="btn">Search</button>
+		                <button type="submit" class="btn btn-inverse">Search</button>
 		            </form>
 		        </div>
 		        <div id="userbar">
@@ -55,9 +55,9 @@
 		</div>
 	</div>
 </div>
-<div id="main" class="container">	
+<div id="maincontent" class="container">	
 	<header id="pageheader">
-		<h1 id="pagetitle">{% if page_type %}<span class="title-pagetype">{{page_type}}</span>{% endif %}{% if page_type and page_value %} <span class="title-separator">::</span> {% endif %}{% if page_value %}<span class="title-pagevalue">{{page_value}}</span>{% endif %}</h1>
+		<h1 id="pagetitle" class="page-header">{% if page_type %}<span class="title-pagetype">{{page_type}}</span>{% endif %}{% if page_type and page_value %} <span class="title-separator">::</span> {% endif %}{% if page_value %}<small class="title-pagevalue">{{page_value}}</small>{% endif %}</h1>
 	</header>
 
 	{% block container %}{% endblock %}
