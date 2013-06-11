@@ -61,6 +61,21 @@ def notification_form(request):
 
 
 @login_required
+def notifications(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+        projects = []
+
+    try:
+        notifications = NotificationRecipient.objects.select_related().filter(user=request.user,read=True)
+    except Exception, e:
+        print e
+    return render_to_response("notifications/notifications.html", {"notifications": notifications, "projects": projects, "page_type": "Notification", "page_value": "Past"}, context_instance=RequestContext(request))
+
+
+@login_required
 def mark_as_read(request):
     to_json = {'success': False}
 

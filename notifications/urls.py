@@ -5,6 +5,7 @@ from django.conf.urls import *
 '''
 
 urlpatterns = patterns('',
+    (r'all', 'notifications.views.notifications'),
     (r'new', 'notifications.views.notification_form'),
     (r'mark_as_read', 'notifications.views.mark_as_read'),
 )
