@@ -39,15 +39,15 @@ def home(request):
         print e
 
     try:
-        notification_recipients = NotificationRecipient.objects.select_related('notification').filter(user=request.user)
-        notifications = []
-        for recipient in notification_recipients:
-            notifications.append(recipient.notification)
+        notification_recipients = NotificationRecipient.objects.select_related('notification').filter(user=request.user, read=False)
+        num_notifications = 0
+        for notification in notification_recipients:
+            num_notifications += 1
     except Exception, e:
         print e
         notifications = None
     #subscribed = SubscriptionToIssue.objects.select_related().filter(user=request.user)
     return render_to_response("theme/dashboard.html", {"issues": issues, "subscribed": subscribed,
-            "projects": projects, "pins": pins, "newsfeeds": newsfeeds, "notifications": notifications,
-            "page_type": "Dashboard", "page_value": "Overview",
+            "projects": projects, "pins": pins, "newsfeeds": newsfeeds, "notifications": notification_recipients,
+            "num_notifications": num_notifications, "page_type": "Dashboard", "page_value": "Overview",
             "navIndicator": 'dashboard'}, context_instance=RequestContext(request))

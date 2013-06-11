@@ -58,3 +58,18 @@ def notification_form(request):
     #recipient_form = NotificationRecipientForm(instance=notification_recipient, auto_id=False)
 
     return render_to_response("notifications/notification_form.html", {'formset': formset, "notification_form": notification_form, "users": json.dumps(users_dict), "num_users": num_users, "projects": projects, "page_type": "Notification", "page_value": "New"}, context_instance=RequestContext(request))
+
+
+@login_required
+def mark_as_read(request):
+    to_json = {'success': False}
+
+    if request.method == 'POST':
+        try:
+            notification_recipient = NotificationRecipient.objects.get(pk=request.POST['notification_id'])
+            notification_recipient.read = True
+            notification_recipient.save()
+            to_json['success'] = True
+        except Exception, e:
+            print e
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
