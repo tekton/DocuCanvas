@@ -54,6 +54,7 @@ def register(request):
 def login_func(request):
     next = request.GET.get("next", "/")
     state = ""
+    stateStatus = ""
     if request.method == 'POST':
 	next = request.POST.get("next", "/")  # in theory we could take the default from before, but in case a url gets weird lets set a real default
         try:
@@ -74,7 +75,8 @@ def login_func(request):
             else:
                 #to_json = {"error": "error with username and/or password"}
                 #return HttpResponse(simplejson.dumps(to_json), mimetype='application/json', status=400)
-                return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+                state = "Your username and/or password were incorrect."
+                return render_to_response("theme/registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
         except Exception, e:
             print "Error authenticating form"
             print e
