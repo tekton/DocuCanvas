@@ -172,7 +172,7 @@
             {% for issue in issues%}
                 {% if newest_assigned != issue.created %}
                     {% set newest_assigned = issue.created %}
-                    <tr class="info"><td colspan="4">{{issue.created}}</td></tr>
+                    <tr><td colspan="4">{{issue.created}}</td></tr>
                 {% endif %}
                 <tr>
                     <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
@@ -201,7 +201,7 @@
             {% for issue in pins%}
                 {% if newest_pin != issue.created %}
                     {% set newest_pin = issue.created%}
-                    <tr class="info"><td colspan="4">{{issue.created}}</td></tr>
+                    <tr><td colspan="4">{{issue.created}}</td></tr>
                 {% endif %}
                 <tr>
                     <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
@@ -230,7 +230,7 @@
             {% for issue in subscribed%}
                 {% if newest_subscribed != issue.created %}
                     {% set newest_subscribed = issue.created%}
-                    <tr class="info"><td colspan="4">{{issue.created}}</td></tr>
+                    <tr><td colspan="4">{{issue.created}}</td></tr>
                 {% endif %}
                 <tr>
                     <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>

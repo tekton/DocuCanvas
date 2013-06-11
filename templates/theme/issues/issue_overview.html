@@ -2,29 +2,33 @@
 {% load markup %}
 
 {% block context_nav %}
-	<li><a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a></li>
-	<li><a href="/issue/subscribe/{{issue.id}}">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
-	<li><a href="/issue/pin/{{issue.id}}">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
-	<li><a href="/issue/assign/{{issue.id}}">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
+	<li><a id="context-issue-new" href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a></li>
+	<li><a id="context-issue-subscribe" href="/issue/subscribe/{{issue.id}}">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
+	<li><a id="context-issue-pin" href="/issue/pin/{{issue.id}}">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
+	<li><a id="context-issue-assign" href="/issue/assign/{{issue.id}}">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
 	<li>
-		<a>
+		<a id="context-issue-assignto">
 			<form class="form-inline">
-				<label for="assigned_user">Assign To:</label>
-				<select name="assigned_user">
-					{% for user in users %}
-						<option value="{{user.id}}">{{user.username}}</option>
-					{% endfor%}
-				</select>
-				<button type="submit" data-url="/issue/assign/{{ issue.id }}/">Assign</button>
+				Assign To:&nbsp;
+				<div class="input-append">
+					<select name="assigned_user">
+						{% for user in users %}
+							<option value="{{user.id}}">{{user.username}}</option>
+						{% endfor%}
+					</select>
+					<button class="btn" type="button" data-url="/issue/assign/{{ issue.id }}/">Assign</button>
+				</div>
 			</form>
 		</a>
 	</a></li>
 	<li>
-		<a>
+		<a id="context-issue-status">
 			<form class="form-inline">
-				<label for="assigned_user" for="status">Status:</label>
-				{{form.status}}
-				<button type="submit">Set</button>
+				Status:&nbsp;
+				<div class="input-append">
+					{{form.status}}
+					<button class="btn" type="button">Set</button>
+				</div>
 			</form>
 		</a>
 	</li>
@@ -34,7 +38,6 @@
 {% endblock%}
 
 {% block container %}
-
 	<article class="row">
 		<div id="issue-column-main" class="span9">
 			<div id="issue-details" class="well">
@@ -94,14 +97,12 @@
 				<ul id="issue-comments-list" class="media-list">
 					{% for comment in comments%}
 					<li class="media">
-						<article class="issue-comment">
+						<article id="issue-comment-{{comment.id}}" class="issue-comment" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}">
 							<div class="media-body">
 								<aside class="clearfix">
 									<p><span class="pull-left">{{comment.user}}</span> <span class="pull-right">{{comment.created|date:"M d, Y g:i A"}} </span></p>
 								</aside>
-								<div class="pull-right comment-editbutton">
-									<button class="btn btn-mini" data-toggle="modal" data-target="#modal-comment-edit"><i class="icon-edit"></i></button>
-								</div>
+								<button class="btn btn-mini pull-right comment-editbutton" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}" data-commentcontent="{{comment.description}}"><i class="icon-edit"></i></button>
 								<div class="comment-content">
 									{{comment.description|markdown:"safe"}}
 								</div>
@@ -181,6 +182,26 @@
 		</div>
 	</div>
 
+	<div id="modal-issue-fixed" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Fixed Issue</h3>
+		</header>
+		<div class="modal-body">
+			<form id="modal-issue-fixed-form" class="form-inline" action="/issue/set_bug_state" method="POST">
+				{% csrf_token %}
+				<input type="hidden" name="issue" id="id_issue" value="{{issue.id}}">
+				<input type="hidden" name="user" id="id_user" value="{{user.id}}">
+				<input type="hidden" name="status" value="fixed">
+				{{comment_form.description}}
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button class="btn btn-primary" type="submit" form="modal-issue-fixed-form">Fix</button>
+		</footer>
+	</div>
+
 	<div id="modal-issue-duplicate" class="modal fade hide">
 		<header class="modal-header">
 			<button class="close" data-dismiss="modal">×</button>
@@ -194,7 +215,7 @@
 		</div>
 		<footer class="modal-footer">
 			<button class="btn" data-dismiss="modal">Cancel</button>
-			<button class="btn btn-primary">Link</button>
+			<button class="btn btn-primary">Duplicate</button>
 		</footer>
 	</div>
 
@@ -216,7 +237,7 @@
 					of Issue
 				</p>
 
-				<select  name="related_issue_id">
+				<select name="related_issue_id">
 				    {% for project_issue in project_issues%}
 				        <option value="{{project_issue.id}}">{{project_issue.summary}}</option>
 				    {% endfor %}
@@ -235,16 +256,133 @@
 			<h3>Edit Comment</h3>
 		</header>
 		<div class="modal-body">
-			<textarea rows="4" cols="250">{{comment.description}}</textarea>
+			<div id="modal-comment-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
+			<textarea id="modal-comment-textarea" rows="4" cols="250" style="width:95%">{{comment.description}}</textarea>
 		</div>
 		<footer class="modal-footer">
 			<button class="btn" data-dismiss="modal">Cancel</button>
-        	<button class="btn btn-primary" type="button">Submit</button>
+        	<button id="modal-comment-submit" class="btn btn-primary" type="button">Submit</button>
         </footer>
 	</div>
 {% endblock %}
 
 {% block additionaljs %}
+// <script> - commented out as only used in Sublime Text for syntax highlightling
+	// Context menu - Status
+	$('#context-issue-status .btn').click(function(){
+		var btn = $(this),
+			statusField = btn.siblings('select');
+
+		switch (statusField.val()){
+			case 'fixed':
+				$('#modal-issue-fixed').modal();
+				break;
+
+			case 'duplicate':
+				$('#modal-issue-duplicate').modal();
+				break;
+
+			default:
+				$.ajax({
+				    type: 'POST',
+				    url: '/issue/set_bug_state',
+				    data:{
+				    	issue: '{{issue.id}}',
+				    	status: statusField.val(),
+						csrfmiddlewaretoken: '{{csrf_token}}'
+				    },
+				    success: function(data){
+				    	AlertMessage.success(data.status);
+				    },
+				    error: AlertMessage.genericUnknownError
+				});
+				break;
+		}
+
+		return;
+        var statusVal = $('#id_status').val();
+        if( statusVal == "fixed"){
+
+			$('#comment_title').text('Bug Fixed Comment');
+			$('#id_description').focus();
+            var submitComment = $('#submit_comment_button');
+            $('<input type="hidden" name="status" value="fixed"></input>').insertBefore('#id_description')
+            submitComment.val('Fix Bug');
+
+			submitComment.unbind('click');
+			$('#submit_comment_form').attr('action', '/issue/set_bug_state');
+
+		}
+
+		else if(statusVal == 'duplicate' ){
+			if($('#link_issue_duplicate_popup').css('display') == "none"){
+                    $('#link_issue_duplicate_popup').fadeToggle();
+            }
+		}
+
+		else{
+        	
+    	}
+	});
+
+	// Context menu - Subscribee
+	$('#context-issue-subscribe').asAjax( function(data, status) {
+        if ( data.success ) {
+            if ( data.is_subscribed ) {
+                $(this).text('Unsubscribe');
+                AlertMessage.success('Issue subscribed');
+            }
+            else {
+                $(this).text('Subscribe');
+                AlertMessage.success( 'Issue unsubscribed');
+            }
+        }
+        else {
+            AlertMessage.error('<strong>Subscribe error!</strong>' + data.error);
+        }
+    }, AlertMessage.genericUnknownError);
+
+    // Context menu - Pin
+    $('a.pin_issue').asAjax(function(data, status) {
+        if ( data.success ) {
+            if ( data.is_pinned ) {
+                $(this).text('Unpin');
+                AlertMessage.success('Issue pinned');
+            }
+            else {
+                $(this).text('Pin');
+                AlertMessage.success('Issue unpinned');
+            }
+        }
+        else {
+            AlertMessage.error('Pinning error: ' + data.error)
+        }
+    },AlertMessage.genericUnknownError);
+
+	// Context menu - Assign (self)
+	$('#context-issue-assign').asAjax(function(data){
+		if ( data.success ) {
+            if ( data.assigned_to == "self" ) {
+                $(this).text( "Unassign" );
+				AlertMessage.success('Issue now assigned to you.');
+            }
+            else if ( data.assigned_to == "none" ) {
+                $(this).text( "Take" );
+				AlertMessage.success('Issue unassigned.');
+            }
+            else if ( data.assigned_to == "user" ) {
+                $(this).text( "Take" );
+				AlertMessage.success('Issue successfully assigned.');
+            }
+        }
+        else {
+        	AlertMessage.error('<strong>Server Error!</strong> ' + data.error);
+        }
+	},AlertMessage.genericUnknownError);
+
+	// Hides sidebar
 	$("#metainfo-toggle").click(function(){
 		var btn = $(this),
 			icon = btn.children('i').first(),
@@ -265,4 +403,55 @@
 			sideColumn.removeClass('span1').addClass('span3');
 		}
 	});
+
+	// Edit Comment - hide/show edit button
+	$('.issue-comment').on({
+		mouseover: function(){
+			var me = $(this);
+			if (me.attr('data-commentuser') == '{{user}}') {
+				me.addClass('show-editbutton');
+			}
+		},
+		mouseout: function(){
+			$(this).removeClass('show-editbutton');
+		}
+	});
+
+	// Edit Comment - show edit form
+	$('.comment-editbutton').click(function(){
+		var btn = $(this),
+			currentUser = '{{user}}',
+			modalForm = $('#modal-comment-edit'),
+			textArea = $('#modal-comment-textarea'),
+			submitBtn = $('#modal-comment-submit'),
+			alertMsg = $('#modal-comment-alert');
+
+		alertMsg.hide();
+		submitBtn.unbind('click');
+
+		if (btn.attr('data-commentuser') == currentUser) {
+			textArea.val(btn.attr('data-commentcontent'));
+			submitBtn.click(function(){
+				$.ajax({
+					type:"POST",
+					url:"/issue/edit_comment",
+					data:{
+						comment_id: btn.attr('data-commentid'),
+						comment: textArea.val()
+					},
+					success: function(data){
+						alertMsg.hide();
+						AlertMessage.success('Comment successfully updated.',btn.siblings('.comment-content'));
+						submitBtn.unbind('click');
+						modalForm.modal('hide');
+					},
+					error: function(data){
+						$('#modal-comment-alert').show();
+					}
+				});
+			});
+			modalForm.modal();
+		}
+	});
+// </script>
 {% endblock %}

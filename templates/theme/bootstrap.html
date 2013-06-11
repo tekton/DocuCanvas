@@ -99,19 +99,13 @@
 			display: none;
 		}
 
-
-		#issue-column-main,
-		#issue-column-aside {
-			transition: width .3s;
-		}
-
 		#issue-column-aside .metainfo-hide #issue-metainfo-content  {
 			display: none;
 		}
 		.issue-comment .comment-editbutton {
 			display: none;
 		}
-		.issue-comment:hover .comment-editbutton {
+		.issue-comment.show-editbutton .comment-editbutton {
 			display: block;
 		}
 
@@ -211,9 +205,68 @@
 		{% block basecontent %}{% endblock %}
 	</div>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<script src="{% static "scripts/ajax_tools.js" %}"></script>
 	<script src="{% static "theme/assets/js/bootstrap.js" %}"></script>
     <script src="{% static "theme/assets/js/tablesorter/jquery.tablesorter.js" %}"></script>
     <script>
+		$.ajaxSetup({
+		    beforeSend: function(xhr, settings) {
+		        xhr.setRequestHeader('X-CSRFToken', '{{csrf_token}}');
+		    }
+		});
+
+	    var AlertMessage = (function(){
+			var msgContainer = $('#pagemessage');
+			if (msgContainer.length == 0) {
+				msgContainer = $('<div/>');
+			}
+			return {
+				msgContainer: msgContainer,
+				tmpl: function(cls,msg,block,closable) {
+					closable = typeof(closable) == 'boolean' ? closable : true;
+					block = typeof(block) == 'boolean' ? block : false;
+
+					cls = cls ? ' alert-' + cls : '';
+					blockCls = block ? ' alert-block' : '';
+
+					var html = '' +
+					'<div class="alert' + cls + blockCls + '">' +
+					  (closable ? '<button type="button" class="close" data-dismiss="alert">&times;</button>' : '') +
+					  msg +
+					'</div>';
+
+					return $(html);
+				},
+				_showMsg: function(alertEl,targetEl) {
+					console.log(arguments);
+					targetEl = targetEl || AlertMessage.msgContainer;
+					targetEl.prepend(alertEl);
+					alertEl.delay(15000).slideUp('normal',function(){
+						$(this).remove();
+					});
+				},
+				warn: function(msg,targetEl,block,closable) {
+					var alertEl = AlertMessage.tmpl(null,msg,block,closable);
+					AlertMessage._showMsg(alertEl,targetEl);
+				},
+				info: function(msg,targetEl,block,closable) {
+					var alertEl = AlertMessage.tmpl('info',msg,block,closable);
+					AlertMessage._showMsg(alertEl,targetEl);
+				},
+				error: function(msg,targetEl,block,closable) {
+					var alertEl = AlertMessage.tmpl('error',msg,block,closable);
+					AlertMessage._showMsg(alertEl,targetEl);
+				},
+				success: function(msg,targetEl,block,closable) {
+					var alertEl = AlertMessage.tmpl('success',msg,block,closable);
+					AlertMessage._showMsg(alertEl,targetEl);
+				},
+				genericUnknownError: function(){
+					AlertMessage.error('<strong>Unknown Error!</strong> An unknown error has occured. Try again later.');
+				}
+			};
+		})();
+
         $(".table-sortable").tablesorter();
         {% block additionaljs %}{% endblock %}
     </script>
