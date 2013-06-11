@@ -1,7 +1,7 @@
 from django.conf.urls import *
 
 '''
-    these all assume http[s]://URI/board/ as the base
+    these all assume http[s]:/newsfeed/ as the base
 '''
 
 urlpatterns = patterns('',

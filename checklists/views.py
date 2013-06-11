@@ -55,12 +55,20 @@ def checklist_edit(request, checklist_id):
         print e
         print 'couldnt count number of checklistlayoutitems'
 
-    ChecklistLayoutItemsFormset = inlineformset_factory(Checklist, CheckListLayoutItems, can_delete=False, extra=0)
+    try:
+        ChecklistLayoutItemsFormset = inlineformset_factory(Checklist, CheckListLayoutItems, can_delete=False, extra=0)
+    except Exception, e:
+        print e
 
     if request.method == 'POST':
         print "post called"
-        checklist_form = ChecklistForm(request.POST, instance=checklist)
-        formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
+        checklist_form = ChecklistForm(request.POST, instance=checklist, auto_id=False)
+
+        try:
+            formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
+        except Exception, e:
+            print "key dict or some other error"
+            print e
 
         if checklist_form.is_valid() and formset.is_valid():
             print "both forms valid?"
