@@ -7,35 +7,37 @@ from django.template import RequestContext
 from projects.models import Project
 from notifications.models import Notification, NotificationRecipient
 from notifications.forms import NotificationForm
+from django.forms.models import inlineformset_factory
 
 import json
 
 
 @login_required
 def notification_form(request):
+
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+        projects = []
+
+    NotificationRecipientsFormset = inlineformset_factory(Notification, NotificationRecipient, can_delete=False, extra=1)
+    notification = Notification()
+
     if request.method == 'POST':
-        notification = Notification()
-        try:
-            form = NotificationForm(request.POST, instance=notification)
-            if form.is_valid():
-
-                try:
-                    notification = form.save()
-                except Exception, e:
-                    print 'unable to save notification'
-                    print e
-                if notification.id:
-                    return redirect('dashboard.views.home')
-                else:
-                    return render_to_response("notifications/notification_form.html", {'form': form}, context_instance=RequestContext(request))
-        except Exception, e:
-            print "Error validating notification fields"
-            print e
+        notification_form = NotificationForm(request.POST, instance=notification)
+        formset = NotificationRecipientsFormset(request.POST, instance=notification)
+        if notification_form.is_valid() and formset.is_valid():
+            n = notification_form.save()
+            formset.save()
+            print 'saving form'
+            return redirect('dashboard.views.home')
+        else:
+            print notification_form.errors
+            print formset.errors
     else:
-        form = NotificationForm()
-        try:
-            projects = Project.objects.all()
-        except:
-            print 'Unable to grab all projects'
+        formset = NotificationRecipientsFormset(instance=notification)
 
-    return render_to_response("notifications/notification_form.html", {'form': form, "projects": projects, "page_type": "Notification", "page_value": "New"}, context_instance=RequestContext(request))
+    notification_form = NotificationForm(instance=notification, auto_id=False)
+
+    return render_to_response("notifications/notification_form.html", {'formset': formset, "notification_form": notification_form, "projects": projects, "page_type": "Notification", "page_value": "New"}, context_instance=RequestContext(request))
