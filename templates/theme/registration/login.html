@@ -4,8 +4,6 @@
 {% load staticfiles %}
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="">
-	<meta name="author" content="">
 	<title>Gadget</title>
 	<style>
 		html,
@@ -128,32 +126,40 @@
 		  vertical-align: text-bottom;
 		  margin-right: 3px; }
 
-		  .hide {
-		  	display: none;
-		  }
+		.hide {
+			display: none;
+		}
 	</style>
 </head>
 <body>
 	<div id="account-loginform" class="wrapper-horizon">
 		<div class="wrapper-content">
 			<div id="account-login">
+				{% if state %}
+	            <div id="login-error" class="formfield" >
+	                <div id="login-error-msg">
+	                    <p class="error-{{stateStatus}}">
+	                        <img src="{% static "img/login_icon_error.png" %}" width="14" height="14">
+	                        {{state}}
+	                    </p>
+	                </div>
+	            </div>
+	            {% endif %}
 				<form action="/accounts/login" method="post" enctype="multipart/form-data" autocomplete="off">
 				    {% csrf_token %}
 				    <input type="hidden" name="next" id="next" value="{{next}}" />
-
 				    <p>
-				    <label for="login-email">Username</label>
-				    <input id="login-email" class="formfield" type="text" name="username" placeholder="Username">
-				</p>
+					    <label for="login-email">Username</label>
+					    <input id="login-email" class="formfield" type="text" name="username" placeholder="Username">
+					</p>
 
 					<p>
-				    <label for="login-password">Password</label>
-				    <input id="login-password" class="formfield" type="password" name="password" placeholder="Password">
-				</p>
-				<p>
-					<button id="login-button" class="formfield" type="submit">Login</button>
-				</p>
-
+					    <label for="login-password">Password</label>
+					    <input id="login-password" class="formfield" type="password" name="password" placeholder="Password">
+					</p>
+					<p>
+						<button id="login-button" class="formfield" type="submit">Login</button>
+					</p>
 				    <p id="login-forgot" class="hide"><a href="#" role="button" data-toggle="modal" data-target="#account-registrationform">Register</a></p>
 				</form>
 			</div>
