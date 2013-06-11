@@ -1,6 +1,6 @@
 {% extends "theme/bootstrap.html" %}
 {% block basecontent %}
-<div id="sitenav" class="navbar navbar-inverse navbar-fixed-top">
+<div id="sitenav" class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
 			<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -17,7 +17,8 @@
 							<a href="/project" class="dropdown-toggle {% if navIndicator == 'projects' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
 							</a>
 							<ul class="dropdown-menu">
-								<li><a href="/project/new">New Project</a></li>
+								<li class="nav-header">New</li>
+								<li><a href="/project/new">Project</a></li>
 								<li class="nav-header">All Projects</li>
 								{% for project in projects%}
 									<li><a href="/project/{{project.id}}">{{project.name}}</a></li>
@@ -30,9 +31,11 @@
 				<div id="searchform">
 					<form class="navbar-search pull-right" action="/issue/search" method="POST">
 		                {% csrf_token %}
-		                <a href="/issue/advsearch" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
-		                <input type="text" name="searchText" class="search-query" placeholder="Search">
-		                <button type="submit" class="btn btn-inverse">Search</button>
+		                <div class="input-prepend input-append">
+			                <a class="btn btn-inverse" href="/issue/advsearch" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
+			                <input type="text" name="searchText" class="search-query" placeholder="Search">
+			                <button type="submit" class="btn btn-inverse">Go</button>
+			            </div>
 		            </form>
 		        </div>
 		        <div id="userbar">
@@ -48,6 +51,7 @@
 		                    <ul class="dropdown-menu">
 		                        <li><a href="/accounts/account_settings">Settings</a></li>
 		                        <li><a href="/accounts/logout/?next=/">Logout</a></li>
+    							<li><a href="/help/user/{{user.id}}">Help</a></li>
 		                    </ul>
 		                </li>
 		            </ul>

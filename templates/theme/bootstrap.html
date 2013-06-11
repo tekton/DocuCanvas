@@ -7,23 +7,16 @@
 
 	<title>Gadget</title>
 
-	<link rel="stylesheet" href="{% static "theme/assets/css/bootstrap.css" %}">
-	<link rel="stylesheet" href="{% static "theme/assets/css/bootstrap-responsive.css" %}">
+	<link rel="stylesheet" href="{% static "theme/bootstrap/css/bootstrap.css" %}">
 
 	<style>
 		body {
 			font-size: 16px;
 		}
+		textarea {
+			width: 98%;
+		}
 
-		#globalwrap {
-			padding-top: 65px;
-		}
-	
-		#sitenav .navbar-inner {
-			min-height: 50px;
-			border-bottom: 0;
-			box-shadow: 0 1px 5px #5A5A5A;
-		}
 		#sitenav .brand {
 			padding: 0 5px;
 			margin-left: 0;
@@ -42,19 +35,12 @@
 			background-repeat: no-repeat;
 			background-position: center;
 		}
-		#sitenav .nav {
-			margin-top: 5px;
-		}
-		#sitenav .nav .active {
-			border-bottom: 5px solid #587C91;
-		}
-		#sitenav.navbar-inverse .navbar-inner {
+		#sitenav .navbar-inner {
+			min-height: 50px;
+			border-bottom: 0;
+			box-shadow: 0 1px 5px #5A5A5A;
 			background-color: #2B2F32;
 			background-image: none;
-		}
-		#sitenav.navbar-inverse .brand,
-		#sitenav.navbar-inverse .nav > li > a {
-			color: #FFF;
 		}
 		#sitenav #mainnav li {
 			text-transform: uppercase;
@@ -63,25 +49,42 @@
 		#sitenav #mainnav .dropdown-menu li {
 			text-transform: none;
 		}
-		#sitenav .dropdown-menu > li > a:hover,
-		#sitenav .dropdown-menu > li > a:focus,
-		#sitenav .dropdown-submenu:hover > a,
-		#sitenav .dropdown-submenu:focus > a {
-			background-color: #587C91;
-			background-image: none;
+		#sitenav form {
+			margin-bottom: 0;
 		}
-		#sitenav #searchform .search-query {
-			width: 150px;
-			margin-top: 5px;
+		#sitenav .navbar-search .search-query {
+			width: 145px;
+			color: #ffffff;
+			background-color: #515151;
+			border-color: #111111;
+			-webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+			-moz-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+			box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+			-webkit-transition: none;
+			-moz-transition: none;
+			-o-transition: none;
+			transition: none;
 		}
-		#sitenav #searchform #search-icon-advanced .icon-search {
-			margin-top: 5px;
+		#sitenav .navbar-search .search-query:-moz-placeholder {
+			color: #cccccc;
 		}
-		#sitenav #searchform .btn {
-			padding: 2px 4px;
+		#sitenav .navbar-search .search-query:-ms-input-placeholder {
+			color: #cccccc;
 		}
-		#sitenav .nav form {
-			margin: 0;
+		#sitenav .navbar-search .search-query::-webkit-input-placeholder {
+			color: #cccccc;
+		}
+		#sitenav .navbar-search .search-query:focus,
+		#sitenav .navbar-search .search-query.focused {
+			padding: 5px 15px;
+			color: #333333;
+			text-shadow: 0 1px 0 #ffffff;
+			background-color: #ffffff;
+			border: 0;
+			-webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+			-moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+			box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+			outline: 0;
 		}
 
 		.panel {
@@ -113,14 +116,10 @@
 		}
 
 		#maincontent {
-		    -o-animation: fadein 1.5s;
-		    -moz-animation: fadein 1.5s;
-		    -webkit-animation: fadein 1.5s;
-		    animation: fadein 1.5s;
-		}
-
-		textarea {
-			width: 98%;
+		    -o-animation: fadein .7s;
+		    -moz-animation: fadein .7s;
+		    -webkit-animation: fadein .7s;
+		    animation: fadein .7s;
 		}
 
 		@-o-keyframes fadein {
@@ -157,51 +156,29 @@
 		}
 
 		@media (min-width: 980px) {
-			
+			#globalwrap {
+				padding-top: 55px;
+			}
 		}
 
 		/* Large Desktop */
 		@media (min-width: 1200px) {
-
+			
 		}
 		
 		/* Portrait tablet to landscape and desktop */
 		@media (min-width: 768px) and (max-width: 979px) {
-			.navbar-fixed-top .navbar-inner,
-			.navbar-fixed-bottom .navbar-inner {
-				padding: 0;
-			}
 
-			.navbar .btn-navbar {
-				margin-right: 10px;
-				margin-top: 10px;
-			}
 		}
 		
 		/* Landscape phone to portrait tablet */
 		@media (max-width: 767px) {
-			.navbar-fixed-top .navbar-inner,
-			.navbar-fixed-bottom .navbar-inner {
-				padding: 0;
-			}
 
-			.navbar .btn-navbar {
-				margin-right: 10px;
-				margin-top: 10px;
-			}
 		}
 		
 		/* Landscape phones and down */
 		@media (max-width: 480px) {
-			.navbar-fixed-top .navbar-inner,
-			.navbar-fixed-bottom .navbar-inner {
-				padding: 0;
-			}
-
-			.navbar .btn-navbar {
-				margin-right: 10px;
-				margin-top: 10px;
-			}
+			
 		}
 
 		{% block additionalstyles %}{% endblock %}
@@ -218,13 +195,13 @@
 			<h3>Markdown</h3>
 		</header>
 		<div class="modal-body">
-<h4>Headers</h4>
+			<h4>Headers</h4>
 <pre>
 # This is an H1
 ## This is an H2
 ###### This is an H6
 </pre>
-<h4>Lists</h4>
+			<h4>Lists</h4>
 <pre>
 * This
 * is an
@@ -234,12 +211,12 @@
 2. is an
 3. ordered (number) list
 </pre>
-<h4>Formatting</h4>
+			<h4>Formatting</h4>
 <pre>
 _italic_ (or) *italic*
 __bold__ (or) **bold**
 </pre>
-<h4>Links</h4>
+			<h4>Links</h4>
 <pre>
 [This is a link](http://www.darkcoding.net)
 </pre>
@@ -250,7 +227,7 @@ __bold__ (or) **bold**
 	</div>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script src="{% static "scripts/ajax_tools.js" %}"></script>
-	<script src="{% static "theme/assets/js/bootstrap.js" %}"></script>
+	<script src="{% static "theme/bootstrap/js/bootstrap.js" %}"></script>
     <script src="{% static "theme/assets/js/tablesorter/jquery.tablesorter.js" %}"></script>
     <script>
 		$.ajaxSetup({

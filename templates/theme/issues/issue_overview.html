@@ -2,7 +2,9 @@
 {% load markup %}
 
 {% block context_nav %}
-	<li><a id="context-issue-new" href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a></li>
+	<li class="nav-header">New</li>
+	<li><a id="context-issue-new" href="/issue/new/{{issue.project.id}}">Issue : {{issue.project.name}}</a></li>
+	<li class="nav-header">Issue Actions</li>
 	<li><a id="context-issue-subscribe" href="/issue/subscribe/{{issue.id}}">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
 	<li><a id="context-issue-pin" href="/issue/pin/{{issue.id}}">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
 	<li><a id="context-issue-assign" href="/issue/assign/{{issue.id}}">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
@@ -563,5 +565,5 @@
 			modalForm.modal();
 		}
 	});
-// </script> 
+// </script>
 {% endblock %}
