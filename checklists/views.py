@@ -90,8 +90,12 @@ def checklist_edit(request, checklist_id):
                         print "form wasn't valid!"
                     unsaved_form = forms.save(commit=False)
                     unsaved_form.save(request.user, commit=True)
+                    
                 except Exception, e:
                     print e
+            projectId = request.POST.get('project', '')
+            print projectId
+            return redirect('/checklist/project/'+projectId)
         else:
             print checklist_form.errors
             print formset.errors
