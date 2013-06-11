@@ -32,7 +32,7 @@
 			</form>
 		</a>
 	</li>
-	<li><a href="#" data-target="#modal-issue-related" role="button" data-toggle="modal">Set Related To...</a></li>
+	<li><a href="#" data-target="#modal-issue-related" data-toggle="modal">Set Related To...</a></li>
     <li><a href="/issue/{{issue.id}}/history">History</a></li>
 	<li><a href="/issue/{{issue.id}}/edit">Edit</a></li>
 {% endblock%}
@@ -90,7 +90,8 @@
 							</div>
 						</div>
 						<div class="form-actions">
-	                    	<button class="btn btn-primary" type="submit">Submit</button>
+							<a href="#" class="pull-left" data-toggle="modal" data-target="#modal-help-markdown">Markdown help</a>
+	                    	<button class="btn btn-primary pull-right" type="submit">Submit</button>
 	                    </div>
 					</form>
 				</div>
@@ -100,7 +101,7 @@
 						<article id="issue-comment-{{comment.id}}" class="issue-comment" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}">
 							<div class="media-body">
 								<aside class="clearfix">
-									<p><span class="pull-left">{{comment.user}}</span> <span class="pull-right">{{comment.created|date:"M d, Y g:i A"}} </span></p>
+									<p class="muted"><span class="pull-left">{{comment.user}}</span> <span class="pull-right">{{comment.created|date:"M d, Y g:i A"}} </span></p>
 								</aside>
 								<button class="btn btn-mini pull-right comment-editbutton" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}" data-commentcontent="{{comment.description}}"><i class="icon-edit"></i></button>
 								<div class="comment-content">
@@ -113,74 +114,158 @@
 				</ul>
 			</aside>
 		</div>
+
 		<div id="issue-column-aside" class="span3">
 			<aside id="issue-metainfo" class="well metainfo-show">
 				<div class="pull-right">
 					<button id="metainfo-toggle" class="btn btn-mini" type="button"><i class="icon-resize-small"></i></button>
 				</div>
 				<div id="issue-metainfo-content">
-					<b>Issue Id:</b> {{issue.id}}<br>
-					<b>Assigned To:</b> <a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a><br/>
-					<b>Meta Issue:</b> {{issue.meta_issues.title}}<br/>
-					<!--
-					<b>Project Name:</b> <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a><br/>
-					<b>State:</b> {{issue.state}}<br />
-					<b>Projected Start:</b> {{issue.projected_start}}<br/>
-					<b>Projected End:</b> {{issue.projected_end}}<br/>
-					<b>Actual Start:</b> {{issue.actual_start}}<br />
-					<b>Actual End:</b> {{issue.actual_end}}<br />-->
-					<b>Date Reported:</b> {{issue.date_reported}}<br/>
-					<b>Created:</b> {{issue.created}}<br/>
-					<b>Modified:</b> {{issue.modified}}<br/>
-					<b>View Type:</b> {{issue.view_type}}<br/>
-					<b>Issue Type:</b> {{issue.issue_type}}<br/>
-					<!--<b>Title:</b> {{issue.title}}<br/>
-					<b>Link Slug:</b> {{issue.link_slug}}<br/>-->
-					<b>Status:</b> {{issue.status}}<br/>
-					<b>Criticality:</b> {{issue.criticality}}<br/>
-					<b>Fixability:</b> {{issue.fixability}}<br/>
-					<!--<b>R &amp; D:</b> {{issue.r_and_d}}<br/>
-					<b>Feature:</b> {{issue.feature}}<br/>-->
-					<b>OS:</b> {{issue.os}}<br/>
-					<b>OS Version:</b> {{issue.os_version}}<br/>
-					<b>Browser:</b> {{issue.browser}}<br/>
-					<b>Browser Version:</b> {{issue.browser_version}}<br/>
-					<!--<b>Screen Shot:</b> {{issue.screen_shot}}<br/>
-					<b>Wireframe:</b> {{issue.wireframe}}<br/>
-					<b>URI to Test:</b> {{issue.uri_to_test}}-->
-					<b>Created By:</b> {{issue.created_by}}<br />
-					<b>Modified By</b> {{issue.modified_by}}<br />
-					<b>Point of Contact:</b> {{issue.point_of_contact}}<br />
+					<dl>
+						<dt>Issue Id:</dt>
+							<dd>{{issue.id}}</dd>
+
+						<dt>Assigned To:</dt>
+							<dd><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></dd>
+
+						<dt>Meta Issue:</dt>
+							<dd>{{issue.meta_issues.title}}</dd>
+
+						<!--
+						<dt>Project Name:</dt>
+							<dd><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></dd>
+
+						<dt>State:</dt>
+							<dd>{{issue.state}}</dd>
+
+						<dt>Projected Start:</dt>
+							<dd>{{issue.projected_start}}</dd>
+
+						<dt>Projected End:</dt>
+							<dd>{{issue.projected_end}}</dd>
+
+						<dt>Actual Start:</dt>
+							<dd>{{issue.actual_start}}</dd>
+
+						<dt>Actual End:</dt>
+							<dd>{{issue.actual_end}}</dd>-->
+
+						<dt>Date Reported:</dt>
+							<dd>{{issue.date_reported}}</dd>
+
+						<dt>Created:</dt>
+							<dd>{{issue.created}}</dd>
+
+						<dt>Modified:</dt>
+							<dd>{{issue.modified}}</dd>
+
+						<dt>View Type:</dt>
+							<dd>{{issue.view_type}}</dd>
+
+						<dt>Issue Type:</dt>
+							<dd>{{issue.issue_type}}</dd>
+
+						<!--<dt>Title:</dt>
+							<dd>{{issue.title}}</dd>
+
+						<dt>Link Slug:</dt>
+							<dd>{{issue.link_slug}}</dd>-->
+
+						<dt>Status:</dt>
+							<dd>
+								<span class="label
+								{% if issue.status == 'not_a_bug' %}
+									label-info">Not a Bug
+								{% elif issue.status == 'wont_fix' %}
+									label-info">Won't Fix
+								{% elif issue.status == 'duplicate' %}
+									label-info">Duplicate
+								{% elif issue.status == 'active' %}
+									label-warning">Active
+								{% elif issue.status == 'fixed' %}
+									label-success">Fixed
+								{% elif issue.status == 'retest' %}
+									label-warning">Retest
+								{% elif issue.status == 'unverified' %}
+									label-default">Unverified
+								{% endif %}</span>
+							</dd>
+
+						<dt>Criticality:</dt>
+							<dd>{{issue.criticality}}</dd>
+
+						<dt>Fixability:</dt>
+							<dd>{{issue.fixability}}</dd>
+
+						<!--<dt>R &amp; D:</dt>
+							<dd>{{issue.r_and_d}}</dd>
+
+						<dt>Feature:</dt>
+							<dd>{{issue.feature}}</dd>-->
+
+						<dt>OS:</dt>
+							<dd>{{issue.os}}</dd>
+
+						<dt>OS Version:</dt>
+							<dd>{{issue.os_version}}</dd>
+
+						<dt>Browser:</dt>
+							<dd>{{issue.browser}}</dd>
+
+						<dt>Browser Version:</dt>
+							<dd>{{issue.browser_version}}</dd>
+
+						<!--<dt>Screen Shot:</dt>
+							<dd>{{issue.screen_shot}}</dd>
+
+						<dt>Wireframe:</dt>
+							<dd>{{issue.wireframe}}<br/></dd>
+
+						<dt>URI to Test:</dt>
+							<dd>{{issue.uri_to_test}}</dd>-->
+
+						<dt>Created By:</dt>
+							<dd>{{issue.created_by}}</dd>
+
+						<dt>Modified By:</dt>
+							<dd>{{issue.modified_by}}</dd>
+
+						<dt>Point of Contact:</dt>
+							<dd>{{issue.point_of_contact}}</dd>
+					</dl>
+
 					{% if related_issues %}
-						<br><b>Related Issues</b> <br>
-							<table id="relation_table">
-								<tr>
-									<th>
-										Issue
-									</th>
-									<th>
-										Relation
-									</th>
-								</tr>
-							{% for issue_to_issue in related_issues %}
-								<tr>
-									<td>
-										<a href="/issue/{{issue_to_issue.secondary_issue.id}}">{{issue_to_issue.secondary_issue.description}}</a>
-									</td>
-									<td>
-										{{issue_to_issue.link_type}}
-									</td>
-									<td>
-										<a onClick="unlink_issue('{{issue_to_issue.secondary_issue.id}}')">Unlink</a>
-									</td>
-								</tr>
-							{% endfor %}
-							</table>
+					<table class="table table-condensed">
+						<caption>
+							Related Issues
+						</caption>
+						<thead>
+							<tr>
+								<th>
+									Issue
+								</th>
+								<th>
+									Relation
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<a href="/issue/{{issue_to_issue.secondary_issue.id}}">{{issue_to_issue.secondary_issue.description}}</a>
+								</td>
+								<td>
+									<a class="btn btn-mini pull-right" onClick="unlink_issue('{{issue_to_issue.secondary_issue.id}}')"><i class="icon-remove-circle"></i></a>
+									{{issue_to_issue.link_type}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
 					{% endif %}
 				</div>
 			</aside>
 		</div>
-	</div>
+	</article>
 
 	<div id="modal-issue-fixed" class="modal fade hide">
 		<header class="modal-header">
@@ -208,6 +293,9 @@
 			<h3>Duplicate Issue</h3>
 		</header>
 		<div class="modal-body">
+			<div id="modal-issue-duplicate-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
 			<form class="form-inline">
 				<label for="duplicate_issue_id">Duplicate Issue ID</label>
 				<input type="text" id="duplicate_issue_id">
@@ -225,10 +313,13 @@
 			<h3>Select Related Issue</h3>
 		</header>
 		<div class="modal-body">
+			<div id="modal-comment-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
 			<form class="form-horizontal">
 				<p>
 					Current issue {{issue.id}} is a
-					<select id="related_issue_id_type">
+					<select id="modal-issue-related-type">
 						<option value="duplicate">Duplicate</option>
 						<option value="related">Related</option>
 						<option value="child">Child</option>
@@ -236,11 +327,10 @@
 					</select>
 					of Issue
 				</p>
-
-				<select name="related_issue_id">
-				    {% for project_issue in project_issues%}
-				        <option value="{{project_issue.id}}">{{project_issue.summary}}</option>
-				    {% endfor %}
+				<select id="modal-issue-related-id">
+			    {% for project_issue in project_issues%}
+			        <option value="{{project_issue.id}}">{{project_issue.summary}}</option>
+			    {% endfor %}
 				</select>
 			</form>
 		</div>
@@ -270,12 +360,13 @@
 
 {% block additionaljs %}
 // <script> - commented out as only used in Sublime Text for syntax highlightling
+
 	// Context menu - Status
 	$('#context-issue-status .btn').click(function(){
 		var btn = $(this),
 			statusField = btn.siblings('select');
 
-		switch (statusField.val()){
+		switch (statusField.val()) {
 			case 'fixed':
 				$('#modal-issue-fixed').modal();
 				break;
@@ -300,34 +391,53 @@
 				});
 				break;
 		}
-
-		return;
-        var statusVal = $('#id_status').val();
-        if( statusVal == "fixed"){
-
-			$('#comment_title').text('Bug Fixed Comment');
-			$('#id_description').focus();
-            var submitComment = $('#submit_comment_button');
-            $('<input type="hidden" name="status" value="fixed"></input>').insertBefore('#id_description')
-            submitComment.val('Fix Bug');
-
-			submitComment.unbind('click');
-			$('#submit_comment_form').attr('action', '/issue/set_bug_state');
-
-		}
-
-		else if(statusVal == 'duplicate' ){
-			if($('#link_issue_duplicate_popup').css('display') == "none"){
-                    $('#link_issue_duplicate_popup').fadeToggle();
-            }
-		}
-
-		else{
-        	
-    	}
 	});
 
-	// Context menu - Subscribee
+	// Context menu - Status - Duplicate handler
+	$('#modal-issue-duplicate .btn-primary').on({
+		click: function(){
+			$.ajax({
+				type: 'POST',
+				url: '/issue/link',
+				data:{
+					primary_issue: '{{issue.id}}',
+					secondary_issue: $('#duplicate_issue_id').val(),
+					link_type: 'duplicate'
+				},
+				success: function(data){
+					$('#modal-issue-duplicate').modal('hide');
+					AlertMessage.success(data.response);
+				},
+				error: function(data){
+					$('#modal-issue-duplicate-alert').show();
+				}
+			});
+		}
+	});
+
+	// Context menu - Related - Related handler
+	$('#modal-issue-related .btn-primary').on({
+		click: function(){
+			$.ajax({
+				type: 'POST',
+				url: '/issue/link',
+				data:{
+					primary_issue: '{{issue.id}}',
+					secondary_issue: $('#modal-issue-related-id').val(),
+					link_type: $('#modal-issue-related-type').val()
+				},
+				success: function(data){
+					$('#modal-issue-related').modal('hide');
+					AlertMessage.success(data.response);
+				},
+				error: function(data){
+					$('#modal-issue-related-alert').show();
+				}
+			});
+		}
+	});
+
+	// Context menu - Subscribe
 	$('#context-issue-subscribe').asAjax( function(data, status) {
         if ( data.success ) {
             if ( data.is_subscribed ) {
@@ -342,10 +452,10 @@
         else {
             AlertMessage.error('<strong>Subscribe error!</strong>' + data.error);
         }
-    }, AlertMessage.genericUnknownError);
+    },AlertMessage.genericUnknownError);
 
     // Context menu - Pin
-    $('a.pin_issue').asAjax(function(data, status) {
+    $('#context-issue-pin').asAjax(function(data, status) {
         if ( data.success ) {
             if ( data.is_pinned ) {
                 $(this).text('Unpin');
@@ -453,5 +563,5 @@
 			modalForm.modal();
 		}
 	});
-// </script>
+// </script> 
 {% endblock %}

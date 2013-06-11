@@ -60,6 +60,9 @@
 			text-transform: uppercase;
 			font-weight: bold;
 		}
+		#sitenav #mainnav .dropdown-menu li {
+			text-transform: none;
+		}
 		#sitenav .dropdown-menu > li > a:hover,
 		#sitenav .dropdown-menu > li > a:focus,
 		#sitenav .dropdown-submenu:hover > a,
@@ -114,6 +117,10 @@
 		    -moz-animation: fadein 1.5s;
 		    -webkit-animation: fadein 1.5s;
 		    animation: fadein 1.5s;
+		}
+
+		textarea {
+			width: 98%;
 		}
 
 		@-o-keyframes fadein {
@@ -203,6 +210,43 @@
 <body>
 	<div id="globalwrap">
 		{% block basecontent %}{% endblock %}
+	</div>
+
+	<div id="modal-help-markdown" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Markdown</h3>
+		</header>
+		<div class="modal-body">
+<h4>Headers</h4>
+<pre>
+# This is an H1
+## This is an H2
+###### This is an H6
+</pre>
+<h4>Lists</h4>
+<pre>
+* This
+* is an
+* unordered (bullet) list
+
+1. This
+2. is an
+3. ordered (number) list
+</pre>
+<h4>Formatting</h4>
+<pre>
+_italic_ (or) *italic*
+__bold__ (or) **bold**
+</pre>
+<h4>Links</h4>
+<pre>
+[This is a link](http://www.darkcoding.net)
+</pre>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn btn-primary" data-dismiss="modal">Close</button>
+        </footer>
 	</div>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script src="{% static "scripts/ajax_tools.js" %}"></script>

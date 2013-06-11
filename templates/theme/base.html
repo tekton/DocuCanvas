@@ -17,10 +17,11 @@
 							<a href="/project" class="dropdown-toggle {% if navIndicator == 'projects' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
 							</a>
 							<ul class="dropdown-menu">
+								<li><a href="/project/new">New Project</a></li>
+								<li class="nav-header">All Projects</li>
 								{% for project in projects%}
 									<li><a href="/project/{{project.id}}">{{project.name}}</a></li>
 								{% endfor %}
-								<li><a href="/project/new">New Project</a></li>
 							</ul>
 						</li>
 						<li><a href="/reports" class="{% if navIndicator == 'reports' %}active{% endif %}">Reports</a></li>
@@ -59,29 +60,27 @@
 	<header id="pageheader">
 		<h1 id="pagetitle" class="page-header">
 			<span class="title-pagetype">{{page_type}}</span>
-			<span class="title-separator">::</span>
-			<small class="title-pagevalue">{{page_value}}</small>
+			<span class="title-separator" style="display:inline">::</span>
+			<span class="title-pagevalue">{{page_value}}</span>
 			{% if issue %}
 				<span class="title-separator">::</span>
 				<small class="title-issuestatus label
-				{% if issue.status == 'not_a_bug' %}
-					label-info
-				{% elif issue.status == 'wont_fix' %}
-					label-info
-				{% elif issue.status == 'duplicate' %}
-					label-info
-				{% elif issue.status == 'active' %}
-					label-warning
-				{% elif issue.status == 'fixed' %}
-					label-success
-				{% elif issue.status == 'retest' %}
-					label-warning
-				{% elif issue.status == 'unverified' %}
-					label-default
-				{% endif %}
-				">{{issue.status}}</small>
+					{% if issue.status == 'not_a_bug' %}
+						label-info">Not a Bug
+					{% elif issue.status == 'wont_fix' %}
+						label-info">Won't Fix
+					{% elif issue.status == 'duplicate' %}
+						label-info">Duplicate
+					{% elif issue.status == 'active' %}
+						label-warning">Active
+					{% elif issue.status == 'fixed' %}
+						label-success">Fixed
+					{% elif issue.status == 'retest' %}
+						label-warning">Retest
+					{% elif issue.status == 'unverified' %}
+						label-default">Unverified
+					{% endif %}</small>
 			{% endif %}
-
 		</h1>
 	</header>
 	<div id="pagemessage"></div>
