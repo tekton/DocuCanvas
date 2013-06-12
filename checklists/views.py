@@ -42,6 +42,7 @@ def checklist_edit(request, checklist_id):
     print "checklist edit!"
     try:
         checklist = Checklist.objects.get(pk=checklist_id)
+        projects = Project.objects.all()
     except:
         print 'couldnt find checklist'
         formset = ChecklistForm()
@@ -109,13 +110,15 @@ def checklist_edit(request, checklist_id):
                                                                      "num_checklist_items": num_checklist_layout_items,
                                                                      "page_type": checklist.project.name,
                                                                      "page_value": "Checklist",
-                                                                     "layout_items": layout_items}, context_instance=RequestContext(request))
+                                                                     "layout_items": layout_items,
+                                                                     "projects": projects}, context_instance=RequestContext(request))
 
 
 @login_required
 def instance_edit(request, checklist_instance_id):
     try:
         checklist_instance = ChecklistInstance.objects.get(pk=checklist_instance_id)
+        projects = Project.objects.all()
         # CHECK IF CHECKLIST LAYOUT ITEMS HAS BEEN UPDATED, IF SO UPDATE CHECKLIST INSTANCE TAGS
     except Exception, e:
         print e
@@ -150,7 +153,7 @@ def instance_edit(request, checklist_instance_id):
         formset = ChecklistTagsFormset(instance=checklist_instance)
 
     checklist_instance_form = ChecklistInstanceFullForm(instance=checklist_instance)
-    return render_to_response("checklists/checklist_edit.html", {"form": formset, "checklist_instance_form": checklist_instance_form, "checklist_instance": checklist_instance, "page_type": checklist_instance.title, "page_value": "Checklist"}, context_instance=RequestContext(request))
+    return render_to_response("checklists/checklist_edit.html", {"form": formset, "checklist_instance_form": checklist_instance_form, "checklist_instance": checklist_instance, "page_type": checklist_instance.title, "page_value": "Checklist", 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
