@@ -18,6 +18,7 @@ class CheckListLayoutItems(models.Model):
     title = models.CharField(max_length=255)
     order = models.IntegerField()
 
+    '''
     def save(self, user=None, commit=True, *args, **kwargs):
         if user:
             print "attempting to save layout item"
@@ -71,6 +72,7 @@ class CheckListLayoutItems(models.Model):
             super(CheckListLayoutItems, self).save(*args, **kwargs)
 
         return self
+    '''
 
     def __unicode__(self):
         return self.title
@@ -82,6 +84,7 @@ class ChecklistInstance(models.Model):
     completion_status = models.BooleanField(default=False)
     created = models.DateField(auto_now_add=True, null=True, blank=True)  # NOW
 
+    '''
     def save(self, user=None, *args, **kwargs):
         new_checklist_instance = False
         if user:
@@ -123,6 +126,7 @@ class ChecklistInstance(models.Model):
                 print 'problem with news feed item'
                 print e
         return self
+    '''
 
     def __unicode__(self):
         return self.title
@@ -136,6 +140,7 @@ class ChecklistTag(models.Model):
     modified = models.DateField(auto_now=True)  # auto update time
     modified_by = models.ForeignKey(User, null=True, blank=True)
 
+    '''
     def save(self, user=None, *args, **kwargs):
         if user:
             if self.pk:
@@ -176,6 +181,6 @@ class ChecklistTag(models.Model):
             super(ChecklistTag, self).save(*args, **kwargs)
 
         return self
-
+    '''
     def __unicode__(self):
         return self.name
