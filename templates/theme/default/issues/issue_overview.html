@@ -1,4 +1,4 @@
-{% extends "theme/base.html" %}
+{% extends "theme/default/base.html" %}
 {% load markup %}
 
 {% block context_nav %}
@@ -41,24 +41,24 @@
 
 {% block container %}
 	<article class="row">
-		<div id="issue-column-main" class="span9">
+		<div id="issue-column-main" class="span9 metainfo-maincolumn">
 			<div id="issue-details" class="well">
 				<div class="media">
 					<div class="media-body">
-						<h4 class="media-header">Summary</h4>
+						<h3 class="media-header">Summary</h3>
 						{{issue.summary}}
 					</div>
 				</div>
 				<div class="media">
 					<div class="media-body">
-						<h4 class="media-header">Description</h4>
+						<h3 class="media-header">Description</h3>
 						{{issue.description|markdown:"safe"}}
 					</div>
 				</div>
 				{% if images %}
 				<div class="media">
 					<div class="media-body">
-						<h4 class="media-header">Attached Images</h4>
+						<h3 class="media-header">Attached Images</h3>
 						<ul class="thumbnails">
 							{% for image in images %}
 							<li class="span2">
@@ -76,7 +76,7 @@
 					<h3>Comments</h3>
 				</header>
 				<div id="issue-comments-add">
-					<form class="form-inline" action="/issue/comment/{{ issue.id }}" method="post">
+					<form class="form-inline" action="/issue/comment/{{issue.id}}" method="post">
 						{% csrf_token %}
 						<input type="hidden" name="issue" id="id_issue" value="{{issue.id}}">
 						<input type="hidden" name="user" id="id_user" value="{{user.id}}">
@@ -117,12 +117,12 @@
 			</aside>
 		</div>
 
-		<div id="issue-column-aside" class="span3">
-			<aside id="issue-metainfo" class="well metainfo-show">
+		<div id="issue-column-aside" class="span3 metainfo-asidecolumn">
+			<aside id="issue-metainfo" class="well metainfo metainfo-show">
 				<div class="pull-right">
 					<button id="metainfo-toggle" class="btn btn-mini" type="button"><i class="icon-resize-small"></i></button>
 				</div>
-				<div id="issue-metainfo-content">
+				<div id="issue-metainfo-content" class="metainfo-content">
 					<dl>
 						<dt>Issue Id:</dt>
 							<dd>{{issue.id}}</dd>
@@ -268,96 +268,6 @@
 			</aside>
 		</div>
 	</article>
-
-	<div id="modal-issue-fixed" class="modal fade hide">
-		<header class="modal-header">
-			<button class="close" data-dismiss="modal">×</button>
-			<h3>Fixed Issue</h3>
-		</header>
-		<div class="modal-body">
-			<form id="modal-issue-fixed-form" class="form-inline" action="/issue/set_bug_state" method="POST">
-				{% csrf_token %}
-				<input type="hidden" name="issue" id="id_issue" value="{{issue.id}}">
-				<input type="hidden" name="user" id="id_user" value="{{user.id}}">
-				<input type="hidden" name="status" value="fixed">
-				{{comment_form.description}}
-			</form>
-		</div>
-		<footer class="modal-footer">
-			<button class="btn" data-dismiss="modal">Cancel</button>
-			<button class="btn btn-primary" type="submit" form="modal-issue-fixed-form">Fix</button>
-		</footer>
-	</div>
-
-	<div id="modal-issue-duplicate" class="modal fade hide">
-		<header class="modal-header">
-			<button class="close" data-dismiss="modal">×</button>
-			<h3>Duplicate Issue</h3>
-		</header>
-		<div class="modal-body">
-			<div id="modal-issue-duplicate-alert" class="alert alert-error hide">
-				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
-			</div>
-			<form class="form-inline">
-				<label for="duplicate_issue_id">Duplicate Issue ID</label>
-				<input type="text" id="duplicate_issue_id">
-			</form>
-		</div>
-		<footer class="modal-footer">
-			<button class="btn" data-dismiss="modal">Cancel</button>
-			<button class="btn btn-primary">Duplicate</button>
-		</footer>
-	</div>
-
-	<div id="modal-issue-related" class="modal fade hide">
-		<header class="modal-header">
-			<button class="close" data-dismiss="modal">×</button>
-			<h3>Select Related Issue</h3>
-		</header>
-		<div class="modal-body">
-			<div id="modal-comment-alert" class="alert alert-error hide">
-				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
-			</div>
-			<form class="form-horizontal">
-				<p>
-					Current issue {{issue.id}} is a
-					<select id="modal-issue-related-type">
-						<option value="duplicate">Duplicate</option>
-						<option value="related">Related</option>
-						<option value="child">Child</option>
-						<option value="parent">Parent</option>
-					</select>
-					of Issue
-				</p>
-				<select id="modal-issue-related-id">
-			    {% for project_issue in project_issues%}
-			        <option value="{{project_issue.id}}">{{project_issue.summary}}</option>
-			    {% endfor %}
-				</select>
-			</form>
-		</div>
-		<footer class="modal-footer">
-			<button class="btn" data-dismiss="modal">Cancel</button>
-			<button class="btn btn-primary">Link</button>
-		</footer>
-	</div>
-
-	<div id="modal-comment-edit" class="modal fade hide">
-		<header class="modal-header">
-			<button class="close" data-dismiss="modal">×</button>
-			<h3>Edit Comment</h3>
-		</header>
-		<div class="modal-body">
-			<div id="modal-comment-alert" class="alert alert-error hide">
-				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
-			</div>
-			<textarea id="modal-comment-textarea" rows="4" cols="250" style="width:95%">{{comment.description}}</textarea>
-		</div>
-		<footer class="modal-footer">
-			<button class="btn" data-dismiss="modal">Cancel</button>
-        	<button id="modal-comment-submit" class="btn btn-primary" type="button">Submit</button>
-        </footer>
-	</div>
 {% endblock %}
 
 {% block additionaljs %}
@@ -494,28 +404,6 @@
         }
 	},AlertMessage.genericUnknownError);
 
-	// Hides sidebar
-	$("#metainfo-toggle").click(function(){
-		var btn = $(this),
-			icon = btn.children('i').first(),
-			parent = $("#issue-metainfo"),
-			mainColumn = $('#issue-column-main'),
-			sideColumn = $('#issue-column-aside');
-
-		if (parent.hasClass('metainfo-show')) {
-			icon.removeClass('icon-resize-small').addClass('icon-resize-full');
-			parent.removeClass('metainfo-show').addClass('metainfo-hide');
-			mainColumn.removeClass('span9').addClass('span11');
-			sideColumn.removeClass('span3').addClass('span1');
-		}
-		else {
-			icon.removeClass('icon-resize-full').addClass('icon-resize-small');
-			parent.removeClass('metainfo-hide').addClass('metainfo-show');
-			mainColumn.removeClass('span11').addClass('span9');
-			sideColumn.removeClass('span1').addClass('span3');
-		}
-	});
-
 	// Edit Comment - hide/show edit button
 	$('.issue-comment').on({
 		mouseover: function(){
@@ -566,4 +454,98 @@
 		}
 	});
 // </script>
+{% endblock %}
+
+{% block modalsincluded %}
+	<div id="modal-issue-fixed" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Fixed Issue</h3>
+		</header>
+		<div class="modal-body">
+			<form id="modal-issue-fixed-form" class="form-inline" action="/issue/set_bug_state" method="POST">
+				{% csrf_token %}
+				<input type="hidden" name="issue" id="id_issue" value="{{issue.id}}">
+				<input type="hidden" name="user" id="id_user" value="{{user.id}}">
+				<input type="hidden" name="status" value="fixed">
+				{{comment_form.description}}
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button class="btn btn-primary" type="submit" form="modal-issue-fixed-form">Fix</button>
+		</footer>
+	</div>
+
+	<div id="modal-issue-duplicate" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Duplicate Issue</h3>
+		</header>
+		<div class="modal-body">
+			<div id="modal-issue-duplicate-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
+			<form class="form-inline">
+				<label for="duplicate_issue_id">Duplicate Issue ID</label>
+				<input type="text" id="duplicate_issue_id">
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button class="btn btn-primary">Duplicate</button>
+		</footer>
+	</div>
+
+	<div id="modal-issue-related" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Select Related Issue</h3>
+		</header>
+		<div class="modal-body">
+			<div id="modal-comment-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
+			<form class="form-horizontal">
+				<p>
+					Current issue {{issue.id}} is a
+					<select id="modal-issue-related-type">
+						<option value="duplicate">Duplicate</option>
+						<option value="related">Related</option>
+						<option value="child">Child</option>
+						<option value="parent">Parent</option>
+					</select>
+					of Issue
+				</p>
+				<select id="modal-issue-related-id">
+			    {% for project_issue in project_issues%}
+			        <option value="{{project_issue.id}}">{{project_issue.summary}}</option>
+			    {% endfor %}
+				</select>
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button class="btn btn-primary">Link</button>
+		</footer>
+	</div>
+
+	<div id="modal-comment-edit" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Edit Comment</h3>
+		</header>
+		<div class="modal-body">
+			<div id="modal-comment-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
+			<textarea id="modal-comment-textarea" rows="4" cols="250" style="width:95%">{{comment.description}}</textarea>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+        	<button id="modal-comment-submit" class="btn btn-primary" type="button">Submit</button>
+        </footer>
+	</div>
+
+	{% include "theme/_includes/modal-help-markdown.html" %}
 {% endblock %}
