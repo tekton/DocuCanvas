@@ -23,18 +23,20 @@
     </form>
 </div>
 <script>
-var notificationNumber = 0, notification_recipients = JSON.parse('{{users|safe}}');
+var notificationNumber = 0, notification_recipients = JSON.parse('{{users|safe}}'), recipients = [];
 function addNotificationRecipient(set_user, user_id){
     var new_notification_recipient = "<div><tr><th><label for='id_notificationrecipient_set-" + notificationNumber+ "-user'>User:</label></th><td>";
 
     if(parseInt($('#id_notificationrecipient_set-TOTAL_FORMS').val()) < parseInt('{{num_users}}')){
 
         if( !set_user){
-            new_notification_recipient += "<select id='id_notificationrecipient_set-" + notificationNumber + "-user' name='notificationrecipient_set-" + notificationNumber + "-user'><option value='' selected='selected'>---------</option>"
+            new_notification_recipient += "<select id='id_notificationrecipient_set-" + notificationNumber + "-user' name='notificationrecipient_set-" + notificationNumber + "-user' onChange='selectUser($(this))'><option value='' selected='selected'>---------</option>"
 
             for(key in notification_recipients){
                 if( notification_recipients.hasOwnProperty(key)){
+                    if(recipients.indexOf(key) <= -1){
                     new_notification_recipient += "<option value=" + key + ">" + notification_recipients[key] + "</option>"
+                    }
                 }
             }
         }
@@ -55,9 +57,20 @@ function addNotificationRecipient(set_user, user_id){
     }
 }
 
+function selectUser(user_select){
+    var index;
+    if (recipients.indexOf(user_select.val()) <= -1){
+        recipients.push(user_select.val()); 
+    }
+    else{
+        user_select.val('');
+    }
+}
+
 function selectAllRecipients(){
     for( key in notification_recipients){
-        if( key != '{{user.id}}'){
+        if( key != '{{user.id}}' && recipients.indexOf(key) <= -1){
+            recipients.push(key); 
             addNotificationRecipient(true, key);
         }   
     }
