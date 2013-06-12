@@ -14,43 +14,36 @@
         Send To: <br/>
         <div id="notificationContainer" style = 'border: solid 1px'>
             <div>
-                <input id="id_notificationrecipient_set-TOTAL_FORMS" name="notificationrecipient_set-TOTAL_FORMS" type="hidden" value="1" /><input id="id_notificationrecipient_set-INITIAL_FORMS" name="notificationrecipient_set-INITIAL_FORMS" type="hidden" value="0" /><input id="id_notificationrecipient_set-MAX_NUM_FORMS" name="notificationrecipient_set-MAX_NUM_FORMS" type="hidden" value="{{num_users}}" />
-
-
-                <tr><th><label for="id_notificationrecipient_set-0-user">User:</label></th><td><select id="id_notificationrecipient_set-0-user" name="notificationrecipient_set-0-user">
-                <option value="" selected="selected">---------</option>
-                <option value="1">jason</option>
-                <option value="2">batman</option>
-                <option value="3">superman</option>
-                <option value="4">greenlantern</option>
-                <option value="5">flash</option>
-                </select></td></tr>
-                <tr><th>
-                <input id="id_notificationrecipient_set-0-read" name="notificationrecipient_set-0-read" value="3" type="hidden" />
-                <!--<label for="id_notificationrecipient_set-0-read">Read:</label></th><td><select id="id_notificationrecipient_set-0-read" name="notificationrecipient_set-0-read">
-                <option value="1">Unknown</option>
-                <option value="2">Yes</option>
-                <option value="3" selected="selected">No</option>
-                </select>--><input id="id_notificationrecipient_set-0-notification" name="notificationrecipient_set-0-notification" type="hidden" /><input id="id_notificationrecipient_set-0-id" name="notificationrecipient_set-0-id" type="hidden" /></td></tr>
+                <input id="id_notificationrecipient_set-TOTAL_FORMS" name="notificationrecipient_set-TOTAL_FORMS" type="hidden" value="0" /><input id="id_notificationrecipient_set-INITIAL_FORMS" name="notificationrecipient_set-INITIAL_FORMS" type="hidden" value="0" /><input id="id_notificationrecipient_set-MAX_NUM_FORMS" name="notificationrecipient_set-MAX_NUM_FORMS" type="hidden" value="{{num_users}}" />
             </div>
         </div>
         <input title='Add a new notification recipient' type='button' name='add_notification_recipient' value='Add Item' onclick ='addNotificationRecipient()'/>
+        <input title='Send notification to all users' type='button' name='send_to_all' value='All' onclick='selectAllRecipients(false, "")'/><br/>
         <input type="submit" name="submit" value="Submit"/>
     </form>
 </div>
 <script>
-var notificationNumber = 1, notification_recipients = JSON.parse('{{users|safe}}');
-function addNotificationRecipient(){
-    var new_notification_recipient = "<div><tr><th><label for='id_notificationrecipient_set-" + notificationNumber+ "-user'>User:</label></th><td><select id='id_notificationrecipient_set-" + notificationNumber + "-user' name='notificationrecipient_set-" + notificationNumber + "-user'><option value='' selected='selected'>---------</option>";
+var notificationNumber = 0, notification_recipients = JSON.parse('{{users|safe}}');
+function addNotificationRecipient(set_user, user_id){
+    var new_notification_recipient = "<div><tr><th><label for='id_notificationrecipient_set-" + notificationNumber+ "-user'>User:</label></th><td>";
 
     if(parseInt($('#id_notificationrecipient_set-TOTAL_FORMS').val()) < parseInt('{{num_users}}')){
-        for(key in notification_recipients){
-            if( notification_recipients.hasOwnProperty(key)){
-                new_notification_recipient += "<option value=" + key + ">" + notification_recipients[key] + "</option>"
+
+        if( !set_user){
+            new_notification_recipient += "<select id='id_notificationrecipient_set-" + notificationNumber + "-user' name='notificationrecipient_set-" + notificationNumber + "-user'><option value='' selected='selected'>---------</option>"
+
+            for(key in notification_recipients){
+                if( notification_recipients.hasOwnProperty(key)){
+                    new_notification_recipient += "<option value=" + key + ">" + notification_recipients[key] + "</option>"
+                }
             }
         }
 
-        new_notification_recipient += "<input id='id_notificationrecipient_set-" + notificationNumber + "-read' name='notificationrecipient_set-" + notificationNumber + "-read' value='3' type='hidden' /><input id='id_notificationrecipient_set-" + notificationNumber + "-notification' name='notificationrecipient_set-" + notificationNumber + "-notification' type='hidden'/><input id='id_notificationrecipient_set-" + notificationNumber + "-id' name='notificationrecipient_set-" + notificationNumber + "-id'type='hidden' /></td></tr>";
+        else if(set_user){
+            new_notification_recipient += "<input id='id_notificationrecipient_set-" + notificationNumber + "-user' name='notificationrecipient_set-" + notificationNumber + "-user' value=" + user_id + " type='hidden' />"+ notification_recipients[user_id]+ "</br>";
+        }
+
+        new_notification_recipient += "<input id='id_notificationrecipient_set-" + notificationNumber + "-read' name='notificationrecipient_set-" + notificationNumber + "-read' value='3' type='hidden' /><input id='id_notificationrecipient_set-" + notificationNumber + "-notification' name='notificationrecipient_set-" + notificationNumber + "-notification' type='hidden'/><input id='id_notificationrecipient_set-" + notificationNumber + "-id' name='notificationrecipient_set-" + notificationNumber + "-id'type='hidden' /></td></tr></div>";
 
         $('#notificationContainer').append(new_notification_recipient);
         notificationNumber ++;
@@ -61,6 +54,15 @@ function addNotificationRecipient(){
         //$('#checkListTable').append('<input type="submit" name="submit" value="Submit">');
     }
 }
+
+function selectAllRecipients(){
+    for( key in notification_recipients){
+        if( key != '{{user.id}}'){
+            addNotificationRecipient(true, key);
+        }   
+    }
+}
+
 $(function() {
     $("#notificationContainer").sortable({
       stop: function(e, ui){
