@@ -5,7 +5,69 @@
 {% include "theme/_includes/contextnav-default.html" %}
 {% endblock %}
 
+{% block additionaljs %}
+    var num_notifications = '{{num_notifications}}';
+
+    function mark_notification_as_read(notification_id){
+        $.ajax({
+            type:"POST",
+                    url:"/notification/mark_as_read",
+                    data:{
+                        notification_id:notification_id,
+                    },
+            success: function(data){
+                        var notification_row = '#notification_' + notification_id;
+                        $(notification_row).fadeOut(function(){
+                            $(this).remove();
+                            num_notifications--;
+                            if(num_notifications == 0){
+                                $('#notification_section').fadeOut(function(){
+                                    $(this).remove();
+                                });
+                            }
+                        });
+
+                    },
+            error: function(data){
+                alert("Server side error");
+            }
+        });
+    }
+{% endblock %}
+
 {% block container %}
+    {% if notifications %}
+        <section class="well" id="notification_section">
+                <header>
+                    <h3>Notifications</h3>
+                </header>
+                <table class="table table-sortable">
+                    <thead>
+                    <tr>
+                        <th>Sender</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for notification in notifications %}
+                            <tr id="notification_{{notification.id}}">
+                                <td><a href="/auth/user/{{notification.creator.id}}">{{notification.notification.creator}}</a></td>
+                                <td>{{notification.notification.message}}</td>
+                                <td>{{notification.created}}</td>
+                                <td class="mark_notification_as_read" onClick="mark_notification_as_read({{notification.id}})">X</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                
+
+
+                </table>
+            
+        </section>
+    {% endif %}
+
     <section class="well">
         <header>
             <h3>Newsfeed</h3>
