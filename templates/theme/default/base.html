@@ -12,9 +12,9 @@
 			<div class="nav-collapse collapse">
 				<nav id="mainnav">
 					<ul class="nav">
-						<li><a href="/" class="{% if navIndicator == 'dashboard' %}active{% endif %}">Dashboard</a></li>
+						<li><a href="/" class="{% if page_type == 'Dashboard' %}active{% endif %}">Dashboard</a></li>
 						<li class="dropdown">
-							<a href="/project" class="dropdown-toggle {% if navIndicator == 'projects' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
+							<a href="/project" class="dropdown-toggle {% if page_type == 'Project' %}active{% elif page_type == 'Projects' %}active{% elif page_type == 'Issue' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
 							</a>
 							<ul class="dropdown-menu">
 								<li class="nav-header">All Projects</li>
@@ -25,7 +25,7 @@
 								<li><a href="/project/new">Project</a></li>
 							</ul>
 						</li>
-						<li><a href="/reports" class="{% if navIndicator == 'reports' %}active{% endif %}">Reports</a></li>
+						<li><a href="/reports" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
 					</ul>
 				</nav>
 				<div id="searchform">
@@ -84,6 +84,8 @@
 					label-warning">Retest
 				{% elif issue.status == 'unverified' %}
 					label-default">Unverified
+				{% elif issue.status == 'none' %}
+					label-default">None
 				{% endif %}</small>
 			{% endif %}
 		</h1>

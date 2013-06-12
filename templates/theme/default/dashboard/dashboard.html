@@ -37,35 +37,30 @@
 
 {% block container %}
     {% if notifications %}
-        <section class="well" id="notification_section">
-                <header>
-                    <h3>Notifications</h3>
-                </header>
-                <table class="table table-sortable">
-                    <thead>
-                    <tr>
-                        <th>Sender</th>
-                        <th>Message</th>
-                        <th>Date</th>
-                        <th></th>
+    <section class="well" id="notification_section">
+        <header>
+            <h3>Notifications</h3>
+        </header>
+        <table class="table table-sortable">
+            <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Message</th>
+                    <th colspan="2">Date</th>s
+                </tr>
+            </thead>
+            <tbody>
+                {% for notification in notifications %}
+                    <tr id="notification_{{notification.id}}">
+                        <td><a href="/auth/user/{{notification.creator.id}}">{{notification.notification.creator}}</a></td>
+                        <td>{{notification.notification.message}}</td>
+                        <td>{{notification.created}}</td>
+                        <td class="mark_notification_as_read" onClick="mark_notification_as_read({{notification.id}})">X</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                        {% for notification in notifications %}
-                            <tr id="notification_{{notification.id}}">
-                                <td><a href="/auth/user/{{notification.creator.id}}">{{notification.notification.creator}}</a></td>
-                                <td>{{notification.notification.message}}</td>
-                                <td>{{notification.created}}</td>
-                                <td class="mark_notification_as_read" onClick="mark_notification_as_read({{notification.id}})">X</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                
-
-
-                </table>
-            
-        </section>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
     {% endif %}
 
     <section class="well">
