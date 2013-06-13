@@ -17,10 +17,12 @@
 							<a href="/project" class="dropdown-toggle {% if page_type == 'Project' %}active{% elif page_type == 'Projects' %}active{% elif page_type == 'Issue' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
 							</a>
 							<ul class="dropdown-menu">
+								{% if projects.count > 0 %}
 								<li class="nav-header">All Projects</li>
 								{% for project in projects%}
 									<li><a href="/project/{{project.id}}">{{project.name}}</a></li>
 								{% endfor %}
+								{% endif %}
 								<li class="nav-header">New</li>
 								<li><a href="/project/new">Project</a></li>
 							</ul>
@@ -84,7 +86,7 @@
 					label-warning">Retest
 				{% elif issue.status == 'unverified' %}
 					label-default">Unverified
-				{% elif issue.status == 'none' %}
+				{% else %}
 					label-default">None
 				{% endif %}</small>
 			{% endif %}

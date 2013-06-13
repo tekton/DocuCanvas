@@ -7,7 +7,7 @@
 
 	<title>Gadget</title>
 
-	<link rel="stylesheet" href="{% static "theme/bootstrap/css/bootstrap.css" %}">
+	<link rel="stylesheet" href="{% static 'theme/bootstrap/css/bootstrap.css' %}">
 
 	<style>
 		body {
@@ -31,7 +31,7 @@
 			text-indent: -9999px;
 			width: 50px;
 			height: 50px;
-			background-image: url({% static "theme/assets/img/logo-gadget-sitenav.png" %});
+			background-image: url({% static 'theme/assets/img/logo-gadget-sitenav.png' %});
 			background-repeat: no-repeat;
 			background-position: center;
 		}
@@ -95,13 +95,11 @@
 			border-color: #587C91;
 		}
 
-		.panel {
+		.panel,
+		.well {
 			border: 1px solid #F2F2F2;
-			padding: 5px 15px;
-			margin: 5px 0 15px;
-
-			border-radius: 5px;
 			box-shadow: 0 1px 4px #5A5A5A;
+			background-color: #FFF;
 		}
 
 		#pagetitle {
@@ -205,9 +203,9 @@
 	{% block modalsincluded %}{% endblock %}
 	
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-	<script src="{% static "scripts/ajax_tools.js" %}"></script>
-	<script src="{% static "theme/bootstrap/js/bootstrap.js" %}"></script>
-    <script src="{% static "theme/assets/js/tablesorter/jquery.tablesorter.js" %}"></script>
+	<script src="{% static 'scripts/ajax_tools.js' %}"></script>
+	<script src="{% static 'theme/bootstrap/js/bootstrap.js' %}"></script>
+    <script src="{% static 'theme/assets/js/tablesorter/jquery.tablesorter.js' %}"></script>
     <script>
 		$.ajaxSetup({
 		    beforeSend: function(xhr, settings) {
