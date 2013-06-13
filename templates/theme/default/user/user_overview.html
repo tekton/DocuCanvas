@@ -319,39 +319,28 @@
         <div class="row">
             <div id="chart" class="span4"></div>
             <div class="span7">
-                <table class="table">
-                   {% for projectName, projectInfo in project_dict.items %}
-                        <tr>
-                            <td>{{projectName}}</td>
-                        {% for key, value in projectInfo.items %}
-                            {% if key == projectName %}
-                                <td>{{value}}</td>
-                            {% endif %}
-                        {% endfor %}
-                        </tr>
-                        {% for key, value in projectInfo.items %}
-                            {% if key != projectName %}
-                            <tr>
-                                <td><a href="/issue/{{key}}">{{value}}</a></td>
-                            </tr>
-                            {% endif %}
-                        {% endfor %}
-                   {% endfor %}
-                </table>
-
                 <div id="accordion-useroverview-assignmentcount" class="accordion">
                     {% for projectName, projectInfo in project_dict.items %}
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-assignmentcount" href="#useroverview-assignmentcount-{{projectName|urlencode}}">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-assignmentcount" href="#useroverview-assignmentcount-{{projectName|slugify}}">
                                 {{projectName}}
                             </a>
                         </div>
-                        <div id="useroverview-issuecount-{{projectName|urlencode}}" class="accordion-body collapse in">
+                        <div id="useroverview-assignmentcount-{{projectName|slugify}}" class="accordion-body collapse {%if forloop.first %}in{% endif %}">
                             <div class="accordion-inner">
+                                {% for issueId, issueSummary in projectInfo.items %}
+                                {% if forloop.first %}
+                                <h5>Issues ({{forloop.revcounter0}})</h5>
                                 <ul>
-                                    {{projectInfo.items|unordered_list}}
+                                {% endif %}
+                                    {% if projectName != issueId %}
+                                        <li><a href="{% url 'issues.views.issue_overview' issueId %}">{{issueSummary}}</a></li>
+                                    {% endif %}
+                                {% if forloop.first %}
                                 </ul>
+                                {% endif %}
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -409,6 +398,17 @@
                             display: 'rotate',
                             contrast: true,
                             font: '14px Arial'
+                        },
+                        listeners: {
+                            itemmousedown: function(slice, eOpts){
+                                var record = slice.storeItem,
+                                    project = record.get('name'),
+                                    selectorPrefix = '#useroverview-assignmentcount-';
+
+                                project = project.replace(/[^a-zA-Z\d\s]/g,'').replace(/\s/g,'-').replace(/-+/g,'-').trim().toLowerCase();
+                                
+                                $(selectorPrefix + project).collapse('show');
+                            }
                         }
                     }
                 ]
