@@ -329,18 +329,14 @@
                         </div>
                         <div id="useroverview-assignmentcount-{{projectName|slugify}}" class="accordion-body collapse {%if forloop.first %}in{% endif %}">
                             <div class="accordion-inner">
-                                {% for issueId, issueSummary in projectInfo.items %}
-                                {% if forloop.first %}
-                                <h5>Issues ({{forloop.revcounter0}})</h5>
+                                <h5>Issues ({{projectInfo.items|length}})</h5>
                                 <ul>
-                                {% endif %}
+                                {% for issueId, issueSummary in projectInfo.items %}
                                     {% if projectName != issueId %}
-                                        <li><a href="{% url 'issues.views.issue_overview' issueId %}">{{issueSummary}}</a></li>
+                                        <li><a href="{% url 'issues.views.issue_overview' issueId %}" title="{{issueSummary}}">{{issueSummary|truncatechars:31}}</a></li>
                                     {% endif %}
-                                {% if forloop.first %}
-                                </ul>
-                                {% endif %}
                                 {% endfor %}
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -388,11 +384,6 @@
                         field: 'count',
                         showInLegend: true,
                         donut: false,
-                        highlight: {
-                            segment: {
-                                margin: 20
-                            }
-                        },
                         label: {
                             field: 'name',
                             display: 'rotate',
@@ -406,7 +397,7 @@
                                     selectorPrefix = '#useroverview-assignmentcount-';
 
                                 project = project.replace(/[^a-zA-Z\d\s]/g,'').replace(/\s/g,'-').replace(/-+/g,'-').trim().toLowerCase();
-                                
+
                                 $(selectorPrefix + project).collapse('show');
                             }
                         }
