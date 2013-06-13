@@ -8,11 +8,17 @@
 {{ form.media }}
 {% endblock %}
 {% block container %}
-    <form action="/issue/{{issue.id}}/edit" method="post" enctype="multipart/form-data">
+    <form action="/issue/{{issue.id}}/edit" method="post" enctype="multipart/form-data" class='form-horizontal'>
         {% csrf_token %}
-        <table>
-        {{form.as_table}}
-        </table>
+        {% for i in form %}
+        <div class="control-group">
+            <label class="control-label" for="{{i.name}}">{{i.label}}:</label>
+            <div class="controls">
+                {{i}}
+            </div>
+        </div>
+        {% endfor %}
+
     <input type="submit" value="Submit"/>
     </form>
 
