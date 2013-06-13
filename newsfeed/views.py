@@ -32,6 +32,20 @@ def get_next_newsfeeds(request):
 
 
 @login_required
+def newsfeeds(request):
+    try:
+        newsfeeds = NewsFeedItem.objects.all().order_by('-id')[:50]
+    except Exception, e:
+        print e
+
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    return render_to_response("theme/default/newsfeed/newsfeeds.html", {"newsfeeds": newsfeeds, "projects": projects, "page_type": "Newsfeed", "page_value": "Past"}, context_instance=RequestContext(request))
+
+
+@login_required
 def newsfeed_action(request, newsfeed_type):
     try:
         newsfeeds = NewsFeedItem.objects.filter(newsfeed_type=newsfeed_type)

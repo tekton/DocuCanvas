@@ -5,5 +5,7 @@ from django.conf.urls import *
 '''
 
 urlpatterns = patterns('',
+    (r'all', 'newsfeed.views.newsfeeds'),
     (r'([A-Za-z0-9_\.-]+)', 'newsfeed.views.newsfeed_action'),
+
 )
