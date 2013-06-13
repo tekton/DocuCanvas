@@ -6,7 +6,7 @@
 {% endblock%}
 
 {% block container %}
-    <b>Email:</b> {{gadget_user.email}}<br><br>
+    <p><strong>Email:</strong> {{gadget_user.email}}</p>
 
     <section class="well">
         <header>
@@ -17,14 +17,13 @@
                 {% if newest_status_timestamp != status_update.time_stamp %}
                     {% set newest_status_timestamp = status_update.time_stamp%}
                         <!--<tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{status_update.time_stamp|date:'M-d-Y'}}</td></tr>-->
-                        <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{newest_status_timestamp}}</td></tr>
+                        <tr><td colspan="4">{{newest_status_timestamp}}</td></tr>
                 {% endif %}
                 <tr>
                     <td title="project"><a href="/project/{{status_update.issue.project.id}}">{{status_update.issue.project}}</a></td>
                     <td title="issue"><a href="/issue/{{status_update.issue.id}}">{{status_update.issue.summary}}</a></td>
                     <td title="change type">{{status_update.new_status}}</td>
                 </tr>
-                
             {% endfor %}
         </table>
     </section>
@@ -71,7 +70,7 @@
                             </thead>
                             <tbody>
                         {% for issue in blank_issues%}
-                            <tr class="tbl-project-status-count tbl-project-blank-count">
+                            <tr>
                                 <td>
                                     <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
                                 </td>
@@ -103,7 +102,7 @@
                             </thead>
                             <tbody>
                         {% for issue in not_a_bug_issues%}
-                            <tr class="tbl-project-status-count tbl-project-not-a-bug-count">
+                            <tr>
                                 <td>
                                     <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
                                 </td>
@@ -135,7 +134,7 @@
                             </thead>
                             <tbody>
                         {% for issue in wont_fix_issues %}
-                            <tr class="tbl-project-status-count tbl-project-wont-fix-count">
+                            <tr>
                                 <td>
                                     <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
                                 </td>
@@ -167,7 +166,7 @@
                             </thead>
                             <tbody>
                         {% for issue in duplicate_issues %}
-                            <tr class=" tbl-project-status-count tbl-project-duplicate-count">
+                            <tr>
                                 <td>
                                     <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
                                 </td>
@@ -199,7 +198,7 @@
                             </thead>
                             <tbody>
                         {% for issue in active_issues %}
-                            <tr class="tbl-project-status-count tbl-project-active-count">
+                            <tr>
                                 <td>
                                         <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
                                 </td>
@@ -231,7 +230,7 @@
                             </thead>
                             <tbody>
                         {% for issue in fixed_issues%}
-                            <tr class="tbl-project-status-count  tbl-project-fixed-count">
+                            <tr>
                                 <td>
                                         <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
                                 </td>
@@ -263,7 +262,7 @@
                             </thead>
                             <tbody>
                         {% for issue in retest_issues%}
-                            <tr class="tbl-project-status-count  tbl-project-retest-count">
+                            <tr>
                                 <td>
                                         <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
                                 </td>
@@ -295,7 +294,7 @@
                             </thead>
                             <tbody>
                         {% for issue in unverified_issues %}
-                            <tr class="tbl-project-status-count  tbl-project-unverified-count">
+                            <tr>
                                 <td>
                                     <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
                                 </td>
@@ -317,20 +316,22 @@
         <header>
             <h3>Assignment Count</h3>
         </header>
+        <div id="chart"></div>
         <table class="table">
-           {% for k,v in project_dict.items%}
+           {% for projectName, projectInfo in project_dict.items %}
                 <tr>
-                    <td>{{k}}</td>
-                    {% for key, value in v.items%}
-                        {% if key == k %}
-                            <td class="project-assignment-count" id="{{k}}" onClick="toggleProjectAssignmentCount($(this).attr('id'))">{{value}}</td>
-                        {% endif %}
-                    {% endfor %}
+                    <td>{{projectName}}</td>
+
+                {% for key, value in projectInfo.items %}
+                    {% if key == projectName %}
+                        <td>{{value}}</td>
+                    {% endif %}
+                {% endfor %}
                 </tr>
 
-                {% for key,value in v.items%}
-                    {% if key != k%}
-                    <tr class="tbl-project-status-count tbl-project-assignment-issue {{k}}" >
+                {% for key, value in projectInfo.items %}
+                    {% if key != projectName %}
+                    <tr>
                         <td><a href="/issue/{{key}}">{{value}}</a></td>
                     </tr>
                     {% endif %}
@@ -340,4 +341,68 @@
         </table>
     </section>
 
+    <script src="//cdn.sencha.com/ext/gpl/4.2.0/ext-all.js"></script>
+    <script>
+        var projects = {{projectsAsJson|safe}};
+
+        var projectcount = (function(){
+            var arr = [];
+            for (var i=0, il=projects.length; i<il; i++) {
+                var project = projects[i];
+                arr.push({
+                    name: project.name,
+                    count: project.issues.length
+                });
+            }
+            return arr;
+        })();
+
+        var store, chart, panel;
+
+        Ext.onReady(function(){
+
+            store = new Ext.data.JsonStore({
+                fields: ['name','count'],
+                data: projectcount
+            });
+
+            chart = new Ext.chart.Chart({
+                animate: true,
+                store: store,
+                shadow: true,
+                legend: false,
+                insetPadding: 20,
+                series: [
+                    {
+                        type: 'pie',
+                        field: 'count',
+                        showInLegend: true,
+                        donut: false,
+                        highlight: {
+                            segment: {
+                                margin: 20
+                            }
+                        },
+                        label: {
+                            field: 'name',
+                            display: 'rotate',
+                            contrast: true,
+                            font: '14px Arial'
+                        }
+                    }
+                ]
+            });
+
+            panel = new Ext.Panel({
+                header: false,
+                width: 300,
+                height: 300,
+                plain: true,
+                border: 0,
+                renderTo: Ext.get('chart'),
+                layout: 'fit',
+                items: chart
+            });
+        });
+    </script>
 {% endblock %}
