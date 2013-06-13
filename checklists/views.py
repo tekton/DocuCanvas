@@ -42,6 +42,7 @@ def checklist_edit(request, checklist_id):
     print "checklist edit!"
     try:
         checklist = Checklist.objects.get(pk=checklist_id)
+        projects = Project.objects.all()
     except:
         print 'couldnt find checklist'
         formset = ChecklistForm()
@@ -73,7 +74,8 @@ def checklist_edit(request, checklist_id):
         if checklist_form.is_valid() and formset.is_valid():
             print "both forms valid?"
             try:
-                checklist_form.save(request.user)
+                #checklist_form.save(request.user)
+                checklist_form.save()
                 print "saving checklist form"
             except Exception, e:
                 print "unable to save checklist"
@@ -88,9 +90,9 @@ def checklist_edit(request, checklist_id):
                         print str(forms.cleaned_data["title"]) + " | " + str(forms.cleaned_data["order"])
                     else:
                         print "form wasn't valid!"
-                    unsaved_form = forms.save(commit=False)
-                    unsaved_form.save(request.user, commit=True)
-                    
+                    forms.save()
+                    #unsaved_form = forms.save(commit=False)
+                    #unsaved_form.save(request.user, commit=True)
                 except Exception, e:
                     print e
             projectId = request.POST.get('project', '')
@@ -109,13 +111,15 @@ def checklist_edit(request, checklist_id):
                                                                      "num_checklist_items": num_checklist_layout_items,
                                                                      "page_type": checklist.project.name,
                                                                      "page_value": "Checklist",
-                                                                     "layout_items": layout_items}, context_instance=RequestContext(request))
+                                                                     "layout_items": layout_items,
+                                                                     "projects": projects}, context_instance=RequestContext(request))
 
 
 @login_required
 def instance_edit(request, checklist_instance_id):
     try:
         checklist_instance = ChecklistInstance.objects.get(pk=checklist_instance_id)
+        projects = Project.objects.all()
         # CHECK IF CHECKLIST LAYOUT ITEMS HAS BEEN UPDATED, IF SO UPDATE CHECKLIST INSTANCE TAGS
     except Exception, e:
         print e
@@ -150,7 +154,7 @@ def instance_edit(request, checklist_instance_id):
         formset = ChecklistTagsFormset(instance=checklist_instance)
 
     checklist_instance_form = ChecklistInstanceFullForm(instance=checklist_instance)
-    return render_to_response("checklists/checklist_edit.html", {"form": formset, "checklist_instance_form": checklist_instance_form, "checklist_instance": checklist_instance, "page_type": checklist_instance.title, "page_value": "Checklist"}, context_instance=RequestContext(request))
+    return render_to_response("checklists/checklist_edit.html", {"form": formset, "checklist_instance_form": checklist_instance_form, "checklist_instance": checklist_instance, "page_type": checklist_instance.title, "page_value": "Checklist", 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -164,7 +168,8 @@ def toggle_checkbox(request):
         else:
             checklist_tag.completion_status = True
 
-        checklist_tag.save(request.user)
+        #checklist_tag.save(request.user)
+        checklist_tag.save()
         to_json['status'] = "Completed Check"
     except Exception, e:
         to_json['status'] = e
@@ -174,15 +179,16 @@ def toggle_checkbox(request):
         try:
             checklist_instance = ChecklistInstance.objects.get(pk=checklist_tag.checklist_instance.id)
             checklist_instance.completion_status = True
-            checklist_instance.save(request.user)
+            #checklist_instance.save(request.user)
+            checklist_instance.save()
             to_json['status'] = "All Checkboxes Checked"
         except Exception, e:
             print e
     elif request.POST['all_checked'] == "false":
         checklist_instance = ChecklistInstance.objects.get(pk=checklist_tag.checklist_instance.id)
         checklist_instance.completion_status = False
-        checklist_instance.save(request.user)
-
+        #checklist_instance.save(request.user)
+        checklist_instance.save()
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 
@@ -193,7 +199,8 @@ def submit_tag_comment(request):
     try:
         checklist_tag = ChecklistTag.objects.get(pk=request.POST['checklist_tag_id'])
         checklist_tag.comment = request.POST['comment']
-        checklist_tag.save(request.user)
+        #checklist_tag.save(request.user)
+        checklist_tag.save()
         to_json['status'] = "Saved Comment"
     except Exception, e:
         to_json['status'] = e
@@ -208,7 +215,8 @@ def new_instance(request, checklist_id):
         checklist_instance = ChecklistInstance()
         checklist_instance.checklist = checklist
         checklist_instance.title = checklist.name
-        checklist_instance.save(request.user)
+        #checklist_instance.save(request.user)
+        checklist_instance.save()
         for item in checklist_layout_items:
             checklist_tag = ChecklistTag()
             checklist_tag.checklist_instance = checklist_instance
@@ -239,7 +247,8 @@ def checklist_form_project(request, project_id):
         checklist_form = ChecklistForm(request.POST, instance=checklist)
         formset = ChecklistLayoutItemsFormset(request.POST, instance=checklist)
         if checklist_form.is_valid() and formset.is_valid():
-            c = checklist_form.save(request.user)
+            #c = checklist_form.save(request.user)
+            c = checklist_form.save()
             formset.save()
             print 'saving form'
             return redirect('checklists.views.project_checklists', c.project.id)

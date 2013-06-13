@@ -16,6 +16,7 @@ class ChecklistForm(forms.ModelForm):
         #verbose_name = _('MODELNAME')
         #verbose_name_plural = _('MODELNAMEs')
 
+    '''
     def save(self, user=None, *args, **kwargs):
         new_checklist = False
         if user:
@@ -52,7 +53,7 @@ class ChecklistForm(forms.ModelForm):
             except Exception, e:
                 print e
         return self.instance
-
+    '''
     def __unicode__(self):
         pass
 
