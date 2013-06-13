@@ -6,6 +6,9 @@
 {% endblock%}
 
 {% block container %}
+    {% regroup issues by project as issuesGroupedByProject %}
+    {% regroup issues by get_status_display as issuesGroupedByStatus %}
+
     <p><strong>Email:</strong> {{gadget_user.email}}</p>
 
     <section class="well">
@@ -30,7 +33,7 @@
 
     <section class="well">
         <header>
-            <h3>Assigned To:</h3>
+            <h3>Assigned To</h3>
         </header>
         <table class="table">
         {% for issue in issues %}
@@ -47,7 +50,7 @@
         </table>
     </section>
 
-    <section class="well">
+    <section class="well hide">
         <header>
             <h3>Issue Count</h3>
         </header>
@@ -312,87 +315,134 @@
         </div>
     </section>
 
-    <section class="well">
-        <header>
-            <h3>Assignment Count</h3>
-        </header>
-        <div class="row">
-            <div id="chart" class="span4"></div>
-            <div class="span7">
-                <div id="accordion-useroverview-assignmentcount" class="accordion">
-                    {% for projectName, projectInfo in project_dict.items %}
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-assignmentcount" href="#useroverview-assignmentcount-{{projectName|slugify}}">
-                                {{projectName}}
-                            </a>
-                        </div>
-                        <div id="useroverview-assignmentcount-{{projectName|slugify}}" class="accordion-body collapse {%if forloop.first %}in{% endif %}">
-                            <div class="accordion-inner">
-                                <h5>Issues ({{projectInfo.items|length}})</h5>
-                                <ul>
-                                {% for issueId, issueSummary in projectInfo.items %}
-                                    {% if projectName != issueId %}
-                                        <li><a href="{% url 'issues.views.issue_overview' issueId %}" title="{{issueSummary}}">{{issueSummary|truncatechars:31}}</a></li>
-                                    {% endif %}
-                                {% endfor %}
-                                </ul>
-                            </div>
+    <div class="row">
+        <section class="well span6">
+            <header>
+                <h3>By Project</h3>
+            </header>
+            <div id="projectchart"></div>
+            <div id="projectbreakdown" class="accordion">
+                {% for issuegroup in issuesGroupedByProject %}
+                <div class="accordion-group">
+                    <div id="projectbreakdown-accordion-{{issuegroup.grouper|slugify}}" class="accordion-body collapse">
+                        <div class="accordion-inner">
+                            <table id="projectbreakdown-table-{{issuegroup.grouper|slugify}}" class="table">
+                                <caption>
+                                    {{issuegroup.grouper}}
+                                </caption>
+                                <thead>
+                                    <th>Summary</th>
+                                    <th>Status</th>
+                                </thead>
+                                <tbody>
+                                    {% for issue in issuegroup.list %}
+                                    <td>
+                                        <a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.summary|escape}}">
+                                            {{issue.summary|truncatechars:31}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {{issue.get_status_display|truncatechars:16}}
+                                    </td>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
-
+                {% endfor %}
             </div>
-        </div>
-    </section>
+        </section>
 
-<div class="row">
-    <section class="well span6">
-        <header>
-            <h3>By Project</h3>
-        </header>
-        <div id="chart-useroverview-project"></div>
-        <div id="chart-useroverview-projectbreakdown"></div>
-    </section>
-
-    <section class="well span6">
-        <header>
-            <h3>By Status</h3>
-        </header>
-        <div id="chart-useroverview-status"></div>
-        <div id="chart-useroverview-statusbreakdown"></div>
-    </section>
-</div>
+        <section class="well span6">
+            <header>
+                <h3>By Status</h3>
+            </header>
+            <div id="statuschart"></div>
+            <div id="statusbreakdown" class="accordion">
+                {% for issuegroup in issuesGroupedByStatus %}
+                <div class="accordion-group">
+                    <div id="statusbreakdown-accordion-{{issuegroup.grouper|slugify}}" class="accordion-body collapse">
+                        <div class="accordion-inner">
+                            <table id="statusbreakdown-table-{{issuegroup.grouper|slugify}}" class="table">
+                                <caption>
+                                    {{issuegroup.grouper}}
+                                </caption>
+                                <thead>
+                                    <th>Summary</th>
+                                    <th>Project</th>
+                                </thead>
+                                <tbody>
+                                    {% for issue in issuegroup.list %}
+                                    <td>
+                                        <a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.summary|escape}}">
+                                            {{issue.summary|truncatechars:31}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {{issue.project|truncatechars:16}}
+                                    </td>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
 
     <script src="//cdn.sencha.com/ext/gpl/4.2.0/ext-all.js"></script>
     <script>
-        var projects = {{projectsAsJson|safe}};
-
-        var projectcount = (function(){
-            var arr = [];
-            for (var i=0, il=projects.length; i<il; i++) {
-                var project = projects[i];
-                arr.push({
-                    name: project.name,
-                    count: project.issues.length
-                });
-            }
-            return arr;
-        })();
-
-        var store, chart, panel;
+        var projectStore, statusStore, projectChart, statusChart, projectPanel, statusPanel;
 
         Ext.onReady(function(){
+            function seriesClickHandler(idPrefix){
+                return function(slice, eOpts){
+                    var record = slice.storeItem,
+                        idSuffix = record.get('name'),
+                        el, parent;
 
-            store = new Ext.data.JsonStore({
+                    idSuffix = idSuffix.replace(/[^a-zA-Z\d\s]/g,'').replace(/\s/g,'-').replace(/-+/g,'-').trim().toLowerCase();
+
+                    el = $('#'+idPrefix+idSuffix);
+                    parent = el.parents('.accordion');
+
+                    el.collapse({
+                        parent: parent,
+                        toggle: true
+                    })
+                };
+            }
+
+            projectStore = new Ext.data.JsonStore({
                 fields: ['name','count'],
-                data: projectcount
+                data: [
+                {% for issuegroup in issuesGroupedByProject %}
+                    {
+                        name: '{{issuegroup.grouper}}',
+                        count: {{issuegroup.list|length}}
+                    }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+                ]
             });
 
-            chart = new Ext.chart.Chart({
+            statusStore = new Ext.data.JsonStore({
+                fields: ['name','count'],
+                data:  [
+                {% for issuegroup in issuesGroupedByStatus %}
+                    {
+                        name: '{{issuegroup.grouper}}',
+                        count: {{issuegroup.list|length}}
+                    }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+                ]
+            });
+
+            projectChart = new Ext.chart.Chart({
                 animate: true,
-                store: store,
+                store: projectStore,
                 shadow: true,
                 legend: false,
                 insetPadding: 20,
@@ -401,6 +451,7 @@
                         type: 'pie',
                         field: 'count',
                         showInLegend: true,
+                        highlight: false,
                         donut: false,
                         label: {
                             field: 'name',
@@ -409,30 +460,61 @@
                             font: '14px Arial'
                         },
                         listeners: {
-                            itemmousedown: function(slice, eOpts){
-                                var record = slice.storeItem,
-                                    project = record.get('name'),
-                                    selectorPrefix = '#useroverview-assignmentcount-';
-
-                                project = project.replace(/[^a-zA-Z\d\s]/g,'').replace(/\s/g,'-').replace(/-+/g,'-').trim().toLowerCase();
-
-                                $(selectorPrefix + project).collapse('show');
-                            }
+                            itemmousedown: seriesClickHandler('projectbreakdown-accordion-')
                         }
                     }
                 ]
             });
 
-            panel = new Ext.Panel({
-                header: false,
-                width: 300,
-                height: 300,
-                plain: true,
-                border: 0,
-                renderTo: Ext.get('chart'),
-                layout: 'fit',
-                items: chart
+            statusChart = new Ext.chart.Chart({
+                animate: true,
+                store: statusStore,
+                shadow: true,
+                legend: false,
+                insetPadding: 20,
+                axes: [
+                    {
+                        type: 'Numeric',
+                        position: 'left',
+                        fields: 'count',
+                        grid: true,
+                        minimum: 0
+                    },
+                    {
+                        type: 'Category',
+                        position: 'bottom',
+                        fields: 'name'
+                    }
+                ],
+                series: [
+                    {
+                        type: 'column',
+                        axis: 'left',
+                        hightlight: false,
+                        xField: 'name',
+                        yField: 'count',
+                        listeners: {
+                            itemmousedown: seriesClickHandler('statusbreakdown-accordion-')
+                        }
+                    }
+                ]
             });
+
+            projectPanel = new Ext.Panel({
+                width: 530,
+                height: 400,
+                layout: 'fit',
+                items: projectChart,
+                renderTo: Ext.get('projectchart')
+            })
+
+            statusPanel = new Ext.Panel({
+                width: 530,
+                height: 400,
+                layout: 'fit',
+                items: statusChart,
+                renderTo: Ext.get('statuschart')
+            })
         });
     </script>
 {% endblock %}

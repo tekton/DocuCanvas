@@ -177,7 +177,16 @@ def user_overview(request, user_id):
             #project_dict[project.name] = Issue.objects.filter(project=project, assigned_to=gadget_user).count()
 
         project_array = []
+
+        project_list = []
+        issue_list = []
         for project in projects:
+
+            # List of Projects
+            project_data = {}
+            project_data["id"] = project.id
+            project_data["name"] = project.name
+            project_list.append(project_data)
 
             project_info = {}
             project_info["name"] = project.name
@@ -188,6 +197,8 @@ def user_overview(request, user_id):
                 issue_info = {}
                 issue_info["id"] = issue.id
                 issue_info["summary"] = issue.summary
+                issue_info["status"] = issue.status
+                issue_info["project"] = issue.project.name
 
                 project_info["issues"].append(issue_info)
 
