@@ -316,29 +316,50 @@
         <header>
             <h3>Assignment Count</h3>
         </header>
-        <div id="chart"></div>
-        <table class="table">
-           {% for projectName, projectInfo in project_dict.items %}
-                <tr>
-                    <td>{{projectName}}</td>
+        <div class="row">
+            <div id="chart" class="span4"></div>
+            <div class="span7">
+                <table class="table">
+                   {% for projectName, projectInfo in project_dict.items %}
+                        <tr>
+                            <td>{{projectName}}</td>
+                        {% for key, value in projectInfo.items %}
+                            {% if key == projectName %}
+                                <td>{{value}}</td>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                        {% for key, value in projectInfo.items %}
+                            {% if key != projectName %}
+                            <tr>
+                                <td><a href="/issue/{{key}}">{{value}}</a></td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                   {% endfor %}
+                </table>
 
-                {% for key, value in projectInfo.items %}
-                    {% if key == projectName %}
-                        <td>{{value}}</td>
-                    {% endif %}
-                {% endfor %}
-                </tr>
+                <div id="accordion-useroverview-assignmentcount" class="accordion">
+                    {% for projectName, projectInfo in project_dict.items %}
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-assignmentcount" href="#useroverview-assignmentcount-{{projectName|urlencode}}">
+                                {{projectName}}
+                            </a>
+                        </div>
+                        <div id="useroverview-issuecount-{{projectName|urlencode}}" class="accordion-body collapse in">
+                            <div class="accordion-inner">
+                                <ul>
+                                    {{projectInfo.items|unordered_list}}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
 
-                {% for key, value in projectInfo.items %}
-                    {% if key != projectName %}
-                    <tr>
-                        <td><a href="/issue/{{key}}">{{value}}</a></td>
-                    </tr>
-                    {% endif %}
-                {% endfor %}
-            
-           {% endfor %}
-        </table>
+            </div>
+        </div>
     </section>
 
     <script src="//cdn.sencha.com/ext/gpl/4.2.0/ext-all.js"></script>
