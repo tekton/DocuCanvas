@@ -32,4 +32,5 @@ urlpatterns = patterns('',
     url(r'^food/', include('food.urls')),
     url(r'^help/', include('helpdesknew.urls')),
     url(r'^gapps/', include('gapps.urls')),
+    url(r'^tinymmce/', include('tinymce.urls')),
 )

@@ -5,6 +5,7 @@ from projects.models import Project
 from customfields import *
 from django.forms.models import model_to_dict
 from newsfeed.models import *
+from tinymce.widgets import TinyMCE
 
 '''
 Forms for submitting bug reports and suggestions
@@ -32,6 +33,8 @@ class IssueForm(forms.ModelForm):
 
 
 class IssueFullForm(forms.ModelForm):
+    description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
+
     class Meta:
         model = Issue
 
@@ -165,3 +168,10 @@ class AdvSearchForm(forms.Form):
     os_version = MultipleTextField(label="OS Version", required=False)
     browser = MultipleTextField(required=False)
     browser_version = MultipleTextField(required=False)
+
+
+class TestForm(forms.ModelForm):
+    description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'toolbar': 'undo redo textcolor'}))
+
+    class Meta:
+        model = Issue

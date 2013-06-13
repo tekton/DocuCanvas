@@ -1,10 +1,12 @@
-{% extends "base.html" %}
+{% extends "theme/default/base.html" %}
 
 {% block context_nav %} 
     <li><a href="/issue/{{issue.id}}">Back to Issue</a></li>
     <li><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></li>
 {% endblock%}
-
+{% block additional_head %}
+{{ form.media }}
+{% endblock %}
 {% block container %}
     <form action="/issue/{{issue.id}}/edit" method="post" enctype="multipart/form-data">
         {% csrf_token %}

@@ -150,6 +150,7 @@ INSTALLED_APPS = (
     'food',
     'helpdesknew',
     'gapps',
+    'tinymce',
  )
 
 # A sample logging configuration. The only tangible logging
@@ -200,3 +201,11 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
+TINYMCE_DEFAULT_CONFIG ={
+    'theme': 'advanced',
+    # 'theme_advanced_toolbar_location': 'top',
+    # 'theme_advanced_buttons1': 'bold, italic, underline, separator, outdent, indent, separator, undo, redo',
+    # 'theme_advanced_buttons2': '',
+    # 'theme_advanced_buttons3': '',
+}
