@@ -15,7 +15,7 @@ from accounts.utils import get_permission_form_for_model, set_permissions_for_mo
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot
 from accounts import utils as rputils
 from projects.models import Project
-from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm
+from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
 
 
 @login_required
@@ -656,3 +656,12 @@ def unassigned_issues(request):
     projects = Project.objects.all()
     q = Issue.objects.filter(Q(assigned_to__isnull=True) & (Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True))).order_by('created')
     return render_to_response('issues/issue_unassigned.html', {'issues': q, 'projects': projects}, context_instance=RequestContext(request))
+
+
+def testView(request):
+    form = TestForm()
+    try:
+        projects = Project.objects.all()
+    except:
+        print 'Unable to grab all projects'
+    return render_to_response("issues/test_form.html", {'form': form, "projects": projects}, context_instance=RequestContext(request))

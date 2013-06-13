@@ -150,6 +150,7 @@ INSTALLED_APPS = (
     'food',
     'helpdesknew',
     'gapps',
+    'tinymce',
  )
 
 # A sample logging configuration. The only tangible logging
@@ -193,6 +194,14 @@ CELERY_RESULT_BACKEND = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 # CELERY_IMPORTS = ("bg_tasks.tasks")  # Uncomment line to add where the tasks are! A suggest default is in there
 ### /CELERY ###
 
+TINYMCE_DEFAULT_CONFIG ={
+    'theme': 'advanced',
+    # 'theme_advanced_toolbar_location': 'top',
+    # 'theme_advanced_buttons1': 'bold, italic, underline, separator, outdent, indent, separator, undo, redo',
+    # 'theme_advanced_buttons2': '',
+    # 'theme_advanced_buttons3': '',
+}
+
 '''
     This allows people to have local settings different from default settings; ie e-mail and database settings
 '''
@@ -200,3 +209,4 @@ try:
     from local_settings import *
 except ImportError:
     pass
+

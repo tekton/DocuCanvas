@@ -5,6 +5,7 @@ from newsfeed.models import NewsFeedItem
 # from django.utils.translation import ugettext as _
 from projects.models import Project
 from django.contrib import admin
+from tinymce.models import HTMLField
 
 ISSUETOISSUETYPE = (('duplicated', 'Duplicate'), ('related', 'Related'), ('child', 'Child'), ('parent', 'Parent'))
 ISSUETYPE = (("bug", "Bug"), ("task", "Task"), ("suggestion", "Suggestion"))
