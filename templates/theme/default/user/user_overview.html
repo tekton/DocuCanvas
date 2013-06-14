@@ -31,325 +31,39 @@
         </table>
     </section>
 
-    <section class="well">
-        <header>
-            <h3>Assigned To</h3>
-        </header>
-        <table class="table">
-        {% for issue in issues %}
-            {% if newest_project != issue.project %}
-            {% set newest_project = issue.project %}
-            <tr>
-                <td colspan="4">{{issue.project.name}}</td>
-            </tr>
-            {% endif %}
-            <tr>
-                <td><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
-            </tr>
-        {% endfor %}
-        </table>
-    </section>
-
-    <section class="well hide">
-        <header>
-            <h3>Issue Count</h3>
-        </header>
-        <div id="accordion-useroverview-issuecount" class="accordion">
-
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-issuecount" data-target="#useroverview-issuecount-none">
-                        None ({{blank_count}})
-                    </a>
-                </div>
-                <div id="useroverview-issuecount-none" class="accordion-body collapse in">
-                    <div class="accordion-inner">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        {% for issue in blank_issues%}
-                            <tr>
-                                <td>
-                                    <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                                </td>
-                                <td>
-                                    <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-issuecount" href="#useroverview-issuecount-notabug">
-                        Not a Bug ({{not_a_bug_count}})
-                    </a>
-                </div>
-                <div id="useroverview-issuecount-notabug" class="accordion-body collapse">
-                    <div class="accordion-inner">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        {% for issue in not_a_bug_issues%}
-                            <tr>
-                                <td>
-                                    <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                                </td>
-                                <td>
-                                    <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-issuecount" href="#useroverview-issuecount-wontfix">
-                        Won't Fix ({{wont_fix_count}})
-                    </a>
-                </div>
-                <div id="useroverview-issuecount-wontfix" class="accordion-body collapse">
-                    <div class="accordion-inner">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        {% for issue in wont_fix_issues %}
-                            <tr>
-                                <td>
-                                    <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                                </td>
-                                <td>
-                                    <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-issuecount" href="#useroverview-issuecount-duplicate">
-                        Duplicate ({{duplicate_count}})
-                    </a>
-                </div>
-                <div id="useroverview-issuecount-duplicate" class="accordion-body collapse">
-                    <div class="accordion-inner">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        {% for issue in duplicate_issues %}
-                            <tr>
-                                <td>
-                                    <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                                </td>
-                                <td>
-                                    <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-issuecount" href="#useroverview-issuecount-active">
-                        Active ({{active_count}})
-                    </a>
-                </div>
-                <div id="useroverview-issuecount-active" class="accordion-body collapse">
-                    <div class="accordion-inner">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        {% for issue in active_issues %}
-                            <tr>
-                                <td>
-                                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                                </td>
-                                <td>
-                                    <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-issuecount" href="#useroverview-issuecount-fixed">
-                        Fixed ({{fixed_count}})
-                    </a>
-                </div>
-                <div id="useroverview-issuecount-fixed" class="accordion-body collapse">
-                    <div class="accordion-inner">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        {% for issue in fixed_issues%}
-                            <tr>
-                                <td>
-                                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                                </td>
-                                <td>
-                                    <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-issuecount" href="#useroverview-issuecount-retest">
-                        Retest ({{retest_count}})
-                    </a>
-                </div>
-                <div id="useroverview-issuecount-retest" class="accordion-body collapse">
-                    <div class="accordion-inner">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        {% for issue in retest_issues%}
-                            <tr>
-                                <td>
-                                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                                </td>
-                                <td>
-                                    <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-useroverview-issuecount" href="#useroverview-issuecount-unverified">
-                        Unverified ({{unverified_count}})
-                    </a>
-                </div>
-                <div id="useroverview-issuecount-unverified" class="accordion-body collapse">
-                    <div class="accordion-inner">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        {% for issue in unverified_issues %}
-                            <tr>
-                                <td>
-                                    <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                                </td>
-                                <td>
-                                    <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                                </td>
-                                </tr>
-                        {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
     <div class="row">
         <section class="well span6">
             <header>
                 <h3>By Project</h3>
             </header>
             <div id="projectchart"></div>
-            <div id="projectbreakdown" class="accordion">
+            <div id="projectbreakdown">
                 {% for issuegroup in issuesGroupedByProject %}
-                <div class="accordion-group">
-                    <div id="projectbreakdown-accordion-{{issuegroup.grouper|slugify}}" class="accordion-body collapse">
-                        <div class="accordion-inner">
-                            <table id="projectbreakdown-table-{{issuegroup.grouper|slugify}}" class="table">
-                                <caption>
-                                    {{issuegroup.grouper}}
-                                </caption>
-                                <thead>
-                                    <th>Summary</th>
-                                    <th>Status</th>
-                                </thead>
-                                <tbody>
-                                    {% for issue in issuegroup.list %}
-                                    <td>
-                                        <a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.summary|escape}}">
-                                            {{issue.summary|truncatechars:31}}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        {{issue.get_status_display|truncatechars:16}}
-                                    </td>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                <table id="projectbreakdown-table-{{issuegroup.grouper|slugify}}" class="table hide">
+                    <caption>
+                        Project: {{issuegroup.grouper}}
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th class="span4">Summary</th>
+                            <th class="span2">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in issuegroup.list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.summary|escape}}">
+                                    {{issue.summary|truncatechars:31}}
+                                </a>
+                            </td>
+                            <td>
+                                {{issue.get_status_display|truncatechars:16}}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 {% endfor %}
             </div>
         </section>
@@ -359,35 +73,33 @@
                 <h3>By Status</h3>
             </header>
             <div id="statuschart"></div>
-            <div id="statusbreakdown" class="accordion">
+            <div id="statusbreakdown">
                 {% for issuegroup in issuesGroupedByStatus %}
-                <div class="accordion-group">
-                    <div id="statusbreakdown-accordion-{{issuegroup.grouper|slugify}}" class="accordion-body collapse">
-                        <div class="accordion-inner">
-                            <table id="statusbreakdown-table-{{issuegroup.grouper|slugify}}" class="table">
-                                <caption>
-                                    {{issuegroup.grouper}}
-                                </caption>
-                                <thead>
-                                    <th>Summary</th>
-                                    <th>Project</th>
-                                </thead>
-                                <tbody>
-                                    {% for issue in issuegroup.list %}
-                                    <td>
-                                        <a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.summary|escape}}">
-                                            {{issue.summary|truncatechars:31}}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        {{issue.project|truncatechars:16}}
-                                    </td>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                <table id="statusbreakdown-table-{{issuegroup.grouper|slugify}}" class="table hide">
+                    <caption>
+                        Status: {{issuegroup.grouper}}
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th class="span4">Summary</th>
+                            <th class="span2">Project</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in issuegroup.list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.summary|escape}}">
+                                    {{issue.summary|truncatechars:31}}
+                                </a>
+                            </td>
+                            <td>
+                                {{issue.project|truncatechars:16}}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 {% endfor %}
             </div>
         </section>
@@ -401,42 +113,44 @@
             function seriesClickHandler(idPrefix){
                 return function(slice, eOpts){
                     var record = slice.storeItem,
-                        idSuffix = record.get('name'),
-                        el, parent;
+                        name = record.get('name'),
+                        el, parent, tables;
 
-                    idSuffix = idSuffix.replace(/[^a-zA-Z\d\s]/g,'').replace(/\s/g,'-').replace(/-+/g,'-').trim().toLowerCase();
+                    idSuffix = name.replace(/[^a-zA-Z\d\s]/g,'').replace(/\s/g,'-').replace(/-+/g,'-').trim().toLowerCase();
 
-                    el = $('#'+idPrefix+idSuffix);
-                    parent = el.parents('.accordion');
+                    parent = $('#'+idPrefix);
+                    el = $('#'+idPrefix+'-table-'+idSuffix);
 
-                    el.collapse({
-                        parent: parent,
-                        toggle: true
-                    })
+                    parent.find('.table').hide();
+                    el.fadeIn()
                 };
             }
 
             projectStore = new Ext.data.JsonStore({
                 fields: ['name','count'],
                 data: [
+                {% autoescape off %}
                 {% for issuegroup in issuesGroupedByProject %}
                     {
-                        name: '{{issuegroup.grouper}}',
+                        name: '{{issuegroup.grouper|escapejs}}',
                         count: {{issuegroup.list|length}}
                     }{% if not forloop.last %},{% endif %}
                 {% endfor %}
+                {% endautoescape %}
                 ]
             });
 
             statusStore = new Ext.data.JsonStore({
                 fields: ['name','count'],
                 data:  [
+                {% autoescape off %}
                 {% for issuegroup in issuesGroupedByStatus %}
                     {
-                        name: '{{issuegroup.grouper}}',
+                        name: '{{issuegroup.grouper|escapejs}}',
                         count: {{issuegroup.list|length}}
                     }{% if not forloop.last %},{% endif %}
                 {% endfor %}
+                {% endautoescape %}
                 ]
             });
 
@@ -460,7 +174,7 @@
                             font: '14px Arial'
                         },
                         listeners: {
-                            itemmousedown: seriesClickHandler('projectbreakdown-accordion-')
+                            itemmousedown: seriesClickHandler('projectbreakdown')
                         }
                     }
                 ]
@@ -494,7 +208,7 @@
                         xField: 'name',
                         yField: 'count',
                         listeners: {
-                            itemmousedown: seriesClickHandler('statusbreakdown-accordion-')
+                            itemmousedown: seriesClickHandler('statusbreakdown')
                         }
                     }
                 ]
