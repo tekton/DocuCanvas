@@ -1,0 +1,1 @@
+# tinymce main script located on server at /usr/local/lib/python2.7/dist-packages/tinymce/static/tiny_mce

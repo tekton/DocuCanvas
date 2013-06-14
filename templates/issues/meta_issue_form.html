@@ -33,6 +33,9 @@
     {% endif %}
 {% endblock%}
 
+{% block additional_head %}
+    {{ form.media }}
+{% endblock %}
 
 {% block container %}
     <form id="miform" action="/issue/meta/{% if new %}new{% else %}{{ form.instance.id }}/edit{% endif %}" method="post">
