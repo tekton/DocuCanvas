@@ -39,6 +39,10 @@
 	<li><a href="/issue/{{issue.id}}/edit">Edit</a></li>
 {% endblock%}
 
+{% block additional_head %}
+    {{ form.media }}
+{% endblock %}
+
 {% block container %}
 	<article class="row">
 		<div id="issue-column-main" class="span9 metainfo-maincolumn">
@@ -91,10 +95,7 @@
 								{{comment_form.description}}
 							</div>
 						</div>
-						<div class="form-actions">
-							<a href="#" class="pull-left" data-toggle="modal" data-target="#modal-help-markdown">Markdown help</a>
-	                    	<button class="btn btn-primary pull-right" type="submit">Submit</button>
-	                    </div>
+						<input type="submit" value="Submit"/>
 					</form>
 				</div>
 				<ul id="issue-comments-list" class="media-list">

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "theme/default/base.html" %}
 
 <!--{%block extra_head%}
     <script type="text/javascript">
@@ -14,6 +14,10 @@
     <li><a href="/issue/unassigned" >Unassigned Issues</a></li>
     <li><a href="issue/new">New Issue</a></li>
 
+{% endblock %}
+
+{% block additional_head %}
+    {{ form.media }}
 {% endblock %}
 
 {% block container %}

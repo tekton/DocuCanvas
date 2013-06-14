@@ -13,6 +13,7 @@ Forms for submitting bug reports and suggestions
 
 
 class IssueForm(forms.ModelForm):
+    description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
     class Meta:
         model = Issue
         fields = ('project', 'summary', 'description')
@@ -105,25 +106,29 @@ class IssueFullForm(forms.ModelForm):
         return self.instance
 
 class CommentForm(forms.ModelForm):
+    description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'mce_description'}))
+
     class Meta:
         model = IssueComment
 
-    def save(self, user=None, *args, **kwargs):
-        if user:
-            try:
-                news_feed_item = NewsFeedItem()
-                news_feed_item.user = user
-                news_feed_item.issue = self.instance.issue
-                news_feed_item.project = self.instance.issue.project
-                news_feed_item.comment = self.instance.description
-                news_feed_item.newsfeed_type = 'comment'
-                news_feed_item.save()
-            except Exception, e:
-                print e
-        super(CommentForm, self).save(*args, **kwargs)
-        return self.instance
+    # def save(self, user=None, *args, **kwargs):
+    #     if user:
+    #         try:
+    #             news_feed_item = NewsFeedItem()
+    #             news_feed_item.user = user
+    #             news_feed_item.issue = self.instance.issue
+    #             news_feed_item.project = self.instance.issue.project
+    #             news_feed_item.comment = self.instance.description
+    #             news_feed_item.newsfeed_type = 'comment'
+    #             news_feed_item.save()
+    #         except Exception, e:
+    #             print e
+    #     super(CommentForm, self).save(*args, **kwargs)
+    #     return self.instance
 
 class MetaIssueForm(forms.ModelForm):
+    description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
+    
     class Meta:
         model = MetaIssue
 
