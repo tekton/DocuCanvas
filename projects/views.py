@@ -44,7 +44,7 @@ def project_form(request):
         except:
             print 'Unable to grab all projects'
 
-    return render_to_response("projects/project_form.html", {'form': form, "projects": projects, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
+    return render_to_response("theme/default/projects/project_wizard.html", {'form': form, "projects": projects, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
 
 
 @login_required
