@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "theme/default/base.html" %}
 
 
 {% block extra_head %}
@@ -6,8 +6,12 @@
 {% endblock %}
 
 {% block context_nav %}
-<a href="/reports/edit">Daily Reports</a>
-<a href="/reports/view">View Daily Reports</a>
+<li><a href="/reports/edit">Daily Reports</a></li>
+<li><a href="/reports/view">View Daily Reports</a></li>
+{% endblock %}
+
+{% block additional_head %}
+{{ form.media }}
 {% endblock %}
 
 {% block container %}

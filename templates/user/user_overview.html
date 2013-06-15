@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "theme/default/base.html" %}
 {% load set_var %}
 
 {% block context_nav %}
-    <a href="/">Dashboard</a>
-    <a href="/accounts/account_settings">Account Settings</a>
+    <li><a href="/">Dashboard</a></li>
+    <li><a href="/accounts/account_settings">Account Settings</a></li>
 {% endblock%}
 
 {% block extra_head%}

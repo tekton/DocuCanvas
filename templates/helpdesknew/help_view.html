@@ -1,12 +1,11 @@
-{% extends "base.html" %}
-
+{% extends "theme/default/base.html" %}
 
 {% block context_nav %}
-    <a href="/help/new">Ask a Question</a>
-    <a href="/help/resolved">Resolved Questions</a>
-    <a href="/help/pending">Unresolved Questions</a>
-    <a href="/help/user">Your Questions</a>
-    <a href="/help/edit/{{help.id}}">Edit Question</a>
+    <li><a href="/help/new">Ask a Question</a></li>
+    <li><a href="/help/resolved">Resolved Questions</a></li>
+    <li><a href="/help/pending">Unresolved Questions</a></li>
+    <li><a href="/help/user">Your Questions</a></li>
+    <li><a href="/help/edit/{{help.id}}">Edit Question</a></li>
     {% if user.is_staff %}
     <a href="/help/close_question_91990/{{help.id}}">Admin - Close Question</a>
     {% endif %}
