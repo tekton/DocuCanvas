@@ -1,7 +1,7 @@
 
 import json
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render_to_response, redirect
@@ -58,6 +58,7 @@ def pin(request, issue_id):
 
 
 @login_required
+@permission_required("issues.change_issue", raise_exception=True)
 def assign(request, issue_id, user_id=-1):
     to_json = {'success': True, 'error': False, 'assigned_to': False}
     try:
@@ -145,6 +146,7 @@ def subscribe(request, issue_id):
 
 
 @login_required
+@permission_required("issues.change_issue", raise_exception=True)
 def set_bug_state(request):
     to_json = {}
 
@@ -361,6 +363,7 @@ def meta_issue_stats(request, meta_issue_id):
 
 
 @login_required
+@permission_required("issues.add_issue", raise_exception=True)
 def issue_form(request):
     if request.method == 'POST':
         issue = Issue()
@@ -401,6 +404,7 @@ def issue_form(request):
 
 
 @login_required
+@permission_required("issues.change_issue", raise_exception=True)
 def issue_form_project(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
@@ -465,12 +469,30 @@ def issue_overview(request, issue_id):
 
     form = IssueFullForm(instance=issue)
 
-    return render_to_response("theme/default/issues/issue_overview.html", {'issue': issue, 'related_issues': related_issues, 'project_issues': project_issues, 'pin': pin, 'subscribe': subscribe, 'form': form, 'comment_form': comment_form, 'comments': comments, "users": users, "projects": projects, "page_type": issue.project.name, "page_value": "Issue", "images": images}, context_instance=RequestContext(request))
+    return render_to_response("theme/default/issues/issue_overview.html", {'issue': issue,
+                                                                           'related_issues': related_issues,
+                                                                           'project_issues': project_issues,
+                                                                           'pin': pin,
+                                                                           'subscribe': subscribe,
+                                                                           'form': form,
+                                                                           'comment_form': comment_form,
+                                                                           'comments': comments,
+                                                                           "users": users,
+                                                                           "projects": projects,
+                                                                           "page_type": issue.project.name,
+                                                                           "page_value": "Issue",
+                                                                           "images": images}, context_instance=RequestContext(request))
 
 
 @login_required
+@permission_required("issues.change_issue", raise_exception=True)
 def edit(request, issue_id):
     if request.method == 'POST':
+
+        for k in request.POST:
+            print k
+            print request.POST[k]
+
         issue = Issue.objects.get(pk=issue_id)
         form = IssueFullForm(request.POST, instance=issue)
         if form.is_valid():
@@ -605,6 +627,7 @@ def edit_comment(request):
 
 
 @login_required
+@permission_required("issues.add_issuecomment", raise_exception=True)
 def submit_comment(request, issue_id):
     """
         Bad assumption: will only be called with POST...
@@ -625,6 +648,9 @@ def submit_comment(request, issue_id):
     comment = IssueComment()
 
     if request.method == 'POST':
+        for k in request.POST:
+            print k
+            print request.POST[k]
         try:
             #
             form = CommentForm(request.POST, instance=comment)
@@ -638,7 +664,7 @@ def submit_comment(request, issue_id):
                     print form.errors
             else:
                 print "comment form not valid"
-                print form
+                # print form
                 print form.errors
         except Exception, e:
             print "Error somewhere in comment posting"
