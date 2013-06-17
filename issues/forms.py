@@ -105,8 +105,9 @@ class IssueFullForm(forms.ModelForm):
         super(IssueFullForm, self).save(*args, **kwargs)
         return self.instance
 
+
 class CommentForm(forms.ModelForm):
-    description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'mce_description'}))
+    # description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
 
     class Meta:
         model = IssueComment
@@ -126,9 +127,10 @@ class CommentForm(forms.ModelForm):
     #     super(CommentForm, self).save(*args, **kwargs)
     #     return self.instance
 
+
 class MetaIssueForm(forms.ModelForm):
     description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
-    
+
     class Meta:
         model = MetaIssue
 

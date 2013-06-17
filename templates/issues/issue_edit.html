@@ -18,8 +18,17 @@
             </div>
         </div>
         {% endfor %}
-
+    <input type="button" id="button" value="Something" />
     <input type="submit" value="Submit"/>
     </form>
+
+{% endblock %}
+
+{% block additionaljs %}
+
+        $("#button").click(function(e) {
+            var x = $('#something').val();
+            alert(x);
+        });
 
 {% endblock %}
