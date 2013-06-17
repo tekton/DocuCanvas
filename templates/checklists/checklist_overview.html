@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load set_var%}
 
 {% block context_nav %}
     <a href="/project/{{checklist.project.id}}">{{checklist.project.name}}</a>
@@ -6,21 +7,67 @@
 {% endblock%}
 
 {% block container %}
-    <form action="/checklist/{{checklist.id}}" method="post" enctype="multipart/form-data">
+    <form id = 'checklistForm' action="/checklist/{{checklist.id}}/edit" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{formset.management_form}}
-        <table>
-            {{checklist_form.as_table}}
-
-            {% for form in formset.forms %}
-                <table>
-                    Checklist Item: 
-                    {{ form }}<br>
-                </table>
-            {% endfor %}
-        </table>
+        <div>
+            Name: {{checklist_form.name}} <br />
+            project: {{checklist_form.project}}<br />
+            <div id ='checklistContainer'>
+              <!--{{formset|length}}
+              {% for item in layout_items %}
+                {{item.title}} | {{item.order}}<br />
+              {% endfor %}-->
+            </div>
+        </div>
+        <input title='Add a new checklist item' type='button' name='add_checklist_item' value='Add Item' onclick = 'addCheckListItem()'/>
     <input type="submit" name="submit" value="Submit"/>
     </form><br>
 
+
+    <script>
+    var checklistNumber = "{{num_checklist_items}}";
+    var orderNumber = parseInt(checklistNumber) + 1;
+    function addCheckListItem(){
+      console.log(checklistNumber)
+      console.log(orderNumber)
+        $('#checklistContainer').append("<div><label for='id_checklistlayoutitems_set-"+checklistNumber+"-title'>Title: </label>\
+          <input id='id_checklistlayoutitems_set-"+checklistNumber+"-title' maxlength='255' name='checklistlayoutitems_set-"+checklistNumber+"-title' type='text' />\
+          <input id='id_checklistlayoutitems_set-"+checklistNumber+"-order' name='checklistlayoutitems_set-"+checklistNumber+"-order' type='hidden' value='"+checklistNumber+"'>\
+          </div>");
+        checklistNumber ++;
+        console.log(checklistNumber)
+        $('#id_checklistlayoutitems_set-TOTAL_FORMS').val(function(i, oldval){
+            return ++oldval;
+        });
+        //console.log($('#id_checklistlayoutitems_set-TOTAL_FORMS').val());
+        //$('#checkListTable').append('<input type="submit" name="submit" value="Submit">');
+    };
+    $(function() {
+        $("#checklistContainer").sortable({
+          stop: function(e, ui){
+             $('#checklistContainer input[id$="order"]').each(function(i){
+              this.value = i
+            })
+          }
+        });
+        $("#checklistContainer").disableSelection();
+      });
+    $(document).ready(function(){
+        {% for i in formset %}
+        var positionCounter = {{forloop.counter0}};
+        console.log(positionCounter);
+            {% for form in formset %}
+             if ({{form.order.value}} == positionCounter){
+                             $('#checklistForm #checklistContainer').append('<div>\
+                                 Title: {{ form.title }}\
+                                 {{form.order.as_hidden}}\
+                                 {{ form.id }}\
+                                 </div>');
+                         }
+            {% endfor %}
+        {% endfor %}
+    });
+</script>
 
 {% endblock %}

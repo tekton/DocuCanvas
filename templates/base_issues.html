@@ -32,7 +32,7 @@
 
             body {
                 /*width: 900px;*/
-                padding: 30px 20px 50px;
+                padding: 60px 20px 50px;
                 border-width: 0 1px;
                 border-style: solid;
                 border-color: #b3b3b3;
@@ -304,13 +304,80 @@
     padding-top: .6em;
     font-size: 30px;
 }
-{% include "include/table.css" %}
 
+        .container-wrapper {}
+        .container-wrapper .spiffy-toggle p {
+            margin: 0;
+            padding: 0;
+        }
+        .container-wrapper .spiffy_box {
+            padding-top: 10px;
+        }
+
+        .spiffy-visible {}
+        .spiffy-visible .spiffy-content{
+            display: block;
+        }
+        .spiffy-visible .container {
+            margin-right: 330px;
+        }
+        .spiffy-visible .spiffy-toggle p {
+            text-align: right;
+        }
+
+        .spiffy-hidden {}
+        .spiffy-hidden .spiffy_box {
+            width: 20px;
+        }
+        .spiffy-hidden .spiffy-toggle p {
+            -webkit-transform: rotate(90deg);
+            -moz-transform: rotate(90deg);
+            -ms-transform: rotate(90deg);
+            -o-transform: rotate(90deg);
+            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+            padding-right: 25px;
+        }
+        .spiffy-hidden .spiffy-content {
+            display: none;
+        }
+        .spiffy-hidden .container {
+            margin-right: 80px;
+        }
+{% include "include/table.css" %}
+{% include "theme/_includes/siteheader.css" %}
         {% block style %}{% endblock %}
         </style>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script><!-- shoudl be changed to local source?-->
         <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
+
+        <script>
+            $(document).ready(function(){
+                var spiffyBox = $('.spiffy_box'),
+                    spiffyTrigger, containerWrapper;
+                
+                if (spiffyBox.length==0) {
+                    return;
+                }
+
+                spiffyTrigger = $('.spiffy-trigger');
+                containerWrapper = $('.container-wrapper');
+
+                spiffyTrigger.click(function(evt){
+                    evt.preventDefault();
+                    
+                    if ( containerWrapper.hasClass('spiffy-hidden') ) {
+                        containerWrapper.removeClass('spiffy-hidden').addClass('spiffy-visible');
+                        spiffyTrigger.html('Hide');
+                    }
+                    else {
+                        containerWrapper.addClass('spiffy-hidden').removeClass('spiffy-visible');
+                        spiffyTrigger.html('Show');
+                    }
+                });
+
+            });
+        </script>
 
         <script type="text/javascript">
             var csrftoken;
@@ -349,11 +416,7 @@
                     // or any other URL that isn't scheme relative or absolute i.e relative.
                     !(/^(\/\/|http:|https:).*/.test(url));
             }
-
-            /* Nav Menu - START */
-{% include "include/NavMenu.js" %}
-            /* Nav Menu - END */
-
+            
             $(document).ready(function(){
                 csrftoken = getCookie('csrftoken');
                 $.ajaxSetup({
@@ -363,114 +426,48 @@
                             }
                         }
                 });
-
-                NavMenu.Init();
-
-                /* OLD nav menu
-                    $('#account').click(function(){
-                        $('#account_nav').slideToggle();
-                    });
-
-                    $('#projects_list').click(function(){
-                        $('#projects_nav').slideToggle();
-                    });
-
-                    $('#context').click(function(){
-                        $('#context_nav').slideToggle();
-                    });
-
-                    $('#search_icon').click(function(){
-                        $('#search_nav').slideToggle();
-                    });
-
-                    //$('#account_nav').hover(function(){},function(){$('#account_nav').slideToggle();})
-
-                    $(document).click(function(event) {
-                        if($(event.target).index($('#account_nav')) == -1 && $(event.target).attr('id') != "account"){
-
-                            if($('#account_nav').css('display') != "none"){
-                                $('#account_nav').slideToggle();
-                            }
-                        }
-
-                        if($(event.target).index($('#projects_nav')) == -1 && $(event.target).attr('id') != "projects_list"){
-
-                            if($('#projects_nav').css('display') != "none"){
-                                $('#projects_nav').slideToggle();
-                            }
-                        }
-
-                        if($(event.target).index($('#context_nav')) == -1 && $(event.target).attr('id') != "context"){
-
-                            if($('#context_nav').css('display') != "none"){
-                                $('#context_nav').slideToggle();
-                            }
-                        }
-
-                        if($(event.target).index($('#search_nav')) == -1 && $(event.target).attr('id') != "search_icon"){
-
-                            if($('#search_nav').css('display') != "none"){
-                                $('#search_nav').slideToggle();
-                            }
-                        }
-                    });
-                */
             });
-
-
-
         </script>
 
         {% block extra_head %}{% endblock %}
     </head>
     <body>
-        <div id="top_nav" class="both">
-            <form action="/issue/search" method="POST">{% csrf_token %}
-             <div class="left"><a href="/" class="ui-icon ui-icon-home" id="home_icon"></a></div>
-             <div class="right">
-                <div class="main_nav_button navitem" id="context">Context Drop Down </div> |
-                <div class="main_nav_button navitem" id="projects_list">Project List </div>|
-                <div class="main_nav_button navitem"><a id="account">{{user|truncatechars:15}} </a></div>|
-                <a class="ui-icon ui-icon-search navitem" id="search_icon" a href="/issue/advsearch"></a>
-                <div class="main_nav_button navitem"><input type="text" name="searchText" id="search"/><input type="submit" value="search"/></div>
-            </div>
-            </form>
-            <div id="context_nav" class="container_nav navitem">
-                {% block context_nav %}{% endblock %}
-            </div>
-            <div id="projects_nav" class="container_nav navitem">
-                {% for project in projects%}
-                   <a href="/project/{{project.id}}">{{project.name}}</a>
-                {% endfor %}
-                <a href="/project/new">New Project</a>
-            </div>
-            <div id="account_nav" class="container_nav navitem">
-                <a href="/reports/edit">Daily Reports</a>
-                <a href="/accounts/account_settings">Account Settings</a>
-                <a href="/accounts/logout/?next=/">Logout</a>
-            </div>
-            <!--<div id="search_nav" class="container_nav navitem">
-                <a href="/issue/advsearch">Advanced Search</a>
-            </div>-->
-        </div>
-        <h1 id="mainheader" class="both">{{page_type}}
-            <span>:: {{page_value}}
-            {% if issue%}
-             :: {{issue.status}}
-            {% endif %}
-             </span>
-        </h1>
-        <div class="issue_popup" id="link_issue_duplicate_popup">{% block duplicate_issue_popup %}{% endblock %}</div>
-        <div class="issue_popup" id="set_related_to_popup">{% block select_related_issue_popup %}{% endblock %}</div>
-        <div class="both">&nbsp;</div>
-        <div class="spiffy_box right">{% block spiffy_box_right %}{% endblock %}</div>
-        <div class="container">
-            {% block container %}{% endblock %}
+        {% include "theme/_includes/siteheaderPartA.html" %}
+        {% block context_nav %}{% endblock %}
+        {% include "theme/_includes/siteheaderPartB.html" %}
 
-        </div>
-        <div class="container" id="container_bottom_clear">
-            {% block container_bottom_clear %}{% endblock %}
-        </div>
-        <p class="both"></p>
+        <article id="maincontent">
+            <h1 id="mainheader" class="both">{{page_type}}
+                <span>:: {{page_value}}
+                {% if issue%}
+                 :: {{issue.status}}
+                {% endif %}
+                 </span>
+            </h1>
+            <div class="issue_popup" id="link_issue_duplicate_popup">{% block duplicate_issue_popup %}{% endblock %}</div>
+            <div class="issue_popup" id="set_related_to_popup">{% block select_related_issue_popup %}{% endblock %}</div>
+            <div class="both">&nbsp;</div>
+            <div class="container-wrapper spiffy-hidden">
+                <div class="spiffy_box right">
+                    <div class="spiffy-toggle">
+                        <p><a href="#" class="spiffy-trigger">Show</a></p>
+                    </div>
+                    <div class="spiffy-content">
+                        {% block spiffy_box_right %}{% endblock %}
+                    </div>
+                </div>
+                <div class="container">
+                    {% block container %}{% endblock %}
+
+                </div>
+                <div class="container" id="container_bottom_clear">
+                    {% block container_bottom_clear %}{% endblock %}
+                </div>
+            </div>
+        </article>
+
+        <script>
+        {% include "theme/_includes/siteheader.js" %}
+        </script>
     </body>
 </html>

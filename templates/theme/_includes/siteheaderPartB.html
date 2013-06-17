@@ -1,0 +1,21 @@
+                    </ul>
+                </li>
+                <li>
+                    <span class="navitem">{{user}}</span>
+                    <ul class="navitem-sub navitem-sub-hidden">
+                        <li><a href="/accounts/account_settings">Settings</a></li>
+                        <li><a href="/accounts/logout/?next=/">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div id="sitesearch">
+            <form action="/issue/search" method="POST">
+                {% csrf_token %}
+                <a class="ui-icon ui-icon-search" id="search_icon" href="/issue/advsearch"></a>
+                <input type="search" name="searchText" id="search">
+                <input type="submit" value="search">
+            </form>
+        </div>
+    </div>
+</div>

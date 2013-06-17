@@ -1,10 +1,15 @@
-{% extends "base.html" %}
+{% extends "theme/default/base.html" %}
 {% load markup %}
 {% load staticfiles %}
 
 {% block extra_head %}
 <script src="{% static 'scripts/daily_reports.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}"/>
+{% endblock %}
+
+{% block context_nav %}
+<li><a href="/reports/edit">Daily Reports</a></li>
+<li><a href="/reports/view">View Daily Reports</a></li>
 {% endblock %}
 
 {% block container %}
@@ -72,7 +77,7 @@
 		<input type="hidden" id="id_date" value="{{date|date:"Y-m-d"}}"/>
 		<br/>
 		{% if globalReport %}
-			Global Report: {{globalReport.description|markdown:"safe"}}</br>
+			Global Report: {{globalReport.description|striptags}}</br>
 			<br/>
 		{% else %}
 			<em>No global report for this date.</em><br/>
@@ -80,7 +85,7 @@
 		{% for report in reports %}
 		<div class="dashboard_container_section">
 			<div style="padding: 5px; background-color: #ddd; width: 100%; margin: 0;">{{report.user.username}} <!--({{report.user.first_name}} {{report.user.last_name}})--></div>
-			<div>{{report.description|markdown:"safe"}}</div>
+			<div>{{report.description|striptags}}</div>
 		</div>
 		{% empty %}
 			<div>There are no reports for this date.</div></div>

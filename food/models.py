@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
+
+from newsfeed.models import NewsFeedItem
 # Create your models here.
 
 
@@ -27,6 +29,5 @@ class FoodRequest(models.Model):
 
     def FindTotal(self):
         self.total_cost = self.quantity * self.cost_per_quantity
-
 
 admin.site.register(FoodRequest)

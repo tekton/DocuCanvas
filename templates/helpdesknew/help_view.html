@@ -1,12 +1,11 @@
-{% extends "base.html" %}
-
+{% extends "theme/default/base.html" %}
 
 {% block context_nav %}
-    <a href="/help/new">Ask a Question</a>
-    <a href="/help/resolved">Resolved Questions</a>
-    <a href="/help/pending">Unresolved Questions</a>
-    <a href="/help/user">Your Questions</a>
-    <a href="/help/edit/{{help.id}}">Edit Question</a>
+    <li><a href="/help/new">Ask a Question</a></li>
+    <li><a href="/help/resolved">Resolved Questions</a></li>
+    <li><a href="/help/pending">Unresolved Questions</a></li>
+    <li><a href="/help/user">Your Questions</a></li>
+    <li><a href="/help/edit/{{help.id}}">Edit Question</a></li>
     {% if user.is_staff %}
     <a href="/help/close_question_91990/{{help.id}}">Admin - Close Question</a>
     {% endif %}
@@ -127,6 +126,14 @@ img.pending-image-help{
 				</td>
 			</tr>
 			<tr>
+				<td>
+					{% if user == help.user or user.is_staff %}
+						<form action="/help/mark_the_input/{{arrow.id}}" id="submit_input_form" method="post" enctype="multipart/form-data">
+							{% csrf_token %}
+							<input type="submit" value="Remove Answer" id="remove_answer_button"/>
+						</form>
+					{% endif %}
+				</td>
 				<td class="tbl-ack-response">
 					{% if user.id == help.user.id %}
 						{% if help.ack_response %}
@@ -171,7 +178,7 @@ img.pending-image-help{
 		{% for comment in comments %}
 			<tr class="tbl-rowheader">
 				<td class="tbl-fauxth tbl-comments-user">
-					{% if user.id == help.user.id and help.status != "('closed', 'Closed')" %}
+					{% if user.id == help.user.id and help.status != "('closed', 'Closed')" and help.status != "('resolved', 'Resolved')" %}
 						<a class='popup'>
 							<b>{{comment.user}}</b>
 							<span>
@@ -181,7 +188,7 @@ img.pending-image-help{
 								</form>
 							</span>
 						</a>
-					{% elif user.is_staff %}
+					{% elif user.is_staff and help.status != "('closed', 'Closed')" and help.status != "('resolved', 'Resolved')" %}
 						<a class='popup'><b>{{comment.user}}</b>
 							<span>
 								<form action="/help/mark_the_answer/{{comment.id}}" id="submit_answer_form" method="post" enctype="multipart/form-data">
@@ -214,7 +221,19 @@ img.pending-image-help{
 			<tr>
 				<td class="tbl-answer-edit">
 					<!--<a href="/help/cmmtedit/{{comment.id}}">-EDIT-</a>-->
-					<div></div>
+					{% if user == help.user or user.is_staff %}
+						{% if comment.value != "('answer', 'Answer')" %}
+							<form action="/help/mark_the_answer/{{comment.id}}" id="submit_answer_form" method="post" enctype="multipart/form-data">
+								{% csrf_token %}
+								<input type="submit" value="Mark as Answer" id="submit_answer_button"/>
+							</form>
+						{% else %}
+							<form action="/help/mark_the_input/{{comment.id}}" id="submit_input_form" method="post" enctype="multipart/form-data">
+								{% csrf_token %}
+								<input type="submit" value="Remove Answer" id="remove_answer_button"/>
+							</form>
+						{% endif %}
+					{% endif %}
 				</td>
 				<td class="tbl-answer-id">
 					{{comment.id}}

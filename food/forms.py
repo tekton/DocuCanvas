@@ -1,5 +1,6 @@
 from django import forms
 from food.models import FoodRequest
+from newsfeed.models import *
 
 
 class FoodForm(forms.ModelForm):

@@ -1,11 +1,10 @@
-{% extends "base.html" %}
-
+{% extends "theme/default/base.html" %}
 
 {% block context_nav %}
-    <a href="/help/new">Ask a Question</a>
-    <a href="/help/resolved">Resolved Questions</a>
-    <a href="/help/pending">Unresolved Questions</a>
-    <a href="/help/user">Your Questions</a>
+    <li><a href="/help/new">Ask a Question</a></li>
+    <li><a href="/help/resolved">Resolved Questions</a></li>
+    <li><a href="/help/pending">Unresolved Questions</a></li>
+    <li><a href="/help/user">Your Questions</a></li>
 {% endblock %}
 
 {% block style %}
@@ -23,6 +22,8 @@
 		{{form.name}}</br>
 		<b>Edit Description</b></br>
 		{{form.question}}</br>
+		<b>Upload Screenshot(s)</b></br>
+		<input type='file' name='myfiles' multiple/>
 	    <input type='hidden' name="user" id="id_user" value='{{help.user.id}}'/><br>
 		<input type="submit" value="Submit Changes">
 	</form>

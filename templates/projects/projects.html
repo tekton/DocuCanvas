@@ -1,18 +1,24 @@
 {% extends "base.html" %}
 
+{% block context_nav %}
+    <a href="/issue/new">New Issue</a>
+    <a href="/issue/unassigned">Unassigned Issues</a>
+    <a href="/food/all">Food Requests</a>
+    <a href="/reports/edit">Daily Reports</a>
+    <a href="/help/user/{{user.id}}">Help</a>
+{% endblock %}
+
 {% block container %}
 
-	<h2>Projects<a href="project/new">+</a></h2>
-
-	<table>
-		<tr>
-			<td>Owner</td>
+	<table class="tbl-generic tbl-overview">
+		<tr class="tbl-rowheader">
 			<td>Name</td>
+			<td>Owner</td>
 		</tr>
-		{% for project in owned_projects %}
+		{% for project in projects %}
 			<tr>
-				<td>{{project.product_owner}}</td>
 				<td><a href="/project/{{project.id}}">{{project.name}}</a></td>
+				<td>{%if project.product_owner %}<a href="/auth/user/{{project.product_owner.id}}">{{project.product_owner}}</a> {% else %}{{project.product_owner}}{% endif %}</td>
 			</tr>
 		{% endfor%}
 	</table>

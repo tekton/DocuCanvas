@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from accounts.models import *
 from issues.models import *
 
+from django.utils import simplejson
 
 def register(request):
     if request.method == 'POST':
@@ -54,6 +55,7 @@ def register(request):
 def login_func(request):
     next = request.GET.get("next", "/")
     state = ""
+    stateStatus = ""
     if request.method == 'POST':
 	next = request.POST.get("next", "/")  # in theory we could take the default from before, but in case a url gets weird lets set a real default
         try:
@@ -74,7 +76,8 @@ def login_func(request):
             else:
                 #to_json = {"error": "error with username and/or password"}
                 #return HttpResponse(simplejson.dumps(to_json), mimetype='application/json', status=400)
-                return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+                state = "Your username and/or password were incorrect."
+                return render_to_response("theme/registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
         except Exception, e:
             print "Error authenticating form"
             print e
@@ -82,7 +85,7 @@ def login_func(request):
     else:
         form = AuthenticationForm()
 
-    return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+    return render_to_response("theme/default/registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
 
 
 def account_settings(request):
@@ -173,8 +176,38 @@ def user_overview(request, user_id):
             project_dict[project.name] = temp_dict
             #project_dict[project.name] = Issue.objects.filter(project=project, assigned_to=gadget_user).count()
 
+        project_array = []
+
+        project_list = []
+        issue_list = []
+        for project in projects:
+
+            # List of Projects
+            project_data = {}
+            project_data["id"] = project.id
+            project_data["name"] = project.name
+            project_list.append(project_data)
+
+            project_info = {}
+            project_info["name"] = project.name
+            project_info["issues"] = []
+
+            project_issues = Issue.objects.filter(project=project, assigned_to=gadget_user)
+            for issue in project_issues:
+                issue_info = {}
+                issue_info["id"] = issue.id
+                issue_info["summary"] = issue.summary
+                issue_info["status"] = issue.status
+                issue_info["project"] = issue.project.name
+
+                project_info["issues"].append(issue_info)
+
+            project_array.append(project_info)
+
+        project_json = simplejson.dumps(project_array)
+
     except Exception, e:
         print e
 
-    return render_to_response("user/user_overview.html", {"gadget_user": gadget_user, "issues": issues, "status_updates": issue_status_updates, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues ,"project_dict": project_dict , "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": gadget_user.username}, context_instance=RequestContext(request))
+    return render_to_response("theme/default/user/user_overview.html", {"projectsAsJson": project_json, "gadget_user": gadget_user, "issues": issues, "status_updates": issue_status_updates, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues ,"project_dict": project_dict , "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": gadget_user.username}, context_instance=RequestContext(request))
 

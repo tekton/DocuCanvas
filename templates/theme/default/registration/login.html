@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+{% load staticfiles %}
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Gadget</title>
+	<style>
+		html,
+		body {
+		  background-color: #181A1C;
+		  background-image: url({% static "theme/assets/img/login_bg.png" %}); }
+
+		body {
+		  font-family: Arial, sans-serif; }
+
+		p {
+		  margin: 0;
+		  padding: 0; }
+
+		.wrapper-horizon {
+		  position: absolute;
+		  top: 50%;
+		  left: 0;
+		  width: 100%;
+		  margin-top: -197.5px;
+		  min-width: 520px;
+		  min-height: 595px; }
+
+		.wrapper-content {
+		  position: relative;
+		  width: 340px;
+		  height: 255px;
+		  margin: auto;
+		  background-color: #202224;
+		  border: 1px solid #2c2e30;
+		  -webkit-box-shadow:  0px 1px 14px #111111;
+		  -moz-box-shadow:  0px 1px 14px #111111;
+		  box-shadow:  0px 1px 14px #111111;
+		  padding: 140px 40px 0;
+		  background-image: url({% static "theme/assets/img/login_logo.png" %});
+		  background-repeat: no-repeat;
+		  background-position: center 38px; }
+
+		.login-haserror #wrapper-content {
+		  height: 285px; }
+
+		.formfield {
+		  width: 340px;
+		  height: 50px;
+		  line-height: 50px;
+		  border: 0;
+		  margin: 0 0 15px 0;
+		  padding: 0;
+		  font-size: 20px;
+		  -webkit-border-radius: 6px 6px 6px 6px;
+		  -moz-border-radius: 6px 6px 6px 6px;
+		  border-radius: 6px 6px 6px 6px; }
+
+		#account-loginform label {
+		  display: none; }
+
+		#account-loginform input {
+		  width: 272px;
+		  height: 46px;
+		  background-color: #f2f2f2 !important;
+		  color: #5a5a5c !important;
+		  border: 2px solid #e3e3e3;
+		  padding: 0 10px 0 54px;
+		  background-image: url({% static "theme/assets/img/login_fieldbg.png" %}) !important;
+		  background-repeat: no-repeat; }
+
+		#account-loginform input:focus {
+		  border-color: #cd3748;
+		  color: #000;
+		  outline: none; }
+
+		#account-loginform button {
+		  height: 40px;
+		  line-height: 40px;
+		  background-color: #587C91;
+		  text-align: center;
+		  color: #FFF;
+		  font-size: 13px;
+		  margin-bottom: 20px;
+		  cursor: pointer;
+		  text-transform: uppercase; }
+
+		#account-loginform button:hover {
+		  background-color: #6f94aa; }
+
+		#login-forgot {
+		  font-size: 12px;
+		  text-align: center; }
+
+		#login-forgot a {
+		  text-decoration: none;
+		  color: #5a5a5c; }
+
+		#login-forgot a:hover {
+		  text-decoration: underline; }
+
+		#login-email {
+		  background-position: 0 0; }
+
+		#login-email:focus {
+		  background-position: 0 -51px; }
+
+		#login-password {
+		  background-position: 0 -102px; }
+
+		#login-password:focus {
+		  background-position: 0 -153px; }
+
+		#login-error {
+		  background-color: #fff9d2;
+		  border: 1px solid #ffe120;
+		  height: 30px; }
+
+		#login-error-msg {
+		  font-size: 11px;
+		  line-height: 30px;
+		  text-align: center; }
+
+		#login-error-msg img {
+		  vertical-align: text-bottom;
+		  margin-right: 3px; }
+
+		.hide {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<div id="account-loginform" class="wrapper-horizon">
+		<div class="wrapper-content">
+			<div id="account-login">
+				{% if state %}
+	            <div id="login-error" class="formfield" >
+	                <div id="login-error-msg">
+	                    <p class="error-{{stateStatus}}">
+	                        <img src="{% static "img/login_icon_error.png" %}" width="14" height="14">
+	                        {{state}}
+	                    </p>
+	                </div>
+	            </div>
+	            {% endif %}
+				<form action="/accounts/login" method="post" enctype="multipart/form-data" autocomplete="off">
+				    {% csrf_token %}
+				    <input type="hidden" name="next" id="next" value="{{next}}" />
+				    <p>
+					    <label for="login-email">Username</label>
+					    <input id="login-email" class="formfield" type="text" name="username" placeholder="Username">
+					</p>
+
+					<p>
+					    <label for="login-password">Password</label>
+					    <input id="login-password" class="formfield" type="password" name="password" placeholder="Password">
+					</p>
+					<p>
+						<button id="login-button" class="formfield" type="submit">Login</button>
+					</p>
+				    <p id="login-forgot" class="hide"><a href="#" role="button" data-toggle="modal" data-target="#account-registrationform">Register</a></p>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div id="account-registrationform" class="modal hide fade" role="dialog">
+		<form class="form-horizontal" action="/accounts/register" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<input type="hidden" name="next" id="next" value="{{next}}">
+			<header class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3>Register</h3>
+			</header>
+			<div class="modal-body">
+				<div class="control-group">
+					<label class="control-label" for="registration-username">Username</label>
+					<div class="controls">
+						<input id="registration-username" type="text" name="username" placeholder="Username" maxlength="30">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="registration-email">Email</label>
+					<div class="controls">
+						<input id="registration-email" type="text" name="email" placeholder="E-Mail">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="registration-password">Password</label>
+					<div class="controls">
+						<input id="registration-password" type="password" name="password1" placeholder="Password">
+						<input id="registration-passwordconfirm" type="password" name="password2" placeholder="Confirm Password">
+					</div>
+				</div>
+			</div>
+			<footer class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+	    		<button class="btn btn-primary" type="submit">Register</button>
+			</footer>
+		</form>
+	</div>
+</body>
+</html>

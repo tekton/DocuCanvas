@@ -1,11 +1,10 @@
-{% extends "base.html" %}
-
+{% extends "theme/default/base.html" %}
 
 {% block context_nav %}
-    <a href="/help/new">Ask a Question</a>
-    <a href="/help/resolved">Resolved Questions</a>
-    <a href="/help/pending">Unresolved Questions</a>
-    <a href="/help/user">Your Questions</a>
+    <li><a href="/help/new">Ask a Question</a></li>
+    <li><a href="/help/resolved">Resolved Questions</a></li>
+    <li><a href="/help/pending">Unresolved Questions</a></li>
+    <li><a href="/help/user">Your Questions</a></li>
 {% endblock %}
 
 {% block style %}
@@ -57,8 +56,6 @@ img.pending-image-help{
             {% else %}
                 <a class='popup' href="/help/{{help.id}}">{{help.name}}<span>{{help.question|truncatechars:80}}</span></a></td>
             {% endif %}
-        <td>
-        </td>
         <td>
             <a href="/help/{{help.id}}">{{help.user}}</a>
         </td>

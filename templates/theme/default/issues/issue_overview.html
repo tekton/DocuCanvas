@@ -1,0 +1,554 @@
+{% extends "theme/default/base.html" %}
+{% load markup %}
+
+{% block context_nav %}
+	<li class="nav-header">New</li>
+	<li><a id="context-issue-new" href="/issue/new/{{issue.project.id}}">Issue : {{issue.project.name}}</a></li>
+	<li class="nav-header">Issue Actions</li>
+	<li><a id="context-issue-subscribe" href="/issue/subscribe/{{issue.id}}">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
+	<li><a id="context-issue-pin" href="/issue/pin/{{issue.id}}">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
+	<li><a id="context-issue-assign" href="/issue/assign/{{issue.id}}">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
+	<li>
+		<a id="context-issue-assignto">
+			<form class="form-inline">
+				Assign To:&nbsp;
+				<div class="input-append">
+					<select name="assigned_user">
+						{% for user in users %}
+							<option value="{{user.id}}">{{user.username}}</option>
+						{% endfor%}
+					</select>
+					<button class="btn" type="button" data-url="/issue/assign/{{ issue.id }}/">Assign</button>
+				</div>
+			</form>
+		</a>
+	</a></li>
+	<li>
+		<a id="context-issue-status">
+			<form class="form-inline">
+				Status:&nbsp;
+				<div class="input-append">
+					{{form.status}}
+					<button class="btn" type="button">Set</button>
+				</div>
+			</form>
+		</a>
+	</li>
+	<li><a href="#" data-target="#modal-issue-related" data-toggle="modal">Set Related To...</a></li>
+    <li><a href="/issue/{{issue.id}}/history">History</a></li>
+	<li><a href="/issue/{{issue.id}}/edit">Edit</a></li>
+{% endblock%}
+
+{% block additional_head %}
+    {{ form.media }}
+{% endblock %}
+
+{% block container %}
+	<article class="row">
+		<div id="issue-column-main" class="span9 metainfo-maincolumn">
+			<div id="issue-details" class="well">
+				<div class="media">
+					<div class="media-body">
+						<h3 class="media-header">Summary</h3>
+						{{issue.summary}}
+					</div>
+				</div>
+				<div class="media">
+					<div class="media-body">
+						<h3 class="media-header">Description</h3>
+						{{issue.description|safe}}
+					</div>
+				</div>
+				{% if images %}
+				<div class="media">
+					<div class="media-body">
+						<h3 class="media-header">Attached Images</h3>
+						<ul class="thumbnails">
+							{% for image in images %}
+							<li class="span2">
+								<a class="thumbnail"><img src="/static/{{image.screenshot}}"></a>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+
+			<aside id="issue-comments" class="well">
+				<header>
+					<h3>Comments</h3>
+				</header>
+				<div id="issue-comments-add">
+					<form class="form-inline" action="/issue/comment/{{issue.id}}" method="post">
+						{% csrf_token %}
+						<input type="hidden" name="issue" id="id_issue" value="{{issue.id}}">
+						<input type="hidden" name="user" id="id_user" value="{{user.id}}">
+						{% if comment_form.errors %}
+						<div class="alert alert-block alert-error">
+							{{comment_form.errors}}
+						</div>
+						{% endif %}
+						<div class="control-group">
+							<label class="control-label" for="id_description">Comment</label>
+							<div class="control-group">
+								{{comment_form.description}}
+							</div>
+						</div>
+						<input type="submit" value="Submit"/>
+					</form>
+				</div>
+				<ul id="issue-comments-list" class="media-list">
+					{% for comment in comments%}
+					<li class="media">
+						<article id="issue-comment-{{comment.id}}" class="issue-comment" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}">
+							<div class="media-body">
+								<aside class="clearfix">
+									<p class="muted"><span class="pull-left">{{comment.user}}</span> <span class="pull-right">{{comment.created|date:"M d, Y g:i A"}} </span></p>
+								</aside>
+								<button class="btn btn-mini pull-right comment-editbutton" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}" data-commentcontent="{{comment.description}}"><i class="icon-edit"></i></button>
+								<div class="comment-content">
+									{{comment.description|markdown:"safe"}}
+								</div>
+							</div>
+						</article>
+					</li>
+					{% endfor %}
+				</ul>
+			</aside>
+		</div>
+
+		<div id="issue-column-aside" class="span3 metainfo-asidecolumn">
+			<aside id="issue-metainfo" class="well metainfo metainfo-show">
+				<div class="pull-right">
+					<button id="metainfo-toggle" class="btn btn-mini" type="button"><i class="icon-resize-small"></i></button>
+				</div>
+				<div id="issue-metainfo-content" class="metainfo-content">
+					<dl>
+						<dt>Issue Id:</dt>
+							<dd>{{issue.id}}</dd>
+
+						<dt>Assigned To:</dt>
+							<dd><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></dd>
+
+						<dt>Meta Issue:</dt>
+							<dd>{{issue.meta_issues.title}}</dd>
+
+						<!--
+						<dt>Project Name:</dt>
+							<dd><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></dd>
+
+						<dt>State:</dt>
+							<dd>{{issue.state}}</dd>
+
+						<dt>Projected Start:</dt>
+							<dd>{{issue.projected_start}}</dd>
+
+						<dt>Projected End:</dt>
+							<dd>{{issue.projected_end}}</dd>
+
+						<dt>Actual Start:</dt>
+							<dd>{{issue.actual_start}}</dd>
+
+						<dt>Actual End:</dt>
+							<dd>{{issue.actual_end}}</dd>-->
+
+						<dt>Date Reported:</dt>
+							<dd>{{issue.date_reported}}</dd>
+
+						<dt>Created:</dt>
+							<dd>{{issue.created}}</dd>
+
+						<dt>Modified:</dt>
+							<dd>{{issue.modified}}</dd>
+
+						<dt>View Type:</dt>
+							<dd>{{issue.view_type}}</dd>
+
+						<dt>Issue Type:</dt>
+							<dd>{{issue.issue_type}}</dd>
+
+						<!--<dt>Title:</dt>
+							<dd>{{issue.title}}</dd>
+
+						<dt>Link Slug:</dt>
+							<dd>{{issue.link_slug}}</dd>-->
+
+						<dt>Status:</dt>
+							<dd>
+								<span class="label
+								{% if issue.status == 'not_a_bug' %}
+									label-info">Not a Bug
+								{% elif issue.status == 'wont_fix' %}
+									label-info">Won't Fix
+								{% elif issue.status == 'duplicate' %}
+									label-info">Duplicate
+								{% elif issue.status == 'active' %}
+									label-warning">Active
+								{% elif issue.status == 'fixed' %}
+									label-success">Fixed
+								{% elif issue.status == 'retest' %}
+									label-warning">Retest
+								{% elif issue.status == 'unverified' %}
+									label-default">Unverified
+								{% else %}
+									label-default">None
+								{% endif %}</span>
+							</dd>
+
+						<dt>Criticality:</dt>
+							<dd>{{issue.criticality}}</dd>
+
+						<dt>Fixability:</dt>
+							<dd>{{issue.fixability}}</dd>
+
+						<!--<dt>R &amp; D:</dt>
+							<dd>{{issue.r_and_d}}</dd>
+
+						<dt>Feature:</dt>
+							<dd>{{issue.feature}}</dd>-->
+
+						<dt>OS:</dt>
+							<dd>{{issue.os}}</dd>
+
+						<dt>OS Version:</dt>
+							<dd>{{issue.os_version}}</dd>
+
+						<dt>Browser:</dt>
+							<dd>{{issue.browser}}</dd>
+
+						<dt>Browser Version:</dt>
+							<dd>{{issue.browser_version}}</dd>
+
+						<!--<dt>Screen Shot:</dt>
+							<dd>{{issue.screen_shot}}</dd>
+
+						<dt>Wireframe:</dt>
+							<dd>{{issue.wireframe}}<br/></dd>
+
+						<dt>URI to Test:</dt>
+							<dd>{{issue.uri_to_test}}</dd>-->
+
+						<dt>Created By:</dt>
+							<dd>{{issue.created_by}}</dd>
+
+						<dt>Modified By:</dt>
+							<dd>{{issue.modified_by}}</dd>
+
+						<dt>Point of Contact:</dt>
+							<dd>{{issue.point_of_contact}}</dd>
+					</dl>
+
+					{% if related_issues %}
+					<table class="table table-condensed">
+						<caption>
+							Related Issues
+						</caption>
+						<thead>
+							<tr>
+								<th>
+									Issue
+								</th>
+								<th>
+									Relation
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<a href="/issue/{{issue_to_issue.secondary_issue.id}}">{{issue_to_issue.secondary_issue.description}}</a>
+								</td>
+								<td>
+									<a class="btn btn-mini pull-right" onClick="unlink_issue('{{issue_to_issue.secondary_issue.id}}')"><i class="icon-remove-circle"></i></a>
+									{{issue_to_issue.link_type}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					{% endif %}
+				</div>
+			</aside>
+		</div>
+	</article>
+{% endblock %}
+
+{% block additionaljs %}
+// <script> - commented out as only used in Sublime Text for syntax highlightling
+
+	// Context menu - Status
+	$('#context-issue-status .btn').click(function(){
+		var btn = $(this),
+			statusField = btn.siblings('select');
+
+		switch (statusField.val()) {
+			case 'fixed':
+				$('#modal-issue-fixed').modal();
+				break;
+
+			case 'duplicate':
+				$('#modal-issue-duplicate').modal();
+				break;
+
+			default:
+				$.ajax({
+				    type: 'POST',
+				    url: '/issue/set_bug_state',
+				    data:{
+				    	issue: '{{issue.id}}',
+				    	status: statusField.val(),
+						csrfmiddlewaretoken: '{{csrf_token}}'
+				    },
+				    success: function(data){
+				    	AlertMessage.success(data.status);
+				    },
+				    error: AlertMessage.genericUnknownError
+				});
+				break;
+		}
+	});
+
+	// Context menu - Status - Duplicate handler
+	$('#modal-issue-duplicate .btn-primary').on({
+		click: function(){
+			$.ajax({
+				type: 'POST',
+				url: '/issue/link',
+				data:{
+					primary_issue: '{{issue.id}}',
+					secondary_issue: $('#duplicate_issue_id').val(),
+					link_type: 'duplicate'
+				},
+				success: function(data){
+					$('#modal-issue-duplicate').modal('hide');
+					AlertMessage.success(data.response);
+				},
+				error: function(data){
+					$('#modal-issue-duplicate-alert').show();
+				}
+			});
+		}
+	});
+
+	// Context menu - Related - Related handler
+	$('#modal-issue-related .btn-primary').on({
+		click: function(){
+			$.ajax({
+				type: 'POST',
+				url: '/issue/link',
+				data:{
+					primary_issue: '{{issue.id}}',
+					secondary_issue: $('#modal-issue-related-id').val(),
+					link_type: $('#modal-issue-related-type').val()
+				},
+				success: function(data){
+					$('#modal-issue-related').modal('hide');
+					AlertMessage.success(data.response);
+				},
+				error: function(data){
+					$('#modal-issue-related-alert').show();
+				}
+			});
+		}
+	});
+
+	// Context menu - Subscribe
+	$('#context-issue-subscribe').asAjax( function(data, status) {
+        if ( data.success ) {
+            if ( data.is_subscribed ) {
+                $(this).text('Unsubscribe');
+                AlertMessage.success('Issue subscribed');
+            }
+            else {
+                $(this).text('Subscribe');
+                AlertMessage.success( 'Issue unsubscribed');
+            }
+        }
+        else {
+            AlertMessage.error('<strong>Subscribe error!</strong>' + data.error);
+        }
+    },AlertMessage.genericUnknownError);
+
+    // Context menu - Pin
+    $('#context-issue-pin').asAjax(function(data, status) {
+        if ( data.success ) {
+            if ( data.is_pinned ) {
+                $(this).text('Unpin');
+                AlertMessage.success('Issue pinned');
+            }
+            else {
+                $(this).text('Pin');
+                AlertMessage.success('Issue unpinned');
+            }
+        }
+        else {
+            AlertMessage.error('Pinning error: ' + data.error)
+        }
+    },AlertMessage.genericUnknownError);
+
+	// Context menu - Assign (self)
+	$('#context-issue-assign').asAjax(function(data){
+		if ( data.success ) {
+            if ( data.assigned_to == "self" ) {
+                $(this).text( "Unassign" );
+				AlertMessage.success('Issue now assigned to you.');
+            }
+            else if ( data.assigned_to == "none" ) {
+                $(this).text( "Take" );
+				AlertMessage.success('Issue unassigned.');
+            }
+            else if ( data.assigned_to == "user" ) {
+                $(this).text( "Take" );
+				AlertMessage.success('Issue successfully assigned.');
+            }
+        }
+        else {
+        	AlertMessage.error('<strong>Server Error!</strong> ' + data.error);
+        }
+	},AlertMessage.genericUnknownError);
+
+	// Edit Comment - hide/show edit button
+	$('.issue-comment').on({
+		mouseover: function(){
+			var me = $(this);
+			if (me.attr('data-commentuser') == '{{user}}') {
+				me.addClass('show-editbutton');
+			}
+		},
+		mouseout: function(){
+			$(this).removeClass('show-editbutton');
+		}
+	});
+
+	// Edit Comment - show edit form
+	$('.comment-editbutton').click(function(){
+		var btn = $(this),
+			currentUser = '{{user}}',
+			modalForm = $('#modal-comment-edit'),
+			textArea = $('#modal-comment-textarea'),
+			submitBtn = $('#modal-comment-submit'),
+			alertMsg = $('#modal-comment-alert');
+
+		alertMsg.hide();
+		submitBtn.unbind('click');
+
+		if (btn.attr('data-commentuser') == currentUser) {
+			textArea.val(btn.attr('data-commentcontent'));
+			submitBtn.click(function(){
+				$.ajax({
+					type:"POST",
+					url:"/issue/edit_comment",
+					data:{
+						comment_id: btn.attr('data-commentid'),
+						comment: textArea.val()
+					},
+					success: function(data){
+						alertMsg.hide();
+						AlertMessage.success('Comment successfully updated.',btn.siblings('.comment-content'));
+						submitBtn.unbind('click');
+						modalForm.modal('hide');
+					},
+					error: function(data){
+						$('#modal-comment-alert').show();
+					}
+				});
+			});
+			modalForm.modal();
+		}
+	});
+// </script>
+{% endblock %}
+
+{% block modalsincluded %}
+	<div id="modal-issue-fixed" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Fixed Issue</h3>
+		</header>
+		<div class="modal-body">
+			<form id="modal-issue-fixed-form" class="form-inline" action="/issue/set_bug_state" method="POST">
+				{% csrf_token %}
+				<input type="hidden" name="issue" id="id_issue" value="{{issue.id}}">
+				<input type="hidden" name="user" id="id_user" value="{{user.id}}">
+				<input type="hidden" name="status" value="fixed">
+				{{comment_form.description}}
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button class="btn btn-primary" type="submit" form="modal-issue-fixed-form">Fix</button>
+		</footer>
+	</div>
+
+	<div id="modal-issue-duplicate" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Duplicate Issue</h3>
+		</header>
+		<div class="modal-body">
+			<div id="modal-issue-duplicate-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
+			<form class="form-inline">
+				<label for="duplicate_issue_id">Duplicate Issue ID</label>
+				<input type="text" id="duplicate_issue_id">
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button class="btn btn-primary">Duplicate</button>
+		</footer>
+	</div>
+
+	<div id="modal-issue-related" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Select Related Issue</h3>
+		</header>
+		<div class="modal-body">
+			<div id="modal-comment-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
+			<form class="form-horizontal">
+				<p>
+					Current issue {{issue.id}} is a
+					<select id="modal-issue-related-type">
+						<option value="duplicate">Duplicate</option>
+						<option value="related">Related</option>
+						<option value="child">Child</option>
+						<option value="parent">Parent</option>
+					</select>
+					of Issue
+				</p>
+				<select id="modal-issue-related-id">
+			    {% for project_issue in project_issues%}
+			        <option value="{{project_issue.id}}">{{project_issue.summary}}</option>
+			    {% endfor %}
+				</select>
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button class="btn btn-primary">Link</button>
+		</footer>
+	</div>
+
+	<div id="modal-comment-edit" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Edit Comment</h3>
+		</header>
+		<div class="modal-body">
+			<div id="modal-comment-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
+			<textarea id="modal-comment-textarea" rows="4" cols="250" style="width:95%">{{comment.description}}</textarea>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+        	<button id="modal-comment-submit" class="btn btn-primary" type="button">Submit</button>
+        </footer>
+	</div>
+
+	{% include "theme/_includes/modal-help-markdown.html" %}
+{% endblock %}

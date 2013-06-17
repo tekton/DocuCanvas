@@ -147,4 +147,4 @@ def mail_report():
 def index(request):
     projects = Project.objects.all()
     reports = UserDailyReport.objects.filter(user=request.user).order_by('-date')[:5]
-    return render_to_response("daily_reports/report_index.html", {"reports": reports, "projects": projects}, context_instance=RequestContext(request))
+    return render_to_response("daily_reports/report_index.html", {"reports": reports, "projects": projects, "page_type": "Report"}, context_instance=RequestContext(request))

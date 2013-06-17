@@ -1,11 +1,10 @@
-{% extends "base.html" %}
-
+{% extends "theme/default/base.html" %}
 
 {% block context_nav %}
-    <a href="/help/new">Ask a Question</a>
-    <a href="/help/resolved">Resolved Questions</a>
-    <a href="/help/pending">Unresolved Questions</a>
-    <a href="/help/user">Your Questions</a>
+    <li><a href="/help/new">Ask a Question</a></li>
+    <li><a href="/help/resolved">Resolved Questions</a></li>
+    <li><a href="/help/pending">Unresolved Questions</a></li>
+    <li><a href="/help/user">Your Questions</a></li>
 {% endblock %}
 
 {% block container %}
@@ -28,6 +27,10 @@
 {% elif error_id == '6' %}
 	<h2>Error - Cannot Submit Acknowledgement</h2>
 	<p>You can only respond to the answer</p>
+{% elif error_id == '7' %}
+	<h2>Error - Queried Object Could Not Be Found</h2>
+{% elif error_id == '8' %}
+	<h2>Error - Could Not Save Object</h2>
 {% else %}
 	<h2>Error</h2>
 {% endif %}

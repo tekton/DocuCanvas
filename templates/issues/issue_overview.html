@@ -10,8 +10,6 @@
         }
 
         function assignSuccess(data) {
-            // Hides nav menu only after successful submission
-            NavMenu.HideAll();
             if ( data.success ) {
                 if ( data.assigned_to == "self" ) {
                     $(this).text( "Unassign" );
@@ -34,8 +32,6 @@
 		$(document).ready(function(){
 
             $('a.subscribe_to_issue').asAjax( function(data, status) {
-                // Hides nav menu only after successful submission
-                NavMenu.HideAll();
                 if ( data.success ) {
                     if ( data.is_subscribed ) {
                         $(this).text("Unsubscribe");
@@ -52,8 +48,6 @@
             }, ajaxError);
 
             $('a.pin_issue').asAjax(function(data, status) {
-                // Hides nav menu only after successful submission
-                NavMenu.HideAll();
                 if ( data.success ) {
                     if ( data.is_pinned ) {
                         $(this).text("Unpin");
@@ -77,8 +71,6 @@
 
                 var statusVal = $('#id_status').val();
                 if( statusVal == "fixed"){
-					// Hides nav menu
-        			NavMenu.HideAll();
 
         			$('#comment_title').text('Bug Fixed Comment');
         			$('#id_description').focus();
@@ -106,8 +98,6 @@
 					    	status:statusVal
 					    },
 					    success: function(data){
-					    	// Hides nav menu only after successfull submission
-				    		NavMenu.HideAll();
 
 					    	alert(data['status']);
 					    },
@@ -135,7 +125,7 @@
 	            var el = evt.target;
 
 
-	            if($(event.target).attr('id') != "set_related_to_popup" && $(event.target).parent().attr('id') != "set_related_to_popup"){
+	            if($(evt.target).attr('id') != "set_related_to_popup" && $(evt.target).parent().attr('id') != "set_related_to_popup"){
 
 	                if($('#set_related_to_popup').css('display') != "none" ){
 
@@ -143,12 +133,32 @@
 	                }
 	            }
 
-	            if($(event.target).attr('id') != "link_issue_duplicate_popup" && $(event.target).parent().attr('id') != "link_issue_duplicate_popup" && $(event.target).attr('id') != "set_bug_status"){
+	            if($(evt.target).attr('id') != "link_issue_duplicate_popup" && $(evt.target).parent().attr('id') != "link_issue_duplicate_popup" && $(evt.target).attr('id') != "set_bug_status"){
 
 	                if($('#link_issue_duplicate_popup').css('display') != "none"){
 	                        $('#link_issue_duplicate_popup').fadeToggle();
 	                }
 	            }
+
+                //alert($(el).parent().attr('class'));
+                if($(el).parent().attr('class') != 'tbl-comments-description' && $(el).parent().attr('class') != 'tbl-comments-description-edit' && $(el).attr('type') != 'button' ){
+
+                    $('.tbl-comments-description').each(function(){
+                        //alert($(this).css('display'));
+                        if($(this).css('display') == 'none'){
+                            $(this).css('display', 'block');
+                        }
+                    });
+
+                    $('.tbl-comments-description-edit').each(function(){
+                        if($(this).css('display') == 'block'){
+                            $(this).css('display', 'none');
+                        }
+                    });
+
+                    //$('.tbl-comments-description').css('display', 'block');
+                    //$('.tbl-comments-description-edit').css('display', 'none');
+                }
 
         	});
 
@@ -217,7 +227,7 @@
                     },
             success: function(data){
                         comment.parent().css('display', 'none');
-                        comment.parent().prev().text(comment.prev().val());
+                        comment.parent().prev().children().text(comment.prev().val());
                         comment.parent().prev().css('display', 'block');
                     },
             error: function(data){
@@ -229,27 +239,28 @@
 {% endblock %}
 
 {% block context_nav %}
-	<a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a>
+	<li><a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a></li>
 
-	<a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a>
+	<li><a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
 
-	<a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a>
+	<li><a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
 
-	<a href="/issue/assign/{{ issue.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a>
+	<li><a href="/issue/assign/{{ issue.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
 
-	<a>Assign To:
+	<li><a>Assign To:
 		<select id="assigned_user">
 			{% for user in users%}<option value="{{user.id}}">{{user.username}}</option>
 			{% endfor%}
 		</select>
 		<input data-url="/issue/assign/{{ issue.id }}/" type="button" id="assign_issue_to" value="Assign"/>
-	</a>
-	<a>Status:
+	</a></li>
+	<li><a>Status:
 		{{form.status}}
 		<input type="button" id="set_bug_status" value="Set"/>
-	</a>
-	<a class="set_related_issue">Set Related To...</a>
-	<a href="/issue/{{issue.id}}/edit">Edit</a>
+	</a></li>
+	<li><a class="set_related_issue">Set Related To...</a></li>
+    <li><a href="/issue/{{issue.id}}/history">History</a></li>
+	<li><a href="/issue/{{issue.id}}/edit">Edit</a></li>
 {% endblock%}
 
 {% block duplicate_issue_popup %}
@@ -292,7 +303,12 @@ s{% block container %}
 			<td class="tbl-fauxth">Description</td>
 		</tr>
 		<tr>
-			<td>{{issue.description|markdown:"safe"|linebreaksbr}}</td>
+			<td>{{issue.description|markdown:"safe"}}</td>
+		</tr>
+		<tr>
+			{% for image in images %}
+				<td><img src="/static/{{image.screenshot}}"></td>
+			{% endfor %}
 		</tr>
 	</table>
 {% endblock %}
@@ -377,8 +393,8 @@ s{% block container %}
 		{% for comment in comments%}
 			<tr class="tbl-rowheader">
 				<td class="tbl-fauxth tbl-comments-user"><b>{{comment.user}}</b></td>
-				<td class="tbl-fauxth tbl-comments-created">{{comment.created}}</td
->			</tr>
+				<td class="tbl-fauxth tbl-comments-created">{{comment.created}}</td>
+			</tr>
 			<tr>
 				<td class="tbl-comments-description" colspan="2" onClick="edit_comment($(this), '{{comment.user}}')">{{comment.description|markdown:"safe"}}</td>
                 <td style="display:none" class="tbl-comments-description-edit" colspan="2">

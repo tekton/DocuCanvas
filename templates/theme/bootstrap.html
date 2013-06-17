@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+{% load staticfiles %}
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Gadget</title>
+
+	<link rel="stylesheet" href="{% static 'theme/bootstrap/css/bootstrap.css' %}">
+	{% block additional_head %}{% endblock %}
+	
+	<style>
+		body {
+			font-size: 16px;
+		}
+		textarea {
+			width: 98%;
+		}
+
+		#sitenav .brand {
+			padding: 0 5px;
+			margin-left: 0;
+			margin-right: 15px;
+			background-color: #587C91;
+			width: 50px;
+			height: 50px;
+			display: block;
+		}
+		#sitenav .brand .logo {
+			display: block;
+			text-indent: -9999px;
+			width: 50px;
+			height: 50px;
+			background-image: url({% static 'theme/assets/img/logo-gadget-sitenav.png' %});
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+		#sitenav .navbar-inner {
+			min-height: 50px;
+			border-bottom: 0;
+			box-shadow: 0 1px 5px #5A5A5A;
+			background-color: #2B2F32;
+			background-image: none;
+		}
+		#sitenav #mainnav li {
+			text-transform: uppercase;
+			font-weight: bold;
+		}
+		#sitenav #mainnav .dropdown-menu li {
+			text-transform: none;
+		}
+		#sitenav form {
+			margin-bottom: 0;
+		}
+		#sitenav .navbar-search .search-query {
+			width: 145px;
+			height: 18px;
+			color: #ffffff;
+			background-color: #515151;
+			border-color: #111111;
+			-webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+			-moz-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+			box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+			-webkit-transition: none;
+			-moz-transition: none;
+			-o-transition: none;
+			transition: none;
+		}
+		#sitenav .navbar-search .search-query:-moz-placeholder {
+			color: #cccccc;
+		}
+		#sitenav .navbar-search .search-query:-ms-input-placeholder {
+			color: #cccccc;
+		}
+		#sitenav .navbar-search .search-query::-webkit-input-placeholder {
+			color: #cccccc;
+		}
+		#sitenav .navbar-search .search-query:focus,
+		#sitenav .navbar-search .search-query.focused {
+			padding: 5px 15px;
+			color: #333333;
+			text-shadow: 0 1px 0 #ffffff;
+			background-color: #ffffff;
+			border: 0;
+			-webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+			-moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+			box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+			outline: 0;
+		}
+		#sitenav #mainnav .nav > li > a {
+			padding-bottom: 10px;
+			border-bottom: 5px solid transparent;
+		}
+		#sitenav #mainnav .nav > li > a.active {
+			border-color: #587C91;
+		}
+
+		.panel,
+		.well {
+			border: 1px solid #F2F2F2;
+			box-shadow: 0 1px 4px #5A5A5A;
+			background-color: #FFF;
+		}
+
+		.well.span6 {
+			width: 530px;
+		}
+
+		#pagetitle {
+			text-align: center;
+			margin: 15px 0 25px;
+		}
+
+		#pagetitle .title-separator {
+			display: none;
+		}
+
+		.metainfo-hide .metainfo-content  {
+			display: none;
+		}
+
+		.issue-comment .comment-editbutton {
+			display: none;
+		}
+		.issue-comment.show-editbutton .comment-editbutton {
+			display: block;
+		}
+
+		.mark_notification_as_read{
+			cursor:pointer;
+		}
+
+		#maincontent {
+		    -o-animation: fadein .7s;
+		    -moz-animation: fadein .7s;
+		    -webkit-animation: fadein .7s;
+		    animation: fadein .7s;
+		}
+
+		@-o-keyframes fadein {
+		    from {
+		        opacity:0;
+		    }
+		    to {
+		        opacity: 1;
+		    }
+		}​
+		@-moz-keyframes fadein {
+		    from {
+		        opacity:0;
+		    }
+		    to {
+		        opacity:1;
+		    }
+		}
+		@-webkit-keyframes fadein {
+		    from {
+		        opacity:0;
+		    }
+		    to {
+		        opacity:1;
+		    }
+		}
+		@keyframes fadein {
+		    from {
+		        opacity:0;
+		    }
+		    to {
+		        opacity:1;
+		    }
+		}
+
+		@media (min-width: 980px) {
+			#globalwrap {
+				padding-top: 55px;
+			}
+		}
+
+		/* Large Desktop */
+		@media (min-width: 1200px) {
+			
+		}
+		
+		/* Portrait tablet to landscape and desktop */
+		@media (min-width: 768px) and (max-width: 979px) {
+
+		}
+		
+		/* Landscape phone to portrait tablet */
+		@media (max-width: 767px) {
+
+		}
+		
+		/* Landscape phones and down */
+		@media (max-width: 480px) {
+			
+		}
+
+		{% block additionalstyles %}{% endblock %}
+	</style>
+</head>
+<body>
+	<div id="globalwrap">
+		{% block basecontent %}{% endblock %}
+	</div>
+
+	{% block modalsincluded %}{% endblock %}
+	
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<script src="{% static 'scripts/ajax_tools.js' %}"></script>
+	<script src="{% static 'theme/bootstrap/js/bootstrap.js' %}"></script>
+    <script src="{% static 'theme/assets/js/tablesorter/jquery.tablesorter.js' %}"></script>
+    <script>
+		$.ajaxSetup({
+		    beforeSend: function(xhr, settings) {
+		        xhr.setRequestHeader('X-CSRFToken', '{{csrf_token}}');
+		    }
+		});
+
+	    var AlertMessage = (function(){
+			var msgContainer = $('#pagemessage');
+			if (msgContainer.length == 0) {
+				msgContainer = $('<div/>');
+			}
+			return {
+				msgContainer: msgContainer,
+				tmpl: function(cls,msg,block,closable) {
+					closable = typeof(closable) == 'boolean' ? closable : true;
+					block = typeof(block) == 'boolean' ? block : false;
+
+					cls = cls ? ' alert-' + cls : '';
+					blockCls = block ? ' alert-block' : '';
+
+					var html = '' +
+					'<div class="alert' + cls + blockCls + '">' +
+					  (closable ? '<button type="button" class="close" data-dismiss="alert">&times;</button>' : '') +
+					  msg +
+					'</div>';
+
+					return $(html);
+				},
+				_showMsg: function(alertEl,targetEl) {
+					console.log(arguments);
+					targetEl = targetEl || AlertMessage.msgContainer;
+					targetEl.prepend(alertEl);
+					alertEl.delay(15000).slideUp('normal',function(){
+						$(this).remove();
+					});
+				},
+				warn: function(msg,targetEl,block,closable) {
+					var alertEl = AlertMessage.tmpl(null,msg,block,closable);
+					AlertMessage._showMsg(alertEl,targetEl);
+				},
+				info: function(msg,targetEl,block,closable) {
+					var alertEl = AlertMessage.tmpl('info',msg,block,closable);
+					AlertMessage._showMsg(alertEl,targetEl);
+				},
+				error: function(msg,targetEl,block,closable) {
+					var alertEl = AlertMessage.tmpl('error',msg,block,closable);
+					AlertMessage._showMsg(alertEl,targetEl);
+				},
+				success: function(msg,targetEl,block,closable) {
+					var alertEl = AlertMessage.tmpl('success',msg,block,closable);
+					AlertMessage._showMsg(alertEl,targetEl);
+				},
+				genericUnknownError: function(){
+					AlertMessage.error('<strong>Unknown Error!</strong> An unknown error has occured. Try again later.');
+				}
+			};
+		})();
+
+		// Hides sidebar
+		$("#metainfo-toggle").click(function(){
+			var btn = $(this),
+				icon = btn.children('i').first(),
+				parent = btn.parents('aside.metainfo'),
+				sideColumn = parent.parents('.metainfo-asidecolumn'),
+				mainColumn = sideColumn.siblings('.metainfo-maincolumn');
+
+			if (parent.hasClass('metainfo-show')) {
+				icon.removeClass('icon-resize-small').addClass('icon-resize-full');
+				parent.removeClass('metainfo-show').addClass('metainfo-hide');
+				mainColumn.removeClass('span9').addClass('span11');
+				sideColumn.removeClass('span3').addClass('span1');
+			}
+			else {
+				icon.removeClass('icon-resize-full').addClass('icon-resize-small');
+				parent.removeClass('metainfo-hide').addClass('metainfo-show');
+				mainColumn.removeClass('span11').addClass('span9');
+				sideColumn.removeClass('span1').addClass('span3');
+			}
+		});
+
+        $(".table-sortable").tablesorter();
+
+        {% block additionaljs %}{% endblock %}
+    </script>
+</body>
+</html>
