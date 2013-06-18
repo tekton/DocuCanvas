@@ -487,6 +487,11 @@ def issue_overview(request, issue_id):
 @login_required
 @permission_required("issues.change_issue", raise_exception=True)
 def edit(request, issue_id):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+
     if request.method == 'POST':
 
         for k in request.POST:
@@ -514,12 +519,12 @@ def edit(request, issue_id):
             if issue.id:
                 return redirect('issues.views.issue_overview', issue.id)
             else:
-                return render_to_response('issues/issue_edit.html', {'form': form, "issue": issue}, context_instance=RequestContext(request))
+                return render_to_response('issues/issue_edit.html', {'form': form, "issue": issue, "projects": projects}, context_instance=RequestContext(request))
 
     else:
         issue = Issue.objects.get(pk=issue_id)
         form = IssueFullForm(instance=issue,initial={"project": issue.project}, auto_id=False)
-    return render_to_response("issues/issue_edit.html", {"form": form, "issue": issue, "page_type": "Edit", "page_value": issue.title}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_edit.html", {"form": form, "issue": issue, "projects": projects, "page_type": "Edit", "page_value": issue.title}, context_instance=RequestContext(request))
 
 
 @login_required
