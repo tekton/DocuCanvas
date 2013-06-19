@@ -576,20 +576,30 @@ def history(request, issue_id):
 
 @login_required
 def issue_search_simple(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+
     if request.method == "GET":
-        return render_to_response("issues/issue_adv_search.html", context_instance=RequestContext(request))
+        return render_to_response("issues/issue_adv_search.html", {"projects": projects},context_instance=RequestContext(request))
 
     search = request.POST['searchText']
     print search
 
     q = Issue.objects.filter(Q(summary__contains=search) | Q(description__contains=search))
-    return render_to_response("issues/issue_search_results.html", {'results': q}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_search_results.html", {'results': q, "projects": projects}, context_instance=RequestContext(request))
 
 
 @login_required
 def issue_search_advanced(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+
     if request.method == "GET":
-        return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm()}, context_instance=RequestContext(request))
+        return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm(), "projects": projects}, context_instance=RequestContext(request))
 
     form = AdvSearchForm(request.POST)
     if not form.is_valid():
@@ -613,7 +623,7 @@ def issue_search_advanced(request):
             query = qr
 
     results = Issue.objects.filter(query)
-    return render_to_response("issues/issue_search_results.html", {'results': results}, context_instance=RequestContext(request))
+    return render_to_response("issues/issue_search_results.html", {'results': results, "projects": projects}, context_instance=RequestContext(request))
 
 
 @login_required
