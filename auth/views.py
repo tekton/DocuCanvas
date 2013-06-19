@@ -151,6 +151,11 @@ def change_email(request):
 
 def user_overview(request, user_id):
     try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+
+    try:
         gadget_user = User.objects.get(pk=user_id)
         #issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-created')
         issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-project')
@@ -219,5 +224,4 @@ def user_overview(request, user_id):
     except Exception, e:
         print e
 
-    return render_to_response("theme/default/user/user_overview.html", {"projectsAsJson": project_json, "gadget_user": gadget_user, "issues": issues, "status_updates": issue_status_updates, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues ,"project_dict": project_dict , "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": gadget_user.username}, context_instance=RequestContext(request))
-
+    return render_to_response("theme/default/user/user_overview.html", {"projectsAsJson": project_json, "gadget_user": gadget_user, "issues": issues, "status_updates": issue_status_updates, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues ,"project_dict": project_dict , "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "projects": projects, "page_type": gadget_user.username}, context_instance=RequestContext(request))
