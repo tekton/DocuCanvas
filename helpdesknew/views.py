@@ -41,6 +41,10 @@ def help_form(request):
 @login_required
 def get_help(request, help_id):
     try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    try:
         help = HelpRequest.objects.get(pk=help_id)
     except Exception as e:
         return render_to_response('helpdesknew/error_page.html', {'error_id': "7"}, context_instance=RequestContext(request))
@@ -61,7 +65,7 @@ def get_help(request, help_id):
         help_form = HelpForm(instance=help)
     except Exception as e:
         print e
-    return render_to_response('helpdesknew/help_view.html', {'help': help, 'form': help_form, 'help_response': help_response, 'comments': comments, 'answer': answer, 'images': images}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/help_view.html', {'help': help, 'form': help_form, 'help_response': help_response, 'comments': comments, 'answer': answer, 'images': images, 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -93,14 +97,22 @@ def submit_response(request, help_id):
 @login_required
 def get_pending(request):
     try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    try:
         requests_pending = HelpRequest.objects.exclude(status="('resolved', 'Resolved')").exclude(status="('closed', 'Closed')").order_by("-id")
     except Exception as e:
         return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
-    return render_to_response('helpdesknew/pending_help.html', {'form': requests_pending}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/pending_help.html', {'form': requests_pending, 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
 def get_resolved(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
     try:
         resolved = HelpRequest.objects.filter(status="('resolved', 'Resolved')").order_by('-id')
     except Exception as e:
@@ -109,11 +121,15 @@ def get_resolved(request):
         closed = HelpRequest.objects.filter(status="('closed', 'Closed')").order_by('-id')
     except Exception as e:
         return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
-    return render_to_response('helpdesknew/help_resolved.html', {'form': resolved, 'closed': closed}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/help_resolved.html', {'form': resolved, 'closed': closed, 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
 def user_help(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
     try:
         requests_from_user = HelpRequest.objects.filter(user=request.user)
     except Exception as e:
@@ -130,11 +146,15 @@ def user_help(request):
         more_answers = requests_from_user.filter(status="('closed', 'Closed')").order_by('-id')
     except Exception as e:
         return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
-    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user, 'responses': responses, 'answers': answers, "myuser": request.user, "more_answers": more_answers}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user, 'responses': responses, 'answers': answers, "myuser": request.user, "more_answers": more_answers, "projects": projects}, context_instance=RequestContext(request))
 
 
 @login_required
 def close_question(request, help_id):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
     try:
         help = HelpRequest.objects.get(pk=help_id)
     except Exception as e:
@@ -162,7 +182,7 @@ def close_question(request, help_id):
             return redirect('helpdesknew.views.get_help', help_id)
         else:
             return render_to_response('helpdesknew/error_page.html', {'error_id': '3'}, context_instance=RequestContext(request))
-    return render_to_response('helpdesknew/close_question.html', {'help': help}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/close_question.html', {'help': help, 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -206,6 +226,10 @@ def mark_the_input(request, response_id):
 @login_required
 def edit_question(request, help_id):
     helpdeez = HelpRequest.objects.get(pk=help_id)
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
     if request.user.id == helpdeez.user.id:
         if helpdeez.status == "('closed', 'Closed')":
             return render_to_response('helpdesknew/error_page.html', {'error_id': '5'}, context_instance=RequestContext(request))
@@ -228,7 +252,7 @@ def edit_question(request, help_id):
         else:
             help = HelpRequest.objects.get(pk=help_id)
             helpform = HelpForm(instance=help)
-        return render_to_response('helpdesknew/edit_question.html', {'help': help, 'form': helpform}, context_instance=RequestContext(request))
+        return render_to_response('helpdesknew/edit_question.html', {'help': help, 'form': helpform, 'projects': projects}, context_instance=RequestContext(request))
     else:
         return redirect('helpdesknew.views.get_help', help_id)
 
@@ -236,6 +260,10 @@ def edit_question(request, help_id):
 @login_required
 def edit_comment(request, response_id):
     respondeez = HelpResponse.objects.get(pk=response_id)
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
     if request.user.id == respondeez.user.id:
         if respondeez.value == "('answer', 'Answer')":
             return render_to_response('helpdesknew/error_page.html', {'error_id': '4'}, context_instance=RequestContext(request))
@@ -251,13 +279,17 @@ def edit_comment(request, response_id):
         else:
             comment = HelpResponse.objects.get(pk=response_id)
             comment_form = HelpFormResponse(instance=comment)
-        return render_to_response('helpdesknew/edit_comment.html', {'comment': comment, 'form': comment_form}, context_instance=RequestContext(request))
+        return render_to_response('helpdesknew/edit_comment.html', {'comment': comment, 'form': comment_form, 'projects': projects}, context_instance=RequestContext(request))
     else:
         return redirect('helpdesknew.views.get_help', respondeez.helprequest.id)
 
 
 @login_required
 def ack_answer(request, response_id):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
     answer = HelpResponse.objects.get(pk=response_id)
     if request.user.id == answer.helprequest.user.id:
         answer = HelpResponse.objects.get(pk=response_id)
@@ -275,6 +307,6 @@ def ack_answer(request, response_id):
             answer = HelpResponse.objects.get(pk=response_id)
             help = answer.helprequest
             helpform = AckForm(instance=help)
-        return render_to_response('helpdesknew/ack_answer.html', {'help': help, 'answer': answer, 'form': helpform}, context_instance=RequestContext(request))
+        return render_to_response('helpdesknew/ack_answer.html', {'help': help, 'answer': answer, 'form': helpform, 'projects': projects}, context_instance=RequestContext(request))
     else:
         return redirect('helpdesknew.views.get_help', answer.helprequest.id)
