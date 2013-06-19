@@ -9,11 +9,16 @@ from django.forms.models import inlineformset_factory
 
 from helpdesknew.forms import HelpForm, HelpFormResponse, ResponseFormValue, AckForm, HelpPhotoForm
 from helpdesknew.models import HelpRequest, HelpResponse, HelpImageFile
+from projects.models import Project
 
 
 @login_required
 def help_form(request):
     helpRequest = HelpRequest()
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
     if request.method == 'POST':
         if 'submit' in request.POST:
             helpForm = HelpForm(request.POST, instance=helpRequest)
@@ -30,7 +35,7 @@ def help_form(request):
                         return render_to-response('helpdesknew/error_page.html', {'error_id': "8"}, context_instance=RequestContext(request))
                 return redirect('helpdesknew.views.get_help', helpRequest.id)
     helpForm = HelpForm(instance=helpRequest)
-    return render_to_response('helpdesknew/help_form.html', {'form': helpForm}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/help_form.html', {'form': helpForm, 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
