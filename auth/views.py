@@ -97,6 +97,11 @@ def account_settings(request):
 
 
 def change_password(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+
     if request.method == "POST":
         try:
             form = PasswordChangeForm(user=request.user, data=request.POST)
@@ -107,16 +112,21 @@ def change_password(request):
                 except Exception, e:
                     print "Error saving form"
             else:
-                return render_to_response("registration/change_password.html", {'form': form}, context_instance=RequestContext(request))
+                return render_to_response("registration/change_password.html", {'form': form, "projects": projects}, context_instance=RequestContext(request))
         except Exception, e:
             print "Error validating password"
             print e
     else:
         form = EditAccountForm(SetPasswordForm)
-    return render_to_response("registration/change_password.html", {'form': form}, context_instance=RequestContext(request))
+    return render_to_response("registration/change_password.html", {'form': form, "projects": projects}, context_instance=RequestContext(request))
 
 
 def change_email(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+
     if request.method == "POST":
         try:
             form = ChangeEmailForm(data=request.POST)
@@ -136,7 +146,7 @@ def change_email(request):
             print e
     else:
         form = ChangeEmailForm()
-    return render_to_response("registration/change_email.html", {'form': form}, context_instance=RequestContext(request))
+    return render_to_response("registration/change_email.html", {'form': form, "projects": projects}, context_instance=RequestContext(request))
 
 
 def user_overview(request, user_id):
