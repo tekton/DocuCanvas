@@ -6,6 +6,7 @@ from customfields import *
 from django.forms.models import model_to_dict
 from newsfeed.models import *
 from tinymce.widgets import TinyMCE
+    
 
 '''
 Forms for submitting bug reports and suggestions
@@ -13,7 +14,7 @@ Forms for submitting bug reports and suggestions
 
 
 class IssueForm(forms.ModelForm):
-    description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
+    description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}), required=False)
     class Meta:
         model = Issue
         fields = ('project', 'summary', 'description')

@@ -393,7 +393,9 @@ def issue_form(request):
                 return redirect('issues.views.issue_overview', issue.id)
             else:
                 return render_to_response('issues/issue_form.html', {'form': form}, context_instance=RequestContext(request))
-
+        else:
+            print "form not valid"
+            print form.errors
     else:
         form = IssueForm()
         try:
