@@ -8,6 +8,7 @@
 	<title>Gadget</title>
 
 	<link rel="stylesheet" href="{% static 'theme/bootstrap/css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
 	{% block additional_head %}{% endblock %}
 	
 	<style>
@@ -207,7 +208,8 @@
 
 	{% block modalsincluded %}{% endblock %}
 	
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+  <script src="{% static 'scripts/jquery.min.js' %}"></script>
+  <script src="{% static 'scripts/jquery-ui.min.js' %}"></script>
 	<script src="{% static 'scripts/ajax_tools.js' %}"></script>
 	<script src="{% static 'theme/bootstrap/js/bootstrap.js' %}"></script>
     <script src="{% static 'theme/assets/js/tablesorter/jquery.tablesorter.js' %}"></script>

@@ -8,7 +8,7 @@ from models import *
 
 
 @login_required
-def edit_report(request, year=0, month=0, day=0):
+def edit_report(request, month=0, day=0, year=0):
     projects = Project.objects.all()
     if request.method == 'POST':
         form = ReportForm(request.POST)
@@ -51,7 +51,7 @@ def edit_report(request, year=0, month=0, day=0):
 
 
 @login_required
-def edit_global_report(request, year=0, month=0, day=0):
+def edit_global_report(request, month=0, day=0, year=0):
     projects = Project.objects.all()
     if request.method == 'POST':
         form = ReportForm(request.POST)
@@ -93,7 +93,7 @@ def edit_global_report(request, year=0, month=0, day=0):
 
 
 @login_required
-def view_reports(request, year=0, month=0, day=0):
+def view_reports(request, month=0, day=0, year=0):
     projects = Project.objects.all()
     d = date.today()
     if (year != 0):

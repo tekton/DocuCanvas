@@ -212,5 +212,13 @@ $('.wizard *:input').change(function(evt){
 			displayField.html(inputField.val());
 		}
 });
+
+$(function(){
+    $('#id_potential_end_date').datepicker();
+    $('#id_phase_planning_start').datepicker();
+    $('#id_phase_planning_end').datepicker();
+    $('#id_phase_research_start').datepicker();
+    $('#id_phase_research_end').datepicker();
+});
 // </script>
 {% endblock %}

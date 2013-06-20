@@ -38,3 +38,9 @@
     </form>
 
 {% endblock %}
+{% block additionaljs %}
+//<script>
+$(function(){
+    $('#id_desired_completion').datepicker();
+})
+{% endblock %}

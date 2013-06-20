@@ -1,35 +1,5 @@
-{% extends "base_full.html" %}
+{% extends "theme/default/base.html" %}
 {% load set_var %}
-
-{% block extra_head %}
-<link rel="stylesheet" type="text/css" href="/static/css/dashboard.css"/>
-<script type="text/javascript" src="/static/scripts/ajax_tools.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('a.assign_issue').asAjax(function(data) {
-            if ( data.success ) {
-                if ( data.assigned_to == "self" ) {
-                    $(this).text( "Unassign" );
-                    // alert( "Issue now assigned to you." );
-                }
-                else if ( data.assigned_to == "none" ) {
-                    $(this).text( "Take" );
-                    // alert( "Issue unassigned." );
-                }
-                else if ( data.assigned_to == "user" ) {
-                    $(this).text( "Take" );
-                    // alert( "Issue successfully assigned." );
-                }
-            }
-            else {
-                alert( "Assigning error: " + data.error );
-            }
-        }, function(xhr, status, e) { alert( "Server error: " + e ); });
-
-    });
-</script>
-
-{% endblock %}
 
 {% block context_nav %}
     <li><a href="issue/new">New Issue</a></li>
@@ -39,7 +9,7 @@
 
 <div class="dashboard_container_section">
     <h3>Unassigned Issues</h3>
-    <table class="dashboard_table">
+    <table class="table table-sortable">
         {% for issue in issues reversed %}
             {% if newest_unassigned != issue.created %}
                 {% set newest_unassigned = issue.created %}
@@ -57,4 +27,31 @@
     </table>
 </div>
 
+{% endblock %}
+
+{% block additionaljs %}
+    //<script>
+        $(document).ready(function() {
+            $('a.assign_issue').asAjax(function(data) {
+                if ( data.success ) {
+                    if ( data.assigned_to == "self" ) {
+                        $(this).text( "Unassign" );
+                        // alert( "Issue now assigned to you." );
+                    }
+                    else if ( data.assigned_to == "none" ) {
+                        $(this).text( "Take" );
+                        // alert( "Issue unassigned." );
+                    }
+                    else if ( data.assigned_to == "user" ) {
+                        $(this).text( "Take" );
+                        // alert( "Issue successfully assigned." );
+                    }
+                }
+                else {
+                    alert( "Assigning error: " + data.error );
+                }
+            }, function(xhr, status, e) { alert( "Server error: " + e ); });
+
+        });
+    //</script>
 {% endblock %}
