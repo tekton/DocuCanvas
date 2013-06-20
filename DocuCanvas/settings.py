@@ -151,6 +151,7 @@ INSTALLED_APPS = (
     'helpdesknew',
     'gapps',
     'tinymce',
+    'facebook',
  )
 
 # A sample logging configuration. The only tangible logging
