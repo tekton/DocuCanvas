@@ -316,7 +316,11 @@ s{% block container %}
 
 {% block spiffy_box_right %}
     <b>Issue Id:</b> {{issue.id}}<br>
-	<b>Assigned To:</b> <a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a><br/>
+    {% if issue.assigned_to.id %}
+		<b>Assigned To:</b> <a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a>}<br/>
+	{% else %}
+		<b>Assigned To:</b>{{issue.assigned_to}}<br/>
+	{% endif %}
 	<b>Meta Issue:</b> {{issue.meta_issues.title}}<br/>
 	<!--
 	<b>Project Name:</b> <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a><br/>
