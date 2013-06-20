@@ -131,7 +131,13 @@
 							<dd>{{issue.id}}</dd>
 
 						<dt>Assigned To:</dt>
-							<dd><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></dd>
+							<dd>
+								{% if issue.assigned_to.id %}
+								<a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a>
+								{% else %}
+								{{issue.assigned_to}}
+								{% endif %}
+							</dd>
 
 						<dt>Meta Issue:</dt>
 							<dd>{{issue.meta_issues.title}}</dd>
