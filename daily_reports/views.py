@@ -2,6 +2,7 @@ from datetime import date
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from forms import ReportForm
 from projects.models import Project
 from models import *
@@ -148,3 +149,13 @@ def index(request):
     projects = Project.objects.all()
     reports = UserDailyReport.objects.filter(user=request.user).order_by('-date')[:5]
     return render_to_response("daily_reports/report_index.html", {"reports": reports, "projects": projects, "page_type": "Report"}, context_instance=RequestContext(request))
+
+
+def view_reports_wip(request, year_start, month_start, day_start, year_end,  month_end, day_end):
+    date_range_start = str(year_start) + '-' + str(month_start) + '-' + str(day_start)
+    date_range_end = str(year_end) + '-' + str(month_end) + '-' + str(day_end)
+    print date_range_start
+    users = User.objects.all()
+    reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end])
+    
+    return render_to_response('daily_reports/reports_overview_wip.html', {'users': users, 'reports': reports}, context_instance=RequestContext(request))

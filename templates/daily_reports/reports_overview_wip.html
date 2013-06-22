@@ -1,0 +1,62 @@
+{% extends 'theme/default/base.html' %}
+{% block additional_head %}
+<style>
+.userDiv{
+	position: relative;
+	margin: 20px;
+}
+.userName{
+	position: relative;
+	display: inline-block;
+}
+.reportDiv{
+	position: relative;
+	display: inline-block;
+}
+.reportDate{
+	display: inline-block;
+}
+/* div[class^='reportView']{
+	padding: 10px;
+} */
+</style>
+{% endblock %}
+{% block container %}
+{% load set_var%}
+{% for user in users %}
+{% set username = user %}
+	<div class='userDiv'>
+		<div class='userName'>
+		{{user}}
+		</div>
+		<div class = 'reportDiv'>
+			{% for report in reports %}
+				{% if username == report.user %}
+				<div class='reportDate'>
+					<a href='#' onClick='expandReport("reportView_{{user}}_{{forloop.counter}}")'>{{report.date}}</a>
+				</div>
+				<div class='reportView_{{user}}_{{forloop.counter}}' style='display: none'>
+					{{report.description|safe}}<br />
+					{{report.created}}<br />
+					{{report.modified}}<br />
+				</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+{% endfor %}
+{% endblock %}
+{% block additionaljs %}
+//<script>
+function expandReport(div){
+	var divToExpand = "." + div;
+	console.log($(divToExpand).css('display'));
+	if($(divToExpand).css('display') == 'none'){
+		$(divToExpand).css('display', 'inline-block');
+	}else if($(divToExpand).css('display') == 'inline-block'){
+		$(divToExpand).css('display', 'none');
+	};
+	
+};
+//</script>
+{% endblock %}
