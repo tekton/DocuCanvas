@@ -2,30 +2,38 @@
 {% block additional_head %}
 <style>
 table{
-	border: solid thin black;
-	box-shadow: 2px 2px 2px #888888;
+	border: 1px solid #F2F2F2;
+	box-shadow: 0 1px 4px #5A5A5A;
+	width: 100%;
 }
 td{
-	text-align: center;
 	padding: 10px;
 }
 tr{
 	padding: 10px;
 }
+.user{
+	text-align: center;
+	width: 20%;
+}
 .reportDiv{
-	border: solid thin black;
-	box-shadow: 2px 2px 2px #888888;
+	border: 1px solid #F2F2F2;
+	box-shadow: 0 1px 4px #5A5A5A;
 	padding: 10px;
+	height: 300px;
+	width: 80%;
+	overflow: scroll;
+	overflow-x: hidden;
 }
 .reportDate{
+	background-color: #ddd;
 	text-align: left;
 }
 div[class^='reportView']{
 	padding: 5px;
 	padding-left: 30px;
 	margin-bottom:10px;
-	border: solid thin black;
-	box-shadow: 2px 2px 2px #888888;
+	width: 80%;
 }
 .dates{
 	text-align: left;
@@ -39,24 +47,22 @@ div[class^='reportView']{
 {% set username = user %}
 
 		<tr>
-			<td>
+			<td class='user'>
 		<!-- <div class='userName'> -->
 		{{user}}
 		<!-- </div> -->
-	</td>
+			</td>
 	<td>
 		<div class = 'reportDiv'>
 			{% for report in reports %}
 				{% if username == report.user %}
 				<div class='reportDate'>
 					<a href='#' onClick='expandReport("reportView_{{user}}_{{forloop.counter}}")'>{{report.date}}</a>
+					<b>Date Created:</b> {{report.created}}
+					<b>Date Modified:</b> {{report.modified}}
 				</div>
 				<div class='reportView_{{user}}_{{forloop.counter}}' style='display: none'>
 					{{report.description|safe}}<br />
-					<div class='dates'>
-						Date Created: {{report.created}}<br />
-						Date Modified: {{report.modified}}<br />
-					</div>
 				</div>
 				{% endif %}
 			{% endfor %}

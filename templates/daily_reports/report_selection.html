@@ -9,7 +9,7 @@
         <label id='timeframe_start_label' style='display: inline-block; width: 200px; margin-bottom: 5px; margin-right: 5px; vertical-align: top'>Date:</label> <input type='text' id='timeframe_start' style='display: inline-block; margin-bottom: 5px; margin-right: 5px; vertical-align: top'/><br />
         <label id='timeframe_stop_label' style='display: none; width: 200px; margin-bottom: 5px; margin-right: 5px; vertical-align: top'>Range End:</label>
         <input id="timeframe_stop" type="text" name="timeframe_stop" style='display: none; margin-bottom: 5px; margin-right: 5px; vertical-align: top'>
-        <input type="submit" value="Submit" style='display:block' onClick='goToForm()'/>
+        <input type="button" value="Submit" style='display:block' onClick='goToForm()'/>
     </form>
 </div>
 {% endblock %}
@@ -37,9 +37,9 @@ $('.datePicker').change(function(){
 
 function goToForm(){
     if($('#timeframe_stop').val()){
-        window.open('/reports/view_all/'+$('#timeframe_start').val()+'/'+$('#timeframe_stop').val())
+        window.open('/reports/view_all/'+$('#timeframe_start').val()+'/'+$('#timeframe_stop').val(), '_self')
     }else{
-        window.open('/reports/view_all/'+$('#timeframe_start').val()+'/'+$('#timeframe_start').val())
+        window.open('/reports/view_all/'+$('#timeframe_start').val()+'/'+$('#timeframe_start').val(), '_self')
     };
 };
 

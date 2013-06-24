@@ -24,7 +24,7 @@
 		<input type="hidden" id="id_date" value="{{date|date:"Y-m-d"}}"/>
 		<br/>
 		{% if globalReport %}
-			Global Report: {{globalReport.description|striptags}}</br>
+			Global Report: {{globalReport.description|safe}}</br>
 			<br/>
 		{% else %}
 			<em>No global report for this date.</em><br/>
@@ -32,7 +32,7 @@
 		{% for report in reports %}
 		<div class="dashboard_container_section">
 			<div style="padding: 5px; background-color: #ddd; width: 100%; margin: 0;">{{report.user.username}} <!--({{report.user.first_name}} {{report.user.last_name}})--></div>
-			<div>{{report.description|striptags}}</div>
+			<div>{{report.description|safe}}</div>
 		</div>
 		{% empty %}
 			<div>There are no reports for this date.</div></div>
