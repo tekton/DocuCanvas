@@ -1,0 +1,224 @@
+{% extends "theme/default/base.html" %}
+{% load set_var %}
+
+{% block context_nav %}
+{% include 'theme/_includes/contextnav-default.html' %}
+{% endblock%}
+
+{% block container %}
+	<style>
+		.wizard-card {display:none;}
+		.wizard-card.active {display:block;}
+		/*
+		form.form-horizontal .control-group .control-label:after {
+			content: ':';
+		}
+		*/
+		form.form-horizontal .control-group .controls input,
+		form.form-horizontal .control-group .controls textarea {
+			width: 98%;
+		}
+		form.form-horizontal .control-displayfield .controls {
+			padding-top: 5px;
+		}
+	</style>
+	<form action="{% url 'projects.views.project_form' %}" method="POST" enctype="multipart/form-data" class="form-horizontal" autocomplete="off">
+		{% csrf_token %}
+		<div class="hide">
+			<!-- hidden form fields from wizard
+				need to be submitted, even if blank, to validate form servier-side -->
+			{{form.slug}}
+			{{form.priority}}
+			{{form.status}}
+			{{form.logo}}
+			{{form.created}}
+			{{form.modified}}
+			{{form.repository_url}}
+			{{form.deployment_server}}
+			{{form.deployment_url}}
+			{{form.code_name}}
+		</div>
+		<div id="project-wizard" class="wizard">
+
+			<div class="wizard-inner">
+				<section class="wizard-card active">
+					<div class="wizard-cardhelp">
+						<p>To create a new project, first provide a project name, description, and the current potential end date.</p>
+					</div>
+					<fieldset>
+						<legend>Step 1</legend>
+						{% set field = form.name %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% set field = form.description %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% set field = form.potential_end_date %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+					</fieldset>
+				</section>
+
+				<section class="wizard-card">
+					<div class="wizard-cardhelp">
+						<p>Now specify the purpose (scope) of the project and why it is needed (business case)</p>
+					</div>
+					<fieldset>
+						<legend>Step 2</legend>
+						{% set field = form.scope %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% set field = form.business_case %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+					</fieldset>
+				</section>
+
+				<section class="wizard-card">
+					<div class="wizard-cardhelp">
+						<p>Define the core members of this project</p>
+					</div>
+					<fieldset>
+						<legend>Step 3</legend>
+						{% set field = form.product_owner %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% set field = form.project_manager %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% set field = form.lead_developer %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+					</fieldset>
+				</section>
+
+				<section class="wizard-card">
+					<div class="wizard-cardhelp">
+						<p>Define the current phase the project is currently in. Also include the dates for the planning and research states</p>
+					</div>
+					<fieldset>
+						<legend>Step 4</legend>
+						{% set field = form.current_phase %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% set field = form.phase_planning_start %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% set field = form.phase_planning_end %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% set field = form.phase_research_start %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% set field = form.phase_research_end %}
+						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+					</fieldset>
+				</section>
+
+				<section class="wizard-card">
+					<div class="wizard-chardhelp">
+						<p>Confirm all the information provided is correct and hit submit</p>
+					</div>
+					<fieldset>
+						<legend>Final Step: Confirmation</legend>
+						{% set field = form.name %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.description %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.potential_end_date %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.scope %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.business_case %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.product_owner %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.project_manager %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.lead_developer %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.current_phase %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.phase_planning_start %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.phase_planning_end %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.phase_research_start %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.phase_research_end %}
+						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+					</fieldset>
+				</section>
+			</div>
+
+
+
+			<div class="form-actions">
+				<button type="button" class="btn disabled" id="wizard-prevbtn">Previous</button>
+				<button type="button" class="btn" id="wizard-nextbtn">Next</button>
+
+				<button id="wizard-submitbtn" type="submit" class="btn btn-primary pull-right hide">Submit</button>
+			</div>
+		</div>
+	</form>
+{% endblock %}
+
+{% block additionaljs %}
+// <script>
+var wizardPrev = $('#wizard-prevbtn');
+var wizardNext = $('#wizard-nextbtn');
+
+wizardPrev.click(function(evt){
+	evt.preventDefault();
+	
+	var activeCard = $('.wizard .wizard-inner .wizard-card.active'),
+		prevCard = activeCard.prev(),
+		nextCard = activeCard.next();
+
+	if (prevCard.length != 0) {
+		activeCard.removeClass('active');
+		prevCard.addClass('active');
+
+		wizardNext.removeClass('disabled');
+
+		if ( prevCard.prev().length == 0 ) {
+			$(this).addClass('disabled');
+		}
+	}
+
+	$('#wizard-submitbtn').hide();
+});
+
+wizardNext.click(function(evt){
+	evt.preventDefault();
+
+	var activeCard = $('.wizard-card.active'),
+		prevCard = activeCard.prev(),
+		nextCard = activeCard.next();
+
+	if (nextCard.length != 0) {
+		activeCard.removeClass('active');
+		nextCard.addClass('active');
+
+		wizardPrev.removeClass('disabled');
+
+		if ( nextCard.next().length == 0 ) {
+			$(this).addClass('disabled');
+			$('#wizard-submitbtn').show();
+		}
+	}
+});
+
+$('.wizard *:input').change(function(evt){
+	var inputField = $(evt.target),
+		displayField = $('#wizard-confirm-' + inputField.attr('id')),
+		selectedOptions = [];
+
+		if ( inputField.prop('tagName').toLowerCase() == 'select') {
+			inputField.find('option:selected').each(function(){
+				selectedOptions.push($(this).text());
+			});
+			displayField.html(selectedOptions.join(', '));
+		}
+		else {
+			displayField.html(inputField.val());
+		}
+});
+
+$(function(){
+    $('#id_potential_end_date').datepicker();
+    $('#id_phase_planning_start').datepicker();
+    $('#id_phase_planning_end').datepicker();
+    $('#id_phase_research_start').datepicker();
+    $('#id_phase_research_end').datepicker();
+});
+// </script>
+{% endblock %}

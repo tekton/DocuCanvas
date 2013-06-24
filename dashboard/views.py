@@ -47,7 +47,7 @@ def home(request):
         print e
         notifications = None
     #subscribed = SubscriptionToIssue.objects.select_related().filter(user=request.user)
-    return render_to_response("theme/default/dashboard/dashboard.html", {"issues": issues, "subscribed": subscribed,
+    return render_to_response("dashboard/dashboard.html", {"issues": issues, "subscribed": subscribed,
             "projects": projects, "pins": pins, "newsfeeds": newsfeeds, "notifications": notification_recipients,
             "num_notifications": num_notifications, "page_type": "Dashboard", "page_value": "Overview",
             "navIndicator": 'dashboard'}, context_instance=RequestContext(request))

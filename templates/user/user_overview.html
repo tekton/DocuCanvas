@@ -2,231 +2,235 @@
 {% load set_var %}
 
 {% block context_nav %}
-    <li><a href="/">Dashboard</a></li>
-    <li><a href="/accounts/account_settings">Account Settings</a></li>
+{% include "theme/_includes/contextnav-default.html" %}
 {% endblock%}
 
-{% block extra_head%}
-
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#blank_count').click(function(){
-                $('.tbl-project-blank-count').fadeToggle('slow', function(){});
-            });
-            $('#active_count').click(function(){
-                $('.tbl-project-active-count').fadeToggle('slow', function(){});
-            });
-            $('#not_a_bug_count').click(function(){
-                $('.tbl-project-not-a-bug-count').fadeToggle('slow', function(){});
-            });
-            $('#wont_fix_count').click(function(){
-                $('.tbl-project-wont-fix-count').fadeToggle('slow', function(){});
-            });
-            $('#duplicate_count').click(function(){
-                $('.tbl-project-duplicate-count').fadeToggle('slow', function(){});
-            });
-            $('#fixed_count').click(function(){
-                $('.tbl-project-fixed-count').fadeToggle('slow', function(){});
-            });
-            $('#retest_count').click(function(){
-                $('.tbl-project-retest-count').fadeToggle('slow', function(){});
-            });
-            $('#unverified_count').click(function(){
-                $('.tbl-project-unverified-count').fadeToggle('slow', function(){});
-            });
-
-
-        });
-
-        function toggleProjectAssignmentCount(project_name){
-            var class_string = '.' + project_name
-            $(class_string).fadeToggle('slow', function(){});
-        }
-    </script>
-{% endblock %}
-
 {% block container %}
-    <b>Email:</b> {{gadget_user.email}}<br><br>
+    {% regroup issues by project as issuesGroupedByProject %}
+    {% regroup issues by get_status_display as issuesGroupedByStatus %}
 
-    <b>Status Changes</b></br>
-    <table class="tbl-generic">
-        {% for status_update in status_updates%}
-            {% if newest_status_timestamp != status_update.time_stamp %}
-                {% set newest_status_timestamp = status_update.time_stamp%}
-                    <!--<tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{status_update.time_stamp|date:'M-d-Y'}}</td></tr>-->
-                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{newest_status_timestamp}}</td></tr>
-            {% endif %}
-            <tr>
-                <td title="project"><a href="/project/{{status_update.issue.project.id}}">{{status_update.issue.project}}</a></td>
-                <td title="issue"><a href="/issue/{{status_update.issue.id}}">{{status_update.issue.summary}}</a></td>
-                <td title="change type">{{status_update.new_status}}</td>
-            </tr>
-            
-        {% endfor %}
-    </table><br><br>
+    <p><strong>Email:</strong> {{gadget_user.email}}</p>
 
-    <b>Assigned To:</b><br>
-    <table class="tbl-generic">
-        {% for issue in issues %}
-            {% if newest_project != issue.project %}
-                {% set newest_project = issue.project%}
-                <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{issue.project.name}}</td></tr>
-            {% endif %}
-
-            <tr>
-                <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
-            </tr>
-        {% endfor %}
-    </table><br>
-
-    <b>Issue Count</b><br><br>
-    <table class="tbl-generic">
-        <tr>
-            <th>Status</th>
-            <th>Count</th>
-        </tr>
-
-        <tr>
-            <td>None</td>
-            <td id="blank_count" class="project-status-count">{{blank_count}}</td>
-        </tr>
-            {% for issue in blank_issues%}
-                <tr class="tbl-project-status-count tbl-project-blank-count">
-                    <td>
-                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                    </td>
-                    <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        <tr>
-            <td>Not a Bug</td>
-            <td id="not_a_bug_count" class="project-status-count">{{not_a_bug_count}}</td>
-        </tr>
-            {% for issue in not_a_bug_issues%}
-                <tr class="tbl-project-status-count tbl-project-not-a-bug-count">
-                    <td>
-                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                    </td>
-                    <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                    </td>
-                </tr>
-            {% endfor %}
-
-        <tr>
-            <td>Won't Fix</td>
-            <td id="wont_fix_count" class="project-status-count">{{wont_fix_count}}</td>
-        </tr>
-            {% for issue in wont_fix_issues %}
-                <tr class="tbl-project-status-count tbl-project-wont-fix-count">
-                    <td>
-                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                    </td>
-                    <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                    </td>
-                </tr>
-            {% endfor %}
-
-        <tr>
-            <td>Duplicate</td>
-            <td id="duplicate_count" class="project-status-count">{{duplicate_count}}</td>
-        </tr>
-                {% for issue in duplicate_issues %}
-                    <tr class=" tbl-project-status-count tbl-project-duplicate-count">
-                        <td>
-                            <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                        </td>
-                        <td>
-                            <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-
-        <tr>
-            <td>Active</td>
-            <td id="active_count" class="project-status-count">{{active_count}}</td>
-        </tr>
-
-            {% for issue in active_issues %}
-                <tr class="tbl-project-status-count tbl-project-active-count">
-                    <td>
-                            <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                    </td>
-                    <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                    </td>
-                </tr>
-            {% endfor %}
-
-        <tr>
-            <td>Fixed</td>
-            <td id="fixed_count" class="project-status-count">{{fixed_count}}</td>
-        </tr>
-            {% for issue in fixed_issues%}
-                <tr class="tbl-project-status-count  tbl-project-fixed-count">
-                    <td>
-                            <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                    </td>
-                    <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                    </td>
-                </tr>
-            {% endfor %}
-
-        <tr>
-            <td>Retest</td>
-            <td id="retest_count" class="project-status-count">{{retest_count}}</td>
-        </tr>
-            {% for issue in retest_issues%}
-                <tr class="tbl-project-status-count  tbl-project-retest-count">
-                    <td>
-                            <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                    </td>
-                    <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        <tr>
-            <td>Unverified</td>
-            <td id="unverified_count" class="project-status-count">{{unverified_count}}</td>
-        </tr>
-            {% for issue in unverified_issues %}
-                <tr class="tbl-project-status-count  tbl-project-unverified-count">
-                    <td>
-                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
-                    </td>
-                    <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
-                    </td>
-                    </tr>
-            {% endfor %}
-    </table>
-
-    <b>Assignment Count</b><br><br>
-    <table class="tbl-generic">
-       {% for k,v in project_dict.items%}
-            <tr>
-                <td>{{k}}</td>
-                {% for key, value in v.items%}
-                    {% if key == k %}
-                        <td class="project-assignment-count" id="{{k}}" onClick="toggleProjectAssignmentCount($(this).attr('id'))">{{value}}</td>
-                    {% endif %}
-                {% endfor %}
-            </tr>
-
-            {% for key,value in v.items%}
-                {% if key != k%}
-                <tr class="tbl-project-status-count tbl-project-assignment-issue {{k}}" >
-                    <td><a href="/issue/{{key}}">{{value}}</a></td>
-                </tr>
+    <section class="well">
+        <header>
+            <h3>Status Changes</h3>
+        </header>
+        <table class="table">
+            {% for status_update in status_updates%}
+                {% if newest_status_timestamp != status_update.time_stamp %}
+                    {% set newest_status_timestamp = status_update.time_stamp%}
+                        <!--<tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{status_update.time_stamp|date:'M-d-Y'}}</td></tr>-->
+                        <tr><td colspan="4">{{newest_status_timestamp}}</td></tr>
                 {% endif %}
+                <tr>
+                    <td><a href="/project/{{status_update.issue.project.id}}">{{status_update.issue.project}}</a></td>
+                    <td><a href="/issue/{{status_update.issue.id}}">{{status_update.issue.summary}}</a></td>
+                    <td>{{status_update.new_status}}</td>
+                </tr>
             {% endfor %}
-        
-       {% endfor %}
-    </table>
+        </table>
+    </section>
 
+    <div class="row">
+        <section class="well span6">
+            <header>
+                <h3>By Project</h3>
+            </header>
+            <div id="projectchart"></div>
+            <div id="projectbreakdown">
+                {% for issuegroup in issuesGroupedByProject %}
+                <table id="projectbreakdown-table-{{issuegroup.grouper|slugify}}" class="table hide">
+                    <caption>
+                        Project: {{issuegroup.grouper}}
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th class="span4">Summary</th>
+                            <th class="span2">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in issuegroup.list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.summary|escape}}">
+                                    {{issue.summary|truncatechars:31}}
+                                </a>
+                            </td>
+                            <td>
+                                {{issue.get_status_display|truncatechars:16}}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="well span6">
+            <header>
+                <h3>By Status</h3>
+            </header>
+            <div id="statuschart"></div>
+            <div id="statusbreakdown">
+                {% for issuegroup in issuesGroupedByStatus %}
+                <table id="statusbreakdown-table-{{issuegroup.grouper|slugify}}" class="table hide">
+                    <caption>
+                        Status: {{issuegroup.grouper}}
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th class="span4">Summary</th>
+                            <th class="span2">Project</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in issuegroup.list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.summary|escape}}">
+                                    {{issue.summary|truncatechars:31}}
+                                </a>
+                            </td>
+                            <td>
+                                {{issue.project|truncatechars:16}}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+    <script src="//cdn.sencha.com/ext/gpl/4.2.0/ext-all.js"></script>
+    <script>
+        var projectStore, statusStore, projectChart, statusChart, projectPanel, statusPanel;
+
+        Ext.onReady(function(){
+            function seriesClickHandler(idPrefix){
+                return function(slice, eOpts){
+                    var record = slice.storeItem,
+                        name = record.get('name'),
+                        el, parent, tables;
+
+                    idSuffix = name.replace(/[^a-zA-Z\d\s]/g,'').replace(/\s/g,'-').replace(/-+/g,'-').trim().toLowerCase();
+
+                    parent = $('#'+idPrefix);
+                    el = $('#'+idPrefix+'-table-'+idSuffix);
+
+                    if (!el.is(':visible')) {
+                        parent.find('.table').hide();
+                        el.fadeIn();
+                    }
+                };
+            }
+
+            projectStore = new Ext.data.JsonStore({
+                fields: ['name','count'],
+                data: [
+                {% autoescape off %}
+                {% for issuegroup in issuesGroupedByProject %}
+                    {
+                        name: '{{issuegroup.grouper|escapejs}}',
+                        count: {{issuegroup.list|length}}
+                    }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+                {% endautoescape %}
+                ]
+            });
+
+            statusStore = new Ext.data.JsonStore({
+                fields: ['name','count'],
+                data:  [
+                {% autoescape off %}
+                {% for issuegroup in issuesGroupedByStatus %}
+                    {
+                        name: '{{issuegroup.grouper|escapejs}}',
+                        count: {{issuegroup.list|length}}
+                    }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+                {% endautoescape %}
+                ]
+            });
+
+            projectChart = new Ext.chart.Chart({
+                animate: true,
+                store: projectStore,
+                shadow: true,
+                legend: false,
+                insetPadding: 20,
+                series: [
+                    {
+                        type: 'pie',
+                        field: 'count',
+                        showInLegend: true,
+                        highlight: false,
+                        donut: false,
+                        label: {
+                            field: 'name',
+                            display: 'rotate',
+                            contrast: true,
+                            font: '14px Arial'
+                        },
+                        listeners: {
+                            itemmousedown: seriesClickHandler('projectbreakdown')
+                        }
+                    }
+                ]
+            });
+
+            statusChart = new Ext.chart.Chart({
+                animate: true,
+                store: statusStore,
+                shadow: true,
+                legend: false,
+                insetPadding: 20,
+                axes: [
+                    {
+                        type: 'Numeric',
+                        position: 'left',
+                        fields: 'count',
+                        grid: true,
+                        minimum: 0
+                    },
+                    {
+                        type: 'Category',
+                        position: 'bottom',
+                        fields: 'name'
+                    }
+                ],
+                series: [
+                    {
+                        type: 'column',
+                        axis: 'left',
+                        hightlight: false,
+                        xField: 'name',
+                        yField: 'count',
+                        listeners: {
+                            itemmousedown: seriesClickHandler('statusbreakdown')
+                        }
+                    }
+                ]
+            });
+
+            projectPanel = new Ext.Panel({
+                width: 530,
+                height: 400,
+                layout: 'fit',
+                items: projectChart,
+                renderTo: Ext.get('projectchart')
+            })
+
+            statusPanel = new Ext.Panel({
+                width: 530,
+                height: 400,
+                layout: 'fit',
+                items: statusChart,
+                renderTo: Ext.get('statuschart')
+            })
+        });
+    </script>
 {% endblock %}

@@ -1,25 +1,24 @@
-{% extends "base.html" %}
+{% extends "theme/default/base.html" %}
 
 {% block context_nav %}
-    <a href="/issue/new">New Issue</a>
-    <a href="/issue/unassigned">Unassigned Issues</a>
-    <a href="/food/all">Food Requests</a>
-    <a href="/reports/edit">Daily Reports</a>
-    <a href="/help/user/{{user.id}}">Help</a>
+{% include "theme/_includes/contextnav-default.html" %}
 {% endblock %}
 
 {% block container %}
-
-	<table class="tbl-generic tbl-overview">
-		<tr class="tbl-rowheader">
-			<td>Name</td>
-			<td>Owner</td>
-		</tr>
+	<table class="table">
+		<thead>
+			<tr>
+				<td>Name</td>
+				<td>Owner</td>
+			</tr>
+		</thead>
+		<tbody>
 		{% for project in projects %}
 			<tr>
 				<td><a href="/project/{{project.id}}">{{project.name}}</a></td>
 				<td>{%if project.product_owner %}<a href="/auth/user/{{project.product_owner.id}}">{{project.product_owner}}</a> {% else %}{{project.product_owner}}{% endif %}</td>
 			</tr>
 		{% endfor%}
+		</tbody>
 	</table>
 {% endblock %}
