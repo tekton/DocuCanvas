@@ -1,0 +1,51 @@
+{% extends 'theme/default/base.html' %}
+{% block context_nav %}
+<li><a href="/reports/edit">Daily Reports</a></li>
+<li><a href="/reports/view">View Daily Reports</a></li>
+{% endblock %}
+{% block container %}
+
+<div id = "container">
+    <form action="" method="post" enctype="multipart/form-data" id="report_selection_form">
+        {% csrf_token %}
+        <input type = 'radio' class = 'datePicker' name = 'timeFrameSelection' value = 'Date' checked> Date
+        <input type = 'radio' class = 'datePicker' name = 'timeFrameSelection' value = 'Range'> Range<br />
+        <label id='timeframe_start_label' style='display: inline-block; width: 200px; margin-bottom: 5px; margin-right: 5px; vertical-align: top'>Date:</label> <input type='text' id='timeframe_start' style='display: inline-block; margin-bottom: 5px; margin-right: 5px; vertical-align: top'/><br />
+        <label id='timeframe_stop_label' style='display: none; width: 200px; margin-bottom: 5px; margin-right: 5px; vertical-align: top'>Range End:</label>
+        <input id="timeframe_stop" type="text" name="timeframe_stop" style='display: none; margin-bottom: 5px; margin-right: 5px; vertical-align: top'>
+        <input type="button" value="Submit" style='display:block' onClick='goToForm()'/>
+    </form>
+</div>
+{% endblock %}
+{% block additionaljs %}
+//<script>
+$(function(){
+    $('#timeframe_start').datepicker({dateFormat: 'yy/mm/dd'});
+    $('#timeframe_stop').datepicker({dateFormat: 'yy/mm/dd'});
+});
+$('.datePicker').change(function(){
+    var radioSelected = $('input[name=timeFrameSelection]:checked', '#report_selection_form').val();
+    console.log(radioSelected);
+    if(radioSelected == 'Date'){
+        $('#timeframe_stop').css('display', 'none');
+        $('#timeframe_stop_label').css('display', 'none')
+        $('#timeframe_start_label').text('Date')
+    }
+    else if(radioSelected == 'Range'){
+        $('#timeframe_stop').css('display', 'inline-block');
+        $('#timeframe_stop_label').css('display', 'inline-block')
+        $('#timeframe_start_label').text('Range Start')
+    };
+    console.log($('#timeframe_start').val());
+});
+
+function goToForm(){
+    if($('#timeframe_stop').val()){
+        window.open('/reports/view_all/'+$('#timeframe_start').val()+'/'+$('#timeframe_stop').val(), '_self')
+    }else{
+        window.open('/reports/view_all/'+$('#timeframe_start').val()+'/'+$('#timeframe_start').val(), '_self')
+    };
+};
+
+//</script>
+{% endblock %}

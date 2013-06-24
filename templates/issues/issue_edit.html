@@ -25,10 +25,17 @@
 {% endblock %}
 
 {% block additionaljs %}
-
+//<script>
+    $(function(){
+        $('input[name="projected_start"]').datepicker();
+        $('input[name="projected_end"]').datepicker();
+        $('input[name="actual_start"]').datepicker();
+        $('input[name="actual_end"]').datepicker();
+        $('input[name="due_date"]').datepicker();
+        $('input[name="date_reported"]').datepicker();
+    });
         $("#button").click(function(e) {
             var x = $('#something').val();
             alert(x);
         });
-
 {% endblock %}

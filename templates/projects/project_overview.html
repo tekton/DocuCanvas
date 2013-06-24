@@ -1,98 +1,170 @@
-{% extends "base_issues.html" %}
+{% extends "theme/default/base.html" %}
 
 {% block context_nav %}
-	<a href="/issue/new/{{project_O.id}}">New Issue</a>
-	<a href="/issue/meta/new">New Meta Issue</a>
-	<a href="/issue/new/{{project_O.id}}">New Risk</a>
-	<a href="/checklist/new/{{project_O.id}}">New Checklist</a>
-	<a href="/project/{{project_O.id}}/stats">Report</a>
-	<a href="/checklist/project/{{project_O.id}}">Checklists</a>
-	<a href="/project/{{project_O.id}}/edit">Edit Project</a>
+	<li class="nav-header">New</li>
+	<li><a href="/issue/new/{{project_O.id}}">Issue</a></li>
+	<li><a href="/issue/meta/new">Meta Issue</a></li>
+	<li><a href="/issue/new/{{project_O.id}}">Risk</a></li>
+	<li><a href="/checklist/new/{{project_O.id}}">Checklist</a></li>
+	<li class="nav-header">Lists</li>
+	<li><a href="/project/{{project_O.id}}/stats">Report</a></li>
+	<li><a href="/checklist/project/{{project_O.id}}">Checklists</a></li>
+	<li class="divider"></li>
+	<li><a href="/project/{{project_O.id}}/edit">Edit Project</a></li>
 {% endblock%}
 
 {% block container %}
-	<table class="tbl-generic tbl-overview">
-		<tr class="tbl-rowheader">
-			<td class="tbl-fauxth">Scope</td>
-		</tr>
-		<tr>
-			<td class="tbl-overview-content"></td>
-		</tr>
-		<tr class="tbl-rowheader">
-			<td class="tbl-fauxth">Description</td>
-		</tr>
-		<tr>
-			<td class="tbl-overview-content"></td>
-		</tr>
-		<tr class="tbl-rowheader">
-			<td class="tbl-fauxth">Business Case</td>
-		</tr>
-		<tr>
-			<td class="tbl-overview-content"></td>
-		</tr>
-	</table>
-{% endblock %}
+	<article class="row">
+		<div id="project-column-main" class="span9 metainfo-maincolumn">
+			<div id="project-details" class="well">
+				<section class="media">
+					<div class="media-body">
+						<header>
+							<h3 class="media-header">Scope</h3>
+						</header>
+						{{project_O.scope}}
+					</div>
+				</section>
+				<section class="media">
+					<div class="media-body">
+						<header>
+							<h3 class="media-header">Description</h3>
+						</header>
+						{{project_O.description}}
+					</div>
+				</section>
+				<section class="media">
+					<div class="media-body">
+						<header>
+							<h3 class="media-header">Business Case</h3>
+						</header>
+						{{project_O.business_case}}
+					</div>
+				</section>
+			</div>
 
-{% block spiffy_box_right %}	
-	<b>Status:</b> {{project_O.status}}<br/>
-	<b>Product Owner:</b> <a href="/auth/user/{{project_O.product_owner.id}}">{{project_O.product_owner}}</a><br/>
-	<b>Project Manager:</b> <a href="/auth/user/{{project_O.product_manager.id}}">{{project_O.project_manager}}</a><br/>
-	<b>Lead Developer:</b> <a href="/auth/user/{{project_O.lead_developer.id}}">{{project_O.lead_developer}}</a><br/>
-	<b>Priority:</b> {{project_O.priority}}<br/>
-	<b>Slug:</b> {{project_O.slug}}<br/>
-	<b>Logo:</b> {{project_O.logo}}<br/>
-	<b>Potential End Date:</b> {{project_O.potential_end_date}}<br/>
-	<b>Current Phase:</b> {{project_O.current_phase}}<br/>
-	<b>Phase Planning Start:</b> {{project_O.phase_planning_start}}<br/>
-	<b>Phase Planning End:</b> {{project_O.phase_planning_end}}
-{% endblock %}
+			<div id="project-issues" class="well">
+				<section class="media">
+					<div class="media-body">
+						<header>
+							<h3 class="media-header">Meta Issues</h3>
+						</header>
+						<table class="table">
+							<thead>
+						        <tr>
+						            <th>Title</th>
+						            <th>Type</th>
+						            <th>Stats</th>
+						        </tr>
+						    </thead>
+						    <tbody>
+						        {% for meta in metas %}<tr>
+						            <td><a href="/issue/meta/{{ meta.id }}/edit">{{ meta.title }}</a></td>
+						            <td>{{ meta.mi_type }}</td>
+						            <td><a href="/issue/meta/{{meta.id}}/stats">Stats</a></td>
+						        </tr>{% empty %}<tr><td><em>No meta-issues for this project.</em></td></tr>
+						        {% endfor %}
+						    </tbody>
+					    </table>
+					</div>
+				</section>
 
-{% block container_bottom_clear %}
-    <h2>Meta Issues</h2>
-    <table class="tbl-generic tbl-overview">
-        <tr class="tbl-rowheader">
-            <th>Title</th>
-            <th>Type</th>
-            <th>Stats</th>
-        </tr>
-        {% for meta in metas %}<tr>
-            <td><a href="/issue/meta/{{ meta.id }}/edit">{{ meta.title }}</a></td>
-            <td>{{ meta.mi_type }}</td>
-            <td><a href="/issue/meta/{{meta.id}}/stats">Stats</a></td>
-        </tr>{% empty %}<tr><td><em>No meta-issues for this project.</em></td></tr>
-        {% endfor %}
-    </table>
+				<section class="media">
+					<div class="media-body">
+						<header>
+							<h3 class="media-header">Issues</h3>
+						</header>
+						<table class="table">
+							<caption>
+								Incomplete
+							</caption>
+							<thead>
+								<tr>
+									<th>Summary</th>
+									<th>Status</th>
+									<th>Assigned To</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for issue in incomplete_issues%}
+								<tr>
+									<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
+									<td>{{issue.status}}</td>
+									<td>{{issue.assigned_to}}</td>
+								</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+						<table class="table">
+							<caption>
+								Completed
+							</caption>
+							<thead>
+								<tr>
+									<th>Summary</th>
+									<th>Status</th>
+									<th>Assigned To</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for issue in fixed_issues%}
+								<tr>
+									<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
+									<td>{{issue.status}}</td>
+									<td>{{issue.assigned_to}}</td>
+								</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</section>
+			</div>
+		</div>
 
-	<h2>Issues</h2>
-
-	<table class="tbl-issues tbl-generic">
-		<tr class="tbl-rowheader">
-			<th class="tbl-issues-summary">Summary</th>
-			<th class="tbl-issues-status">Status</th>
-			<th class="tbl-issues-assigned_to">Assigned To</th>
-		</tr>
-	{% for issue in incomplete_issues%}
-		<tr>
-			<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
-			<td>{{issue.status}}</td>
-			<td>{{issue.assigned_to}}</td>
-		</tr>
-	{% endfor %}
-	</table>
-
-	<table class="tbl-issues tbl-generic">
-		<tr class="tbl-rowheader">
-			<th class="tbl-issues-summary">Completed Issues</th>
-			<th class="tbl-issues-status">Status</th>
-			<th class="tbl-issues-assigned_to">Assigned To</th>
-		</tr>
-	{% for issue in fixed_issues%}
-		<tr>
-			<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
-			<td>{{issue.status}}</td>
-			<td>{{issue.assigned_to}}</td>
-		</tr>
-	{% endfor %}
-	</table>
-
+		<div id="project-column-aside" class="span3 metainfo-asidecolumn">
+			<aside id="project-metainfo" class="well metainfo metainfo-show">
+				<div class="pull-right">
+					<button id="metainfo-toggle" class="btn btn-mini" type="button"><i class="icon-resize-small"></i></button>
+				</div>
+				<div id="project-metainfo-content" class="metainfo-content">
+					<dl>
+						<dt>Status:</dt>
+							<dd>{{project_O.status}}</dd>
+						<dt>Product Owner:</dt>
+						{% if project_O.product_owner.id %}
+							<dd><a href="/auth/user/{{project_O.product_owner.id}}">{{project_O.product_owner}}</a></dd>
+						{% else %}
+							<dd>{{project_O.product_owner}}</dd>
+						{% endif %}
+						<dt>Project Manager:</dt>
+						{% if project_O.project_manager.id %}
+							<dd><a href="/auth/user/{{project_O.product_manager.id}}">{{project_O.project_manager}}</a></dd>
+						{% else %}
+							<dd>{{project_O.project_manager}}</dd>
+						{% endif %}	
+						<dt>Lead Developer:</dt>
+						{% if project_O.lead_developer.id %}
+							<dd><a href="/auth/user/{{project_O.lead_developer.id}}">{{project_O.lead_developer}}</a></dd>
+						{% else %}
+							<dd>{{project_O.lead_developer}}</dd>
+						{% endif %}
+						<dt>Priority:</dt>
+							<dd>{{project_O.priority}}</dd>
+						<dt>Slug:</dt>
+							<dd>{{project_O.slug}}</dd>
+						<dt>Logo:</dt>
+							<dd>{{project_O.logo}}</dd>
+						<dt>Potential End Date:</dt>
+							<dd>{{project_O.potential_end_date}}</dd>
+						<dt>Current Phase:</dt>
+							<dd>{{project_O.current_phase}}</dd>
+						<dt>Phase Planning Start:</dt>
+							<dd>{{project_O.phase_planning_start}}</dd>
+						<dt>Phase Planning End:</dt>
+							<dd>{{project_O.phase_planning_end}}</dd>
+					</dl>
+				</div>
+			</aside>
+		</div>
+	</article>
 {% endblock %}

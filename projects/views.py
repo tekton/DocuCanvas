@@ -15,7 +15,7 @@ def home(request):
         print e
         projects = []
     #owned_projects = Project.objects.filter(product_owner=request.user)
-    return render_to_response("theme/default/projects/projects.html", {'projects': projects, "page_type": "Projects"}, context_instance=RequestContext(request))
+    return render_to_response("projects/projects.html", {'projects': projects, "page_type": "Projects"}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -44,7 +44,7 @@ def project_form(request):
         except:
             print 'Unable to grab all projects'
 
-    return render_to_response("theme/default/projects/project_wizard.html", {'form': form, "projects": projects, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_wizard.html", {'form': form, "projects": projects, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -63,7 +63,7 @@ def project_overview(request, project_id):
     except:
         print 'Unable to load projects'
 
-    return render_to_response("theme/default/projects/project_overview.html", {'project_O': project, "metas": metas, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_overview.html", {'project_O': project, "metas": metas, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
 
 
 @login_required

@@ -1,14 +1,15 @@
 from datetime import date
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
 from forms import ReportForm
 from projects.models import Project
 from models import *
 
 
 @login_required
-def edit_report(request, year=0, month=0, day=0):
+def edit_report(request, month=0, day=0, year=0):
     projects = Project.objects.all()
     if request.method == 'POST':
         form = ReportForm(request.POST)
@@ -51,7 +52,7 @@ def edit_report(request, year=0, month=0, day=0):
 
 
 @login_required
-def edit_global_report(request, year=0, month=0, day=0):
+def edit_global_report(request, month=0, day=0, year=0):
     projects = Project.objects.all()
     if request.method == 'POST':
         form = ReportForm(request.POST)
@@ -93,7 +94,7 @@ def edit_global_report(request, year=0, month=0, day=0):
 
 
 @login_required
-def view_reports(request, year=0, month=0, day=0):
+def view_reports(request, month=0, day=0, year=0):
     projects = Project.objects.all()
     d = date.today()
     if (year != 0):
@@ -148,3 +149,20 @@ def index(request):
     projects = Project.objects.all()
     reports = UserDailyReport.objects.filter(user=request.user).order_by('-date')[:5]
     return render_to_response("daily_reports/report_index.html", {"reports": reports, "projects": projects, "page_type": "Report"}, context_instance=RequestContext(request))
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def view_reports_wip(request, year_start, month_start, day_start, year_end,  month_end, day_end):
+    projects = Project.objects.all()
+    date_range_start = str(year_start) + '-' + str(month_start) + '-' + str(day_start)
+    date_range_end = str(year_end) + '-' + str(month_end) + '-' + str(day_end)
+    print date_range_start
+    users = User.objects.all()
+    reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end])
+
+    return render_to_response('daily_reports/reports_overview_wip.html', {'users': users, 'reports': reports, 'projects':projects}, context_instance=RequestContext(request))
+
+@user_passes_test(lambda u: u.is_superuser)
+def report_selection(request):
+    projects = Project.objects.all()
+    return render_to_response('daily_reports/report_selection.html',{'projects':projects}, context_instance=RequestContext(request))

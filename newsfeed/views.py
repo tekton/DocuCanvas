@@ -42,7 +42,7 @@ def newsfeeds(request):
         projects = Project.objects.all()
     except Exception, e:
         print e
-    return render_to_response("theme/default/newsfeed/newsfeeds.html", {"newsfeeds": newsfeeds, "projects": projects, "page_type": "Newsfeed", "page_value": "Past"}, context_instance=RequestContext(request))
+    return render_to_response("newsfeed/newsfeeds.html", {"newsfeeds": newsfeeds, "projects": projects, "page_type": "Newsfeed", "page_value": "Past"}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -57,4 +57,4 @@ def newsfeed_action(request, newsfeed_type):
     except Exception, e:
         print e
 
-    return render_to_response("theme/default/newsfeed/newsfeed_type_log.html", {"newsfeeds": newsfeeds, "projects": projects, "page_type": "Newsfeed Type", "page_value": newsfeed_type}, context_instance=RequestContext(request))
+    return render_to_response("newsfeed/newsfeed_type_log.html", {"newsfeeds": newsfeeds, "projects": projects, "page_type": "Newsfeed Type", "page_value": newsfeed_type}, context_instance=RequestContext(request))
