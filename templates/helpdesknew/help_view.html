@@ -7,238 +7,155 @@
     <li><a href="/help/user">Your Questions</a></li>
     <li><a href="/help/edit/{{help.id}}">Edit Question</a></li>
     {% if user.is_staff %}
-    <a href="/help/close_question_91990/{{help.id}}">Admin - Close Question</a>
+    <li><a href="/help/close_question_91990/{{help.id}}">Admin - Close Question</a></li>
     {% endif %}
 {% endblock %}
 
-{% block style %}
-.helpdesk-question{
-	word-break: break-all;
-}
-a.popup{
-    position:relative;
-    z-index:0;
-    text-decoration:none;
-}
-a.popup:hover{
-    z-index:0;
-}
-a.popup span{
-    display:none;
-}
-a.popup:hover span{
-    display:block;
-    position:absolute;
-    top:15px;
-    padding:3px;
-    word-break: break-all;
-}
-.tbl-answer-id{
-	font-size:xx-small;
-	text-align:right;
-}
-.tbl-answer-edit{
-	font-size:xx-small;
-	text-align:left;
-}
-#helpstatus{
-	text-align:right;
-}
-.helpdesk-edit{
-	font-size:x-small;
-	text-align:center;
-}
-.tbl-ack-response{
-	font-size:xx-small;
-	text-align:center;
-}
-img.pending-image-help{
-    width:60px;
-    height:60px;
-}
+{% block container %}
+{% if help.edit_status_bool %}
+	<a href="/help/edit/{{help.id}}">{{help.name}} [*EDITED*]</a>
+{% else %}
+	<a href="/help/edit/{{help.id}}">{{help.name}}</a>
+{% endif %}
+{% if help.status == '(1, 1)' %}
+	Status: No Responses
+{% elif help.status == "('active', 'Active Responses')" %}
+	Status: Active
+{% elif help.status == "('resolved', 'Resolved')" %}
+	Status: Resolved
+{% elif help.status == "('reopened', 'Re-Opened')" %}
+	Status: Re-Opened
+{% elif help.status == "('closed', 'Closed')" %}
+	Status: Solved & Sealed
+{% else %}
+	Status: {{help.status}}
+{% endif %}
+
+	<article class="row">
+		<div id="issue-column-main" class="span12 metainfo-maincolumn">
+			<div id="issue-details" class="well">
+				<div class="media">
+					<div class="media-body">
+						<h3 class="media-header">Question</h3>
+						{{help.question}}
+					</div>
+				</div>
+				<div class="media">
+					<div class="media-body">
+						<h3 class="media-header">Attached Images</h3>
+						<ul class="thumbnails">
+							{% for image in images %}
+							<li class="span2">
+								<a class="thumbnail" href="#{{image.photo|slugify}}" data-toggle="lightbox"><img src="/static/{{image.photo}}"></a>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+				{% for arrow in answer %}
+					<div class="media">
+						<div class="media-body">
+							<h3 class="media-heading">Answer</h3>
+							{% if user.id == help.user.id and help.status != "('closed', 'Closed')" or user.is_staff %}
+								<form action="/help/mark_the_input/{{arrow.id}}" method="POST" enctype="multipart/form-data" class="pull-right" style="margin:0;">
+									{% csrf_token %}
+									<button type="submit" class="btn btn-mini btn-danger">Remove Answer</button>
+								</form>
+							{% endif %}
+
+							{% if user.id == help.user.id %}
+								{% if help.ack_response %}
+									<a href="/help/acknowledge/{{arrow.id}}" class="btn btn-mini pull-right">Edit Response</a>
+								{% else %}
+									<a href="/help/acknowledge/{{arrow.id}}" class="btn btn-mini pull-right">Respond to Answer</a>
+								{% endif %}
+							{% endif %}
+							<p class="muted">Submitted by {{arrow.user}}</p>
+							
+							{{arrow.response}}
+
+							{% if help.ack_response %}
+							<br><br>
+								<div class="media">
+									<div style="width:32px;height:32px;" class="pull-left"></div>
+									<div class="media-body">
+										<h4 class="media-heading">Response to Answer</h4>
+										<p class="muted">Submitted by {{help.user}}</p>
+										{{help.ack_response}}
+									</div>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+
+			<aside id="issue-comments" class="well">
+				<header>
+					<h3>Comments</h3>
+				</header>
+				<div id="issue-comments-add">
+					<form class="form-inline" action="/help/response/{{help.id}}" method="POST" enctype="multipart/form-data">
+						{% csrf_token %}
+						<input type="hidden" name="helprequest" value="{{help.id}}">
+						<input type="hidden" name="user" value="{{user.id}}">
+						<div class="control-group">
+							<label class="control-label" for="{{help_response.id}}">Comment</label>
+							<div class="control-group">
+								{{help_response.response}}
+							</div>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</form>
+				</div>
+				<ul id="issue-comments-list" class="media-list">
+					{% for comment in comments%}
+					<li class="media">
+						<article id="issue-comment-{{comment.id}}" class="issue-comment" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}">
+							<div class="media-body">
+								<aside class="clearfix">
+									<p class="muted">
+										<span class="pull-left">{{comment.user}}</span>
+										<span class="pull-right">{{comment.created}}</span>
+									</p>
+								</aside>
+								{% if user.id == help.user.id and help.status != "('closed', 'Closed')" and help.status != "('resolved', 'Resolved')" or user.is_staff and help.status != "('closed', 'Closed')" and help.status != "('resolved', 'Resolved')" %}
+									<form action="/help/mark_the_answer/{{comment.id}}" method="POST" enctype="multipart/form-data" style="margin:0; display:inline;" class="pull-right">
+										{% csrf_token %}
+										<button type="submit" class="btn btn-success btn-mini comment-markbutton">Mark as Answer</button>
+									</form>
+								{% endif %}
+								<a class="btn btn-mini pull-right comment-editbutton" href="help/cmmtedit/{{comment.id}}"><i class="icon-edit"></i> Edit</a>
+								<div class="comment-content">
+									{{comment.response}}
+								</div>
+							</div>
+						</article>
+					</li>
+					{% endfor %}
+				</ul>
+			</aside>
+		</div>
 {% endblock %}
 
-{% block container %}
-    <input type="hidden" id="help_id" value="{{help.id}}"/>
-	<table class="tbl-generic tbl-overview">
-		<tr class="tbl-rowheader">
-			{% if help.edit_status_bool %}
-				<td class="tbl-fauxth"><a href="/help/edit/{{help.id}}">{{help.name}} [*EDITED*]</a></td>
-			{% else %}
-				<td class="tbl-fauxth"><a href="/help/edit/{{help.id}}">{{help.name}}</a></td>
-			{% endif %}
-			{% if help.status == '(1, 1)' %}
-				<td class="tbl-fauxth" id="helpstatus">Status: No Responses</td>
-			{% elif help.status == "('active', 'Active Responses')" %}
-				<td class="tbl-fauxth" id="helpstatus">Status: Active</td>
-			{% elif help.status == "('resolved', 'Resolved')" %}
-				<td class="tbl-fauxth" id="helpstatus">Status: Resolved</td>
-			{% elif help.status == "('reopened', 'Re-Opened')" %}
-				<td class="tbl-fauxth" id="helpstatus">Status: Re-Opened</td>
-			{% elif help.status == "('closed', 'Closed')" %}
-				<td class="tbl-fauxth" id="helpstatus">Status: Solved & Sealed</td>
-			{% else %}
-				<td class="tbl-fauxth" id="helpstatus">Status: {{help.status}}</td>
-			{% endif %}
-		</tr>
-		<tr>
-			<td colspan="2">
-				<div class="helpdesk-question">{{help.question}}</div>
-			</td>
-		</tr>
-		<tr><td>
-		{% for image in images %}
-				<a target="_blank" href="/static/{{image.photo}}"><img class="pending-image-help" src="/static/{{image.photo}}"></a>
-		{% endfor %}
-	</td></tr>
-		</table>
-		<table class="tbl-generic tbl-overview">
-		{% for arrow in answer %}
-			<tr class="tbl-rowheader">
-				<td class="tbl-fauxth" colspan="3">
-					{% if user.id == help.user.id and help.status != "('closed', 'Closed')" %}
-						<a class="popup">Answer (Submitted By {{arrow.user}})
-							<span>
-								<form action="/help/mark_the_input/{{arrow.id}}" id="submit_input_form" method="post" enctype="multipart/form-data">
-									{% csrf_token %}
-									<input type="submit" value="Remove Answer" id="remove_answer_button"/>
-								</form>
-							</span>
-						</a>
-					{% elif user.is_staff %}
-						<a class="popup">Answer (Submitted By {{arrow.user}})
-							<span>
-								<form action="/help/mark_the_input/{{arrow.id}}" id="submit_input_form" method="post" enctype="multipart/form-data">
-									{% csrf_token %}
-									<input type="submit" value="Remove Answer" id="remove_answer_button"/>
-								</form>
-							</span>
-						</a>
-					{% else %}
-						Answer (Submitted By {{arrow.user}})
-					{% endif %}
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<td class="tbl-comments-description" colspan="3">
-					<div class="helpdesk-question">{{arrow.response}}</div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					{% if user == help.user or user.is_staff %}
-						<form action="/help/mark_the_input/{{arrow.id}}" id="submit_input_form" method="post" enctype="multipart/form-data">
-							{% csrf_token %}
-							<input type="submit" value="Remove Answer" id="remove_answer_button"/>
-						</form>
-					{% endif %}
-				</td>
-				<td class="tbl-ack-response">
-					{% if user.id == help.user.id %}
-						{% if help.ack_response %}
-							<a href="/help/acknowledge/{{arrow.id}}">-Edit Response-</a>
-						{% else %}
-							<a href="/help/acknowledge/{{arrow.id}}">-Respond to Answer-</a>
-						{% endif %}
-					{% endif %}
-				</td>
-				<td class="tbl-answer-id">
-					{{arrow.id}}
-				</td>
-			</tr>
-			{% if help.ack_response %}
-			<tr class="tbl-rowheader">
-				<td class="tbl-fauxth" colspan="3">
-					Response to Answer (from {{help.user}})
-				</td>
-			</tr>
-			<tr>
-				<td class="tbl-comments-description" colspan="3">
-					<div class="helpdesk-question">{{help.ack_response}}</div>
-				</td>
-			</tr>
-			{% endif %}
-		{% endfor %}
-	</table>
-	<table class="tbl-generic tbl-comments">
-		<tr>
-			<td colspan="2">
-				<form action="/help/response/{{help.id}}" id="submit_response_form" method="post" enctype="multipart/form-data">
-					{% csrf_token %}
-					<b><a id="comment_title">Submit A Response</a></b></br>
-					<div class="comment_textarea">{{help_response.response}}</div>
-					<input type='hidden' name="helprequest" id="id_helprequest" value='{{help.id}}'/>
-					<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
-					<input type="submit" value="Submit" id="submit_response_button"/>
-				</form>
-				<br>
-			</td>
-		</tr>
-		{% for comment in comments %}
-			<tr class="tbl-rowheader">
-				<td class="tbl-fauxth tbl-comments-user">
-					{% if user.id == help.user.id and help.status != "('closed', 'Closed')" and help.status != "('resolved', 'Resolved')" %}
-						<a class='popup'>
-							<b>{{comment.user}}</b>
-							<span>
-								<form action="/help/mark_the_answer/{{comment.id}}" id="submit_answer_form" method="post" enctype="multipart/form-data">
-									{% csrf_token %}
-									<input type="submit" value="Mark as Answer" id="submit_answer_button"/>
-								</form>
-							</span>
-						</a>
-					{% elif user.is_staff and help.status != "('closed', 'Closed')" and help.status != "('resolved', 'Resolved')" %}
-						<a class='popup'><b>{{comment.user}}</b>
-							<span>
-								<form action="/help/mark_the_answer/{{comment.id}}" id="submit_answer_form" method="post" enctype="multipart/form-data">
-									{% csrf_token %}
-									<input type="submit" value="Mark as Answer" id="submit_answer_button"/>
-								</form>
-							</span>
-						</a>
-					{% elif user.id == comment.user.id %}
-						<a href="/help/cmmtedit/{{comment.id}}"><b>{{comment.user}}</b></a>
-					{% else %}
-						<b>{{comment.user}}</b>
-					{% endif %}
-				</td>
-				<td class="tbl-fauxth tbl-comments-created">
-					<a href="mark/{{comment.id}}">{{comment.created}}</a>
-				</td>
-			</tr>
-			<tr>
-				{% if user.id == comment.user.id %}
-					<td class="tbl-comments-description" colspan="2">
-						<a href="help/cmmtedit/{{comment.id}}"><div class="helpdesk-question">{{comment.response}}</div></a>
-					</td>
-				{% else %}
-					<td class="tbl-comments-description" colspan="2">
-						<div class="helpdesk-question">{{comment.response}}</div>
-					</td>
-				{% endif %}
-			</tr>
-			<tr>
-				<td class="tbl-answer-edit">
-					<!--<a href="/help/cmmtedit/{{comment.id}}">-EDIT-</a>-->
-					{% if user == help.user or user.is_staff %}
-						{% if comment.value != "('answer', 'Answer')" %}
-							<form action="/help/mark_the_answer/{{comment.id}}" id="submit_answer_form" method="post" enctype="multipart/form-data">
-								{% csrf_token %}
-								<input type="submit" value="Mark as Answer" id="submit_answer_button"/>
-							</form>
-						{% else %}
-							<form action="/help/mark_the_input/{{comment.id}}" id="submit_input_form" method="post" enctype="multipart/form-data">
-								{% csrf_token %}
-								<input type="submit" value="Remove Answer" id="remove_answer_button"/>
-							</form>
-						{% endif %}
-					{% endif %}
-				</td>
-				<td class="tbl-answer-id">
-					{{comment.id}}
-				</td>
-			</tr>
-		{% endfor %}
-	</table>
+{% block modalsincluded %}
+{% for image in images %}
+<div id="{{image.photo|slugify}}" class="lightbox hide fade">
+	<div class="lightbox-content">
+		<img src="/static/{{image.photo}}">
+	</div>
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block additionaljs %}
+// Edit Comment - hide/show edit button
+$('.issue-comment').on({
+	mouseover: function(){
+		$(this).addClass('show-editbutton');
+	},
+	mouseout: function(){
+		$(this).removeClass('show-editbutton');
+	}
+});
 {% endblock %}

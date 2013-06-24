@@ -8,6 +8,7 @@
 	<title>Gadget</title>
 
 	<link rel="stylesheet" href="{% static 'theme/bootstrap/css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'bootstrap/bootstrap-lightbox.min.css' %}">
 	<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
 	{% block additional_head %}{% endblock %}
 	
@@ -121,10 +122,15 @@
 			display: none;
 		}
 
+		.issue-comment {
+			min-height: 45px;
+		}
+		.issue-comment .comment-markbutton,
 		.issue-comment .comment-editbutton {
 			display: none;
 		}
-		.issue-comment.show-editbutton .comment-editbutton {
+		.issue-comment.show-editbutton .comment-editbutton,
+		.issue-comment.show-editbutton .comment-markbutton {
 			display: block;
 		}
 
@@ -208,11 +214,12 @@
 
 	{% block modalsincluded %}{% endblock %}
 	
-  <script src="{% static 'scripts/jquery.min.js' %}"></script>
-  <script src="{% static 'scripts/jquery-ui.min.js' %}"></script>
+	<script src="{% static 'scripts/jquery.min.js' %}"></script>
+	<script src="{% static 'scripts/jquery-ui.min.js' %}"></script>
 	<script src="{% static 'scripts/ajax_tools.js' %}"></script>
 	<script src="{% static 'theme/bootstrap/js/bootstrap.js' %}"></script>
-    <script src="{% static 'theme/assets/js/tablesorter/jquery.tablesorter.js' %}"></script>
+	<script src="{% static 'bootstrap/bootstrap-lightbox.min.js' %}"></script>
+	<script src="{% static 'theme/assets/js/tablesorter/jquery.tablesorter.js' %}"></script>
     <script>
 		$.ajaxSetup({
 		    beforeSend: function(xhr, settings) {
