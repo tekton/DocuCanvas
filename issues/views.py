@@ -471,7 +471,7 @@ def issue_overview(request, issue_id):
 
     form = IssueFullForm(instance=issue)
 
-    return render_to_response("theme/default/issues/issue_overview.html", {'issue': issue,
+    return render_to_response("issues/issue_overview.html", {'issue': issue,
                                                                            'related_issues': related_issues,
                                                                            'project_issues': project_issues,
                                                                            'pin': pin,

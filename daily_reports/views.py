@@ -153,15 +153,16 @@ def index(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def view_reports_wip(request, year_start, month_start, day_start, year_end,  month_end, day_end):
+    projects = Project.objects.all()
     date_range_start = str(year_start) + '-' + str(month_start) + '-' + str(day_start)
     date_range_end = str(year_end) + '-' + str(month_end) + '-' + str(day_end)
     print date_range_start
     users = User.objects.all()
     reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end])
 
-    return render_to_response('daily_reports/reports_overview_wip.html', {'users': users, 'reports': reports}, context_instance=RequestContext(request))
+    return render_to_response('daily_reports/reports_overview_wip.html', {'users': users, 'reports': reports, 'projects':projects}, context_instance=RequestContext(request))
 
 @user_passes_test(lambda u: u.is_superuser)
 def report_selection(request):
-
-    return render_to_response('daily_reports/report_selection.html', context_instance=RequestContext(request))
+    projects = Project.objects.all()
+    return render_to_response('daily_reports/report_selection.html',{'projects':projects}, context_instance=RequestContext(request))

@@ -77,7 +77,7 @@ def login_func(request):
                 #to_json = {"error": "error with username and/or password"}
                 #return HttpResponse(simplejson.dumps(to_json), mimetype='application/json', status=400)
                 state = "Your username and/or password were incorrect."
-                return render_to_response("theme/registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+                return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
         except Exception, e:
             print "Error authenticating form"
             print e
@@ -85,7 +85,7 @@ def login_func(request):
     else:
         form = AuthenticationForm()
 
-    return render_to_response("theme/default/registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
+    return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
 
 
 def account_settings(request):
@@ -224,4 +224,4 @@ def user_overview(request, user_id):
     except Exception, e:
         print e
 
-    return render_to_response("theme/default/user/user_overview.html", {"projectsAsJson": project_json, "gadget_user": gadget_user, "issues": issues, "status_updates": issue_status_updates, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues ,"project_dict": project_dict , "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "projects": projects, "page_type": gadget_user.username}, context_instance=RequestContext(request))
+    return render_to_response("user/user_overview.html", {"projectsAsJson": project_json, "gadget_user": gadget_user, "issues": issues, "status_updates": issue_status_updates, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues ,"project_dict": project_dict , "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "projects": projects, "page_type": gadget_user.username}, context_instance=RequestContext(request))
