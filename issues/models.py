@@ -275,7 +275,7 @@ class IssueComment(models.Model):
 
 class IssueScreenshot(models.Model):
     issue = models.ForeignKey(Issue)
-    screenshot = models.ImageField(upload_to="issues/img", blank=True, null=True)
+    screenshot = models.ImageField(upload_to="upload/issues", blank=True, null=True)
 
 
 admin.site.register(IssueScreenshot)

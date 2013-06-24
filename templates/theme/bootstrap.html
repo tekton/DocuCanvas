@@ -8,6 +8,7 @@
 	<title>Gadget</title>
 
 	<link rel="stylesheet" href="{% static 'theme/bootstrap/css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'bootstrap/bootstrap-lightbox.min.css' %}">
 	<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
 	{% block additional_head %}{% endblock %}
 	
@@ -121,10 +122,15 @@
 			display: none;
 		}
 
+		.issue-comment {
+			min-height: 45px;
+		}
+		.issue-comment .comment-markbutton,
 		.issue-comment .comment-editbutton {
 			display: none;
 		}
-		.issue-comment.show-editbutton .comment-editbutton {
+		.issue-comment.show-editbutton .comment-editbutton,
+		.issue-comment.show-editbutton .comment-markbutton {
 			display: block;
 		}
 
@@ -203,16 +209,78 @@
 </head>
 <body>
 	<div id="globalwrap">
+		<div id="sitenav" class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="brand" href="/"><span class="logo">Gadget</span></a>
+					<div class="nav-collapse collapse">
+						<nav id="mainnav">
+							<ul class="nav">
+								<li><a href="/" class="{% if page_type == 'Dashboard' %}active{% endif %}">Dashboard</a></li>
+								<li class="dropdown">
+									<a href="/project" class="dropdown-toggle {% if page_type == 'Project' %}active{% elif page_type == 'Projects' %}active{% elif page_type == 'Issue' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
+									</a>
+									<ul class="dropdown-menu">
+										{% if projects.count > 0 %}
+										<li class="nav-header">All Projects</li>
+										{% for project in projects%}
+											<li><a href="/project/{{project.id}}">{{project.name}}</a></li>
+										{% endfor %}
+										{% endif %}
+										<li class="nav-header">New</li>
+										<li><a href="/project/new">Project</a></li>
+									</ul>
+								</li>
+								<li><a href="/reports" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
+							</ul>
+						</nav>
+						<div id="searchform">
+							<form class="navbar-search pull-right" action="/issue/search" method="POST">
+				                {% csrf_token %}
+				                <div class="input-prepend input-append">
+					                <a class="btn btn-inverse" href="/issue/advsearch" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
+					                <input type="text" name="searchText" class="search-query" placeholder="Search">
+					                <button type="submit" class="btn btn-inverse">Go</button>
+					            </div>
+				            </form>
+				        </div>
+				        <div id="userbar">
+				            <ul class="nav pull-right">
+				                <li class="dropdown">
+				                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Context <b class="caret"></b></a>
+				                    <ul class="dropdown-menu">
+				                        {% block context_nav %}{% endblock %}
+				                    </ul>
+				                </li>
+				                <li class="dropdown">
+				                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user}} <b class="caret"></b></a>
+				                    <ul class="dropdown-menu">
+				                        <li><a href="/accounts/account_settings">Settings</a></li>
+				                        <li><a href="/accounts/logout/?next=/">Logout</a></li>
+				                    </ul>
+				                </li>
+				            </ul>
+				        </div>
+					</div>
+				</div>
+			</div>
+		</div>
 		{% block basecontent %}{% endblock %}
 	</div>
 
 	{% block modalsincluded %}{% endblock %}
 	
-  <script src="{% static 'scripts/jquery.min.js' %}"></script>
-  <script src="{% static 'scripts/jquery-ui.min.js' %}"></script>
+	<script src="{% static 'scripts/jquery.min.js' %}"></script>
+	<script src="{% static 'scripts/jquery-ui.min.js' %}"></script>
 	<script src="{% static 'scripts/ajax_tools.js' %}"></script>
 	<script src="{% static 'theme/bootstrap/js/bootstrap.js' %}"></script>
-    <script src="{% static 'theme/assets/js/tablesorter/jquery.tablesorter.js' %}"></script>
+	<script src="{% static 'bootstrap/bootstrap-lightbox.min.js' %}"></script>
+	<script src="{% static 'theme/assets/js/tablesorter/jquery.tablesorter.js' %}"></script>
     <script>
 		$.ajaxSetup({
 		    beforeSend: function(xhr, settings) {
