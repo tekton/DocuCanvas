@@ -1,34 +1,50 @@
 {% extends 'theme/default/base.html' %}
 {% block additional_head %}
 <style>
-.userDiv{
-	position: relative;
-	margin: 20px;
+table{
+	border: solid thin black;
+	box-shadow: 2px 2px 2px #888888;
 }
-.userName{
-	position: relative;
-	display: inline-block;
+td{
+	text-align: center;
+	padding: 10px;
+}
+tr{
+	padding: 10px;
 }
 .reportDiv{
-	position: relative;
-	display: inline-block;
+	border: solid thin black;
+	box-shadow: 2px 2px 2px #888888;
+	padding: 10px;
 }
 .reportDate{
-	display: inline-block;
+	text-align: left;
 }
-/* div[class^='reportView']{
-	padding: 10px;
-} */
+div[class^='reportView']{
+	padding: 5px;
+	padding-left: 30px;
+	margin-bottom:10px;
+	border: solid thin black;
+	box-shadow: 2px 2px 2px #888888;
+}
+.dates{
+	text-align: left;
+}
 </style>
 {% endblock %}
 {% block container %}
 {% load set_var%}
+	<table class='userDiv'>
 {% for user in users %}
 {% set username = user %}
-	<div class='userDiv'>
-		<div class='userName'>
+
+		<tr>
+			<td>
+		<!-- <div class='userName'> -->
 		{{user}}
-		</div>
+		<!-- </div> -->
+	</td>
+	<td>
 		<div class = 'reportDiv'>
 			{% for report in reports %}
 				{% if username == report.user %}
@@ -37,26 +53,29 @@
 				</div>
 				<div class='reportView_{{user}}_{{forloop.counter}}' style='display: none'>
 					{{report.description|safe}}<br />
-					{{report.created}}<br />
-					{{report.modified}}<br />
+					<div class='dates'>
+						Date Created: {{report.created}}<br />
+						Date Modified: {{report.modified}}<br />
+					</div>
 				</div>
 				{% endif %}
 			{% endfor %}
 		</div>
-	</div>
+		<td>
+		</tr>
 {% endfor %}
+	</table>
 {% endblock %}
 {% block additionaljs %}
 //<script>
 function expandReport(div){
 	var divToExpand = "." + div;
-	console.log($(divToExpand).css('display'));
 	if($(divToExpand).css('display') == 'none'){
 		$(divToExpand).css('display', 'inline-block');
 	}else if($(divToExpand).css('display') == 'inline-block'){
 		$(divToExpand).css('display', 'none');
 	};
-	
+
 };
 //</script>
 {% endblock %}

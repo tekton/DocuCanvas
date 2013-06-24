@@ -157,5 +157,10 @@ def view_reports_wip(request, year_start, month_start, day_start, year_end,  mon
     print date_range_start
     users = User.objects.all()
     reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end])
-    
+
     return render_to_response('daily_reports/reports_overview_wip.html', {'users': users, 'reports': reports}, context_instance=RequestContext(request))
+
+
+def report_selection(request):
+
+    return render_to_response('daily_reports/report_selection.html', context_instance=RequestContext(request))

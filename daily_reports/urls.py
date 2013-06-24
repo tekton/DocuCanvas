@@ -13,5 +13,6 @@ urlpatterns = patterns('',
                        url(r'view$', 'daily_reports.views.view_reports'),
                        url(r'^$', 'daily_reports.views.index'),
                        #url(r'view_all', 'daily_reports.views.view_reports_wip'),
+                       url(r'report_selection', 'daily_reports.views.report_selection'),
                        url(r'view_all/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/$', 'daily_reports.views.view_reports_wip')
                        )
