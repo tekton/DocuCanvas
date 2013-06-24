@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "theme/default/base-helpdesk.html" %}
 
 {% block context_nav %}
     <li><a href="/help/new">Ask a Question</a></li>
@@ -12,25 +12,6 @@
 {% endblock %}
 
 {% block container %}
-{% if help.edit_status_bool %}
-	<a href="/help/edit/{{help.id}}">{{help.name}} [*EDITED*]</a>
-{% else %}
-	<a href="/help/edit/{{help.id}}">{{help.name}}</a>
-{% endif %}
-{% if help.status == '(1, 1)' %}
-	Status: No Responses
-{% elif help.status == "('active', 'Active Responses')" %}
-	Status: Active
-{% elif help.status == "('resolved', 'Resolved')" %}
-	Status: Resolved
-{% elif help.status == "('reopened', 'Re-Opened')" %}
-	Status: Re-Opened
-{% elif help.status == "('closed', 'Closed')" %}
-	Status: Solved & Sealed
-{% else %}
-	Status: {{help.status}}
-{% endif %}
-
 	<article class="row">
 		<div id="issue-column-main" class="span12 metainfo-maincolumn">
 			<div id="issue-details" class="well">
