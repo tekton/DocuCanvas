@@ -1,7 +1,7 @@
 from datetime import date
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from forms import ReportForm
 from projects.models import Project
@@ -151,6 +151,7 @@ def index(request):
     return render_to_response("daily_reports/report_index.html", {"reports": reports, "projects": projects, "page_type": "Report"}, context_instance=RequestContext(request))
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def view_reports_wip(request, year_start, month_start, day_start, year_end,  month_end, day_end):
     date_range_start = str(year_start) + '-' + str(month_start) + '-' + str(day_start)
     date_range_end = str(year_end) + '-' + str(month_end) + '-' + str(day_end)
@@ -160,7 +161,7 @@ def view_reports_wip(request, year_start, month_start, day_start, year_end,  mon
 
     return render_to_response('daily_reports/reports_overview_wip.html', {'users': users, 'reports': reports}, context_instance=RequestContext(request))
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def report_selection(request):
 
     return render_to_response('daily_reports/report_selection.html', context_instance=RequestContext(request))
