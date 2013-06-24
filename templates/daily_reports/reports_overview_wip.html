@@ -1,4 +1,5 @@
 {% extends 'theme/default/base.html' %}
+
 {% block additional_head %}
 <style>
 table{
@@ -39,6 +40,10 @@ div[class^='reportView']{
 	text-align: left;
 }
 </style>
+{% endblock %}
+{% block context_nav %}
+<li><a href="/reports/edit">Daily Reports</a></li>
+<li><a href="/reports/view">View Daily Reports</a></li>
 {% endblock %}
 {% block container %}
 {% load set_var%}
