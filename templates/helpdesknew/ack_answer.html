@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "theme/default/base-helpdesk.html" %}
 {% block context_nav %}
     <li><a href="/help/new">Ask a Question</a></li>
     <li><a href="/help/resolved">Resolved Questions</a></li>
@@ -6,24 +6,52 @@
     <li><a href="/help/user">Your Questions</a></li>
 {% endblock %}
 
+{% block pagetitle %}
+<span class="title-pagetype">{{help.name}}</span>
+{% endblock %}
+
 {% block container %}
-{% if user.id == help.user.id %}
-<h2>Respond to Answer</h2>
-<b>Question</b></br>
-{{help.name}}</br>
-<b>Description</b></br>
-{{help.question}}</br>
-<b>Answer</b></br>
-{{answer.response}}</br>
-	<form action="{{help.id}}" method="post" enctype="multipart/form-data">
-		{% csrf_token %}
-		{{form.ack_response}}</br>
-		<input type="hidden" name="name" id="id_name" value="{{help.name}}">
-		<input type="hidden" name="user" id="id_user" value="{{help.user.id}}">
-		<input type="submit" value="Submit">
-	</form>
-{% else %}
-	<h2>Error - You do not have access to this page</h2>
-	<p>Only the account that submitted the original question has access to this feature</p>
-{% endif %}
+	{% if user.id == help.user.id %}
+		<article class="row">
+			<div id="issue-column-main" class="span12 metainfo-maincolumn">
+				<div class="well">
+					<div class="media">
+						<div class="media-body">
+							<h3 class="media-header">Question</h3>
+							{{help.name}}
+						</div>
+					</div>
+					<div class="media">
+						<div class="media-body">
+							<h3 class="media-header">Description</h3>
+							{{help.question}}
+						</div>
+					</div>
+					<div class="media">
+						<div class="media-body">
+							<h3 class="media-header">Answer</h3>
+							{{answer.response}}
+						</div>
+					</div>
+					<div class="media">
+						<div class="media-body">
+							<h3 class="media-header">Response to Answer</h3>
+							<form action="{{help.id}}" method="post" enctype="multipart/form-data">
+								{% csrf_token %}
+								{{form.ack_response}}</br>
+								<input type="hidden" name="name" id="id_name" value="{{help.name}}">
+								<input type="hidden" name="user" id="id_user" value="{{help.user.id}}">
+								<button type="submit" class="btn btn-primary">Submit</button>
+								<a class="btn" href="{% url 'helpdesknew.views.get_help' help.id %}">Cancel</a>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	{% else %}
+		<h2>Error - You do not have access to this page</h2>
+		<p>Only the account that submitted the original question has access to this feature</p>
+		<p>&laquo; Return to <a href="{% url 'helpdesknew.views.get_help' help.id %}">Question: {{help.name}}</a></p>
+	{% endif %}
 {% endblock %}
