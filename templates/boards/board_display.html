@@ -6,10 +6,15 @@
                 margin: 0px;
                 padding: 0px;
             }
+            #container{
+                overflow:scroll;
+                overflow-y:hidden;
+                margin-right: 202px;
+            }
             #bugListContainer{
                 border: 1px solid #F2F2F2;
                 box-shadow: 0 1px 4px #5A5A5A;
-                
+
             }
             #bugList{
                 position: fixed;
@@ -26,10 +31,61 @@
                 border-top-left-radius: 10px;
                 border-bottom-left-radius: 10px;
             }
+            div[id^='issueNote']{
+                position: absolute;
+                z-index: 2;
+                background-color: black;
+                opacity: 0.9;
+                visibility: hidden;
+                border-radius: 12px;
+                padding: 3px;
+            }
+            div[id^='triangle']{
+                position: absolute;
+                width: 0;
+                height: 0;
+                border-right: 10px solid black;
+                border-bottom: 10px solid transparent;
+                border-top: 10px solid transparent;
+                opacity: 0.9;
+                visibility: hidden;
+                z-index: 1;
+            }
+            #noteHeader{
+                color: white;
+                border-top-left-radius: 12px;
+                border-top-right-radius: 12px;
+                background-color: gray;
+                text-align: left;
+                position: relative;
+                border-style: solid;
+                border-top: 0px;
+                border-right: 0px;
+                border-left: 0px;
+                border-bottom: solid black;
+                padding: 5px;
+            }
+            #noteDescription{
+                background-color: #585858;
+                text-align: left;
+                border-bottom-left-radius: 12px;
+                border-bottom-right-radius: 12px;
+                padding: 5px;
+            }
+            #issueLink{
+                text-align: right;
+                padding: 5px;
+            }
+            div[id^='bugListNo']{
+                padding: 5px;
+                border-style: solid;
+                border-width: 1px;
+                margin-bottom: 2px;
+            }
         </style>
     </head>
     <body>
-        <div id = "container" style = 'overflow:scroll; overflow-y:hidden; margin-right: 202px;' > </div>
+        <div id = "container"> </div>
          <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
           <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
           <script src = '/static/scripts/board_functions.js'></script>
@@ -53,13 +109,6 @@
                     id: 'backgroundImage',
                   });
 
-                // Test function for getting mouse position
-                bgImage.on('mousedown', function(){
-                var mousePos = stage.getMousePosition();
-                var x = mousePos.x ;
-                var y = mousePos.y ;
-                $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
-                });
 
                 var stage = new Kinetic.Stage({
                     container: 'container',
@@ -70,43 +119,12 @@
                 var messageLayer = new Kinetic.Layer();
                 shapesLayer.add(bgImage);
 
-                // Function to add a bug to canvas
-                /*function bugNote(x, y, noteText, divId){
-                    var tooltipId = "#" + divId;
-                    var bugListId = "#bugListNo" + divId;
-
-                    var circle = new Kinetic.Circle({
-                        x: x,
-                        y: y,
-                        radius: 8,
-                        fill: '#00d2ff',
-                        stroke: 'black',
-                        strokeWidth: 4,
-                    });
-
-                    circle.on('mouseover', function(){
-                        document.body.style.cursor = 'pointer';
-                    });
-                    circle.on('mouseout', function(){
-                        document.body.style.cursor = 'default';
-                    });
-
-                    circle.on('mousedown', function(){
-                        toggleInfoBox(divId);
-                    });
-
-                    shapesLayer.add(circle);
-                    $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + tooltipWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><p style = 'color: grey; text-align: left'>" + noteText + "</p><p style = 'text-align: right;'></p></div>");
-                    $('body').append("<div id = 'triangle" + divId + "'; style = 'position: absolute; width: 0; height: 0; border-right: 10px solid black; border-bottom: 10px solid transparent; border-top: 10px solid transparent;  opacity: 0.9; visibility: hidden; z-index: 1; top:" + (y-10) + "px; left: " + (x+14) + "px;'></div> ");
-                    $('#bugList').append("<div id = bugListNo" + divId + ">" + noteText + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><font id = 'bugListLink" + divId + "'>SHOW</font></a><br /><br />");
-                };*/
-
                 function issueNote(x, y, summary, description, link, divId){
                     var tooltipId = "#" + divId;
                     var bugListId = "#bugListNo" + divId;
                     issueLink = link;
                     if(issueLink != ""){
-                        issueLink = "<div style = 'text-align: right; padding: 5px;'><a style = 'color: yellow; ' href = '" + link + "' target = '_blank'>View Issue</a></div>"
+                        issueLink = "<div id='issueLink'><a style = 'color: yellow; ' href = '" + link + "' target = '_blank'>View Issue</a></div>"
                     };
                     var circle = new Kinetic.Circle({
                         x: x,
@@ -129,9 +147,9 @@
                     });
 
                     shapesLayer.add(circle);
-                    $('body').append("<div id = " + divId + " style = 'z-index: 2; width: " + tooltipWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: black; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 3px;'><div style = 'color: white; border-top-left-radius: 12px; border-top-right-radius: 12px; background-color: gray; text-align: left; position: relative; border-style: solid; border-top: 0px; border-right: 0px; border-left: 0px; border-bottom: solid black; padding: 5px'><strong>" + summary + "</strong></div><div style = 'background-color: #585858; text-align: left; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; padding: 5px;'>" + description + "</div>" + issueLink + "</div>");
-                    $('body').append("<div id = 'triangle" + divId + "'; style = 'position: absolute; width: 0; height: 0; border-right: 10px solid black; border-bottom: 10px solid transparent; border-top: 10px solid transparent;  opacity: 0.9; visibility: hidden; z-index: 1; top:" + (y-10) + "px; left: " + (x+14) + "px;'></div> ");
-                    $('#bugList').append("<div style = ''><div id = bugListNo" + divId + " style = 'padding: 5px; border-style: solid; border-width: 1px; margin-bottom: 2px; '>" + summary + "<br /><a style = 'color: purple' href = '#' onClick = 'toggleInfoBox(" + divId + ")'><div><div id = 'bugListLink" + divId + "'>Show</div></div></a></div>");
+                    $('body').append("<div id = 'issueNote" + divId + "' style = 'width: " + tooltipWidth +"px;  top: " + (y - 20) + "px; left: " + (x + 24) + "px; '><div id='noteHeader'><strong>" + summary + "</strong></div><div id='noteDescription' >" + description + "</div>" + issueLink + "</div>");
+                    $('body').append("<div id = 'triangle" + divId + "'; style = 'top:" + (y-10) + "px; left: " + (x+14) + "px;'></div> ");
+                    $('#bugList').append("<div id = 'bugListNo" + divId + "' >" + summary + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><div id = 'bugListLink" + divId + "'>Show</div></a>");
                 };
                 {% if board_nodes %}
                 var circleId = 0;
@@ -141,7 +159,7 @@
                             if("{{i.nodeType}}" == "issue"){
                                 {% for x in issues %}
                                     if({{x.id}} == {{i.nodeLink}}){
-                                        newCircle = new issueNote({{i.x}}, {{i.y}}, "{{x.summary|linebreaksbr}}", '{{x.description|linebreaksbr}}',"/issue/"+{{i.nodeLink}}, circleId);
+                                        newCircle = new issueNote({{i.x}}, {{i.y}}, "{{x.summary|linebreaksbr}}", '{{x.description|striptags|linebreaksbr}}',"/issue/"+{{i.nodeLink}}, circleId);
                                     };
                                 {% endfor %}
                              }else if('{{i.nodeType}}' == 'note'){
@@ -162,8 +180,8 @@
             imageObj.src = '/static/{{board.image}}';
 
              function toggleInfoBox(divId){
-                var toggleTooltipDiv = document.getElementById(divId);
-                var tooltipId = "#" + divId;
+                var toggleTooltipDiv = document.getElementById('issueNote'+divId);
+                var tooltipId = "#issueNote" + divId;
                 var bugListId = "#bugListNo" + divId;
                 var triangleId = "triangle" + divId;
                 var bugListLinkId = "#bugListLink" + divId;
@@ -194,10 +212,7 @@
                     $('#toggler').text("Hide");
                 };
             };
-            /*$('body').append("<div  style = 'position: fixed; width: 200px; height: 50px; top: 0px; left:" + (imageWidth+300) + "px; background-color: blue; z-index: 10'><a id = 'toggler' href = '#' onclick='toggleBugListDiv()'>Hide</a></div>");
-            $('body').append("<div id = 'bugList' style = 'position: fixed; width: 190px; top: 50px; left: 1383px; padding: 5px; background-color: green; visibility: visible; overflow:scroll;'></div>")*/
          </script>
-         <!--<div  style = 'position: fixed; width: 200px; height: 50px; top: 0px; left:800px; background-color: blue;'><a id = "toggler" href = "#" onclick="toggleBugListDiv()">Hide</a></div> -->
          <div id='bugListContainer' >
             <div id = 'bugList'></div>
         </div>
