@@ -1,3 +1,47 @@
+<head>
+    <style>
+        div[id^='noteNo']{
+            position: absolute;
+            visibility: visible;
+            border-radius: 12px;
+            padding: 10px;
+            background-color: white;
+            border: 1px solid #F2F2F2;
+            box-shadow: 0 1px 4px #5A5A5A;
+        }
+        div[id^='bugNote']{
+            z-index: 2;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #F2F2F2;
+            box-shadow: 0 1px 4px #5A5A5A;
+            visibility: hidden;
+            border-radius: 12px;
+            padding: 10px;
+        }
+        #id_nodeLink_label{
+            display:none;
+        }
+        #id_nodeLink{
+            display:none;
+        }
+        #id_title_label{
+            display:block;
+        }
+        #id_title{
+            display:block;
+        }
+        #id_description_label{
+            display:block;
+        }
+        #id_description{
+            display:block;
+            resize:none;
+        }
+        form[id^='submitForm']{
+            visibility: visible;
+        }
+    </style>
 <body>
     <div id = 'container'></div>
     <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
@@ -39,7 +83,7 @@
                 shapesLayer.add(bgImage);
                 // check to see if there are any board_node objects
                 {% if board_nodes %}
-                    /* Loops through board node objects and only pulls the nodes that match the board.  
+                    /* Loops through board node objects and only pulls the nodes that match the board.
                     Checks the type of the node and creates a circle button and bugNote which is formatted slightly differently depending on type.
                     */
                     {% for i in board_nodes %}
@@ -87,8 +131,8 @@
                             var noteDivY = y - 4;
                         };
                         placementLock = true;
-                            $('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; border-radius: 12px; padding: 10px; width: " + noteDivWidth + "px; background-color: gray'><form id = 'submitForm'" + counter + "' style = 'visibility: visible;' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label' style = 'display:none'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' style = 'display:none'/></td></tr><tr><th><label style = 'display:block' for='id_title' id='id_title_label'>Title:</label></th><td><input style = 'display:block' type='text' name='title' id='id_title' /></td></tr><tr><th><label style = 'display:block' for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' style = 'display:block; resize: none;' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
-                            
+                            $('body').append("<div id = 'noteNo" + counter + "' style = 'top: " + noteDivY + "px; left: " + noteDivX + "px; width: " + noteDivWidth + "px;'><form id = 'submitForm'" + counter + "' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink'/></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' resize: none;' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+
                             $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
                             var circle = new Kinetic.Circle({
                                 x: x,
@@ -143,7 +187,7 @@
                             var noteDivY = y - 4;
                         };
 
-                        
+
                             $(divToUpdate).css({left:x+24,top:y-20});
                             $(formToUpdateX).val(x);
                             $(formToUpdateY).val(y);
@@ -216,7 +260,7 @@
                     });
                     shapesLayer.add(circle);
                     // edit div for updating nodes
-                    $('body').append("<div id = 'bugNote" + divId + "' style = 'z-index: 2; width: " + noteDivWidth +"px;  position: absolute; top: " + (y - 20) + "px; left: " + (x + 24) + "px; background-color: grey; opacity: 0.9; visibility: hidden; border-radius: 12px; padding: 10px'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(bugNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label style = 'display:block' for='id_title' id='id_title_label'>Title:</label></th><td><input style = 'display:block' type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label style = 'display:block' for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' style = 'display:block; resize:none;' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                    $('body').append("<div id = 'bugNote" + divId + "' style = 'width: " + noteDivWidth +"px; top: " + (y - 20) + "px; left: " + (x + 24) + "px;'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(bugNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
                 //};
                 };
 
