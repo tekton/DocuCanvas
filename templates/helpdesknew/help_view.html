@@ -1,4 +1,5 @@
 {% extends "theme/default/base-helpdesk.html" %}
+{% load set_var %}
 
 {% block context_nav %}
     <li><a href="/help/new">Ask a Question</a></li>
@@ -7,13 +8,39 @@
     <li><a href="/help/user">Your Questions</a></li>
     <li><a href="/help/edit/{{help.id}}">Edit Question</a></li>
     {% if user.is_staff %}
-    <li><a href="/help/close_question_91990/{{help.id}}">Admin - Close Question</a></li>
+    	<li><a href="/help/close_question_91990/{{help.id}}">Admin - Close Question</a></li>
     {% endif %}
 {% endblock %}
 
+{% block pagetitle %}
+<span class="title-pagetype">{{help.name}}</span>
+{% if help.edit_status_bool %}
+<span class="title-separator title-seperator-pagevalue">::</span>
+<span class="title-pagevalue">Edited</span>
+{% endif %}
+<span class="title-separator title-seperator-issuestatus">::</span>
+<small class="title-issuestatus label {{statusClass}}">{{statusText}}</small>
+{% endblock %}
+
 {% block container %}
+
+{% comment %}
+	These conditionals are used many times in this page.
+	For legibility, set_var is used to place the result of them
+	into an easy-to-understand reference
+	NOTE: value provided by set_var is a STRING, NOT BOOLEAN
+{% endcomment %}
+{% set btnMarkedAsAnswered = 'false' %}
+{% set btnRemoveAnswer = 'false' %}
+{% if user.id == help.user.id or user.is_staff %}
+	{% set btnRemoveAnswer = 'true' %}
+	{% if help.status != "('closed', 'Closed')" and help.status != "('resolved', 'Resolved')" %}
+		{% set btnMarkAsAnswered = 'true' %}
+	{% endif %}
+{% endif %}
+
 	<article class="row">
-		<div id="issue-column-main" class="span12 metainfo-maincolumn">
+		<div id="issue-column-main" class="span12">
 			<div id="issue-details" class="well">
 				<div class="media">
 					<div class="media-body">
@@ -26,9 +53,16 @@
 						<h3 class="media-header">Attached Images</h3>
 						<ul class="thumbnails">
 							{% for image in images %}
-							<li class="span2">
-								<a class="thumbnail" href="#{{image.photo|slugify}}" data-toggle="lightbox"><img src="/static/{{image.photo}}"></a>
-							</li>
+								{% comment %}
+									lightbox bootstrap plugin used here
+									refer to 'modalsincluded' block for actual lightbox
+									TODO: consider making thumbnail of uploaded image
+								{% endcomment %}
+								<li class="span2">
+									<a class="thumbnail" href="#{{image.photo|slugify}}" data-toggle="lightbox">
+										<img src="/static/{{image.photo}}">
+									</a>
+								</li>
 							{% endfor %}
 						</ul>
 					</div>
@@ -37,32 +71,47 @@
 					<div class="media">
 						<div class="media-body">
 							<h3 class="media-heading">Answer</h3>
-							{% if user.id == help.user.id and help.status != "('closed', 'Closed')" or user.is_staff %}
-								<form action="/help/mark_the_input/{{arrow.id}}" method="POST" enctype="multipart/form-data" class="pull-right" style="margin:0;">
+							{{arrow.response}}
+							<aside class="clearfix">
+								<p class="pull-left">Submitted by {{arrow.user}}</p>
+								<div class="btn-group pull-right">
+									{% if btnRemoveAnswer == 'true' %}
+										<button type="submit" class="btn btn-mini btn-danger" form="helpdesk-answerform">
+											<i class="icon-remove icon-white"></i> Remove Answer
+										</button>
+									{% endif %}
+									{% if user.id == help.user.id %}
+										<a href="/help/acknowledge/{{arrow.id}}" class="btn btn-mini">
+											{% if help.ack_response %}<i class="icon-edit"></i> Edit Response
+											{% else %}<i class="icon-share"></i> Respond to Answer{% endif %}
+										</a>
+									{% endif %}
+								</div>
+							</aside>
+							{% comment %}
+								The form is placed outside of btn-group for stylization purposes
+								Functionality stays the same as long as the button contains the 'form' attribute
+								and it properly references the ID of the form it belongs to
+							{% endcomment %}
+							{% if btnRemoveAnswer == 'true' %}
+								<form id="helpdesk-answerform" action="/help/mark_the_input/{{arrow.id}}" method="POST" enctype="multipart/form-data" class="hidden">
 									{% csrf_token %}
-									<button type="submit" class="btn btn-mini btn-danger">Remove Answer</button>
 								</form>
 							{% endif %}
-
-							{% if user.id == help.user.id %}
-								{% if help.ack_response %}
-									<a href="/help/acknowledge/{{arrow.id}}" class="btn btn-mini pull-right">Edit Response</a>
-								{% else %}
-									<a href="/help/acknowledge/{{arrow.id}}" class="btn btn-mini pull-right">Respond to Answer</a>
-								{% endif %}
-							{% endif %}
-							<p class="muted">Submitted by {{arrow.user}}</p>
-							
-							{{arrow.response}}
-
 							{% if help.ack_response %}
-							<br><br>
 								<div class="media">
 									<div style="width:32px;height:32px;" class="pull-left"></div>
 									<div class="media-body">
 										<h4 class="media-heading">Response to Answer</h4>
-										<p class="muted">Submitted by {{help.user}}</p>
 										{{help.ack_response}}
+										<aside class="clearfix">
+											<p class="muted pull-left">Submitted by {{help.user}}</p>
+											<div class="btn-group pull-right">
+												{% comment %}
+													reserved for possible buttons
+												{% endcomment %}
+											</div>
+										</aside>
 									</div>
 								</div>
 							{% endif %}
@@ -71,11 +120,14 @@
 				{% endfor %}
 			</div>
 
-			<aside id="issue-comments" class="well">
+			<aside id="helpdesk-comments" class="well">
 				<header>
 					<h3>Comments</h3>
 				</header>
-				<div id="issue-comments-add">
+				{% comment %}
+					TODO: apply 'accordion' feature to add comment so form is not always visible
+				{% endcomment %}
+				<div id="helpdesk-comments-add">
 					<form class="form-inline" action="/help/response/{{help.id}}" method="POST" enctype="multipart/form-data">
 						{% csrf_token %}
 						<input type="hidden" name="helprequest" value="{{help.id}}">
@@ -89,30 +141,40 @@
 						<button type="submit" class="btn btn-primary">Submit</button>
 					</form>
 				</div>
-				<ul id="issue-comments-list" class="media-list">
+				<ul id="helpdesk-comments-list" class="media-list">
 					{% for comment in comments%}
-					<li class="media">
-						<article id="issue-comment-{{comment.id}}" class="issue-comment" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}">
+						<li class="media">
 							<div class="media-body">
-								<aside class="clearfix">
-									<p class="muted">
-										<span class="pull-left">{{comment.user}}</span>
-										<span class="pull-right">{{comment.created}}</span>
-									</p>
-								</aside>
-								{% if user.id == help.user.id and help.status != "('closed', 'Closed')" and help.status != "('resolved', 'Resolved')" or user.is_staff and help.status != "('closed', 'Closed')" and help.status != "('resolved', 'Resolved')" %}
-									<form action="/help/mark_the_answer/{{comment.id}}" method="POST" enctype="multipart/form-data" style="margin:0; display:inline;" class="pull-right">
-										{% csrf_token %}
-										<button type="submit" class="btn btn-success btn-mini comment-markbutton">Mark as Answer</button>
-									</form>
-								{% endif %}
-								<a class="btn btn-mini pull-right comment-editbutton" href="help/cmmtedit/{{comment.id}}"><i class="icon-edit"></i> Edit</a>
-								<div class="comment-content">
+								<article id="helpdesk-comment-{{comment.id}}" class="comment" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}">
 									{{comment.response}}
-								</div>
+									<aside class="clearfix">
+										<p class="muted pull-left">Posted by {{comment.user}} on {{comment.created}}</p>
+										<div class="btn-group pull-right">
+											{% if btnMarkAsAnswered == 'true' %}
+												<button type="submit" class="btn btn-success btn-mini" form="helpdesk-markform-{{comment.id}}">
+													<i class="icon-ok icon-white"></i> Mark as Answer
+												</button>
+											{% endif %}
+											{% if comment.user == user %}
+												<a class="btn btn-mini" href="/help/cmmtedit/{{comment.id}}">
+													<i class="icon-edit"></i> Edit
+												</a>
+											{% endif %}
+										</div>
+										{% comment %}
+											The form is placed outside of btn-group for stylization purposes
+											Functionality stays the same as long as the button contains the 'form' attribute
+											and it properly references the ID of the form it belongs to
+										{% endcomment %}
+										{% if btnMarkAsAnswered == 'true' %}
+											<form id="helpdesk-markform-{{comment.id}}" class="hidden" action="/help/mark_the_answer/{{comment.id}}" method="POST" enctype="multipart/form-data">
+												{% csrf_token %}
+											</form>
+										{% endif %}
+									</aside>
+								</article>
 							</div>
-						</article>
-					</li>
+						</li>
 					{% endfor %}
 				</ul>
 			</aside>
@@ -120,13 +182,13 @@
 {% endblock %}
 
 {% block modalsincluded %}
-{% for image in images %}
-<div id="{{image.photo|slugify}}" class="lightbox hide fade">
-	<div class="lightbox-content">
-		<img src="/static/{{image.photo}}">
-	</div>
-</div>
-{% endfor %}
+	{% for image in images %}
+		<div id="{{image.photo|slugify}}" class="lightbox hide fade">
+			<div class="lightbox-content">
+				<img src="/static/{{image.photo}}">
+			</div>
+		</div>
+	{% endfor %}
 {% endblock %}
 
 {% block additionaljs %}
