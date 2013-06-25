@@ -1,5 +1,3 @@
-
-{% block container %}
 <body>
     <div id = 'container'></div>
     <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
@@ -54,7 +52,7 @@
                                 {% for x in board_notes %}
                                     if("{{x.id}}" == "{{i.nodeLink}}"){
                                         var newCircle = "circle" + circleId;
-                                        newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", "{{x.title}}", "{{x.description|linebreaksbr}}", circleId, {{i.id}});
+                                        newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", "{{x.title}}", "{{x.description|safe}}", circleId, {{i.id}});
                                         circleId ++;
                                     };
                                 {% endfor %}
@@ -74,7 +72,7 @@
                         var mousePos = stage.getMousePosition();
                         var x = mousePos.x ;
                         var y = mousePos.y ;
-                        var noteDivWidth = 300;
+                        var noteDivWidth = 400;
                         var noteDivY = y - 4;
                         if(imageWidth - x <= noteDivWidth){
                             var noteDivX = x - 305;
@@ -89,7 +87,7 @@
                             var noteDivY = y - 4;
                         };
                         placementLock = true;
-                            $('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; width: " + noteDivWidth + "px; background-color: gray'><form id = 'submitForm'" + counter + "' style = 'visibility: visible;' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label' style = 'display:none'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' style = 'display:none'/></td></tr><tr><th><label style = 'display:block' for='id_title' id='id_title_label'>Title:</label></th><td><input style = 'display:block' type='text' name='title' id='id_title' /></td></tr><tr><th><label style = 'display:block' for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' style = 'display:block; resize: none;' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                            $('body').append("<div id = 'noteNo" + counter + "' style = 'position: absolute; top: " + noteDivY + "px; left: " + noteDivX + "px; visibility: visible; border-radius: 12px; padding: 10px; width: " + noteDivWidth + "px; background-color: gray'><form id = 'submitForm'" + counter + "' style = 'visibility: visible;' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label' style = 'display:none'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' style = 'display:none'/></td></tr><tr><th><label style = 'display:block' for='id_title' id='id_title_label'>Title:</label></th><td><input style = 'display:block' type='text' name='title' id='id_title' /></td></tr><tr><th><label style = 'display:block' for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' style = 'display:block; resize: none;' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
                             
                             $('body').append('<p>X: ' + x + ' Y: ' + y + '</p>');
                             var circle = new Kinetic.Circle({
@@ -130,7 +128,7 @@
                         var mousePos = stage.getMousePosition();
                         var x = mousePos.x ;
                         var y = mousePos.y ;
-                        var noteDivWidth = 300;
+                        var noteDivWidth = 400;
                         var noteDivY = y - 4;
                         if(imageWidth - x <= noteDivWidth){
                             var noteDivX = x - 305;
@@ -183,7 +181,7 @@
                 function bugNote(x, y, nodeLink, nodeType, noteTitle, noteDescription, divId, Id){
                     var tooltipId = "#" + divId;
                     var bugListId = "#bugListNo" + divId;
-                    var noteDivWidth = 300;
+                    var noteDivWidth = 400;
                     var issueSelected = ""
                     var noteSelected = ""
                     //if checks to determine what nodeLink type is selected in edit div below
@@ -312,4 +310,3 @@
             };
          </script>
 </body>
-{% endblock %}

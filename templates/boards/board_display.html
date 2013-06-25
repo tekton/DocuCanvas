@@ -6,6 +6,26 @@
                 margin: 0px;
                 padding: 0px;
             }
+            #bugListContainer{
+                border: 1px solid #F2F2F2;
+                box-shadow: 0 1px 4px #5A5A5A;
+                
+            }
+            #bugList{
+                position: fixed;
+                width: 190px;
+                height: 99%;
+                top: 0px;
+                right: 0px;
+                padding: 5px;
+                visibility: visible;
+                overflow:scroll;
+                overflow-x:hidden;
+                border: 1px solid #F2F2F2;
+                box-shadow: 0 1px 4px #5A5A5A;
+                border-top-left-radius: 10px;
+                border-bottom-left-radius: 10px;
+            }
         </style>
     </head>
     <body>
@@ -121,7 +141,7 @@
                             if("{{i.nodeType}}" == "issue"){
                                 {% for x in issues %}
                                     if({{x.id}} == {{i.nodeLink}}){
-                                        newCircle = new issueNote({{i.x}}, {{i.y}}, "{{x.summary|linebreaksbr}}", "{{x.description|linebreaksbr}}","/issue/"+{{i.nodeLink}}, circleId);
+                                        newCircle = new issueNote({{i.x}}, {{i.y}}, "{{x.summary|linebreaksbr}}", '{{x.description|linebreaksbr}}',"/issue/"+{{i.nodeLink}}, circleId);
                                     };
                                 {% endfor %}
                              }else if('{{i.nodeType}}' == 'note'){
@@ -159,7 +179,7 @@
                         toggleTooltipDiv.style.visibility = 'visible';
                         toggleTriangleDiv.style.visibility = 'visible';
                         $(tooltipId).css('visibility', 'visible');
-                        $(bugListId).css('background-color', 'red');
+                        $(bugListId).css('background-color', '#ddd');
                         $(bugListLinkId).text("Hide");
                     };
             };
@@ -178,6 +198,8 @@
             $('body').append("<div id = 'bugList' style = 'position: fixed; width: 190px; top: 50px; left: 1383px; padding: 5px; background-color: green; visibility: visible; overflow:scroll;'></div>")*/
          </script>
          <!--<div  style = 'position: fixed; width: 200px; height: 50px; top: 0px; left:800px; background-color: blue;'><a id = "toggler" href = "#" onclick="toggleBugListDiv()">Hide</a></div> -->
-         <div style = ' box-shadow: 0px 1px 10px #a7a7a7, inset 0 1px 0 #fff'><div id = 'bugList' style = 'position: fixed; width: 190px; height: 99%; top: 0px; right: 0px; padding: 5px;  visibility: visible; overflow:scroll; overflow-x:hidden; border-style: solid; border-width: 1px;'></div><div style = 'clear: both'></div></div>
+         <div id='bugListContainer' >
+            <div id = 'bugList'></div>
+        </div>
     </body>
 </html>
