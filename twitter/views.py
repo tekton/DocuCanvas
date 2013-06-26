@@ -71,6 +71,11 @@ def send_dm_comment_update(request, user_id, issue_comment_id):
 		comment = IssueComment.objects.get(pk=issue_comment_id)
 		issue = comment.issue
 		project = issue.project
+		auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+		api = tweepy.API(auth)
+		content = comment.user + " commented on issue " + issue.summary + " in project " + project.name
+	return redirect('dashboard.views.home')
 
 
 def send_dm_new_issue(request, user_id, issue_id):
@@ -79,9 +84,14 @@ def send_dm_new_issue(request, user_id, issue_id):
 		twat = TwitterProfile.objects.get(user=myuser)
 		issue = Issue.objects.get(pk=issue_id)
 		project = issue.project
+		auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+		api = tweepy.API(auth)
+		content = "New issue in project, " + project.name + "\n" + "Issue Summary: " + issue.summary
+	return redirect('dashboard.views.home')
 
 
-def send_dm_all_new_issue(request, issue_id):
+def send_dm_new_issue_all(request, issue_id):
 	if request.user.is_staff:
 		twat = TwitterProfile.objects.all()
 		issue = Issue.objects.get(pk=issue_id)
@@ -136,3 +146,6 @@ def new_project_tweet(request, project_id):
 		content = "New Project Created! " + project.name
 		api.update_status(status=content)
 	return redirect('dashboard.views.home')
+
+
+
