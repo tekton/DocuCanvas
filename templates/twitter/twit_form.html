@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block container %}
-	<form action="/add_account/twitter" method="post" enctype="multipart/form-data">
+	<form action="/twitter/add_account" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		<table>
 			<tr><td>Username:</td></tr>

@@ -5,6 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gadget</title>
+
+
+    <link rel="stylesheet" href="{% static 'theme/bootstrap/css/bootstrap.css' %}">
+    <script src="{% static 'scripts/jquery.min.js' %}"></script>
+    <script src="{% static 'theme/bootstrap/js/bootstrap.js' %}"></script>
     <style>
         html,
         body {
@@ -66,12 +71,15 @@
           background-color: #f2f2f2 !important;
           color: #5a5a5c !important;
           border: 2px solid #e3e3e3;
+          border-radius: 6px;
           padding: 0 10px 0 54px;
           background-image: url({% static "theme/assets/img/login_fieldbg.png" %}) !important;
           background-repeat: no-repeat; }
 
         #account-loginform input:focus {
-          border-color: #cd3748;
+          border-color: #587C91;
+          transition: none;
+          box-shadow: none;
           color: #000;
           outline: none; }
 
@@ -160,7 +168,7 @@
                     <p>
                         <button id="login-button" class="formfield" type="submit">Login</button>
                     </p>
-                    <p id="login-forgot" class="hide"><a href="#" role="button" data-toggle="modal" data-target="#account-registrationform">Register</a></p>
+                    <p id="login-forgot"><a href="#" role="button" data-toggle="modal" data-target="#account-registrationform">Register</a></p>
                 </form>
             </div>
         </div>
