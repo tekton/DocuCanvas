@@ -152,6 +152,7 @@ INSTALLED_APPS = (
     'gapps',
     'tinymce',
     'facebook',
+    'twitter',
  )
 
 # A sample logging configuration. The only tangible logging

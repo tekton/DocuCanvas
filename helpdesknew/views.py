@@ -1,5 +1,5 @@
 import json
-
+from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -226,6 +226,8 @@ def mark_the_input(request, response_id):
 @login_required
 def edit_question(request, help_id):
     helpdeez = HelpRequest.objects.get(pk=help_id)
+    if request.user != helpdeez.user:
+        raise PermissionDenied()
     try:
         projects = Project.objects.all()
     except Exception, e:

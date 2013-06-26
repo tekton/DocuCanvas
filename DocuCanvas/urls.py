@@ -34,4 +34,5 @@ urlpatterns = patterns('',
     url(r'^gapps/', include('gapps.urls')),
     url(r'^tinymmce/', include('tinymce.urls')),
     url(r'^facebook/', include('facebook.urls')),
+    url(r'^twitter/', include('twitter.urls')),
 )
