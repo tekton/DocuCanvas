@@ -1,12 +1,18 @@
 <!DOCTYPE HTML>
 <html>
     <head>
+        {% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'theme/bootstrap/css/bootstrap.css' %}">
+        <link rel="stylesheet" href="{% static 'bootstrap/bootstrap-lightbox.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
         <style>
             body{
                 margin: 0px;
                 padding: 0px;
             }
-            #container{
+            #bodyContainer{
+                top: 0;
+                left: 0;
                 overflow:scroll;
                 overflow-y:hidden;
                 margin-right: 202px;
@@ -15,12 +21,12 @@
                 position: fixed;
                 width: 190px;
                 height: 98%;
+                margin-top: 5px;
                 top: 0px;
                 right: 0px;
-                padding: 5px;
                 visibility: visible;
-                overflow:scroll;
-                overflow-x:hidden;
+                overflow: scroll;
+                overflow-x: hidden;
                 border: 1px solid #F2F2F2;
                 box-shadow: 0 1px 4px #5A5A5A;
                 border-top-left-radius: 10px;
@@ -56,6 +62,13 @@
                 visibility: hidden;
                 z-index: 0;
             }
+            input[type='button']{
+                margin-top: 15px;
+                margin-left: 5px;
+            }
+            #buttonContainer{
+                min-height: 60px;
+            }
             #noteHeader{
                 border-top-left-radius: 12px;
                 border-top-right-radius: 12px;
@@ -78,15 +91,286 @@
             }
             div[id^='bugListNo']{
                 padding: 5px;
-                margin-bottom: 2px;
             }
+            #sitenav{
+                position: fixed;
+                display: none;
+                z-index: 4;
+            }
+            .brand { 
+            position: absolute;
+            right: 6px;
+            padding: 0 5px;
+            background-color: #587C91;
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+            z-index: 5;
+        }
+        #bugList .brand{
+            display: inline-block;
+            padding-top: 5;
+        }
+        .brand .logo {
+
+            display: block;
+            text-indent: -9999px;
+            width: 50px;
+            height: 50px;
+            background-image: url({% static 'theme/assets/img/logo-gadget-sitenav.png' %});
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        #bugList .brand img{
+            margin-top: 5px;
+        }
+        #sitenav .navbar-inner {
+            min-height: 60px;
+            border-bottom: 0;
+            box-shadow: 0 1px 5px #5A5A5A;
+            background-color: #2B2F32;
+            background-image: none;
+        }
+        #sitenav #mainnav li {
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        #sitenav #mainnav .dropdown-menu li {
+            text-transform: none;
+        }
+        #sitenav form {
+            margin-bottom: 0;
+        }
+        #sitenav .navbar-search .search-query {
+            width: 145px;
+            height: 18px;
+            color: #ffffff;
+            background-color: #515151;
+            border-color: #111111;
+            -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+            -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+            -webkit-transition: none;
+            -moz-transition: none;
+            -o-transition: none;
+            transition: none;
+        }
+        #sitenav .navbar-search .search-query:-moz-placeholder {
+            color: #cccccc;
+        }
+        #sitenav .navbar-search .search-query:-ms-input-placeholder {
+            color: #cccccc;
+        }
+        #sitenav .navbar-search .search-query::-webkit-input-placeholder {
+            color: #cccccc;
+        }
+        #sitenav .navbar-search .search-query:focus,
+        #sitenav .navbar-search .search-query.focused {
+            padding: 5px 15px;
+            color: #333333;
+            text-shadow: 0 1px 0 #ffffff;
+            background-color: #ffffff;
+            border: 0;
+            -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+            -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+            outline: 0;
+        }
+        #sitenav #mainnav .nav > li > a {
+            padding-bottom: 10px;
+            border-bottom: 5px solid transparent;
+        }
+        #sitenav #mainnav .nav > li > a.active {
+            border-color: #587C91;
+        }
+
+        .panel,
+        .well {
+            border: 1px solid #F2F2F2;
+            box-shadow: 0 1px 4px #5A5A5A;
+            background-color: #FFF;
+        }
+
+        .well.span6 {
+            width: 530px;
+        }
+
+        #pagetitle {
+            text-align: center;
+            margin: 15px 0 25px;
+        }
+
+        #pagetitle .title-separator {
+            display: none;
+        }
+
+        .metainfo-hide .metainfo-content  {
+            display: none;
+        }
+
+        .issue-comment {
+            min-height: 45px;
+        }
+        .issue-comment .comment-markbutton,
+        .issue-comment .comment-editbutton {
+            display: none;
+        }
+        .issue-comment.show-editbutton .comment-editbutton,
+        .issue-comment.show-editbutton .comment-markbutton {
+            display: block;
+        }
+
+        .mark_notification_as_read{
+            cursor:pointer;
+        }
+
+        .comment aside {
+            padding: .5em 0;
+            margin: .5em 0;
+            border-color: #CCC;
+            border-style: solid;
+            border-width: 1px 0 0;
+        }
+
+        #maincontent {
+            -o-animation: fadein .7s;
+            -moz-animation: fadein .7s;
+            -webkit-animation: fadein .7s;
+            animation: fadein .7s;
+        }
+
+        @-o-keyframes fadein {
+            from {
+                opacity:0;
+            }
+            to {
+                opacity: 1;
+            }
+        }​
+        @-moz-keyframes fadein {
+            from {
+                opacity:0;
+            }
+            to {
+                opacity:1;
+            }
+        }
+        @-webkit-keyframes fadein {
+            from {
+                opacity:0;
+            }
+            to {
+                opacity:1;
+            }
+        }
+        @keyframes fadein {
+            from {
+                opacity:0;
+            }
+            to {
+                opacity:1;
+            }
+        }
+
+        @media (min-width: 980px) {
+            #globalwrap {
+            }
+        }
+
+        /* Large Desktop */
+        @media (min-width: 1200px) {
+            
+        }
+        
+        /* Portrait tablet to landscape and desktop */
+        @media (min-width: 768px) and (max-width: 979px) {
+
+        }
+        
+        /* Landscape phone to portrait tablet */
+        @media (max-width: 767px) {
+
+        }
+        
+        /* Landscape phones and down */
+        @media (max-width: 480px) {
+            
+        }
         </style>
     </head>
     <body>
-        <div id = "container"> </div>
+        
+        <div id="globalwrap">
+        <div id="sitenav" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="nav-collapse collapse">
+                        <nav id="mainnav">
+                            <ul class="nav">
+                                <li><a href="/" class="{% if page_type == 'Dashboard' %}active{% endif %}">Dashboard</a></li>
+                                <li class="dropdown">
+                                    <a href="/project" class="dropdown-toggle {% if page_type == 'Project' %}active{% elif page_type == 'Projects' %}active{% elif page_type == 'Issue' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        {% if projects.count > 0 %}
+                                        <li class="nav-header">All Projects</li>
+                                        {% for project in projects%}
+                                            <li><a href="/project/{{project.id}}">{{project.name}}</a></li>
+                                        {% endfor %}
+                                        {% endif %}
+                                        <li class="nav-header">New</li>
+                                        <li><a href="/project/new">Project</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="/reports" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
+                            </ul>
+                        </nav>
+                        <div id="searchform">
+                            <form class="navbar-search pull-right" action="/issue/search" method="POST">
+                                {% csrf_token %}
+                                <div class="input-prepend input-append">
+                                    <a class="btn btn-inverse" href="/issue/advsearch" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
+                                    <input type="text" name="searchText" class="search-query" placeholder="Search">
+                                    <button type="submit" class="btn btn-inverse">Go</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div id="userbar">
+                            <ul class="nav pull-right">
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Context <b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        {% block context_nav %}{% endblock %}
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user}} <b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="/accounts/account_settings">Settings</a></li>
+                                        <li><a href="/accounts/logout/?next=/">Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% block basecontent %}{% endblock %}
+    </div>
+        <div id = "bodyContainer"> </div>
          <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
-          <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-          <script src = '/static/scripts/board_functions.js'></script>
+          <script src="{% static 'scripts/jquery.min.js' %}"></script>
+        <script src="{% static 'scripts/jquery-ui.min.js' %}"></script>
+        <script src="{% static 'scripts/ajax_tools.js' %}"></script>
+        <script src="{% static 'theme/bootstrap/js/bootstrap.js' %}"></script>
+        <script src="{% static 'bootstrap/bootstrap-lightbox.min.js' %}"></script>
+        <script src="{% static 'theme/assets/js/tablesorter/jquery.tablesorter.js' %}"></script>
            <script>
 
             //Test variables for placing notes, most will be contained in database when finished
@@ -109,7 +393,7 @@
 
 
                 var stage = new Kinetic.Stage({
-                    container: 'container',
+                    container: 'bodyContainer',
                     width: imageWidth,
                     height: imageHeight,
                 });
@@ -170,8 +454,6 @@
     						circleId ++;
                         };
 				    {% endfor %}
-				{% else %}
-					$('body').append('<p>No Board nodes</p>');
 				{% endif %}
                 stage.add(shapesLayer);
              };
@@ -214,9 +496,19 @@
                     $('#toggler').text("Hide");
                 };
             };
+
+            function toggleHeader(){
+                console.log('hi');
+                console.log($('#sitenav').css('display'));
+                if($('#sitenav').css('display') == 'none'){
+                    $('#sitenav').css('display', 'block');
+                }else if($('#sitenav').css('display') == 'block'){
+                    $('#sitenav').css('display', 'none');
+                };
+            };
          </script>
 
-        <div id = 'bugList'><input type='button' value='Edit' onClick='window.location.href="/board/board_edit/{{board.id}}"' /></div>
+        <div id = 'bugList'><div id='buttonContainer'><input type='button' value='Edit' onClick='window.location.href="/board/board_edit/{{board.id}}"' /><a class="brand" onClick='toggleHeader()'><span class="logo">Gadget</span></a></div></div>
 
     </body>
 </html>
