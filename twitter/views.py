@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.template import RequestContext
 
 from twitter.models import TwitterProfile
 from twitter.forms import TwitterForm
