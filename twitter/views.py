@@ -40,6 +40,7 @@ def add_twitter_acct(request):
 				twits = TwitterProfile.objects.all()
 			except Exception, e:
 				print e
+			# Check to make sure username does not already exist in database
 			for twit in twits:
 				if twit.user_name == twat.user_name:
 					print "user_name already in database"
@@ -58,7 +59,9 @@ def add_twitter_acct(request):
 def remove_twitter_acct(request):
 	myuser = request.user
 	twat = TwitterProfile(user=user)
-
+	twat.delete()
+	print "Account Deleted"
+	return redirect('dashboard.views.home')
 
 
 def send_dm_comment_update(request, user_id, issue_comment_id):
