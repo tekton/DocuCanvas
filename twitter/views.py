@@ -23,6 +23,7 @@ access_token_url	= 'http://twitter.com/oauth/access_token'
 authenticate_url	= 'http://twitter.com/oauth/authenticate'
 
 
+@login_required
 def tweeter(request):
 	auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 	auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
@@ -31,6 +32,7 @@ def tweeter(request):
 	api.send_direct_message(screen_name=myuser, text='Hello!')
 
 
+@login_required
 def add_twitter_acct(request):
 	twat = TwitterProfile()
 	if request.method == 'POST':
@@ -56,6 +58,7 @@ def add_twitter_acct(request):
 	return render_to_response('twitter/twit_form.html', {'form': twatForm}, context_instance=RequestContext(request))
 
 
+@login_required
 def remove_twitter_acct(request):
 	myuser = request.user
 	twat = TwitterProfile(user=user)
@@ -64,6 +67,7 @@ def remove_twitter_acct(request):
 	return redirect('dashboard.views.home')
 
 
+@login_required
 def send_dm_comment_update(request, user_id, issue_comment_id):
 	if request.user.is_staff:
 		myuser = User.objects.get(pk=user_id)
@@ -78,6 +82,7 @@ def send_dm_comment_update(request, user_id, issue_comment_id):
 	return redirect('dashboard.views.home')
 
 
+@login_required
 def send_dm_new_issue(request, user_id, issue_id):
 	if request.user.is_staff:
 		myuser = User.objects.get(pk=user_id)
@@ -91,6 +96,7 @@ def send_dm_new_issue(request, user_id, issue_id):
 	return redirect('dashboard.views.home')
 
 
+@login_required
 def send_dm_new_issue_all(request, issue_id):
 	if request.user.is_staff:
 		twat = TwitterProfile.objects.all()
@@ -109,6 +115,7 @@ def send_dm_new_issue_all(request, issue_id):
 	return redirect('dashboard.views.home')
 
 
+@login_required
 def send_dm_new_project(request, user_id, project_id):
 	if request.user.is_staff:
 		twat = TwitterProfile.objects.get(pk=user_id)
@@ -121,6 +128,7 @@ def send_dm_new_project(request, user_id, project_id):
 	return redirect('dashboard.views.home')
 
 
+@login_required
 def send_dm_new_project_all(request, project_id):
 	if request.user.is_staff:
 		twat = TwitterProfile.objects.all()
@@ -137,6 +145,7 @@ def send_dm_new_project_all(request, project_id):
 	return redirect('dashboard.views.home')
 
 
+@login_required
 def new_project_tweet(request, project_id):
 	if request.user.is_staff:
 		project = Project.objects.get(pk=project_id)
