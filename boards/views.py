@@ -90,6 +90,7 @@ def boards(request):
 def board_edit(request, board_id):
     board_nodes = BoardNode.objects.all()
     board_notes = BoardNote.objects.all()
+    issues = Issue.objects.all()
     print "Submitting board..."
     nodeId = request.POST.get('id', "")
     nodeType = request.POST.get('nodeType', "")
@@ -149,7 +150,7 @@ def board_edit(request, board_id):
         p = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
         raise Http404
-    return render_to_response('boards/board_edit.html', {'board': p, 'form': form, 'board_nodes': board_nodes, 'board_notes': board_notes}, context_instance=RequestContext(request))
+    return render_to_response('boards/board_edit.html', {'board': p, 'form': form, 'board_nodes': board_nodes, 'board_notes': board_notes, 'issues': issues}, context_instance=RequestContext(request))
 
 
 @login_required

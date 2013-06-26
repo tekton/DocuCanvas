@@ -11,15 +11,10 @@
                 overflow-y:hidden;
                 margin-right: 202px;
             }
-            #bugListContainer{
-                border: 1px solid #F2F2F2;
-                box-shadow: 0 1px 4px #5A5A5A;
-
-            }
             #bugList{
                 position: fixed;
                 width: 190px;
-                height: 99%;
+                height: 98%;
                 top: 0px;
                 right: 0px;
                 padding: 5px;
@@ -35,10 +30,10 @@
                 background-color: white;
                 position: absolute;
                 z-index: 2;
-                opacity: 0.9;
                 visibility: hidden;
+                border: 1px solid #F2F2F2;
+                box-shadow: 0 1px 4px #5A5A5A;
                 border-radius: 12px;
-                padding: 3px;
                 width: 200px;
             }
             div[id^='triangle']{
@@ -48,9 +43,8 @@
                 border-right: 10px solid white;
                 border-bottom: 10px solid transparent;
                 border-top: 10px solid transparent;
-                opacity: 0.9;
                 visibility: hidden;
-                z-index: 1;
+                z-index: 3;
             }
             div[id^='triangleBorder']{
                 position: absolute;
@@ -59,7 +53,6 @@
                 border-right: 12px solid black;
                 border-bottom: 12px thin transparent;
                 border-top: 12px thin transparent;
-                opacity: 0.9;
                 visibility: hidden;
                 z-index: 0;
             }
@@ -68,17 +61,12 @@
                 border-top-right-radius: 12px;
                 background-color: #ddd;
                 text-align: left;
+                padding-left: 5px;
                 position: relative;
-                border: 1px solid #F2F2F2;
-                box-shadow: 0 1px 4px #5A5A5A;
-                border-top: 0px;
-                border-right: 0px;
-                border-left: 0px;
-                padding: 5px;
+
             }
             #noteDescription{
-                border: 1px solid #F2F2F2;
-                box-shadow: 0 1px 4px #5A5A5A;
+
                 text-align: left;
                 border-bottom-left-radius: 12px;
                 border-bottom-right-radius: 12px;
@@ -90,8 +78,6 @@
             }
             div[id^='bugListNo']{
                 padding: 5px;
-                border-style: solid;
-                border-width: 1px;
                 margin-bottom: 2px;
             }
         </style>
@@ -159,8 +145,8 @@
                     });
 
                     shapesLayer.add(circle);
-                    $('body').append("<div id = 'issueNote" + divId + "' style = 'top: " + (y - 20) + "px; left: " + (x + 24) + "px; '><div id='noteHeader'><strong>" + summary + "</strong></div><div id='noteDescription' >" + description + "</div>" + issueLink + "</div>");
-                    $('body').append("<div id = 'triangleBorder" + divId + "'; style = 'top:" + (y-9) + "px; left: " + (x+14) + "px;'></div><div id = 'triangle" + divId + "'; style = 'top:" + (y-10) + "px; left: " + (x+14) + "px;'></div> ");
+                    $('body').append("<div id = 'issueNote" + divId + "' style = 'top: " + (y - 30) + "px; left: " + (x + 24) + "px; '><div id='noteHeader'><strong>" + summary + "</strong></div><div id='noteDescription' >" + description + "</div>" + issueLink + "</div>");
+                    $('body').append("<div id = 'triangleBorder" + divId + "'; style = 'top:" + (y-9) + "px; left: " + (x+15) + "px;'></div><div id = 'triangle" + divId + "'; style = 'top:" + (y-10) + "px; left: " + (x+15) + "px;'></div> ");
                     $('#bugList').append("<div id = 'bugListNo" + divId + "' >" + summary + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><div id = 'bugListLink" + divId + "'>Show</div></a>");
                 };
                 {% if board_nodes %}
@@ -191,7 +177,7 @@
              };
             imageObj.src = '/static/{{board.image}}';
 
-             function toggleInfoBox(divId){
+            function toggleInfoBox(divId){
                 var toggleTooltipDiv = document.getElementById('issueNote'+divId);
                 var tooltipId = "#issueNote" + divId;
                 var bugListId = "#bugListNo" + divId;
@@ -229,8 +215,8 @@
                 };
             };
          </script>
-         <div id='bugListContainer' >
-            <div id = 'bugList'></div>
-        </div>
+
+        <div id = 'bugList'><input type='button' value='Edit' onClick='window.location.href="/board/board_edit/{{board.id}}"' /></div>
+
     </body>
 </html>
