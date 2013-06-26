@@ -196,6 +196,7 @@ def unlink_issues(request):
 
 
 @login_required
+@permission_required("issues.change_issue", raise_exception=True)
 def issue_to_issue_link(request):
     to_json = {}
 
