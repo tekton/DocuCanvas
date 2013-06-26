@@ -1,373 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        {% load staticfiles %}
-        <meta charset="utf-8">
-        <title>Gadget</title>
-        <link rel="stylesheet" href="/static/css/jquery-ui.css" />
-        <style>
-            ::-moz-selection {
-                background: #b3d4fc;
-                text-shadow: none;
-            }
+<head>
+{% load staticfiles %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-            ::selection {
-                background: #b3d4fc;
-                text-shadow: none;
-            }
+    <title>Gadget</title>
 
-            html {
-                padding: 0 10px;
-                font-size: 20px;
-                line-height: 1.4;
-                color: #737373;
-                background: #f0f0f0;
-                -webkit-text-size-adjust: 100%;
-                -ms-text-size-adjust: 100%;
-            }
+    <link rel="stylesheet" href="{% static 'theme/bootstrap/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/bootstrap-lightbox.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'gadget.css' %}">
+    {% block additional_head %}{% endblock %}
+</head>
+<body>
+    <div id="globalwrap">
+        <div id="sitenav" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="brand" href="/"><span class="logo">Gadget</span></a>
+                    <div class="nav-collapse collapse">
+                        <nav id="mainnav">
+                            <ul class="nav">
+                                <li><a href="/" class="{% if page_type == 'Dashboard' %}active{% endif %}">Dashboard</a></li>
+                                <li class="dropdown">
+                                    <a href="/project" class="dropdown-toggle {% if page_type == 'Project' %}active{% elif page_type == 'Projects' %}active{% elif page_type == 'Issue' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        {% if projects.count > 0 %}
+                                        <li class="nav-header">All Projects</li>
+                                        {% for project in projects%}
+                                            <li><a href="/project/{{project.id}}">{{project.name}}</a></li>
+                                        {% endfor %}
+                                        {% endif %}
+                                        <li class="nav-header">New</li>
+                                        <li><a href="/project/new">Project</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="/reports" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
+                            </ul>
+                        </nav>
+                        <div id="searchform">
+                            <form class="navbar-search pull-right" action="/issue/search" method="POST">
+                                {% csrf_token %}
+                                <div class="input-prepend input-append">
+                                    <a class="btn btn-inverse" href="/issue/advsearch" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
+                                    <input type="text" name="searchText" class="search-query" placeholder="Search">
+                                    <button type="submit" class="btn btn-inverse">Go</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div id="userbar">
+                            <ul class="nav pull-right">
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Context <b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        {% block context_nav %}{% endblock %}
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user}} <b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="/accounts/account_settings">Settings</a></li>
+                                        <li><a href="/accounts/logout/?next=/">Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% block basecontent %}{% endblock %}
+    </div>
 
-            html,
-            input {
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            }
-
-            body {
-                /*max-width: 900px;*/
-                _width: 900px;
-                padding: 60px 20px 50px;
-                border-width: 0 1px;
-                border-style: solid;
-                border-color: #b3b3b3;
-                margin: 0 auto;
-                box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
-                background: #fcfcfc;
-            }
-
-            h1 {
-                margin: 0 10px;
-                font-size: 50px;
-                text-align: center;
-            }
-
-            h1 span {
-                color: #bbb;
-            }
-
-            h3 {
-                margin: 1.5em 0 0.5em;
-            }
-
-            p {
-                margin: 1em 0;
-            }
-
-            ul {
-                padding: 0 0 0 40px;
-                margin: 1em 0;
-            }
-
-            a{
-                text-decoration:none;
-                color:#737373;
-            }
-
-            .ui-icon{
-                display:inline-block;
-            }
-
-            .ui-icon:hover{
-                cursor:pointer;
-            }
-
-            #home_icon{
-                border-style:solid;
-                border-radius:3px;
-                border-color:#bbb;
-            }
-
-            .container {
-                /*max-width: 1000px;*/
-                _width: 380px;
-                margin: 0 auto;
-                margin-right: 225px;
-                padding: 30px 20px 50px;
-                border: 1px solid white;
-                border-radius: 4px;
-                box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
-                background: #fcfcfc;
-            }
-
-            .container_nav{
-                /*max-width: 1000px;*/
-                _width: 380px;
-                margin: 0 auto;
-                margin-right: 225px;
-                padding: 30px 20px 50px;
-                border: 1px solid white;
-                border-radius: 4px;
-                box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
-                background: #fcfcfc;
-            }
-
-            .container_nav a{
-                display:inline-block;
-                width:100%;
-                border-radius: 4px;
-            }
-
-            .container_nav a:hover{
-                cursor:pointer;
-                background:#bbb;
-            }
-
-            .spiffy_box {
-                max-width: 150px;
-                _width: 150px;
-                margin: 0 auto;
-
-                padding: 30px 20px 50px;
-                border: 1px solid white;
-                border-radius: 4px;
-                box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
-                background: #fcfcfc;
-            }
-
-            .left {
-                float: left;
-            }
-
-            .right {
-                float: right;
-            }
-
-            .right-avoid {
-
-            }
-
-            .both {
-                clear: both;
-            }
-
-            .main_nav_button{
-                display:inline;
-            }
-
-            .main_nav_button:hover{
-                cursor:pointer;
-            }
-
-            /* navigation bar */
-            #advanced_search{
-            }
-
-            #context_nav {
-                width: 20em;
-                padding: 1em;
-                position: absolute;
-                min-height: 2em;
-                height:auto;
-                overflow: hidden;
-                z-index:10;
-                font-size:0.7em;
-                display:none;
-            }
-
-            #projects_nav {
-                width: 20em;
-                padding: 1em;
-                position: absolute;
-                min-height: 2em;
-                height:auto;
-                overflow: hidden;
-                z-index:10;
-                font-size:0.7em;
-                display:none;
-            }
-
-
-            #account_nav {
-                width: 135px;
-                padding: 1em;
-                position: absolute;
-                overflow: hidden;
-                z-index:10;
-                font-size:0.7em;
-                display:none;
-            }
-            #search_nav {
-                width: 10em;
-                padding: 1em;
-                position: absolute;
-                height: 2em;
-                overflow: hidden;
-                z-index:10;
-                font-size:0.7em;
-                display:none;
-            }
-
-            /* google search */
-
-            #goog-fixurl ul {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
-
-            #goog-fixurl form {
-                margin: 0;
-            }
-
-            #goog-wm-qt,
-            #goog-wm-sb {
-                border: 1px solid #bbb;
-                font-size: 16px;
-                line-height: normal;
-                vertical-align: top;
-                color: #444;
-                border-radius: 2px;
-            }
-
-            #goog-wm-qt {
-                width: 220px;
-                height: 20px;
-                padding: 5px;
-                margin: 5px 10px 0 0;
-                box-shadow: inset 0 1px 1px #ccc;
-            }
-
-            #goog-wm-sb {
-                display: inline-block;
-                height: 32px;
-                padding: 0 10px;
-                margin: 5px 0 0;
-                white-space: nowrap;
-                cursor: pointer;
-                background-color: #f5f5f5;
-                background-image: -webkit-linear-gradient(rgba(255,255,255,0), #f1f1f1);
-                background-image: -moz-linear-gradient(rgba(255,255,255,0), #f1f1f1);
-                background-image: -ms-linear-gradient(rgba(255,255,255,0), #f1f1f1);
-                background-image: -o-linear-gradient(rgba(255,255,255,0), #f1f1f1);
-                -webkit-appearance: none;
-                -moz-appearance: none;
-                appearance: none;
-                *overflow: visible;
-                *display: inline;
-                *zoom: 1;
-            }
-
-            #goog-wm-sb:hover,
-            #goog-wm-sb:focus {
-                border-color: #aaa;
-                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-                background-color: #f8f8f8;
-            }
-
-            #goog-wm-qt:hover,
-            #goog-wm-qt:focus {
-                border-color: #105cb6;
-                outline: 0;
-                color: #222;
-            }
-
-            input::-moz-focus-inner {
-                padding: 0;
-                border: 0;
-            }
-        /* titles and stuff */
-        .title {
-
-        }
-
-        .sub-title {
-
-        }
-
-#mainheader {
-    padding-top: .6em;
-    font-size: 30px;
-}
-{% include "include/table.css" %}
-{% include "theme/_includes/siteheader.css" %}
-        {% block style %}{% endblock %}
-        </style>
-        
-        <script type = “text/javascript” src=”/static/scripts/tiny_mce/tinymce.min.js”></script>
-        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-        <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
-
-        <script type="text/javascript">
-            var csrftoken;
-
-            function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie != '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = jQuery.trim(cookies[i]);
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-
-            function csrfSafeMethod(method) {
-                // these HTTP methods do not require CSRF protection
-                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-            }
-
-            function sameOrigin(url) {
-                // test that a given url is a same-origin URL
-                // url could be relative or scheme relative or absolute
-                var host = document.location.host; // host + port
-                var protocol = document.location.protocol;
-                var sr_origin = '//' + host;
-                var origin = protocol + sr_origin;
-                // Allow absolute or scheme relative URLs to same origin
-                return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-                    (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-                    // or any other URL that isn't scheme relative or absolute i.e relative.
-                    !(/^(\/\/|http:|https:).*/.test(url));
-            }
-
-            $(document).ready(function(){
-                csrftoken = getCookie('csrftoken');
-                $.ajaxSetup({
-                        beforeSend: function(xhr, settings) {
-                            if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
-                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                            }
-                        }
-                });
-            });
-        </script>
-
-        {% block extra_head %}{% endblock %}
-    </head>
-    <body>
-        {% include "theme/_includes/siteheaderPartA.html" %}
-        {% block context_nav %}{% endblock %}
-        {% include "theme/_includes/siteheaderPartB.html" %}
-
-        <article id="maincontent">
-        <h1>
-        {% if page_type %}
-            {{page_type}}
-        {% endif %}
-        {% if page_value %}
-        <span>:: {{page_value}}</span>
-        {% endif %}
-        </h1>
-        <div class="both">&nbsp;</div>
-            {% block container %}{% endblock %}
-        </article>
-
-        <script>
-        {% include "theme/_includes/siteheader.js" %}
-        </script>
-    </body>
+    {% block modalsincluded %}{% endblock %}
+    
+    <script src="{% static 'scripts/jquery.min.js' %}"></script>
+    <script src="{% static 'scripts/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'scripts/ajax_tools.js' %}"></script>
+    <script src="{% static 'theme/bootstrap/js/bootstrap.js' %}"></script>
+    <script src="{% static 'bootstrap/bootstrap-lightbox.min.js' %}"></script>
+    <script src="{% static 'theme/assets/js/tablesorter/jquery.tablesorter.js' %}"></script>
+    <script src="{% static 'gadget.js' %}"></script>
+    <script>
+        {% block additionaljs %}{% endblock %}
+    </script>
+    {% block endscripts %}{% endblock %}
+</body>
 </html>
