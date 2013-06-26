@@ -24,15 +24,6 @@ authenticate_url	= 'http://twitter.com/oauth/authenticate'
 
 
 @login_required
-def tweeter(request):
-	auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-	auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
-	api = tweepy.API(auth)
-	myuser = 'RyanSha61097211'
-	api.send_direct_message(screen_name=myuser, text='Hello!')
-
-
-@login_required
 def add_twitter_acct(request):
 	twat = TwitterProfile()
 	if request.method == 'POST':
