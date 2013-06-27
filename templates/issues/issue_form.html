@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
 <!--{%block extra_head%}
     <script type="text/javascript">
@@ -20,7 +20,7 @@
     {{ form.media }}
 {% endblock %}
 
-{% block container %}
+{% block basecontent %}
 	<form action="/issue/new" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		<table>

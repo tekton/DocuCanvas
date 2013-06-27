@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
 {% block context_nav %}
-    <a href="/">Dashboard</a>
-    <a href="/auth/user/{{user.id}}">{{user}}</a>
-    <a href="/issue/new">New Issue</a>
-    <a href="/issue/unassigned">Unassigned Issues</a>
-    <a href="/food/all">Food Requests</a>
-    <a href="/reports/edit">Daily Reports</a>
-    <a href="/help/user">Help</a>
+    <li><a href="/">Dashboard</a></li>
+    <li><a href="/auth/user/{{user.id}}">{{user}}</a></li>
+    <li><a href="/issue/new">New Issue</a></li>
+    <li><a href="/issue/unassigned">Unassigned Issues</a></li>
+    <li><a href="/food/all">Food Requests</a></li>
+    <li><a href="/reports/edit">Daily Reports</a></li>
+    <li><a href="/help/user">Help</a></li>
 {% endblock%}
 
 
-{% block container %}
+{% block basecontent %}
 <a href="accounts/change_email">Change Email Address</a><br>
 <a href="/accounts/change_password">Change Password</a>
 {% endblock %}

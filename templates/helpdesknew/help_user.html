@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
 {% block context_nav %}
 	<li><a href="/help/new">Ask a Question</a></li>
@@ -37,7 +37,7 @@ img.pending-image-help{
 }
 {% endblock %}
 
-{% block container %}
+{% block basecontent %}
 <h2>All Questions from {{myuser.username}}</h2>
 	{% if responses or answers or more_answers %}
 		<table class="tbl-generic tbl-overview">

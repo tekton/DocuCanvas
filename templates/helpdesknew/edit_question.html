@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
 {% block context_nav %}
     <li><a href="/help/new">Ask a Question</a></li>
@@ -13,7 +13,7 @@
 }
 {% endblock %}
 
-{% block container %}
+{% block basecontent %}
 <h2>Question Edit</h2>
 {% if user.id == help.user.id %}
 	<form action="{{help.id}}" method="post" enctype="multipart/form-data">

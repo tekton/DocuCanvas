@@ -1,11 +1,11 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
 {% block context_nav %}
     <li><a href="/notification/all">All Notifications</a></li>
     <li><a href="/notification/new">New Notification</a></li>
 {% endblock%}
 
-{% block container %}
+{% block basecontent %}
 <div id="formContainer">
     <form action="/notification/new" id = "checkListForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}

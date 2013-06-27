@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 {% load set_var %}
 
 {% block context_nav %}
@@ -35,7 +35,7 @@
     }
 {% endblock %}
 
-{% block container %}
+{% block basecontent %}
     {% if notifications %}
     <section class="well" id="notification_section">
         <header>

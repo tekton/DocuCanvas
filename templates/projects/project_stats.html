@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
 {% block context_nav %}
     <li><a href="/issue/new/{{project.id}}">New Issue</a></li>
@@ -40,7 +40,7 @@
     </script>
 {% endblock %}
 
-{% block container %}
+{% block basecontent %}
 <h3>Issues</h3>
 <table class="tbl-generic">
         <tr>

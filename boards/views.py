@@ -83,10 +83,9 @@ def index(request):
 
 @login_required
 def boards(request):
-
+    projects = Project.objects.all()
     boards = Board.objects.all()
-    context = {'boards': boards}
-    return render_to_response('boards/boards.html', context)
+    return render_to_response('boards/boards.html', {'boards': boards, 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required

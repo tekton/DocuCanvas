@@ -70,12 +70,12 @@ textarea{
 {% endblock %}
 
 {% block context_nav %}
-    <a href="/project/{{checklist_instance.checklist.project.id}}">{{checklist_instance.checklist.project.name}}</a>
-    <a href="/checklist/project/{{checklist_instance.checklist.id}}">{{checklist_instance.checklist.name}}</a>
-    <a href="/checklist/new/{{checklist_instance.checklist.project.id}}">New Checklist Instance</a>
+    <li><a href="/project/{{checklist_instance.checklist.project.id}}">{{checklist_instance.checklist.project.name}}</a></li>
+    <li><a href="/checklist/project/{{checklist_instance.checklist.id}}">{{checklist_instance.checklist.name}}</a></li>
+    <li><a href="/checklist/new/{{checklist_instance.checklist.project.id}}">New Checklist Instance</a></li>
 {% endblock%}
 
-{% block container %}
+{% block basecontent %}
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{form.management_form}}

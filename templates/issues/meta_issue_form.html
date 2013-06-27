@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
 {% block extra_head %}
     <style type="text/css">
@@ -37,7 +37,7 @@
     {{ form.media }}
 {% endblock %}
 
-{% block container %}
+{% block basecontent %}
     <form id="miform" action="/issue/meta/{% if new %}new{% else %}{{ form.instance.id }}/edit{% endif %}" method="post">
         {% csrf_token %}
         <table>

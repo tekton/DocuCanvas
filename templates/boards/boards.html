@@ -2,31 +2,43 @@
 {% block additional_head %}
 <style>
 img{
-	width: 10%;
-	height: 10%;
+	width: 30%;
+	height: 30%;
+}
+#row{
+	position: relative;
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
 }
 #titleContainer{
 	position: relative;
-	display: inline;
+	display: inline-block;
 	vertical-align: middle;
-	padding-bottom: 5px;
+	width: 200px;
 }
 #imageContainer{
+	width: 300px;
 	height: auto;
-	width: auto;
 	position: relative;
-	display: inline;
-	left: 200px;
+	display: inline-block;
 	margin-bottom: 5px;
 }
 </style>
 {% endblock %}
 {% block basecontent %}
 {% if boards %}
+	<div id='maincontainer' class='container'>
 	{% for i in boards %}
-		<div id='titleContainer'>Title: {{i.title}} <a href='/board/board_display/{{i.id}}'><div id='imageContainer'><img src = '/static/{{i.image}}' /></div></a></div><br />
+	<div id='row'>
+		<div id='titleContainer'>Title: {{i.title}}</div> <a href='/board/board_display/{{i.id}}'><div id='imageContainer'><img src = '/static/{{i.image}}' /></a></div><br />
+	</div>
 	{% endfor %}
+	</div>
 {% else %}
 	<p>No Boards</p>
 {% endif %}
+{% endblock %}
+{% block context_nav %}
+<li><a href='/board/new_board'>New Board</a></li>
 {% endblock %}

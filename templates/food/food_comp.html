@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
 {% block context_nav %}
     <li><a href="/food/new">New Food Request</a></li>
@@ -6,7 +6,7 @@
     <li><a href="/food/overview">Pending Requests</a></li>
 {% endblock %}
 
-{% block container %}
+{% block basecontent %}
     <form action="/food/comp/{{food.id}}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <table>

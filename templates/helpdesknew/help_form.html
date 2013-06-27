@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
 {% block context_nav %}
     <li><a href="/help/new">Ask a Question</a></li>
@@ -39,7 +39,7 @@
 </script>
 {% endblock %}
 
-{% block container %}
+{% block basecontent %}
 <h2>Ask A Question</h2>
 <form action="/help/new" method="post" enctype="multipart/form-data">
     {% csrf_token %}

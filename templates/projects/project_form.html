@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
 {% block context_nav %}
-	<a href="/project">Projects</a>
-    <a href="/issue/new">New Issue</a>
-    <a href="/issue/unassigned">Unassigned Issues</a>
-    <a href="/food/all">Food Requests</a>
-    <a href="/reports/edit">Daily Reports</a>
-    <a href="/help/user/{{user.id}}">Help</a>
+	<li><a href="/project">Projects</a></li>
+    <li><a href="/issue/new">New Issue</a></li>
+    <li><a href="/issue/unassigned">Unassigned Issues</a></li>
+    <li><a href="/food/all">Food Requests</a></li>
+    <li><a href="/reports/edit">Daily Reports</a></li>
+    <li><a href="/help/user/{{user.id}}">Help</a></li>
 {% endblock%}
 
-{% block container %}
+{% block basecontent %}
 	<h2>New Project</h2>
 	<form action="/project/new" method="post" enctype="multipart/form-data">
 		{% csrf_token %}

@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 {% block context_nav %}
     <li><a href="/help/new">Ask a Question</a></li>
     <li><a href="/help/resolved">Resolved Questions</a></li>
@@ -13,7 +13,7 @@
 }
 {% endblock %}
 
-{% block container %}
+{% block basecontent %}
 {% if user.is_staff %}
 <table class="tbl-generic tbl-overview">
     <tr class="tbl-rowheader">

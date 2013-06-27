@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
 
 {% block endscripts %}
@@ -17,7 +17,7 @@
 {{ form.media }}
 {% endblock %}
 
-{% block container %}
+{% block basecontent %}
 	<h2>Edit {% if global %}Global{% else %}Personal{% endif %} Daily Report</h2>
 				Date: <input type = "text" id = "datePicker">
 				<input type="button" value="Go" id="goToDate"/>
