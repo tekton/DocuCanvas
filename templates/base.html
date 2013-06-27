@@ -49,7 +49,7 @@
                             <form class="navbar-search pull-right" action="/issue/search" method="POST">
                                 {% csrf_token %}
                                 <div class="input-prepend input-append">
-                                    <a class="btn btn-inverse" href="/issue/advsearch" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
+                                    <a class="btn btn-inverse" href="{% url 'issues.views.issue_search_advanced' %}" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
                                     <input type="text" name="searchText" class="search-query" placeholder="Search">
                                     <button type="submit" class="btn btn-inverse">Go</button>
                                 </div>

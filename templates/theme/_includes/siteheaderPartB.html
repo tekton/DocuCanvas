@@ -12,7 +12,7 @@
         <div id="sitesearch">
             <form action="/issue/search" method="POST">
                 {% csrf_token %}
-                <a class="ui-icon ui-icon-search" id="search_icon" href="/issue/advsearch"></a>
+                <a class="ui-icon ui-icon-search" id="search_icon" href="{% url 'issues.views.issue_search_advanced' %}"></a>
                 <input type="search" name="searchText" id="search">
                 <input type="submit" value="search">
             </form>

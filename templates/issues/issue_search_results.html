@@ -1,7 +1,7 @@
 {% extends "base_issues.html" %}
 
 {% block context_nav %}
-	<li><a href="/issue/new">New Issue : {{issue.project.name}}</a></li>
+	<li><a href="{% url 'issues.views.issue_form' %}">New Issue : {{issue.project.name}}</a></li>
 {% endblock%}
 
 {% block container %}

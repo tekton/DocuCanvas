@@ -1,14 +1,14 @@
 {% extends "theme/default/base.html" %}
 
-{% block context_nav %} 
-    <li><a href="/issue/{{issue.id}}">Back to Issue</a></li>
-    <li><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></li>
+{% block context_nav %}
+    <li><a href="{% url 'issues.views.issue_overview' issue.id %}">Back to Issue</a></li>
+    <li><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></li>
 {% endblock%}
 {% block additional_head %}
 {{ form.media }}
 {% endblock %}
 {% block container %}
-    <form action="/issue/{{issue.id}}/edit" method="post" enctype="multipart/form-data" class='form-horizontal'>
+    <form action="{% url 'issues.views.edit' issue.id %}" method="post" enctype="multipart/form-data" class='form-horizontal'>
         {% csrf_token %}
         {% for i in form %}
         <div class="control-group">

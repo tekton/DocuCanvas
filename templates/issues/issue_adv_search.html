@@ -6,13 +6,13 @@
 {% endblock %}
 
 {% block context_nav %}
-	<li><a href="/issue/new">New Issue : {{issue.project.name}}</a></li>
+	<li><a href="{% url 'issues.views.issue_form' %}">New Issue : {{issue.project.name}}</a></li>
 {% endblock%}
 
 {% block container %}
 	<h2>Advanced Search</h2>
 
-	<form action="/issue/advsearch" method="POST">
+	<form action="{% url 'issues.views.issue_search_advanced' %}" method="POST">
 		{% csrf_token %}
 		<p id="addField">Add Field: <select id="fieldList"></select> <a href="#">Add</a></p>
         <input type="submit" value="Submit"/>

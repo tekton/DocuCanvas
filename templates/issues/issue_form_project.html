@@ -11,8 +11,8 @@
 {% endblock%}-->
 
 {% block context_nav %}
-    <li><a href="/issue/unassigned" >Unassigned Issues</a></li>
-    <li><a href="issue/new">New Issue</a></li>
+    <li><a href="{% url 'issues.views.unassigned_issues' %}" >Unassigned Issues</a></li>
+    <li><a href="{% url 'issues.views.issue_form' %}">New Issue</a></li>
 
 {% endblock %}
 
@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block container %}
-    <form action="/issue/new" method="post" enctype="multipart/form-data">
+    <form action="{% url 'issues.views.issue_form' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         {{form.project.as_hidden}}

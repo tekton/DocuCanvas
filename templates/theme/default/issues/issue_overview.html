@@ -3,7 +3,7 @@
 
 {% block context_nav %}
 	<li class="nav-header">New</li>
-	<li><a id="context-issue-new" href="/issue/new/{{issue.project.id}}">Issue : {{issue.project.name}}</a></li>
+	<li><a id="context-issue-new" href="{% 'issues.views.issue_form_project' issue.project.id %}">Issue : {{issue.project.name}}</a></li>
 	<li class="nav-header">Issue Actions</li>
 	<li><a id="context-issue-subscribe" href="/issue/subscribe/{{issue.id}}">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
 	<li><a id="context-issue-pin" href="/issue/pin/{{issue.id}}">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
@@ -36,7 +36,7 @@
 	</li>
 	<li><a href="#" data-target="#modal-issue-related" data-toggle="modal">Set Related To...</a></li>
     <li><a href="/issue/{{issue.id}}/history">History</a></li>
-	<li><a href="/issue/{{issue.id}}/edit">Edit</a></li>
+	<li><a href="{% url 'issues.views.edit' issue.id %}">Edit</a></li>
 {% endblock%}
 
 {% block additional_head %}
@@ -144,7 +144,7 @@
 
 						<!--
 						<dt>Project Name:</dt>
-							<dd><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></dd>
+							<dd><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></dd>
 
 						<dt>State:</dt>
 							<dd>{{issue.state}}</dd>

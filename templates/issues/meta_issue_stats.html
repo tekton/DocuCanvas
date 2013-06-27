@@ -51,7 +51,7 @@
             {% for issue in blank_issues%}
                 <tr class="tbl-project-status-count tbl-meta-issue-blank-count">
                     <td>
-                        <a href="/project/{{issue.project.id}}">{{issue.project.name}}</a>
+                        <a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a>
                     </td>
                     <td>
                         <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
