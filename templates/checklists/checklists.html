@@ -1,20 +1,4 @@
-{% extends "base.html" %}
-
-{% block style %}
-.checklist_instance_header{
-    font-size:0.7em;  
-    font-weight:bold; 
-}
-
-.checklist_instance_header td{
-    padding-left:2em;
-}
-
-.checklist_instance_item a{
-    font-size:0.7em;
-    padding-left:3em;
-}
-{% endblock %}
+{% extends "checklists/base.html" %}
 
 {% block contextNav %}
     <!--<a href="/project/{{project.id}}">{{project.name}}</a>-->
@@ -23,13 +7,12 @@
 
 {% endblock%}
 
+{% block pageTitle %}
+Checklists
+{% endblock %}
+
 {% block bodyContent %}
         <table>
-            <tr>
-                <td>
-                    <b>Checklists</b>
-                </td>
-            </tr>
             {% for checklist in checklists %}
                 <tr>
                     <td>

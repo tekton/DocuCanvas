@@ -1,8 +1,12 @@
 {% extends "projects/base.html" %}
 {% load set_var %}
 
+{% block pageTitle %}
+New Project Wizard
+{% endblock %}
+
 {% block contextNav %}
-{% include 'theme/_includes/contextnav-default.html' %}
+{% include '_includes/contextnav-default.html' %}
 {% endblock%}
 
 {% block bodyContent %}
@@ -48,11 +52,11 @@
 					<fieldset>
 						<legend>Step 1</legend>
 						{% set field = form.name %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.description %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.potential_end_date %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 					</fieldset>
 				</section>
 
@@ -63,9 +67,9 @@
 					<fieldset>
 						<legend>Step 2</legend>
 						{% set field = form.scope %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.business_case %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 					</fieldset>
 				</section>
 
@@ -76,11 +80,11 @@
 					<fieldset>
 						<legend>Step 3</legend>
 						{% set field = form.product_owner %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.project_manager %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.lead_developer %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 					</fieldset>
 				</section>
 
@@ -91,15 +95,15 @@
 					<fieldset>
 						<legend>Step 4</legend>
 						{% set field = form.current_phase %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.phase_planning_start %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.phase_planning_end %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.phase_research_start %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.phase_research_end %}
-						{% include 'theme/_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' %}
 					</fieldset>
 				</section>
 
@@ -110,31 +114,31 @@
 					<fieldset>
 						<legend>Final Step: Confirmation</legend>
 						{% set field = form.name %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.description %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.potential_end_date %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.scope %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.business_case %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.product_owner %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.project_manager %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.lead_developer %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.current_phase %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.phase_planning_start %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.phase_planning_end %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.phase_research_start %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.phase_research_end %}
-						{% include 'theme/_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 					</fieldset>
 				</section>
 			</div>

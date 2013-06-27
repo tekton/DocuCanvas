@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "checklists/base.html" %}
 {% load set_var%}
 
 {% block contextNav %}
@@ -6,7 +6,7 @@
     <li><a href="/checklist/new/{{checklist.project.id}}">New Checklist</a></li>
 {% endblock%}
 
-{% block basecontent %}
+{% block bodyContent %}
     <form id = 'checklistForm' action="/checklist/{{checklist.id}}/edit" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{formset.management_form}}
