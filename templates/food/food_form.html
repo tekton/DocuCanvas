@@ -18,7 +18,7 @@
 </script>
 {% endblock %}
 
-{% block bodyContent %}
+{% block baseContent %}
     <form action="/food/new" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <table>
