@@ -24,7 +24,8 @@ def boards_form(request):
         if form.is_valid():
             try:
                 board = form.save()
-                return redirect('board_url_edit', board.id)
+                print 'saving board'
+                return redirect('/board/board_edit/' + str(board.id))
             except Exception, e:
                 print e
     else:
