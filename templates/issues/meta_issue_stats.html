@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block contextNav %}
+{% block context_nav %}
     <li><a href="/">Dashboard</a></li>
     <li><a href="/accounts/account_settings">Account Settings</a></li>
 {% endblock%}
 
-{% block additionalHead %}
+{% block extra_head%}
     <script type="text/javascript">
         $(document).ready(function(){
             $('#blank_count').click(function(){
@@ -36,7 +36,7 @@
     </script>
 {% endblock %}
 
-{% block bodyContent %}
+{% block container %}
 <h3>Issues by status</h3>
 <table class="tbl-generic">
         <tr>
@@ -54,7 +54,7 @@
                         <a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a>
                     </td>
                     <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                        <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -67,7 +67,7 @@
 
                 <tr class="tbl-project-status-count tbl-meta-issue-not-a-bug-count">
                     <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                        <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -79,7 +79,7 @@
             {% for issue in wont_fix_issues %}
                 <tr class="tbl-project-status-count tbl-meta-issue-wont-fix-count">
                     <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                        <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -92,7 +92,7 @@
             {% for issue in duplicate_issues%}
                 <tr class=" tbl-project-status-count tbl-meta-issue-duplicate-count">
                     <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                        <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -105,7 +105,7 @@
             {% for issue in active_issues%}
                 <tr class="tbl-project-status-count tbl-meta-issue-active-count">
                     <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                        <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -117,7 +117,7 @@
             {% for issue in fixed_issues%}
                 <tr class="tbl-project-status-count tbl-meta-issue-fixed-count">
                     <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                        <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -130,7 +130,7 @@
             {% for issue in retest_issues%}
                 <tr class="tbl-project-status-count tbl-meta-issue-active-count">
                     <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                        <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -142,7 +142,7 @@
             {% for issue in unverified_issues%}
                 <tr class="tbl-project-status-count tbl-meta-issue-unverified-count">
                     <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                        <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                     </td>
                 </tr>
             {% endfor %}

@@ -1,12 +1,12 @@
-{% extends "base.html" %}
+{% extends "theme/default/base.html" %}
 {% load markup %}
 
-{% block contextNav %}
+{% block context_nav %}
 	<li class="nav-header">New</li>
-	<li><a id="context-issue-new" href="{% 'issues.views.issue_form_project' issue.project.id %}">Issue : {{issue.project.name}}</a></li>
+	<li><a id="context-issue-new" href="{% url 'issues.views.issue_form_project' issue.project.id %}">Issue : {{issue.project.name}}</a></li>
 	<li class="nav-header">Issue Actions</li>
-	<li><a id="context-issue-subscribe" href="/issue/subscribe/{{issue.id}}">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
-	<li><a id="context-issue-pin" href="/issue/pin/{{issue.id}}">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
+	<li><a id="context-issue-subscribe" href="{% url 'issues.views.subscribe' issue.id %}">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
+	<li><a id="context-issue-pin" href="{% url 'issues.views.pin' issue.id %}">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
 	<li><a id="context-issue-assign" href="/issue/assign/{{issue.id}}">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
 	<li>
 		<a id="context-issue-assignto">
@@ -18,7 +18,7 @@
 							<option value="{{user.id}}">{{user.username}}</option>
 						{% endfor%}
 					</select>
-					<button class="btn" type="button" data-url="/issue/assign/{{ issue.id }}/">Assign</button>
+					<button class="btn" type="button" data-url="{% url 'issues.views.assign' issue.id %}/">Assign</button>
 				</div>
 			</form>
 		</a>
@@ -35,7 +35,7 @@
 		</a>
 	</li>
 	<li><a href="#" data-target="#modal-issue-related" data-toggle="modal">Set Related To...</a></li>
-    <li><a href="/issue/{{issue.id}}/history">History</a></li>
+    <li><a href="{% url 'issues.views.history' issue.id %}">History</a></li>
 	<li><a href="{% url 'issues.views.edit' issue.id %}">Edit</a></li>
 {% endblock%}
 
@@ -43,7 +43,7 @@
     {{ form.media }}
 {% endblock %}
 
-{% block bodyContent %}
+{% block container %}
 	<article class="row">
 		<div id="issue-column-main" class="span9 metainfo-maincolumn">
 			<div id="issue-details" class="well">
@@ -80,7 +80,7 @@
 					<h3>Comments</h3>
 				</header>
 				<div id="issue-comments-add">
-					<form class="form-inline" action="/issue/comment/{{issue.id}}" method="post" enctype="multipart/form-data">
+					<form class="form-inline" action="{% url 'issues.views.submit_comment' issue.id %}" method="post" enctype="multipart/form-data">
 						{% csrf_token %}
 						<input type="hidden" name="issue" id="id_issue" value="{{issue.id}}">
 						<input type="hidden" name="user" id="id_user" value="{{user.id}}">
@@ -133,7 +133,7 @@
 						<dt>Assigned To:</dt>
 							<dd>
 								{% if issue.assigned_to.id %}
-								<a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a>
+								<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>
 								{% else %}
 								{{issue.assigned_to}}
 								{% endif %}
@@ -265,7 +265,7 @@
 						<tbody>
 							<tr>
 								<td>
-									<a href="/issue/{{issue_to_issue.secondary_issue.id}}">{{issue_to_issue.secondary_issue.description}}</a>
+									<a href="{% url 'issues.views.issue_overview' issue_to_issue.secondary_issue.id %}">{{issue_to_issue.secondary_issue.description}}</a>
 								</td>
 								<td>
 									<a class="btn btn-mini pull-right" onClick="unlink_issue('{{issue_to_issue.secondary_issue.id}}')"><i class="icon-remove-circle"></i></a>
@@ -281,7 +281,7 @@
 	</article>
 {% endblock %}
 
-{% block endScripts %}
+{% block additionaljs %}
 // <script> - commented out as only used in Sublime Text for syntax highlightling
 
 	// Context menu - Status

@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+{% extends "theme/default/base.html" %}
 
-{% block contextNav %}
+{% block context_nav %}
 	<li class="nav-header">New</li>
 	<li><a href="/issue/new/{{project_O.id}}">Issue</a></li>
 	<li><a href="/issue/meta/new">Meta Issue</a></li>
@@ -13,7 +13,7 @@
 	<li><a href="/project/{{project_O.id}}/edit">Edit Project</a></li>
 {% endblock%}
 
-{% block bodyContent %}
+{% block container %}
 	<article class="row">
 		<div id="project-column-main" class="span9 metainfo-maincolumn">
 			<div id="project-details" class="well">
@@ -88,7 +88,7 @@
 							<tbody>
 							{% for issue in incomplete_issues%}
 								<tr>
-									<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
+									<td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
 									<td>{{issue.status}}</td>
 									<td>{{issue.assigned_to}}</td>
 								</tr>
@@ -109,7 +109,7 @@
 							<tbody>
 							{% for issue in fixed_issues%}
 								<tr>
-									<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
+									<td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
 									<td>{{issue.status}}</td>
 									<td>{{issue.assigned_to}}</td>
 								</tr>

@@ -2,7 +2,7 @@
 {% load set_var %}
 
 {% block contextNav %}
-    <li><a href="issue/new">New Issue</a></li>
+    <li><a href="{% url 'issues.views.issue_form' %}">New Issue</a></li>
 {% endblock %}
 
 {% block pageTitle %}
@@ -22,9 +22,9 @@
                     {% endif %}
                     <tr>
                         <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</td>
-                        <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
-                        <td><a href="/issue/{{issue.id}}">{{issue.due_date}}</td>
-                        <td><a href="/issue/assign/{{ issue.id }}" class="assign_issue">Take</a></td>
+                        <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</td>
+                        <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.due_date}}</td>
+                        <td><a href="{% url 'issues.views.assign' issue.id %}" class="assign_issue">Take</a></td>
                     </tr>
                 {% endfor%}
             </table>

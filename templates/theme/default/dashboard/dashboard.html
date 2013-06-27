@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "theme/default/base.html" %}
 {% load set_var %}
 
-{% block contextNav %}
-{% include "_includes/contextnav-default.html" %}
+{% block context_nav %}
+{% include "theme/_includes/contextnav-default.html" %}
 {% endblock %}
 
-{% block endScripts %}
+{% block additionaljs %}
     var num_notifications = '{{num_notifications}}';
 
     function mark_notification_as_read(notification_id){
@@ -35,7 +35,7 @@
     }
 {% endblock %}
 
-{% block bodyContent %}
+{% block container %}
     {% if notifications %}
     <section class="well" id="notification_section">
         <header>
@@ -229,9 +229,9 @@
                 {% endif %}
                 <tr>
                     <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
-                    <td><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
-                    <td><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
-                    <td><a href="/issue/assign/{{ issue.id }}" class="assign_issue"></td>
+                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
+                    <td><a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a></td>
+                    <td><a href="{% url 'issues.views.assign' issue.id %}" class="assign_issue"></td>
                 </tr>
             {% endfor%}
             </tbody>
@@ -258,9 +258,9 @@
                 {% endif %}
                 <tr>
                     <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
-                    <td><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
-                    <td><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
-                    <td><a href="/issue/pin/{{ issue.id }}" class="pin_issue"></a></td>
+                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
+                    <td><a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a></td>
+                    <td><a href="{% url 'issues.views.pin' issue.id %}" class="pin_issue"></a></td>
                 </tr>
             {% endfor%}
             </tbody>
@@ -287,8 +287,8 @@
                 {% endif %}
                 <tr>
                     <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
-                    <td><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
-                    <td><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
+                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
+                    <td><a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a></td>
                     <td><a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue"></a></td>
                 </tr>
             {% endfor%}

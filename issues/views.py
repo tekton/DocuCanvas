@@ -699,6 +699,10 @@ def submit_comment(request, issue_id):
 def unassigned_issues(request):
     projects = Project.objects.all()
     q = Issue.objects.filter(Q(assigned_to__isnull=True) & (Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True))).order_by('created')
+    print 'projects'
+    print projects
+    print 'issues'
+    print q
     return render_to_response('issues/issue_unassigned.html', {'issues': q, 'projects': projects}, context_instance=RequestContext(request))
 
 

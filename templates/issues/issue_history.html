@@ -2,18 +2,17 @@
 {% load set_var%}
 
 {% block contextNav %}
-    <li><a href="{% 'issues.views.issue_form_project' issue.project.id %}">New Issue : {{issue.project.name}}</a></li>
-
-    <li><a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
-    <li><a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
-    <li><a href="/issue/assign/{{ issue.id }}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
+    <li><a href="{% url 'issues.views.issue_form_project' issue.project.id %}">New Issue : {{issue.project.name}}</a></li>
+    <li><a href="{% url 'issues.views.subscribe' issue.id %}" class="subscribe_to_issue">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
+    <li><a href="{% url 'issues.views.pin' issue.id %}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
+    <li><a href="{% url 'issues.views.assign' issue.id %}" class="assign_issue">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
 
     <li><a>Assign To:
         <select id="assigned_user">
             {% for user in users%}<option value="{{user.id}}">{{user.username}}</option>
             {% endfor%}
         </select>
-        <input data-url="/issue/assign/{{ issue.id }}/" type="button" id="assign_issue_to" value="Assign"/>
+        <input data-url="{% url 'issues.views.assign' issue.id %}/" type="button" id="assign_issue_to" value="Assign"/>
     </a></li>
     <li><a>Status:
         {{form.status}}

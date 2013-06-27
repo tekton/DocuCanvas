@@ -1,6 +1,6 @@
-{% extends "projects/base.html" %}
+{% extends "theme/default/base.html" %}
 
-{% block contextNav %}
+{% block context_nav %}
     <li><a href="/issue/new/{{project.id}}">New Issue</a></li>
     <li><a href="/issue/new/{{project.id}}">New Risk</a></li>
     <li><a href="/checklist/new/{{project.id}}">New Checklist</a></li>
@@ -9,7 +9,7 @@
     <li><a href="/project/{{project.id}}/edit">Edit Project</a></li>
 {% endblock%}
 
-{% block additionalHead %}
+{% block extra_head%}
     <script type="text/javascript">
         $(document).ready(function(){
             $('#blank_count').click(function(){
@@ -40,7 +40,7 @@
     </script>
 {% endblock %}
 
-{% block bodyContent %}
+{% block container %}
 <h3>Issues</h3>
 <table class="tbl-generic">
         <tr>
@@ -58,7 +58,7 @@
                         <a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a>
                     </td>
                     <td>
-                        <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                        <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -70,7 +70,7 @@
                 {% for issue in bugs_for_review%}
                     <tr class="tbl-project-status-count tbl-project-not-a-bug-count">
                         <td>
-                            <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -83,7 +83,7 @@
                     {% if issue.status = "wont_fix" %}
                     <tr class="tbl-project-status-count tbl-project-wont-fix-count">
                         <td>
-                            <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                         </td>
                     </tr>
                     {% endif %}
@@ -98,7 +98,7 @@
                     {% if issue.status = "duplicate" %}
                     <tr class=" tbl-project-status-count tbl-project-duplicate-count">
                         <td>
-                            <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                         </td>
                     </tr>
                     {% endif %}
@@ -112,7 +112,7 @@
                     {% if issue.status = "active" %}
                     <tr class="tbl-project-status-count tbl-project-active-count">
                         <td>
-                            <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                         </td>
                     </tr>
                     {% endif %}
@@ -126,7 +126,7 @@
 
                     <tr class="tbl-project-status-count  tbl-project-fixed-count">
                         <td>
-                            <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -139,7 +139,7 @@
                     {% if issue.status = "retest" %}
                     <tr class="tbl-project-status-count  tbl-project-retest-count">
                         <td>
-                            <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                         </td>
                     </tr>
                     {% endif %}
@@ -154,7 +154,7 @@
                     {% if issue.status = "unverified" %}
                     <tr class="tbl-project-status-count  tbl-project-unverified-count">
                         <td>
-                            <a href="/issue/{{issue.id}}">{{issue.summary}}</a>
+                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                         </td>
                     </tr>
                     {% endif %}
