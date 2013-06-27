@@ -6,6 +6,13 @@ from django.contrib import admin
 class TwitterProfile(models.Model):
 	user = models.ForeignKey(User)
 	user_name = models.CharField(max_length=200)
+	active = models.NullBooleanField(default=True)
+
+	def Deactivate(self):
+		active = False
+
+	def Activate(self):
+		active = True
 
 
 class Tweet(models.Model):
