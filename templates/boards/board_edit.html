@@ -1,10 +1,19 @@
+<!DOCTYPE HTML>
 <html>
 <head>
+    {% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'theme/bootstrap/css/bootstrap.css' %}">
+        <link rel="stylesheet" href="{% static 'bootstrap/bootstrap-lightbox.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
     <style>
+         body{
+            margin: 0px;
+            padding: 0px;
+        }
         #container{
-                overflow:scroll;
-                overflow-y:hidden;
-                margin-right: 202px;
+            overflow:scroll;
+            overflow-y:hidden;
+            margin-right: 202px;
         }
         #bugList{
             position: fixed;
@@ -12,10 +21,10 @@
             height: 98%;
             top: 0px;
             right: 0px;
-            padding: 5px;
+            margin-top: 5px;
             visibility: visible;
-            overflow:scroll;
-            overflow-x:hidden;
+            overflow: scroll;
+            overflow-x: hidden;
             border: 1px solid #F2F2F2;
             box-shadow: 0 1px 4px #5A5A5A;
             border-top-left-radius: 10px;
@@ -29,6 +38,7 @@
             background-color: white;
             border: 1px solid #F2F2F2;
             box-shadow: 0 1px 4px #5A5A5A;
+            z-index: 2;
         }
         div[id^='bugNote']{
             z-index: 2;
@@ -59,8 +69,21 @@
             display:block;
             resize:none;
         }
+        textarea{
+            width: 250px;
+        }
+        input[type='text']{
+            width: 250px;
+        }
+        th{
+            text-align: left;
+        }
         form[id^='submitForm']{
             visibility: visible;
+        }
+        #bugListButton{
+                margin-top: 15px;
+                margin-left: 5px;
         }
         div[id^='triangle']{
                 position: absolute;
@@ -70,8 +93,18 @@
                 border-bottom: 10px solid transparent;
                 border-top: 10px solid transparent;
                 visibility: hidden;
-                z-index: 3;
+                z-index: 0;
             }
+        #triangleForm{
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-right: 10px solid white;
+            border-bottom: 10px solid transparent;
+            border-top: 10px solid transparent;
+            visibility: visible;
+            z-index: 0;
+        }
             div[id^='triangleBorder']{
                 position: absolute;
                 width: 0;
@@ -79,14 +112,298 @@
                 border-right: 12px solid black;
                 border-bottom: 12px thin transparent;
                 border-top: 12px thin transparent;
-                visibility: hidden;
                 z-index: 0;
             }
+            #triangleBorderForm{
+                position: absolute;
+                width: 0;
+                height: 0;
+                border-right: 12px solid black;
+                border-bottom: 12px thin transparent;
+                border-top: 12px thin transparent;
+                visibility: visible;
+                z-index: 0;
+            }
+            #buttonContainer{
+                min-height: 60px;
+            }
+            #sitenav{
+                position: fixed;
+                display: none;
+                z-index: 4;
+            }
+            .brand { 
+            position: absolute;
+            right: 6px;
+            padding: 0 5px;
+            background-color: #587C91;
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+            z-index: 5;
+        }
+        #bugList .brand{
+            display: inline-block;
+            padding-top: 5;
+        }
+        .brand .logo {
+
+            display: block;
+            text-indent: -9999px;
+            width: 50px;
+            height: 50px;
+            background-image: url({% static 'theme/assets/img/logo-gadget-sitenav.png' %});
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        #bugList .brand img{
+            margin-top: 5px;
+        }
+        #sitenav .navbar-inner {
+            min-height: 60px;
+            border-bottom: 0;
+            box-shadow: 0 1px 5px #5A5A5A;
+            background-color: #2B2F32;
+            background-image: none;
+        }
+        #sitenav #mainnav li {
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        #sitenav #mainnav .dropdown-menu li {
+            text-transform: none;
+        }
+        #sitenav form {
+            margin-bottom: 0;
+        }
+        #sitenav .navbar-search .search-query {
+            width: 145px;
+            height: 18px;
+            color: #ffffff;
+            background-color: #515151;
+            border-color: #111111;
+            -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+            -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
+            -webkit-transition: none;
+            -moz-transition: none;
+            -o-transition: none;
+            transition: none;
+        }
+        #sitenav .navbar-search .search-query:-moz-placeholder {
+            color: #cccccc;
+        }
+        #sitenav .navbar-search .search-query:-ms-input-placeholder {
+            color: #cccccc;
+        }
+        #sitenav .navbar-search .search-query::-webkit-input-placeholder {
+            color: #cccccc;
+        }
+        #sitenav .navbar-search .search-query:focus,
+        #sitenav .navbar-search .search-query.focused {
+            padding: 5px 15px;
+            color: #333333;
+            text-shadow: 0 1px 0 #ffffff;
+            background-color: #ffffff;
+            border: 0;
+            -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+            -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+            outline: 0;
+        }
+        #sitenav #mainnav .nav > li > a {
+            padding-bottom: 10px;
+            border-bottom: 5px solid transparent;
+        }
+        #sitenav #mainnav .nav > li > a.active {
+            border-color: #587C91;
+        }
+
+        .panel,
+        .well {
+            border: 1px solid #F2F2F2;
+            box-shadow: 0 1px 4px #5A5A5A;
+            background-color: #FFF;
+        }
+
+        .well.span6 {
+            width: 530px;
+        }
+
+        #pagetitle {
+            text-align: center;
+            margin: 15px 0 25px;
+        }
+
+        #pagetitle .title-separator {
+            display: none;
+        }
+
+        .metainfo-hide .metainfo-content  {
+            display: none;
+        }
+
+        .issue-comment {
+            min-height: 45px;
+        }
+        .issue-comment .comment-markbutton,
+        .issue-comment .comment-editbutton {
+            display: none;
+        }
+        .issue-comment.show-editbutton .comment-editbutton,
+        .issue-comment.show-editbutton .comment-markbutton {
+            display: block;
+        }
+
+        .mark_notification_as_read{
+            cursor:pointer;
+        }
+
+        .comment aside {
+            padding: .5em 0;
+            margin: .5em 0;
+            border-color: #CCC;
+            border-style: solid;
+            border-width: 1px 0 0;
+        }
+
+        #maincontent {
+            -o-animation: fadein .7s;
+            -moz-animation: fadein .7s;
+            -webkit-animation: fadein .7s;
+            animation: fadein .7s;
+        }
+
+        @-o-keyframes fadein {
+            from {
+                opacity:0;
+            }
+            to {
+                opacity: 1;
+            }
+        }​
+        @-moz-keyframes fadein {
+            from {
+                opacity:0;
+            }
+            to {
+                opacity:1;
+            }
+        }
+        @-webkit-keyframes fadein {
+            from {
+                opacity:0;
+            }
+            to {
+                opacity:1;
+            }
+        }
+        @keyframes fadein {
+            from {
+                opacity:0;
+            }
+            to {
+                opacity:1;
+            }
+        }
+
+        @media (min-width: 980px) {
+            #globalwrap {
+            }
+        }
+
+        /* Large Desktop */
+        @media (min-width: 1200px) {
+            
+        }
+        
+        /* Portrait tablet to landscape and desktop */
+        @media (min-width: 768px) and (max-width: 979px) {
+
+        }
+        
+        /* Landscape phone to portrait tablet */
+        @media (max-width: 767px) {
+
+        }
+        
+        /* Landscape phones and down */
+        @media (max-width: 480px) {
+            
+        }
     </style>
 <body>
-    <div id = 'container'></div>
+    <div id="globalwrap">
+        <div id="sitenav" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="nav-collapse collapse">
+                        <nav id="mainnav">
+                            <ul class="nav">
+                                <li><a href="/" class="{% if page_type == 'Dashboard' %}active{% endif %}">Dashboard</a></li>
+                                <li class="dropdown">
+                                    <a href="/project" class="dropdown-toggle {% if page_type == 'Project' %}active{% elif page_type == 'Projects' %}active{% elif page_type == 'Issue' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        {% if projects.count > 0 %}
+                                        <li class="nav-header">All Projects</li>
+                                        {% for project in projects%}
+                                            <li><a href="/project/{{project.id}}">{{project.name}}</a></li>
+                                        {% endfor %}
+                                        {% endif %}
+                                        <li class="nav-header">New</li>
+                                        <li><a href="/project/new">Project</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="/reports" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
+                            </ul>
+                        </nav>
+                        <div id="searchform">
+                            <form class="navbar-search pull-right" action="/issue/search" method="POST">
+                                {% csrf_token %}
+                                <div class="input-prepend input-append">
+                                    <a class="btn btn-inverse" href="/issue/advsearch" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
+                                    <input type="text" name="searchText" class="search-query" placeholder="Search">
+                                    <button type="submit" class="btn btn-inverse">Go</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div id="userbar">
+                            <ul class="nav pull-right">
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Context <b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        {% block context_nav %}{% endblock %}
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user}} <b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="/accounts/account_settings">Settings</a></li>
+                                        <li><a href="/accounts/logout/?next=/">Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% block basecontent %}{% endblock %}
+    </div>
+    <div id = 'container'> </div>
     <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+          <script src="{% static 'scripts/jquery.min.js' %}"></script>
+        <script src="{% static 'scripts/jquery-ui.min.js' %}"></script>
+        <script src="{% static 'scripts/ajax_tools.js' %}"></script>
+        <script src="{% static 'theme/bootstrap/js/bootstrap.js' %}"></script>
+        <script src="{% static 'bootstrap/bootstrap-lightbox.min.js' %}"></script>
+        <script src="{% static 'theme/assets/js/tablesorter/jquery.tablesorter.js' %}"></script>
      <script>
 
             var imageWidth = {{board.width}};
@@ -151,8 +468,6 @@
 
                         };
                 {% endfor %}
-                {% else %}
-                    $('body').append('<p>No Board nodes</p>');
                 {% endif %}
 
                 stage.add(shapesLayer);
@@ -168,17 +483,18 @@
                         if(imageWidth - x <= noteDivWidth){
                             var noteDivX = x - 305;
                         }else{
-                            var noteDivX = x + 20;
+                            var noteDivX = x + 29;
                         };
                         if(imageHeight - y <= 70){
                             var noteDivY = y - 70;
                         }else if(y < 10){
                             var noteDivY = y + 10;
                         }else{
-                            var noteDivY = y - 4;
+                            var noteDivY = y - 20;
                         };
                         placementLock = true;
                             $('body').append("<div id = 'noteNo" + counter + "' style = 'top: " + noteDivY + "px; left: " + noteDivX + "px; width: " + noteDivWidth + "px;'><form id = 'submitForm'" + counter + "' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink'/></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' resize: none;' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                            $('body').append("<div id = 'triangleBorderForm'; style = 'top:" + (y-9) + "px; left: " + (x+21) + "px;'></div><div id = 'triangleForm'; style = 'top:" + (y-10) + "px; left: " + (x+21) + "px;'></div> ");
 
 
                             var circle = new Kinetic.Circle({
@@ -279,14 +595,14 @@
                         if(imageWidth - x <= noteDivWidth){
                             var noteDivX = x - 305;
                         }else{
-                            var noteDivX = x + 26;
+                            var noteDivX = x + 29;
                         };
                         if(imageHeight - y <= 70){
                             var noteDivY = y - 70;
                         }else if(y < 10){
                             var noteDivY = y + 10;
                         }else{
-                            var noteDivY = y - 15;
+                            var noteDivY = y - 20;
                         };
                     //if checks to determine what nodeLink type is selected in edit div below
                     if(nodeType=='note'){
@@ -320,8 +636,8 @@
                     });
                     shapesLayer.add(circle);
                     // edit div for updating nodes
-                    $('body').append("<div id = 'bugNote" + divId + "' style = 'width: " + noteDivWidth +"px; top: " + noteDivY + "px; left: " + noteDivX + "px;'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(bugNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
-                    $('body').append("<div id = 'triangleBorder" + divId + "'; style = 'top:" + (y-3) + "px; left: " + (x+18) + "px;'></div><div id = 'triangle" + divId + "'; style = 'top:" + (y-4) + "px; left: " + (x+19) + "px;'></div> ");
+                    $('body').append("<div id = 'bugNote" + divId + "' style = 'width: " + noteDivWidth +"px; top: " + noteDivY + "px; left: " + noteDivX + "px;'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(bugNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' cols='30' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+                    $('body').append("<div id = 'triangleBorder" + divId + "'; style = 'top:" + (y-9) + "px; left: " + (x+20) + "px;'></div><div id = 'triangle" + divId + "'; style = 'top:" + (y-10) + "px; left: " + (x+20) + "px;'></div> ");
                     $('#bugList').append("<div id = 'bugListNo" + divId + "' >" + noteTitle + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><div id = 'bugListLink" + divId + "'>Show</div></a>");
                 //};
                 };
@@ -421,9 +737,18 @@
                 divToUpdate = "#bugNote" + div;
                 console.log(divToUpdate);
             };
+            function toggleHeader(){
+                console.log('hi');
+                console.log($('#sitenav').css('display'));
+                if($('#sitenav').css('display') == 'none'){
+                    $('#sitenav').css('display', 'block');
+                }else if($('#sitenav').css('display') == 'block'){
+                    $('#sitenav').css('display', 'none');
+                };
+            };
          </script>
 
-            <div id = 'bugList'><input type='button' value='Done Editing' onClick='window.location.href="/board/board_display/{{board.id}}"' /></div>
+             <div id = 'bugList'><div id='buttonContainer'><input id='bugListButton' type='button' value='Done' onClick='window.location.href="/board/board_display/{{board.id}}"' /><a class="brand" onClick='toggleHeader()'><span class="logo">Gadget</span></a></div></div>
 
 </body>
 </html>

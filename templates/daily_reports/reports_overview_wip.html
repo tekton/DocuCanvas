@@ -44,6 +44,9 @@ div[class^='reportView']{
 {% block context_nav %}
 <li><a href="/reports/edit">Daily Reports</a></li>
 <li><a href="/reports/view">View Daily Reports</a></li>
+{% if user.is_superuser%}
+<li><a href="/reports/report_selection">Report Selection</a></li>
+{% endif %}
 {% endblock %}
 {% block container %}
 {% load set_var%}
