@@ -5,13 +5,13 @@
     <a href="/auth/user/{{user.id}}">{{user}}</a>
     <a href="{% url 'issues.views.issue_form' %}">New Issue</a>
     <a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a>
-    <a href="/food/all">Food Requests</a>
+    <a href="{% url 'food.views.all_food' %}">Food Requests</a>
     <a href="/reports/edit">Daily Reports</a>
     <a href="/help/user">Help</a>
 {% endblock%}
 
 
-{% block baseContent %}
+{% block bodyContent %}
 <a href="accounts/change_email">Change Email Address</a><br>
 <a href="/accounts/change_password">Change Password</a>
 {% endblock %}

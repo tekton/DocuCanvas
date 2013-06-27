@@ -17,17 +17,17 @@
 
 {% block contextNav %}
     {% if form.project.value %}
-        <li><a href="/issue/new/{{form.project.value}}">New Issue</a></li>
-        <li><a href="/issue/meta/new">New Meta Issue</a></li>
-        <li><a href="/issue/new/{{form.project.value}}">New Risk</a></li>
-        <li><a href="/checklist/new/{{form.project.value}}">New Checklist</a></li>
-        <li><a href="/project/{{form.project.value}}/stats">Report</a></li>
-        <li><a href="/checklist/project/{{form.project.value}}">Checklists</a></li>
-        <li><a href="/project/{{form.project.value}}/edit">Edit Project</a></li>
+        <li><a href="{% url 'issues.views.issue_form_project' form.project.value %}">New Issue</a></li>
+        <li><a href="{% url 'issues.views.meta_issue_form' %}">New Meta Issue</a></li>
+        <li><a href="{% url 'issues.views.issue_form_project' form.project.value %}">New Risk</a></li>
+        <li><a href="{% url 'checklists.views.checklist_form_project' form.project.value %}">New Checklist</a></li>
+        <li><a href="{% url 'projects.views.project_stats' form.project.value %}">Report</a></li>
+        <li><a href="{% url 'checklists.views.project_checklists' form.project.value %}">Checklists</a></li>
+        <li><a href="{% url 'projects.views.edit' form.project.value %}">Edit Project</a></li>
     {% else %}
         <li><a href="{% url 'issues.views.issue_form' %}">New Issue</a></li>
         <li><a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a></li>
-        <li><a href="/food/all">Food Requests</a></li>
+        <li><a href="{% url 'food.views.all_food' %}">Food Requests</a></li>
         <li><a href="/reports/edit">Daily Reports</a></li>
         <li><a href="/help/user/{{user.id}}">Help</a></li>
     {% endif %}

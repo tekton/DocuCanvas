@@ -1,4 +1,4 @@
-{% extends "projects/base.html" %}
+{% extends "base.html" %}
 
 {% block contextNav %}
 	<li><a href="/project">Projects</a></li>
@@ -9,7 +9,7 @@
     <li><a href="/help/user/{{user.id}}">Help</a></li>
 {% endblock%}
 
-{% block bodyContent %}
+{% block container %}
 	<h2>New Project</h2>
 	<form action="/project/new" method="post" enctype="multipart/form-data">
 		{% csrf_token %}

@@ -1,16 +1,16 @@
-{% extends "projects/base.html" %}
+{% extends "base.html" %}
 
-{% block contextNav %} 
-    <li><a href="/project/{{project.id}}">{{project.name}}</a></li>
-    <li><a href="/issue/new/{{project_O.id}}">New Issue</a></li>
-    <li><a href="/issue/meta/new">New Meta Issue</a></li>
-    <li><a href="/issue/new/{{project_O.id}}">New Risk</a></li>
-    <li><a href="/checklist/new/{{project_O.id}}">New Checklist</a></li>
-    <li><a href="/project/{{project_O.id}}/stats">Report</a></li>
-    <li><a href="/checklist/project/{{project_O.id}}">Checklists</a></li>
+{% block context_nav %} 
+    <a href="/project/{{project.id}}">{{project.name}}</a>
+   <a href="/issue/new/{{project_O.id}}">New Issue</a>
+    <a href="{% url 'issues.views.meta_issue_form' %}">New Meta Issue</a>
+    <a href="/issue/new/{{project_O.id}}">New Risk</a>
+    <a href="/checklist/new/{{project_O.id}}">New Checklist</a>
+    <a href="/project/{{project_O.id}}/stats">Report</a>
+    <a href="/checklist/project/{{project_O.id}}">Checklists</a>
 {% endblock%}
 
-{% block bodyContent %}
+{% block container %}
     <h2>New Project</h2>
     <form action="/project/{{project.id}}/edit" method="post" enctype="multipart/form-data">
         {% csrf_token %}
