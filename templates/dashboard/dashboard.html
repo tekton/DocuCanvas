@@ -5,6 +5,10 @@
 {% include "_includes/contextnav-default.html" %}
 {% endblock %}
 
+{% block pageTitle %}
+Dashboard
+{% endblock %}
+
 {% block additionaljs %}
     var num_notifications = '{{num_notifications}}';
 
@@ -35,7 +39,7 @@
     }
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
     {% if notifications %}
     <section class="well" id="notification_section">
         <header>
