@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "issues/base.html" %}
 
 {% block additionalHead %}
     <style type="text/css">
@@ -12,7 +12,7 @@
             min-width: 220px;
         }
     </style>
-
+    {{ form.media }}
 {% endblock %}
 
 {% block contextNav %}
@@ -33,11 +33,7 @@
     {% endif %}
 {% endblock%}
 
-{% block additionalHead %}
-    {{ form.media }}
-{% endblock %}
-
-{% block bodyContent %}
+{% block baseContent %}
     <form id="miform" action="/issue/meta/{% if new %}new{% else %}{{ form.instance.id }}/edit{% endif %}" method="post">
         {% csrf_token %}
         <table>
