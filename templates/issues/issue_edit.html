@@ -1,8 +1,8 @@
 {% extends "issues/base.html" %}
 
-{% block contextNav %} 
-    <li><a href="/issue/{{issue.id}}">Back to Issue</a></li>
-    <li><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></li>
+{% block contextNav %}
+    <li><a href="{% url 'issues.views.issue_overview' issue.id %}">Back to Issue</a></li>
+    <li><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></li>
 {% endblock%}
 
 {% block additionalHead %}
@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block bodyContent %}
-    <form action="/issue/{{issue.id}}/edit" method="post" enctype="multipart/form-data" class='form-horizontal'>
+    <form action="{% url 'issues.views.edit' issue.id %}" method="post" enctype="multipart/form-data" class='form-horizontal'>
         {% csrf_token %}
         {% for i in form %}
             <div class="control-group">

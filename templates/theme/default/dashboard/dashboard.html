@@ -228,7 +228,7 @@
                     <tr><td colspan="4">{{issue.created}}</td></tr>
                 {% endif %}
                 <tr>
-                    <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
+                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
                     <td><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
                     <td><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
                     <td><a href="/issue/assign/{{ issue.id }}" class="assign_issue"></td>
@@ -257,7 +257,7 @@
                     <tr><td colspan="4">{{issue.created}}</td></tr>
                 {% endif %}
                 <tr>
-                    <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
+                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
                     <td><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
                     <td><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
                     <td><a href="/issue/pin/{{ issue.id }}" class="pin_issue"></a></td>
@@ -286,7 +286,7 @@
                     <tr><td colspan="4">{{issue.created}}</td></tr>
                 {% endif %}
                 <tr>
-                    <td><a href="/project/{{issue.project.id}}">{{issue.project.name}}</a></td>
+                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
                     <td><a href="/issue/{{issue.id}}">{{issue.summary}}</a></td>
                     <td><a href="/auth/user/{{issue.assigned_to.id}}">{{issue.assigned_to}}</a></td>
                     <td><a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue"></a></td>

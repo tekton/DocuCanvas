@@ -1,0 +1,16 @@
+{% extends "theme/default/base.html" %}
+
+{% block context_nav %}
+	<li><a href="/help/new">Ask a Question</a></li>
+	<li><a href="/help/resolved">Resolved Questions</a></li>
+	<li><a href="/help/pending">Unresolved Questions</a></li>
+	<li><a href="/help/user">Your Questions</a></li>
+{% endblock %}
+
+{% block container %}
+	<form action="/twitter/deactivate" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		<p>Remove Subscription to Twitter DM's?</p>
+	<input type="submit" value="Deactivate"/>
+	</form>
+{% endblock %}

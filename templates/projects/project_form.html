@@ -2,8 +2,8 @@
 
 {% block contextNav %}
 	<a href="/project">Projects</a>
-    <a href="/issue/new">New Issue</a>
-    <a href="/issue/unassigned">Unassigned Issues</a>
+    <a href="{% url 'issues.views.issue_form' %}">New Issue</a>
+    <a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a>
     <a href="/food/all">Food Requests</a>
     <a href="/reports/edit">Daily Reports</a>
     <a href="/help/user/{{user.id}}">Help</a>
