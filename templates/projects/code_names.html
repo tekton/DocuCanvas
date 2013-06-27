@@ -10,19 +10,26 @@
 
 {% block bodyContent %}
 	<table>
-	<tr><th colspan=2>Project Code Names</th></tr>
-	{% for project in cn_projects %}
 		<tr>
-			<td>{{project.name}}</td>
-			<td>{{project.code_name}}</td>
+			<th colspan=2>Project Code Names</th>
 		</tr>
-	{% endfor %}
-	<tr><th colspan=2>Feature Code Names</th></tr>
-	{% for meta in cn_meta %}
+		{% for project in cn_projects %}
+			<tr>
+				<td>{{project.name}}</td>
+				<td>{{project.code_name}}</td>
+			</tr>
+		{% endfor %}
+	</table>
+
+	<table>
 		<tr>
-			<td>{{meta.title}}</td>
-			<td>{{meta.code_name}}</td>
-		</tr>		
-	{% endfor %}
+			<th colspan=2>Feature Code Names</th>
+		</tr>
+		{% for meta in cn_meta %}
+			<tr>
+				<td>{{meta.title}}</td>
+				<td>{{meta.code_name}}</td>
+			</tr>		
+		{% endfor %}
 	</table>
 {% endblock %}

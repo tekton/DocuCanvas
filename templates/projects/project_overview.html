@@ -1,6 +1,10 @@
 {% extends "theme/default/base.html" %}
 
-{% block context_nav %}
+{% block pageTitle %}
+Project
+{% endblock %}
+
+{% block contextNav %}
 	<li class="nav-header">New</li>
 	<li><a href="/issue/new/{{project_O.id}}">Issue</a></li>
 	<li><a href="/issue/meta/new">Meta Issue</a></li>

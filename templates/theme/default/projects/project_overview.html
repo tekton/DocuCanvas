@@ -88,7 +88,7 @@
 							<tbody>
 							{% for issue in incomplete_issues%}
 								<tr>
-									<td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
+									<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
 									<td>{{issue.status}}</td>
 									<td>{{issue.assigned_to}}</td>
 								</tr>
@@ -109,7 +109,7 @@
 							<tbody>
 							{% for issue in fixed_issues%}
 								<tr>
-									<td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
+									<td><a href="/issue/{{issue.id}}" title="{{issue.description}}">{{issue.summary}}</a></td>
 									<td>{{issue.status}}</td>
 									<td>{{issue.assigned_to}}</td>
 								</tr>
