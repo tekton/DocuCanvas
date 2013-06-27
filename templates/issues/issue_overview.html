@@ -18,7 +18,7 @@
 							<option value="{{user.id}}">{{user.username}}</option>
 						{% endfor%}
 					</select>
-					<button class="btn" type="button" data-url="/issue/assign/{{ issue.id }}/">Assign</button>
+					<button class="btn" type="button">Assign</button>
 				</div>
 			</form>
 		</a>
@@ -413,6 +413,24 @@
         	AlertMessage.error('<strong>Server Error!</strong> ' + data.error);
         }
 	},AlertMessage.genericUnknownError);
+
+	// Context menu - Assign (other)
+	$('#context-issue-assignto .btn').click(function(){
+		var btn = $(this),
+			statusField = btn.siblings('select');
+
+		$.ajax({
+		    type: 'POST',
+		    url: '/issue/assign/{{ issue.id }}/' + statusField.val(),
+		    data:{
+				csrfmiddlewaretoken: '{{csrf_token}}'
+		    },
+		    success: function(data){
+		    	AlertMessage.success('Issue has been successfully assigned');
+		    },
+		    error: AlertMessage.genericUnknownError
+		});
+	});
 
 	// Edit Comment - hide/show edit button
 	$('.issue-comment').on({

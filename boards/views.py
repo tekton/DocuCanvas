@@ -17,6 +17,7 @@ def TestIndex(request):
 
 @login_required
 def boards_form(request):
+    projects = Project.objects.all()
     if request.method == 'POST':
         board = Board()
         form = BoardForm(request.POST, request.FILES, instance=board)
@@ -31,7 +32,7 @@ def boards_form(request):
     else:
         form = BoardForm()
 
-    return render_to_response('boards/boards_form.html', {'form': form}, context_instance=RequestContext(request))
+    return render_to_response('boards/boards_form.html', {'form': form, 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -82,6 +83,7 @@ def index(request):
 
 @login_required
 def boards(request):
+
     boards = Board.objects.all()
     context = {'boards': boards}
     return render_to_response('boards/boards.html', context)
@@ -89,6 +91,7 @@ def boards(request):
 
 @login_required
 def board_edit(request, board_id):
+    projects = Project.objects.all()
     board_nodes = BoardNode.objects.all()
     board_notes = BoardNote.objects.all()
     issues = Issue.objects.all()
@@ -151,11 +154,12 @@ def board_edit(request, board_id):
         p = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
         raise Http404
-    return render_to_response('boards/board_edit.html', {'board': p, 'form': form, 'board_nodes': board_nodes, 'board_notes': board_notes, 'issues': issues}, context_instance=RequestContext(request))
+    return render_to_response('boards/board_edit.html', {'board': p, 'form': form, 'board_nodes': board_nodes, 'board_notes': board_notes, 'issues': issues, 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
 def board_display(request, board_id):
+    projects = Project.objects.all()
     board_nodes = BoardNode.objects.all()
     board_notes = BoardNote.objects.all()
     issues = Issue.objects.all()
@@ -163,4 +167,4 @@ def board_display(request, board_id):
         p = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
         raise Http404
-    return render_to_response('boards/board_display.html', {'board': p, 'board_nodes': board_nodes, 'board_notes': board_notes, 'issues': issues}, context_instance=RequestContext(request))
+    return render_to_response('boards/board_display.html', {'board': p, 'board_nodes': board_nodes, 'board_notes': board_notes, 'issues': issues, 'projects': projects}, context_instance=RequestContext(request))

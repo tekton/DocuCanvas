@@ -1,7 +1,32 @@
+{% extends 'base.html' %}
+{% block additional_head %}
+<style>
+img{
+	width: 10%;
+	height: 10%;
+}
+#titleContainer{
+	position: relative;
+	display: inline;
+	vertical-align: middle;
+	padding-bottom: 5px;
+}
+#imageContainer{
+	height: auto;
+	width: auto;
+	position: relative;
+	display: inline;
+	left: 200px;
+	margin-bottom: 5px;
+}
+</style>
+{% endblock %}
+{% block basecontent %}
 {% if boards %}
 	{% for i in boards %}
-		<font>Height: {{i.height}} / Width: {{i.width}}</font> <img src = '/static/{{i.image}}' /><br />
+		<div id='titleContainer'>Title: {{i.title}} <a href='/board/board_display/{{i.id}}'><div id='imageContainer'><img src = '/static/{{i.image}}' /></div></a></div><br />
 	{% endfor %}
 {% else %}
 	<p>No Boards</p>
 {% endif %}
+{% endblock %}
