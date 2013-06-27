@@ -1,14 +1,14 @@
-{% extends "base.html" %}
+{% extends "projects/base.html" %}
 
-{% block context_nav %}
-	<a href="/issue/new/{{project_O.id}}">New Issue</a>
-	<a href="/issue/new/{{project_O.id}}">New Risk</a>
-	<a href="/checklist/new/{{project_O.id}}">New Checklist</a>
-	<a href="/checklist/project/{{project_O.id}}">Checklists</a>
-	<a href="/project/{{project_O.id}}/edit">Edit Project</a>
+{% block contextNav %}
+	<li><a href="/issue/new/{{project_O.id}}">New Issue</a></li>
+	<li><a href="/issue/new/{{project_O.id}}">New Risk</a></li>
+	<li><a href="/checklist/new/{{project_O.id}}">New Checklist</a></li>
+	<li><a href="/checklist/project/{{project_O.id}}">Checklists</a></li>
+	<li><a href="/project/{{project_O.id}}/edit">Edit Project</a></li>
 {% endblock%}
 
-{% block container %}
+{% block bodyContent %}
 	<table>
 	<tr><th colspan=2>Project Code Names</th></tr>
 	{% for project in cn_projects %}

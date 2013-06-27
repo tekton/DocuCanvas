@@ -1,6 +1,6 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/help/new">Ask a Question</a></li>
     <li><a href="/help/resolved">Resolved Questions</a></li>
     <li><a href="/help/pending">Unresolved Questions</a></li>
@@ -37,7 +37,7 @@ img.pending-image-help{
 }
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 <h2>Resolved Questions</h2>
 <table class="tbl-generic tbl-overview">
     <tr>

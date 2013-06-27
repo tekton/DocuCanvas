@@ -1,17 +1,14 @@
-{% extends "base_issues.html" %}
+{% extends "issues/base.html" %}
 
-{% block extra_head %}
-<link rel="stylesheet" type="text/css" href="/static/css/advsearch.css"/>
-<script src="/static/scripts/advsearch.js"></script>
-{% endblock %}
-
-{% block context_nav %}
+{% block contextNav %}
 	<li><a href="/issue/new">New Issue : {{issue.project.name}}</a></li>
 {% endblock%}
 
-{% block container %}
-	<h2>Advanced Search</h2>
+{% block pageTitle %}
+	Advanced Search
+{% endblock %}
 
+{% block bodyContent %}
 	<form action="/issue/advsearch" method="POST">
 		{% csrf_token %}
 		<p id="addField">Add Field: <select id="fieldList"></select> <a href="#">Add</a></p>
@@ -20,4 +17,8 @@
 	<div id="formFields">
 		{{ form.as_p }}
     </div>
+{% endblock %}
+
+{% block endScripts %}
+<script src="/static/scripts/advsearch.js"></script>
 {% endblock %}

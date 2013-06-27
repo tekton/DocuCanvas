@@ -1,12 +1,12 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/food/new">New Food Request</a></li>
     <li><a href="/food/complete">Completed Requests</a></li>
     <li><a href="/food/overview">Pending Requests</a></li>
 {% endblock %}
 
-{% block extra_head %}
+{% block additionalHead %}
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
 <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
 <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
@@ -18,7 +18,7 @@
 </script>
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
     <form action="/food/new" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <table>
@@ -38,7 +38,7 @@
     </form>
 
 {% endblock %}
-{% block additionaljs %}
+{% block endScripts %}
 //<script>
 $(function(){
     $('#id_desired_completion').datepicker();

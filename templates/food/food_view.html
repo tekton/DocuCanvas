@@ -1,12 +1,12 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/food/new">New Food Request</a></li>
     <li><a href="/food/all">Food Requests</a></li>
     <li><a href="/food/complete">Completed Requests</a></li>
 {% endblock %}  
 
-{% block container %}
+{% block bodyContent %}
 <b>Item: </b>{{food.item}}</br>
 <b>Unit Cost: </b>{{food.cost_per_quantity}}<b> per </b>{{food.quantity_type}}</br>
 <b>Quantity: </b>{{food.quantity}}<b> </b>{{food.quantity_type}}</br>

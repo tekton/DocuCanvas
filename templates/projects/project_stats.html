@@ -1,6 +1,6 @@
-{% extends "theme/default/base.html" %}
+{% extends "projects/base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/issue/new/{{project.id}}">New Issue</a></li>
     <li><a href="/issue/new/{{project.id}}">New Risk</a></li>
     <li><a href="/checklist/new/{{project.id}}">New Checklist</a></li>
@@ -9,7 +9,7 @@
     <li><a href="/project/{{project.id}}/edit">Edit Project</a></li>
 {% endblock%}
 
-{% block extra_head%}
+{% block additionalHead %}
     <script type="text/javascript">
         $(document).ready(function(){
             $('#blank_count').click(function(){
@@ -40,7 +40,7 @@
     </script>
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 <h3>Issues</h3>
 <table class="tbl-generic">
         <tr>

@@ -1,5 +1,5 @@
 {% extends "theme/default/base-helpdesk.html" %}
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/help/new">Ask a Question</a></li>
     <li><a href="/help/resolved">Resolved Questions</a></li>
     <li><a href="/help/pending">Unresolved Questions</a></li>
@@ -10,7 +10,7 @@
 <span class="title-pagetype">{{help.name}}</span>
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 	{% if user.id == help.user.id %}
 		<article class="row">
 			<div id="issue-column-main" class="span12 metainfo-maincolumn">
