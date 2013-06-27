@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load set_var %}
 
 {% block additional_head %}
 <style>
@@ -41,6 +42,7 @@ div[class^='reportView']{
 }
 </style>
 {% endblock %}
+
 {% block contextNav %}
 <li><a href="/reports/edit">Daily Reports</a></li>
 <li><a href="/reports/view">View Daily Reports</a></li>
@@ -50,7 +52,6 @@ div[class^='reportView']{
 {% endblock %}
 
 {% block bodyContent %}
-{% load set_var%}
 	<table class='userDiv'>
 {% for user in users %}
 {% set username = user %}
@@ -82,7 +83,7 @@ div[class^='reportView']{
 	</table>
 {% endblock %}
 {% block endScripts %}
-//<script>
+<script>
 function expandReport(div){
 	var divToExpand = "." + div;
 	if($(divToExpand).css('display') == 'none'){
@@ -92,5 +93,5 @@ function expandReport(div){
 	};
 
 };
-//</script>
+</script>
 {% endblock %}

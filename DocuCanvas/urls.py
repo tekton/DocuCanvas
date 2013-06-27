@@ -16,8 +16,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('auth.urls')),
     #
-    url(r'^acct/', include('accounts.urls')),
-    url(r'^bug/', include('bugs.urls')),
+    url(r'^acct/', include('accounts.urls')),               # wjmazza - This used/needed?
+    url(r'^bug/', include('bugs.urls')),                    # wjmazza - This used/needed?
     url(r'^board/', include('boards.urls')),
     #url(r'^suggestion/', include('suggestions.urls')),
     #url(r'^task/', include('tasks.urls')),

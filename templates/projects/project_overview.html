@@ -1,5 +1,9 @@
 {% extends "projects/base.html" %}
 
+{% block pageTitle %}
+Project
+{% endblock %}
+
 {% block contextNav %}
 	<li class="nav-header">New</li>
 	<li><a href="/issue/new/{{project_O.id}}">Issue</a></li>
