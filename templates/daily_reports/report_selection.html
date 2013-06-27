@@ -1,11 +1,11 @@
-{% extends 'theme/default/base.html' %}
+{% extends 'base.html' %}
 
 {% block contextNav %}
 <li><a href="/reports/edit">Daily Reports</a></li>
 <li><a href="/reports/view">View Daily Reports</a></li>
 {% endblock %}
 
-{% block bodyContent %}
+{% block baseContent %}
 <div id = "container">
     <form action="" method="post" enctype="multipart/form-data" id="report_selection_form">
         {% csrf_token %}
@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block endScripts %}
-//<script>
+<script>
 $(function(){
     $('#timeframe_start').datepicker({dateFormat: 'yy/mm/dd'});
     $('#timeframe_stop').datepicker({dateFormat: 'yy/mm/dd'});
@@ -49,5 +49,5 @@ function goToForm(){
     };
 };
 
-//</script>
+</script>
 {% endblock %}

@@ -1,12 +1,12 @@
 {% extends "projects/base.html" %}
 
 {% block contextNav %}
-	<a href="/project">Projects</a>
-    <a href="{% url 'issues.views.issue_form' %}">New Issue</a>
-    <a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a>
-    <a href="/food/all">Food Requests</a>
-    <a href="/reports/edit">Daily Reports</a>
-    <a href="/help/user/{{user.id}}">Help</a>
+	<li><a href="/project">Projects</a></li>
+    <li><a href="{% url 'issues.views.issue_form' %}">New Issue</a></li>
+    <li><a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a></li>
+    <li><a href="/food/all">Food Requests</a></li>
+    <li><a href="/reports/edit">Daily Reports</a></li>
+    <li><a href="/help/user/{{user.id}}">Help</a></li>
 {% endblock%}
 
 {% block bodyContent %}
