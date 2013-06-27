@@ -1,4 +1,4 @@
-{% extends 'theme/default/base.html' %}
+{% extends 'base.html' %}
 
 {% block additional_head %}
 <style>
@@ -48,6 +48,7 @@ div[class^='reportView']{
 <li><a href="/reports/report_selection">Report Selection</a></li>
 {% endif %}
 {% endblock %}
+
 {% block bodyContent %}
 {% load set_var%}
 	<table class='userDiv'>

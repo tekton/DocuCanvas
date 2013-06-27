@@ -8,8 +8,8 @@ from django.template import RequestContext
 
 from projects.models import Project
 from issues.models import Issue, IssueComment
-from twitter.models import TwitterProfile
-from twitter.forms import TwitterForm
+from twitter.models import TwitterProfile, Tweet, DMAll, DMIndividual
+from twitter.forms import TwitterForm, TweetForm, DMAForm, DMIForm
 
 import sys
 import tweepy
@@ -148,4 +148,19 @@ def new_project_tweet(request, project_id):
 	return redirect('dashboard.views.home')
 
 
-
+def new_tweet(request):
+	if request.user.is_staff:
+		if request.method == 'POST':
+			content = request.POST['twit-content']
+			tweet = Tweet(tweet_user=request.user, content=content)
+			if content != '':
+				auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+				auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+				api = tweepy.API(auth)
+				try:
+					api.update_status(status=tweet.content)
+					tweet.save()
+				except Exception, e:
+					print e
+				return redirect('dashboard.views.home')
+	return render_to_response('twitter/new_tweet.html', {}, context_instance=RequestContext(request))
