@@ -6,7 +6,7 @@
     <li><a href="/food/overview">Pending Requests</a></li>
 {% endblock %}
 
-{% block bodyContent %}
+{% block baseContent %}
     <form action="/food/comp/{{food.id}}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <table>
