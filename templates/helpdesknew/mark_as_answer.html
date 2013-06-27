@@ -1,7 +1,7 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
 
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/help/new">Ask a Question</a></li>
     <li><a href="/help/resolved">Resolved Questions</a></li>
     <li><a href="/help/pending">Unresolved Questions</a></li>
@@ -14,7 +14,7 @@
 }
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 {% if response.helprequest.user.id != user.id %}
 <p>You don't have access to this page.</p>
 <p>You are not the original poster</p>

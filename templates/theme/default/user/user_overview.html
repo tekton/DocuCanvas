@@ -1,11 +1,11 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 {% load set_var %}
 
-{% block context_nav %}
-{% include "theme/_includes/contextnav-default.html" %}
+{% block contextNav %}
+{% include "_includes/contextnav-default.html" %}
 {% endblock%}
 
-{% block container %}
+{% block bodyContent %}
     {% regroup issues by project as issuesGroupedByProject %}
     {% regroup issues by get_status_display as issuesGroupedByStatus %}
 

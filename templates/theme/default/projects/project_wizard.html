@@ -1,11 +1,11 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 {% load set_var %}
 
-{% block context_nav %}
+{% block contextNav %}
 {% include 'theme/_includes/contextnav-default.html' %}
 {% endblock%}
 
-{% block container %}
+{% block bodyContent %}
 	<style>
 		.wizard-card {display:none;}
 		.wizard-card.active {display:block;}
@@ -151,7 +151,7 @@
 	</form>
 {% endblock %}
 
-{% block additionaljs %}
+{% block endScripts %}
 // <script>
 var wizardPrev = $('#wizard-prevbtn');
 var wizardNext = $('#wizard-nextbtn');

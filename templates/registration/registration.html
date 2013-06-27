@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
-{% block container %}
-
+{% block bodyContent %}
 <form action="/accounts/register" method="post" enctype="multipart/form-data">
     {% csrf_token %}
         <table>
@@ -10,5 +9,4 @@
     <input type="submit" value="Submit"/>
     <input type="hidden" name="next" id="next" value="{{next}}" />
 </form>
-
 {% endblock %}

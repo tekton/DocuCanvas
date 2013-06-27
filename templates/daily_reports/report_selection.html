@@ -1,9 +1,9 @@
 {% extends 'theme/default/base.html' %}
-{% block context_nav %}
+{% block contextNav %}
 <li><a href="/reports/edit">Daily Reports</a></li>
 <li><a href="/reports/view">View Daily Reports</a></li>
 {% endblock %}
-{% block container %}
+{% block bodyContent %}
 
 <div id = "container">
     <form action="" method="post" enctype="multipart/form-data" id="report_selection_form">
@@ -17,7 +17,7 @@
     </form>
 </div>
 {% endblock %}
-{% block additionaljs %}
+{% block endScripts %}
 //<script>
 $(function(){
     $('#timeframe_start').datepicker({dateFormat: 'yy/mm/dd'});

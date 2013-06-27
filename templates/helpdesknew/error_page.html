@@ -1,13 +1,13 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/help/new">Ask a Question</a></li>
     <li><a href="/help/resolved">Resolved Questions</a></li>
     <li><a href="/help/pending">Unresolved Questions</a></li>
     <li><a href="/help/user">Your Questions</a></li>
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 {% if error_id == '1' %}
 	<h2>Error - Answer could not be submitted</h2>
 	<p>An answer has already been submitted for this question</p>

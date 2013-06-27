@@ -1,13 +1,13 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/help/new">Ask a Question</a></li>
     <li><a href="/help/resolved">Resolved Questions</a></li>
     <li><a href="/help/pending">Unresolved Questions</a></li>
     <li><a href="/help/user">Your Questions</a></li>
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 <h2>Comment Edit</h2>
 {% if user.id == comment.user.id %}
 	<form action="{{comment.id}}" method="post" enctype="multipart/form-data">

@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "issues/base.html" %}
 
 <!--{%block extra_head%}
     <script type="text/javascript">
@@ -10,17 +10,16 @@
     </script>
 {% endblock%}-->
 
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/issue/unassigned" >Unassigned Issues</a></li>
     <li><a href="issue/new">New Issue</a></li>
-
 {% endblock %}
 
-{% block additional_head %}
+{% block additionalHead %}
     {{ form.media }}
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
     <form action="/issue/new" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -30,7 +29,7 @@
         Screenshot: 
         <input type="file" name="myfiles" multiple/><br>
 
-    <input type="submit" value="Submit"/>
+        <input type="submit" value="Submit"/>
     </form>
 
 {% endblock %}

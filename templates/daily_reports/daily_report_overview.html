@@ -1,4 +1,4 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 {% load markup %}
 {% load staticfiles %}
 
@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}"/>
 {% endblock %}
 
-{% block context_nav %}
+{% block contextNav %}
 <li><a href="/reports/edit">Daily Reports</a></li>
 <li><a href="/reports/view">View Daily Reports</a></li>
 {% if user.is_superuser%}
@@ -15,7 +15,7 @@
 {% endif %}
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 
 	<h2>Daily Reports</h2>
 

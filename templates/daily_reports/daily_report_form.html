@@ -1,11 +1,11 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
 
 {% block endscripts %}
 <script src="/static/scripts/daily_reports.js"></script>
 {% endblock %}
 
-{% block context_nav %}
+{% block contextNav %}
 <li><a href="/reports/edit">Daily Reports</a></li>
 <li><a href="/reports/view">View Daily Reports</a></li>
 {% if user.is_superuser%}
@@ -17,7 +17,7 @@
 {{ form.media }}
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 	<h2>Edit {% if global %}Global{% else %}Personal{% endif %} Daily Report</h2>
 				Date: <input type = "text" id = "datePicker">
 				<input type="button" value="Go" id="goToDate"/>

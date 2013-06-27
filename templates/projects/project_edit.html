@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+{% extends "projects/base.html" %}
 
-{% block context_nav %} 
+{% block contextNav %} 
     <a href="/project/{{project.id}}">{{project.name}}</a>
    <a href="/issue/new/{{project_O.id}}">New Issue</a>
     <a href="/issue/meta/new">New Meta Issue</a>
@@ -10,7 +10,7 @@
     <a href="/checklist/project/{{project_O.id}}">Checklists</a>
 {% endblock%}
 
-{% block container %}
+{% block bodyContent %}
     <h2>New Project</h2>
     <form action="/project/{{project.id}}/edit" method="post" enctype="multipart/form-data">
         {% csrf_token %}

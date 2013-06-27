@@ -41,14 +41,14 @@ div[class^='reportView']{
 }
 </style>
 {% endblock %}
-{% block context_nav %}
+{% block contextNav %}
 <li><a href="/reports/edit">Daily Reports</a></li>
 <li><a href="/reports/view">View Daily Reports</a></li>
 {% if user.is_superuser%}
 <li><a href="/reports/report_selection">Report Selection</a></li>
 {% endif %}
 {% endblock %}
-{% block container %}
+{% block bodyContent %}
 {% load set_var%}
 	<table class='userDiv'>
 {% for user in users %}
@@ -80,7 +80,7 @@ div[class^='reportView']{
 {% endfor %}
 	</table>
 {% endblock %}
-{% block additionaljs %}
+{% block endScripts %}
 //<script>
 function expandReport(div){
 	var divToExpand = "." + div;

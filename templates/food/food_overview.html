@@ -1,12 +1,12 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/food/new">New Food Request</a></li>
     <li><a href="/food/complete">Completed Requests</a></li>
     <li><a href="/food/overview">Pending Requests</a></li>
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 
 <h2><a href="/food/all">Pending Food Requests:</a></h2>
 <table>

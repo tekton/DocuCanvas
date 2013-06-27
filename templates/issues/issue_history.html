@@ -1,19 +1,7 @@
-{% extends "base.html" %}
+{% extends "issues/base.html" %}
 {% load set_var%}
 
-{% block extra_head%}
-    <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css"/>
-    <script type="text/javascript" src="/static/scripts/ajax_tools.js"></script>
-    <script type="text/javascript">
-        function toggleHistoricalIssue(historical_issue_id){
-            var historical_issue_class = '.historical_issue_' + historical_issue_id;
-            $(historical_issue_class).fadeToggle('slow', function(){});
-        }
-    </script>
-
-{% endblock %}
-
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/issue/new/{{issue.project.id}}">New Issue : {{issue.project.name}}</a></li>
     <li><a href="/issue/subscribe/{{ issue.id }}" class="subscribe_to_issue">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
     <li><a href="/issue/pin/{{ issue.id }}" class="pin_issue">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
@@ -34,7 +22,7 @@
     <li><a href="/issue/{{issue.id}}/edit">Edit</a></li>
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 
         <div class="dashboard_container_section">
             <h3>Status Updates</h3>
@@ -109,3 +97,12 @@
         
 
 {% endblock%}
+
+{% block endScripts %}
+    <script >
+        function toggleHistoricalIssue(historical_issue_id){
+            var historical_issue_class = '.historical_issue_' + historical_issue_id;
+            $(historical_issue_class).fadeToggle('slow', function(){});
+        }
+    </script>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
     <a href="/">Dashboard</a>
     <a href="/auth/user/{{user.id}}">{{user}}</a>
     <a href="/issue/new">New Issue</a>
@@ -11,7 +11,7 @@
 {% endblock%}
 
 
-{% block container %}
+{% block bodyContent %}
 <a href="accounts/change_email">Change Email Address</a><br>
 <a href="/accounts/change_password">Change Password</a>
 {% endblock %}
