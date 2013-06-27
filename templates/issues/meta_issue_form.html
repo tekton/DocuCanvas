@@ -33,7 +33,7 @@
     {% endif %}
 {% endblock%}
 
-{% block baseContent %}
+{% block bodyContent %}
     <form id="miform" action="/issue/meta/{% if new %}new{% else %}{{ form.instance.id }}/edit{% endif %}" method="post">
         {% csrf_token %}
         <table>
