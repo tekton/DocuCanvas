@@ -56,7 +56,7 @@ def add_twitter_acct(request):
 def remove_twitter_acct(request):
 	if request.method == 'POST':
 		myuser = request.user
-		twat = TwitterProfile(user=user)
+		twat = TwitterProfile(user=myuser)
 		twat.Deactivate()
 		print "Account Deactivated"
 		return redirect('dashboard.views.home')
