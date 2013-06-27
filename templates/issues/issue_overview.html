@@ -1,7 +1,19 @@
-{% extends "theme/default/base.html" %}
+{% extends "issues/base.html" %}
 {% load markup %}
 
-{% block context_nav %}
+{% block pageTitle %}
+<span class="title-pagetype">{{page_type}}</span>
+{% if page_value %}
+<span class="title-separator title-seperator-pagevalue">::</span>
+<span class="title-pagevalue">{{page_value}}</span>
+{% endif %}
+{% if issue %}
+<span class="title-separator title-seperator-issuestatus">::</span>
+<small class="title-issuestatus label {{issueLabelClass}}">{{issue.get_status_display}}</small>
+{% endif %}
+{% endblock %}
+
+{% block contextNav %}
 	<li class="nav-header">New</li>
 	<li><a id="context-issue-new" href="{% 'issues.views.issue_form_project' issue.project.id %}">Issue : {{issue.project.name}}</a></li>
 	<li class="nav-header">Issue Actions</li>
@@ -39,11 +51,11 @@
 	<li><a href="{% url 'issues.views.edit' issue.id %}">Edit</a></li>
 {% endblock%}
 
-{% block additional_head %}
+{% block additionalHead %}
     {{ form.media }}
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 	<article class="row">
 		<div id="issue-column-main" class="span9 metainfo-maincolumn">
 			<div id="issue-details" class="well">
@@ -80,7 +92,7 @@
 					<h3>Comments</h3>
 				</header>
 				<div id="issue-comments-add">
-					<form class="form-inline" action="/issue/comment/{{issue.id}}" method="post" enctype="multipart/form-data">
+					<form class="form-inline" action="/issue/comment/{{issue.id}}" method="POST" enctype="multipart/form-data">
 						{% csrf_token %}
 						<input type="hidden" name="issue" id="id_issue" value="{{issue.id}}">
 						<input type="hidden" name="user" id="id_user" value="{{user.id}}">
@@ -280,190 +292,207 @@
 	</article>
 {% endblock %}
 
-{% block additionaljs %}
-// <script> - commented out as only used in Sublime Text for syntax highlightling
+{% block endScripts %}
+	<script>
+		// Context menu - Status
+		$('#context-issue-status .btn').click(function(){
+			var btn = $(this),
+				statusField = btn.siblings('select');
 
-	// Context menu - Status
-	$('#context-issue-status .btn').click(function(){
-		var btn = $(this),
-			statusField = btn.siblings('select');
+			switch (statusField.val()) {
+				case 'fixed':
+					$('#modal-issue-fixed').modal();
+					break;
 
-		switch (statusField.val()) {
-			case 'fixed':
-				$('#modal-issue-fixed').modal();
-				break;
+				case 'duplicate':
+					$('#modal-issue-duplicate').modal();
+					break;
 
-			case 'duplicate':
-				$('#modal-issue-duplicate').modal();
-				break;
-
-			default:
-				$.ajax({
-				    type: 'POST',
-				    url: '/issue/set_bug_state',
-				    data:{
-				    	issue: '{{issue.id}}',
-				    	status: statusField.val(),
-						csrfmiddlewaretoken: '{{csrf_token}}'
-				    },
-				    success: function(data){
-				    	AlertMessage.success(data.status);
-				    },
-				    error: AlertMessage.genericUnknownError
-				});
-				break;
-		}
-	});
-
-	// Context menu - Status - Duplicate handler
-	$('#modal-issue-duplicate .btn-primary').on({
-		click: function(){
-			$.ajax({
-				type: 'POST',
-				url: '/issue/link',
-				data:{
-					primary_issue: '{{issue.id}}',
-					secondary_issue: $('#duplicate_issue_id').val(),
-					link_type: 'duplicate'
-				},
-				success: function(data){
-					$('#modal-issue-duplicate').modal('hide');
-					AlertMessage.success(data.response);
-				},
-				error: function(data){
-					$('#modal-issue-duplicate-alert').show();
-				}
-			});
-		}
-	});
-
-	// Context menu - Related - Related handler
-	$('#modal-issue-related .btn-primary').on({
-		click: function(){
-			$.ajax({
-				type: 'POST',
-				url: '/issue/link',
-				data:{
-					primary_issue: '{{issue.id}}',
-					secondary_issue: $('#modal-issue-related-id').val(),
-					link_type: $('#modal-issue-related-type').val()
-				},
-				success: function(data){
-					$('#modal-issue-related').modal('hide');
-					AlertMessage.success(data.response);
-				},
-				error: function(data){
-					$('#modal-issue-related-alert').show();
-				}
-			});
-		}
-	});
-
-	// Context menu - Subscribe
-	$('#context-issue-subscribe').asAjax( function(data, status) {
-        if ( data.success ) {
-            if ( data.is_subscribed ) {
-                $(this).text('Unsubscribe');
-                AlertMessage.success('Issue subscribed');
-            }
-            else {
-                $(this).text('Subscribe');
-                AlertMessage.success( 'Issue unsubscribed');
-            }
-        }
-        else {
-            AlertMessage.error('<strong>Subscribe error!</strong>' + data.error);
-        }
-    },AlertMessage.genericUnknownError);
-
-    // Context menu - Pin
-    $('#context-issue-pin').asAjax(function(data, status) {
-        if ( data.success ) {
-            if ( data.is_pinned ) {
-                $(this).text('Unpin');
-                AlertMessage.success('Issue pinned');
-            }
-            else {
-                $(this).text('Pin');
-                AlertMessage.success('Issue unpinned');
-            }
-        }
-        else {
-            AlertMessage.error('Pinning error: ' + data.error)
-        }
-    },AlertMessage.genericUnknownError);
-
-	// Context menu - Assign (self)
-	$('#context-issue-assign').asAjax(function(data){
-		if ( data.success ) {
-            if ( data.assigned_to == "self" ) {
-                $(this).text( "Unassign" );
-				AlertMessage.success('Issue now assigned to you.');
-            }
-            else if ( data.assigned_to == "none" ) {
-                $(this).text( "Take" );
-				AlertMessage.success('Issue unassigned.');
-            }
-            else if ( data.assigned_to == "user" ) {
-                $(this).text( "Take" );
-				AlertMessage.success('Issue successfully assigned.');
-            }
-        }
-        else {
-        	AlertMessage.error('<strong>Server Error!</strong> ' + data.error);
-        }
-	},AlertMessage.genericUnknownError);
-
-	// Edit Comment - hide/show edit button
-	$('.issue-comment').on({
-		mouseover: function(){
-			var me = $(this);
-			if (me.attr('data-commentuser') == '{{user}}') {
-				me.addClass('show-editbutton');
+				default:
+					$.ajax({
+					    type: 'POST',
+					    url: '/issue/set_bug_state',
+					    data:{
+					    	issue: '{{issue.id}}',
+					    	status: statusField.val(),
+							csrfmiddlewaretoken: '{{csrf_token}}'
+					    },
+					    success: function(data){
+					    	AlertMessage.success(data.status);
+					    },
+					    error: AlertMessage.genericUnknownError
+					});
+					break;
 			}
-		},
-		mouseout: function(){
-			$(this).removeClass('show-editbutton');
-		}
-	});
+		});
 
-	// Edit Comment - show edit form
-	$('.comment-editbutton').click(function(){
-		var btn = $(this),
-			currentUser = '{{user}}',
-			modalForm = $('#modal-comment-edit'),
-			textArea = $('#modal-comment-textarea'),
-			submitBtn = $('#modal-comment-submit'),
-			alertMsg = $('#modal-comment-alert');
-
-		alertMsg.hide();
-		submitBtn.unbind('click');
-
-		if (btn.attr('data-commentuser') == currentUser) {
-			textArea.val(btn.attr('data-commentcontent'));
-			submitBtn.click(function(){
+		// Context menu - Status - Duplicate handler
+		$('#modal-issue-duplicate .btn-primary').on({
+			click: function(){
 				$.ajax({
-					type:"POST",
-					url:"/issue/edit_comment",
+					type: 'POST',
+					url: '/issue/link',
 					data:{
-						comment_id: btn.attr('data-commentid'),
-						comment: textArea.val()
+						primary_issue: '{{issue.id}}',
+						secondary_issue: $('#duplicate_issue_id').val(),
+						link_type: 'duplicate'
 					},
 					success: function(data){
-						alertMsg.hide();
-						AlertMessage.success('Comment successfully updated.',btn.siblings('.comment-content'));
-						submitBtn.unbind('click');
-						modalForm.modal('hide');
+						$('#modal-issue-duplicate').modal('hide');
+						AlertMessage.success(data.response);
 					},
 					error: function(data){
-						$('#modal-comment-alert').show();
+						$('#modal-issue-duplicate-alert').show();
 					}
 				});
+			}
+		});
+
+		// Context menu - Related - Related handler
+		$('#modal-issue-related .btn-primary').on({
+			click: function(){
+				$.ajax({
+					type: 'POST',
+					url: '/issue/link',
+					data:{
+						primary_issue: '{{issue.id}}',
+						secondary_issue: $('#modal-issue-related-id').val(),
+						link_type: $('#modal-issue-related-type').val()
+					},
+					success: function(data){
+						$('#modal-issue-related').modal('hide');
+						AlertMessage.success(data.response);
+					},
+					error: function(data){
+						$('#modal-issue-related-alert').show();
+					}
+				});
+			}
+		});
+
+		// Context menu - Subscribe
+		$('#context-issue-subscribe').asAjax( function(data, status) {
+	        if ( data.success ) {
+	            if ( data.is_subscribed ) {
+	                $(this).text('Unsubscribe');
+	                AlertMessage.success('Issue subscribed');
+	            }
+	            else {
+	                $(this).text('Subscribe');
+	                AlertMessage.success( 'Issue unsubscribed');
+	            }
+	        }
+	        else {
+	            AlertMessage.error('<strong>Subscribe error!</strong>' + data.error);
+	        }
+	    },AlertMessage.genericUnknownError);
+
+	    // Context menu - Pin
+	    $('#context-issue-pin').asAjax(function(data, status) {
+	        if ( data.success ) {
+	            if ( data.is_pinned ) {
+	                $(this).text('Unpin');
+	                AlertMessage.success('Issue pinned');
+	            }
+	            else {
+	                $(this).text('Pin');
+	                AlertMessage.success('Issue unpinned');
+	            }
+	        }
+	        else {
+	            AlertMessage.error('Pinning error: ' + data.error)
+	        }
+	    },AlertMessage.genericUnknownError);
+
+		// Context menu - Assign (self)
+		$('#context-issue-assign').asAjax(function(data){
+			if ( data.success ) {
+	            if ( data.assigned_to == "self" ) {
+	                $(this).text( "Unassign" );
+					AlertMessage.success('Issue now assigned to you.');
+	            }
+	            else if ( data.assigned_to == "none" ) {
+	                $(this).text( "Take" );
+					AlertMessage.success('Issue unassigned.');
+	            }
+	            else if ( data.assigned_to == "user" ) {
+	                $(this).text( "Take" );
+					AlertMessage.success('Issue successfully assigned.');
+	            }
+	        }
+	        else {
+	        	AlertMessage.error('<strong>Server Error!</strong> ' + data.error);
+	        }
+		},AlertMessage.genericUnknownError);
+
+		// Context menu - Assign (other)
+		$('#context-issue-assignto .btn').click(function(){
+			var btn = $(this),
+				statusField = btn.siblings('select');
+
+			$.ajax({
+			    type: 'POST',
+			    url: '/issue/assign/{{ issue.id }}/' + statusField.val(),
+			    data:{
+					csrfmiddlewaretoken: '{{csrf_token}}'
+			    },
+			    success: function(data){
+			    	AlertMessage.success('Issue has been successfully assigned');
+			    },
+			    error: AlertMessage.genericUnknownError
 			});
-			modalForm.modal();
-		}
-	});
-// </script>
+		});
+
+		// Edit Comment - hide/show edit button
+		$('.issue-comment').on({
+			mouseover: function(){
+				var me = $(this);
+				if (me.attr('data-commentuser') == '{{user}}') {
+					me.addClass('show-editbutton');
+				}
+			},
+			mouseout: function(){
+				$(this).removeClass('show-editbutton');
+			}
+		});
+
+		// Edit Comment - show edit form
+		$('.comment-editbutton').click(function(){
+			var btn = $(this),
+				currentUser = '{{user}}',
+				modalForm = $('#modal-comment-edit'),
+				textArea = $('#modal-comment-textarea'),
+				submitBtn = $('#modal-comment-submit'),
+				alertMsg = $('#modal-comment-alert');
+
+			alertMsg.hide();
+			submitBtn.unbind('click');
+
+			if (btn.attr('data-commentuser') == currentUser) {
+				textArea.val(btn.attr('data-commentcontent'));
+				submitBtn.click(function(){
+					$.ajax({
+						type:"POST",
+						url:"/issue/edit_comment",
+						data:{
+							comment_id: btn.attr('data-commentid'),
+							comment: textArea.val()
+						},
+						success: function(data){
+							alertMsg.hide();
+							AlertMessage.success('Comment successfully updated.',btn.siblings('.comment-content'));
+							submitBtn.unbind('click');
+							modalForm.modal('hide');
+						},
+						error: function(data){
+							$('#modal-comment-alert').show();
+						}
+					});
+				});
+				modalForm.modal();
+			}
+		});
+	</script>
 {% endblock %}
 
 {% block modalsincluded %}
@@ -556,6 +585,4 @@
         	<button id="modal-comment-submit" class="btn btn-primary" type="button">Submit</button>
         </footer>
 	</div>
-
-	{% include "theme/_includes/modal-help-markdown.html" %}
 {% endblock %}

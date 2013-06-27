@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block context_nav %}
-    <a href="/project/{{project.id}}">{{project.name}}</a>
-    <a href="/checklist/project/{{project.id}}">{{project.name}} Checklists</a>
+{% block contextNav %}
+    <li><a href="/project/{{project.id}}">{{project.name}}</a></li>
+    <li><a href="/checklist/project/{{project.id}}">{{project.name}} Checklists</a></li>
 {% endblock%}
 
-{% block container %}
+{% block bodyContent %}
 <div id="formContainer">
     <form action="/checklist/new/{{project.id}}" id = "checkListForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -32,7 +32,10 @@
         <input type="submit" name="submit" value="Submit"/>
     </form>
 </div>
-<script>
+{% endblock %}
+
+{% block additionaljs %}
+//<script>
 var checklistNumber = 1;
 function addCheckListItem(){
     $('#checklistContainer').append("<div><label for='id_checklistlayoutitems_set-"+checklistNumber+"-title'>Title: </label><input id='id_checklistlayoutitems_set-"+checklistNumber+"-title' maxlength='255' name='checklistlayoutitems_set-"+checklistNumber+"-title' type='text' /><input id='sort' name='checklistlayoutitems_set-"+checklistNumber+"-order' type='hidden' value = '"+checklistNumber+"' /></div><input id='id_checklistlayoutitems_set-"+checklistNumber+"-Checklist' name='checklistlayoutitems_set-"+checklistNumber+"-Checklist' type='hidden' /><input id='id_checklistlayoutitems_set-"+checklistNumber+"-id' name='checklistlayoutitems_set-"+checklistNumber+"-id' type='hidden' />");
@@ -53,5 +56,5 @@ $(function() {
     });
     $("#checklistContainer").disableSelection();
   });
-</script>
+//</script>
 {% endblock %}

@@ -1,6 +1,6 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
-{% block extra_head %}
+{% block additionalHead %}
     <style type="text/css">
         td.permSelect div {
             min-width: 250px;
@@ -15,7 +15,7 @@
 
 {% endblock %}
 
-{% block context_nav %}
+{% block contextNav %}
     {% if form.project.value %}
         <li><a href="/issue/new/{{form.project.value}}">New Issue</a></li>
         <li><a href="/issue/meta/new">New Meta Issue</a></li>
@@ -37,7 +37,7 @@
     {{ form.media }}
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
     <form id="miform" action="/issue/meta/{% if new %}new{% else %}{{ form.instance.id }}/edit{% endif %}" method="post">
         {% csrf_token %}
         <table>

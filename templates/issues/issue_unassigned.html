@@ -1,57 +1,59 @@
-{% extends "theme/default/base.html" %}
+{% extends "issues/base.html" %}
 {% load set_var %}
 
-{% block context_nav %}
-    <li><a href="{% url 'issues.views.issue_form' %}">New Issue</a></li>
+{% block contextNav %}
+    <li><a href="issue/new">New Issue</a></li>
 {% endblock %}
 
-{% block container %}
-
-<div class="dashboard_container_section">
-    <h3>Unassigned Issues</h3>
-    <table class="table table-sortable">
-        {% for issue in issues reversed %}
-            {% if newest_unassigned != issue.created %}
-                {% set newest_unassigned = issue.created %}
-                <tr class="date_header"><td colspan="4">{{issue.created}}</td></tr>
-            {% endif %}
-
-
-            <tr>
-                <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</td>
-                <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
-                <td><a href="/issue/{{issue.id}}">{{issue.due_date}}</td>
-                <td><a href="/issue/assign/{{ issue.id }}" class="assign_issue">Take</a></td>
-            </tr>
-        {% endfor%}
-    </table>
-</div>
-
+{% block pageTitle %}
+    Unassigned Issues
 {% endblock %}
 
-{% block additionaljs %}
-    //<script>
-        $(document).ready(function() {
-            $('a.assign_issue').asAjax(function(data) {
-                if ( data.success ) {
-                    if ( data.assigned_to == "self" ) {
-                        $(this).text( "Unassign" );
-                        // alert( "Issue now assigned to you." );
-                    }
-                    else if ( data.assigned_to == "none" ) {
-                        $(this).text( "Take" );
-                        // alert( "Issue unassigned." );
-                    }
-                    else if ( data.assigned_to == "user" ) {
-                        $(this).text( "Take" );
-                        // alert( "Issue successfully assigned." );
-                    }
-                }
-                else {
-                    alert( "Assigning error: " + data.error );
-                }
-            }, function(xhr, status, e) { alert( "Server error: " + e ); });
+{% block bodyContent %}
+    {% if issues.count > 0 %}
+        <div class="well">
+            <table class="table">
+                {% for issue in issues reversed %}
+                    {% if newest_unassigned != issue.created %}
+                        {% set newest_unassigned = issue.created %}
+                        <tr>
+                            <td colspan="4">{{issue.created}}</td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</td>
+                        <td><a href="/issue/{{issue.id}}">{{issue.summary}}</td>
+                        <td><a href="/issue/{{issue.id}}">{{issue.due_date}}</td>
+                        <td><a href="/issue/assign/{{ issue.id }}" class="assign_issue">Take</a></td>
+                    </tr>
+                {% endfor%}
+            </table>
+        </div>
+    {% else %}
+        <p>Woohoo! All issues are currently assigned!</p>
+    {% endif %}
+{% endblock %}
 
-        });
-    //</script>
+{% block endScripts %}
+    <script>
+        $('a.assign_issue').asAjax(function(data) {
+            if ( data.success ) {
+                if ( data.assigned_to == "self" ) {
+                    $(this).text( "Unassign" );
+                    AlertMessage.success( "Issue now assigned to you." );
+                }
+                else if ( data.assigned_to == "none" ) {
+                    $(this).text( "Take" );
+                    AlertMessage.success( "Issue unassigned." );
+                }
+                else if ( data.assigned_to == "user" ) {
+                    $(this).text( "Take" );
+                    AlertMessage.success( "Issue successfully assigned." );
+                }
+            }
+            else {
+                AlertMessage.error( "<strong>Assigning error:</strong> " + data.error );
+            }
+        }, AlertMessage.genericUnknownError);
+    </script>
 {% endblock %}

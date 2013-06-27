@@ -1,10 +1,10 @@
 {% extends "base_issues.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
 	<li><a href="{% url 'issues.views.issue_form' %}">New Issue : {{issue.project.name}}</a></li>
 {% endblock%}
 
-{% block container %}
+{% block bodyContent %}
 	<h2>Issue Search Results</h2>
 
 	<table>

@@ -1,7 +1,7 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 {% load markup %}
 
-{% block context_nav %}
+{% block contextNav %}
 	<li class="nav-header">New</li>
 	<li><a id="context-issue-new" href="{% 'issues.views.issue_form_project' issue.project.id %}">Issue : {{issue.project.name}}</a></li>
 	<li class="nav-header">Issue Actions</li>
@@ -43,7 +43,7 @@
     {{ form.media }}
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 	<article class="row">
 		<div id="issue-column-main" class="span9 metainfo-maincolumn">
 			<div id="issue-details" class="well">
@@ -281,7 +281,7 @@
 	</article>
 {% endblock %}
 
-{% block additionaljs %}
+{% block endScripts %}
 // <script> - commented out as only used in Sublime Text for syntax highlightling
 
 	// Context menu - Status

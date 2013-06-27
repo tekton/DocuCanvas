@@ -1,6 +1,6 @@
-{% extends "theme/default/base.html" %}
+{% extends "projects/base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
 	<li class="nav-header">New</li>
 	<li><a href="/issue/new/{{project_O.id}}">Issue</a></li>
 	<li><a href="/issue/meta/new">Meta Issue</a></li>
@@ -13,7 +13,7 @@
 	<li><a href="/project/{{project_O.id}}/edit">Edit Project</a></li>
 {% endblock%}
 
-{% block container %}
+{% block bodyContent %}
 	<article class="row">
 		<div id="project-column-main" class="span9 metainfo-maincolumn">
 			<div id="project-details" class="well">

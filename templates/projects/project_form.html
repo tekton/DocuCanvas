@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+{% extends "projects/base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
 	<a href="/project">Projects</a>
     <a href="{% url 'issues.views.issue_form' %}">New Issue</a>
     <a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a>
@@ -9,7 +9,7 @@
     <a href="/help/user/{{user.id}}">Help</a>
 {% endblock%}
 
-{% block container %}
+{% block bodyContent %}
 	<h2>New Project</h2>
 	<form action="/project/new" method="post" enctype="multipart/form-data">
 		{% csrf_token %}

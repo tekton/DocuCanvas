@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block container %}
+{% block bodyContent %}
 	<h2>New Note</h2>
 	<form action="/board/new_note" method="post" enctype="multipart/form-data">
 		{% csrf_token %}

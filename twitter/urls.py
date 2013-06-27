@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     url(r'^newProject/([A-Za-z0-9_\.-]+)/([A-Za-z0-9_\.-]+)$', 'twitter.views.send_dm_new_project'),
     url(r'^newProjectAll/([A-Za-z0-9_\.-]+)$', 'twitter.views.send_dm_new_project_all'),
     url(r'^newProjectTweet/([A-Za-z0-9_\.-]+)$', 'twitter.views.new_project_tweet'),
+    url(r'^newTweet', 'twitter.views.new_tweet'),
 )

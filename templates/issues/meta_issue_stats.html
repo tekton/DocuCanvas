@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="/">Dashboard</a></li>
     <li><a href="/accounts/account_settings">Account Settings</a></li>
 {% endblock%}
 
-{% block extra_head%}
+{% block additionalHead %}
     <script type="text/javascript">
         $(document).ready(function(){
             $('#blank_count').click(function(){
@@ -36,7 +36,7 @@
     </script>
 {% endblock %}
 
-{% block container %}
+{% block bodyContent %}
 <h3>Issues by status</h3>
 <table class="tbl-generic">
         <tr>
