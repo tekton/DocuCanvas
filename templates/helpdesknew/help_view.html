@@ -192,6 +192,7 @@
 {% endblock %}
 
 {% block endScripts %}
+<script>
 // Edit Comment - hide/show edit button
 $('.issue-comment').on({
 	mouseover: function(){
@@ -201,4 +202,5 @@ $('.issue-comment').on({
 		$(this).removeClass('show-editbutton');
 	}
 });
+</script>
 {% endblock %}
