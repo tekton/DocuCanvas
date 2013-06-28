@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "helpdesknew/base.html" %}
 
 
 {% block contextNav %}
@@ -8,7 +8,8 @@
     <li><a href="/help/user">Your Questions</a></li>
 {% endblock %}
 
-{% block style %}
+{% block additionalHead %}
+<style>
 a.popup{
     position:relative;
     z-index:24;
@@ -36,6 +37,7 @@ img.pending-image-help{
     width:200px;
     height:200px;
 }
+</style>
 {% endblock %}
 
 {% block bodyContent %}
