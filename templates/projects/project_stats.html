@@ -1,6 +1,6 @@
-{% extends "projects/base.html" %}
+{% extends "theme/default/base.html" %}
 
-{% block contextNav %}
+{% block context_nav %}
     <li><a href="/issue/new/{{project.id}}">New Issue</a></li>
     <li><a href="/issue/new/{{project.id}}">New Risk</a></li>
     <li><a href="/checklist/new/{{project.id}}">New Checklist</a></li>
@@ -40,7 +40,7 @@
     </script>
 {% endblock %}
 
-{% block bodyContent %}
+{% block container %}
 <h3>Issues</h3>
 <table class="tbl-generic">
         <tr>
@@ -166,7 +166,7 @@
     {% for active_issue in active_issues%}
         <tr>
             <td title="issue">
-                <a href="/issue/{{active_issue.id}}">{{active_issue.summary}}</a>
+                <a href="{% url 'issues.views.issue_overview' active_issue.id %}">{{active_issue.summary}}</a>
             </td>
             <td title="status">
                 {{active_issue.status}}
@@ -176,14 +176,14 @@
                 {{active_issue.modified}}
             </td>
             <td title="assigned to">
-                <a href="/auth/user/{{active_issue.assigned_to.id}}">{{active_issue.assigned_to}}</a>
+                <a href="{% url 'auth.views.user_overview' active_issue.assigned_to.id %}">{{active_issue.assigned_to}}</a>
             </td>
         </tr>
     {% endfor %}
     {% for active_issue in unverified_issues%}
         <tr>
             <td title="issue">
-                <a href="/issue/{{active_issue.id}}">{{active_issue.summary}}</a>
+                <a href="{% url 'issues.views.issue_overview' active_issue.id %}">{{active_issue.summary}}</a>
             </td>
             <td title="status">
                 {{active_issue.status}}
@@ -193,7 +193,7 @@
                 {{active_issue.modified}}
             </td>
             <td title="assigned to">
-                <a href="/auth/user/{{active_issue.assigned_to.id}}">{{active_issue.assigned_to}}</a>
+                <a href="{% url 'auth.views.user_overview' active_issue.assigned_to.id %}">{{active_issue.assigned_to}}</a>
             </td>
         </tr>
     {% endfor %}
@@ -207,7 +207,7 @@
                 {{criticality_issue.criticality}}
             </td>
             <td title="issue">
-                <a href="/issue/{{criticality_issue.id}}">{{criticality_issue.summary}}</a>
+                <a href="{% url 'issues.views.issue_overview' active_issue.id %}">{{criticality_issue.summary}}</a>
             </td>
             <td title="status">
                 {{criticality_issue.status}}
@@ -216,7 +216,7 @@
                 {{criticality_issue.modified}}
             </td>
             <td title="assigned to">
-                <a href="/auth/user/{{criticality_issue.assigned_to.id}}">{{criticality_issue.assigned_to}}</a>
+                <a href="{% url 'auth.views.user_overview' criticality_issue.assigned_to.id %}">{{criticality_issue.assigned_to}}</a>
             </td>
         </tr>
     {% endfor %}
@@ -227,7 +227,7 @@
     {% for bug_for_review in bugs_for_review%}
         <tr>
             <td title="issue">
-                <a href="/issue/{{bug_for_review.id}}">{{bug_for_review.summary}}</a>
+                <a href="{% url 'issues.views.issue_overview' active_issue.id %}">{{bug_for_review.summary}}</a>
             </td>
             <td title="status">
                 {{bug_for_review.status}}
@@ -236,7 +236,7 @@
                 {{bug_for_review.modified}}
             </td>
             <td title="assigned to">
-                <a href="/auth/user/{{criticality_issue.assigned_to.id}}">{{criticality_issue.assigned_to}}</a>
+                <a href="{% url 'auth.views.user_overview' criticality_issue.assigned_to.id %}">{{criticality_issue.assigned_to}}</a>
             </td>
         </tr>
     {% endfor %}
