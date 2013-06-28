@@ -5,8 +5,8 @@
     <li><a href="{% url 'issues.views.issue_form' %}">New Issue</a></li>
     <li><a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a></li>
     <li><a href="/food/all">Food Requests</a></li>
-    <li><a href="/reports/edit">Daily Reports</a></li>
-    <li><a href="/help/user/{{user.id}}">Help</a></li>
+    <li><a href="{% url 'daily_reports.views.edit_report' %}">Daily Reports</a></li>
+    <li><a href="{% url 'helpdesknew.views.user_help' %}">Help</a></li>
 {% endblock%}
 
 {% block container %}
