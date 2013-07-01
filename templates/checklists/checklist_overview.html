@@ -3,7 +3,7 @@
 
 {% block contextNav %}
     <li><a href="{% url 'projects.views.project_overview' checklist.project.id %}">{{checklist.project.name}}</a></li>
-    <li><a href="/checklist/new/{{checklist.project.id}}">New Checklist</a></li>
+    <li><a href="{% url 'checklists.views.checklist_form_project' checklist.project.id %}">New Checklist</a></li>
 {% endblock%}
 
 {% block bodyContent %}
