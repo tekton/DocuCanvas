@@ -6,10 +6,10 @@
 {% endblock %}
 
 {% block contextNav %}
-<li><a href="/reports/edit">Daily Reports</a></li>
-<li><a href="/reports/view">View Daily Reports</a></li>
+<li><a href="{% url 'daily_reports.views.edit_report' %}">Daily Reports</a></li>
+<li><a href="{% url 'daily_reports.views.view_reports' %}">View Daily Reports</a></li>
 {% if user.is_superuser%}
-<li><a href="/reports/report_selection">Report Selection</a></li>
+<li><a href="{% url 'daily_reports.views.report_selection' %}">Report Selection</a></li>
 {% endif %}
 {% endblock %}
 
@@ -22,7 +22,7 @@
 				Date: <input type = "text" id = "datePicker">
 				<input type="button" value="Go" id="goToDate"/>
 
-	<form id="reportForm" action="/reports/edit{% if global %}global{% endif %}" method="post">
+	<form id="reportForm" action="{% if global %}{% url 'daily_reports.views.edit_global_report' %}{% else %}{% url 'daily_reports.views.edit_report' %}{% endif %}" method="post">
 		{% csrf_token %}
 		<table>
 			{{form.as_table}}

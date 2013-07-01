@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
 {% block contextNav %}
-    <a href="/">Dashboard</a>
-    <a href="/auth/user/{{user.id}}">{{user}}</a>
+    <a href="{% url 'dashboard.views.home' %}">Dashboard</a>
+    <a href="{% url 'auth.views.user_overview' user.id %}">{{user}}</a>
     <a href="{% url 'issues.views.issue_form' %}">New Issue</a>
     <a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a>
     <a href="{% url 'food.views.all_food' %}">Food Requests</a>
-    <a href="/reports/edit">Daily Reports</a>
+    <a href="{% url 'daily_reports.views.edit_report' %}">Daily Reports</a>
     <a href="/help/user">Help</a>
 {% endblock%}
 
 
-{% block bodyContent %}
+{% block baseContent %}
 <a href="accounts/change_email">Change Email Address</a><br>
 <a href="/accounts/change_password">Change Password</a>
 {% endblock %}

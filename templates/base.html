@@ -23,26 +23,26 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="brand" href="/"><span class="logo">Gadget</span></a>
+                    <a class="brand" href="{% url 'dashboard.views.home' %}"><span class="logo">Gadget</span></a>
                     <div class="nav-collapse collapse">
                         <nav id="mainnav">
                             <ul class="nav">
-                                <li><a href="/" class="{% if page_type == 'Dashboard' %}active{% endif %}">Dashboard</a></li>
+                                <li><a href="{% url 'dashboard.views.home' %}" class="{% if page_type == 'Dashboard' %}active{% endif %}">Dashboard</a></li>
                                 <li class="dropdown">
-                                    <a href="/project" class="dropdown-toggle {% if page_type == 'Project' %}active{% elif page_type == 'Projects' %}active{% elif page_type == 'Issue' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
+                                    <a href="{% url 'projects.views.home' %}" class="dropdown-toggle {% if page_type == 'Project' %}active{% elif page_type == 'Projects' %}active{% elif page_type == 'Issue' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
                                     </a>
                                     <ul class="dropdown-menu">
                                         {% if projects.count > 0 %}
-                                        <li class="nav-header">All Projects</li>
-                                        {% for project in projects%}
-                                            <li><a href="/project/{{project.id}}">{{project.name}}</a></li>
-                                        {% endfor %}
+                                            <li class="nav-header">All Projects</li>
+                                            {% for project in projects%}
+                                                <li><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></li>
+                                            {% endfor %}
                                         {% endif %}
                                         <li class="nav-header">New</li>
-                                        <li><a href="/project/new">Project</a></li>
+                                        <li><a href="{% url 'projects.views.project_form' %}">Project</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="/reports" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
+                                <li><a href="{% url 'daily_reports.views.index' %}" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
                             </ul>
                         </nav>
                         <div id="searchform">
@@ -79,7 +79,9 @@
         {% block baseContent %}{% endblock %}
     </div>
 
-    {% block modalsIncluded %}{% endblock %}
+    <div class="hidden">
+        {% block modalsIncluded %}{% endblock %}
+    </div>
     
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>

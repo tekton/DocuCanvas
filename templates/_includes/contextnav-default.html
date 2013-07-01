@@ -1,6 +1,6 @@
 <li class="nav-header">New</li>
 <li><a href="{% url 'issues.views.issue_form' %}">Issue</a></li>
-<li><a href="/reports/edit">Daily Report</a></li>
+<li><a href="{% url 'daily_reports.views.edit_report' %}">Daily Report</a></li>
 {% if user.is_superuser%}
 <li><a href="/notification/new">Notification</a></li>
 {% endif %}

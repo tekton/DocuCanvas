@@ -31,7 +31,7 @@ img{
 	<div id='maincontainer' class='container'>
 	{% for i in boards %}
 	<div id='row'>
-		<div id='titleContainer'>Title: {{i.title}}</div> <a href='/board/board_display/{{i.id}}'><div id='imageContainer'><img src = '/static/{{i.image}}' /></a></div><br />
+		<div id='titleContainer'>Title: {{i.title}}</div> <a href="{% url 'boards.views.board_display' i.id %}"><div id='imageContainer'><img src = '/static/{{i.image}}' /></a></div><br />
 	</div>
 	{% endfor %}
 	</div>
@@ -40,5 +40,5 @@ img{
 {% endif %}
 {% endblock %}
 {% block contextNav %}
-<li><a href='/board/new_board'>New Board</a></li>
+<li><a href="{% url 'boards.views.boards_form' %}">New Board</a></li>
 {% endblock %}

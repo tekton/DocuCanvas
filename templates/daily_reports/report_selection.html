@@ -1,8 +1,8 @@
 {% extends 'daily_reports/base.html' %}
 
 {% block contextNav %}
-<li><a href="/reports/edit">Daily Reports</a></li>
-<li><a href="/reports/view">View Daily Reports</a></li>
+<li><a href="{% url 'daily_reports.views.edit_report' %}">Daily Reports</a></li>
+<li><a href="{% url 'daily_reports.views.view_reports' %}">View Daily Reports</a></li>
 {% endblock %}
 
 {% block bodyContent %}
