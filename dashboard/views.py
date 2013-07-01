@@ -45,7 +45,7 @@ def home(request):
             num_notifications += 1
     except Exception, e:
         print e
-        notifications = None
+        notification_recipients = None
     #subscribed = SubscriptionToIssue.objects.select_related().filter(user=request.user)
     return render_to_response("dashboard/dashboard.html", {"issues": issues, "subscribed": subscribed,
             "projects": projects, "pins": pins, "newsfeeds": newsfeeds, "notifications": notification_recipients,
