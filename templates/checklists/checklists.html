@@ -16,7 +16,7 @@ Checklists
             {% for checklist in checklists %}
                 <tr>
                     <td>
-                    <a href="/checklist/{{checklist.id}}/edit">{{checklist.name}}</a>
+                    <a href="{% url 'checklists.views.checklist_edit' checklist.id %}">{{checklist.name}}</a>
                     </td>
                     <td>
                         <a href="/checklist/checklist_instance_new/{{checklist.id}}">Add</a>
