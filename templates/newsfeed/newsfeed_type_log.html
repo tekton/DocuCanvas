@@ -76,7 +76,7 @@ Newsfeed
                     <tr>
                         <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                         <td>None</td>
-                        <td><a href="/food/{{newsfeed.food.id}}">{{newsfeed.food.item}}</a></td>
+                        <td><a href="{% url 'food.views.get_food' newsfeed.food.id %}">{{newsfeed.food.item}}</a></td>
                         <td>None</td>
                         <td>{{newsfeed.timestamp}}</td>
                     </tr>
@@ -86,7 +86,7 @@ Newsfeed
                     <tr>
                         <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                         <td>None</td>
-                        <td><a href="/food/{{newsfeed.food.id}}">{{newsfeed.food.item}}</a></td>
+                        <td><a href="{% url 'food.views.get_food' newsfeed.food.id %}">{{newsfeed.food.item}}</a></td>
                         <td>None</td>
                         <td>{{newsfeed.timestamp}}</td>
                     </tr>
