@@ -95,7 +95,7 @@ Newsfeed
                     <tr>
                         <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                         <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}">{{newsfeed.project.name}}</a></td>
-                        <td><a href="/checklist/project/{{newsfeed.project.id}}">{{newsfeed.checklist.name}}</a></td>
+                        <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
                         <td>None</td>
                         <td>{{newsfeed.timestamp}}</td>
                     </tr>
@@ -104,7 +104,7 @@ Newsfeed
                     <tr>
                         <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                         <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}">{{newsfeed.project.name}}</a></td>
-                        <td><a href="/checklist/project/{{newsfeed.project.id}}">{{newsfeed.checklist.name}}</a></td>
+                        <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
                         <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
                         <td>{{newsfeed.timestamp}}</td>
                     </tr>
@@ -113,7 +113,7 @@ Newsfeed
                     <tr>
                         <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                         <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}">{{newsfeed.project.name}}</a></td>
-                        <td><a href="/checklist/project/{{newsfeed.project.id}}">{{newsfeed.checklist.name}}</a></td>
+                        <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
                         <td>{{newsfeed.comment}}</td>
                         <td>{{newsfeed.timestamp}}</td>
                     </tr>
@@ -122,7 +122,7 @@ Newsfeed
                     <tr>
                         <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                         <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}">{{newsfeed.project.name}}</a></td>
-                        <td><a href="/checklist/project/{{newsfeed.project.id}}">{{newsfeed.checklist.name}}</a></td>
+                        <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
                         <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
                         <td>{{newsfeed.timestamp}}</td>
                     </tr>

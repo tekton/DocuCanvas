@@ -5,7 +5,7 @@
     <li><a href="/issue/new/{{project.id}}">New Risk</a></li>
     <li><a href="/checklist/new/{{project.id}}">New Checklist</a></li>
     <li><a href="/project/{{project.id}}/stats">Report</a></li>
-    <li><a href="/checklist/project/{{project.id}}">Checklists</a></li>
+    <li><a href="{% url 'checklists.views.project_checklists' project.id %}">Checklists</a></li>
     <li><a href="/project/{{project.id}}/edit">Edit Project</a></li>
 {% endblock%}
 
