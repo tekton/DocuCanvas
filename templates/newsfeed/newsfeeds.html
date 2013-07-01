@@ -118,7 +118,7 @@ Newsfeed
                             <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="New Checklist Instance">New</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
-                            <td><a href="/checklist/instance/{{newsfeed.comment}}">{{newsfeed.checklist.name}}</a></td>
+                            <td><a href="{% url 'checklists.views.instance_edit' newsfeed.comment %}">{{newsfeed.checklist.name}}</a></td>
                             <td>None</td>
                             <td>{{newsfeed.timestamp}}</td>
                         </tr>
@@ -128,7 +128,7 @@ Newsfeed
                             <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="Edit Checklist Instance">Update</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
-                            <td><a href="/checklist/instance/{{newsfeed.comment}}">{{newsfeed.checklist.name}}</a></td>
+                            <td><a href="{% url 'checklists.views.instance_edit' newsfeed.comment %}">{{newsfeed.checklist.name}}</a></td>
                             <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
                             <td>{{newsfeed.timestamp}}</td>
                         </tr>
@@ -138,7 +138,7 @@ Newsfeed
                             <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="Edit Checklist Instance Tag">Update</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
-                            <td><a href="/checklist/instance/{{newsfeed.description}}">{{newsfeed.checklist.name}}</a></td>
+                            <td><a href="{% url 'checklists.views.instance_edit' newsfeed.description %}">{{newsfeed.checklist.name}}</a></td>
                             <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
                             <td>{{newsfeed.timestamp}}</td>
                         </tr>

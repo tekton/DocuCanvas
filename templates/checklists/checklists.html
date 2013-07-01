@@ -19,7 +19,7 @@ Checklists
                     <a href="{% url 'checklists.views.checklist_edit' checklist.id %}">{{checklist.name}}</a>
                     </td>
                     <td>
-                        <a href="/checklist/checklist_instance_new/{{checklist.id}}">Add</a>
+                        <a href="{% url 'checklists.views.new_instance' checklist.id %}">Add</a>
                     </td>
                 </tr>
 
@@ -32,7 +32,7 @@ Checklists
                         {% if v.title == checklist.name %}
                         <tr class="checklist_instance_item">
                             <td>
-                            <a href="/checklist/instance/{{v.id}}">{{v.title}}</a>
+                            <a href="{% url 'checklists.views.instance_edit' v.id %}">{{v.title}}</a>
                             </td>
                             <td>
                                 {% if v.completion_status %}
