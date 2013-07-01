@@ -136,19 +136,19 @@ Project
 							<dd>{{project_O.status}}</dd>
 						<dt>Product Owner:</dt>
 						{% if project_O.product_owner.id %}
-							<dd><a href="/auth/user/{{project_O.product_owner.id}}">{{project_O.product_owner}}</a></dd>
+							<dd><a href="{% url 'auth.views.user_overview' project_O.product_owner.id %}">{{project_O.product_owner}}</a></dd>
 						{% else %}
 							<dd>{{project_O.product_owner}}</dd>
 						{% endif %}
 						<dt>Project Manager:</dt>
 						{% if project_O.project_manager.id %}
-							<dd><a href="/auth/user/{{project_O.product_manager.id}}">{{project_O.project_manager}}</a></dd>
+							<dd><a href="{% url 'auth.views.user_overview' project_O.product_manager.id %}">{{project_O.project_manager}}</a></dd>
 						{% else %}
 							<dd>{{project_O.project_manager}}</dd>
 						{% endif %}	
 						<dt>Lead Developer:</dt>
 						{% if project_O.lead_developer.id %}
-							<dd><a href="/auth/user/{{project_O.lead_developer.id}}">{{project_O.lead_developer}}</a></dd>
+							<dd><a href="{% url 'auth.views.user_overview' project_O.lead_developer.id %}">{{project_O.lead_developer}}</a></dd>
 						{% else %}
 							<dd>{{project_O.lead_developer}}</dd>
 						{% endif %}
