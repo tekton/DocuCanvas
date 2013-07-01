@@ -169,7 +169,7 @@ Project
 						{% endif %}
 						<dt>Project Manager:</dt>
 						{% if project_O.project_manager.id %}
-							<dd><a href="{% url 'auth.views.user_overview' project_O.product_manager.id %}">{{project_O.project_manager}}</a></dd>
+							<dd><a href="{% url 'auth.views.user_overview' project_O.project_manager.id %}">{{project_O.project_manager}}</a></dd>
 						{% else %}
 							<dd>{{project_O.project_manager}}</dd>
 						{% endif %}	
