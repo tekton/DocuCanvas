@@ -353,21 +353,21 @@
                                         {% if projects.count > 0 %}
                                         <li class="nav-header">All Projects</li>
                                         {% for project in projects%}
-                                            <li><a href="<% url 'projects.views.project_overview' project.id %>">{{project.name}}</a></li>
+                                            <li><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></li>
                                         {% endfor %}
                                         {% endif %}
                                         <li class="nav-header">New</li>
-                                        <li><a href="<% url 'projects.views.project_form' %>">Project</a></li>
+                                        <li><a href="{% url 'projects.views.project_form' %}">Project</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="<% url 'daily_reports.views.index' %>" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
+                                <li><a href="{% url 'daily_reports.views.index' %}" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
                             </ul>
                         </nav>
                         <div id="searchform">
-                            <form class="navbar-search pull-right" action="<% url 'issues.views.issue_search_simple' %>" method="POST">
+                            <form class="navbar-search pull-right" action="{% url 'issues.views.issue_search_simple' %}" method="POST">
                                 {% csrf_token %}
                                 <div class="input-prepend input-append">
-                                    <a class="btn btn-inverse" href="<% url 'issues.views.issue_search_advanced' %>" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
+                                    <a class="btn btn-inverse" href="{% url 'issues.views.issue_search_advanced' %}" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
                                     <input type="text" name="searchText" class="search-query" placeholder="Search">
                                     <button type="submit" class="btn btn-inverse">Go</button>
                                 </div>
@@ -379,14 +379,14 @@
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Context <b class="caret"></b></a>
                                     <ul class="dropdown-menu">
                                         {% block contextNav %}
-                                        <li><a href="<% url 'boards.views.boards' %>"> Board Overview</a></li>
+                                        <li><a href="{% url 'boards.views.boards' %}"> Board Overview</a></li>
                                         {% endblock %}
                                     </ul>
                                 </li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user}} <b class="caret"></b></a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="<% url 'auth.views.account_settings' %>">Settings</a></li>
+                                        <li><a href="{% url 'auth.views.account_settings' %}">Settings</a></li>
                                         <li><a href="/accounts/logout/?next=/">Logout</a></li>
                                     </ul>
                                 </li>
