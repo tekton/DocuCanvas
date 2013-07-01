@@ -2,12 +2,12 @@
 {% load set_var%}
 
 {% block contextNav %}
-    <li><a href="/project/{{checklist.project.id}}">{{checklist.project.name}}</a></li>
-    <li><a href="/checklist/new/{{checklist.project.id}}">New Checklist</a></li>
+    <li><a href="{% url 'projects.views.project_overview' checklist.project.id %}">{{checklist.project.name}}</a></li>
+    <li><a href="{% url 'checklists.views.checklist_form_project' checklist.project.id %}">New Checklist</a></li>
 {% endblock%}
 
-{% block bodyContent %}
-    <form id = 'checklistForm' action="/checklist/{{checklist.id}}/edit" method="post" enctype="multipart/form-data">
+{% block baseContent %}
+    <form id = 'checklistForm' action="{% url 'checklists.views.checklist_edit' checklist.id %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{formset.management_form}}
         <div>

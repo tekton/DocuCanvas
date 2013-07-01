@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block context_nav %} 
-    <a href="/project/{{project.id}}">{{project.name}}</a>
+    <a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a>
    <a href="/issue/new/{{project_O.id}}">New Issue</a>
     <a href="{% url 'issues.views.meta_issue_form' %}">New Meta Issue</a>
     <a href="/issue/new/{{project_O.id}}">New Risk</a>
-    <a href="/checklist/new/{{project_O.id}}">New Checklist</a>
+    <a href="{% url 'checklists.views.checklist_form_project' project_O.id %}">New Checklist</a>
     <a href="/project/{{project_O.id}}/stats">Report</a>
-    <a href="/checklist/project/{{project_O.id}}">Checklists</a>
+    <a href="{% url 'checklists.views.project_checklists' project_O.id %}">Checklists</a>
 {% endblock%}
 
 {% block container %}

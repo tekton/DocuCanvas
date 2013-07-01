@@ -3,8 +3,8 @@
 {% block contextNav %}
 	<li><a href="/issue/new/{{project_O.id}}">New Issue</a></li>
 	<li><a href="/issue/new/{{project_O.id}}">New Risk</a></li>
-	<li><a href="/checklist/new/{{project_O.id}}">New Checklist</a></li>
-	<li><a href="/checklist/project/{{project_O.id}}">Checklists</a></li>
+	<li><a href="{% url 'checklists.views.checklist_form_project' project_O.id %}">New Checklist</a></li>
+	<li><a href="{% url 'checklists.views.project_checklists' project_O.id %}">Checklists</a></li>
 	<li><a href="/project/{{project_O.id}}/edit">Edit Project</a></li>
 {% endblock%}
 

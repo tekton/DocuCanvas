@@ -27,7 +27,7 @@ User
                         <tr><td colspan="4">{{newest_status_timestamp}}</td></tr>
                 {% endif %}
                 <tr>
-                    <td><a href="/project/{{status_update.issue.project.id}}">{{status_update.issue.project}}</a></td>
+                    <td><a href="{% url 'projects.views.project_overview' status_update.issue.project.id %}">{{status_update.issue.project}}</a></td>
                     <td><a href="/issue/{{status_update.issue.id}}">{{status_update.issue.summary}}</a></td>
                     <td>{{status_update.new_status}}</td>
                 </tr>
