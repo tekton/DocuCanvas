@@ -56,7 +56,7 @@ Dashboard
             <tbody>
                 {% for notification in notifications %}
                     <tr id="notification_{{notification.id}}">
-                        <td><a href="/auth/user/{{notification.creator.id}}">{{notification.notification.creator}}</a></td>
+                        <td><a href="{% url 'auth.views.user_overview' notification.creator.id %}">{{notification.notification.creator}}</a></td>
                         <td>{{notification.notification.message}}</td>
                         <td>{{notification.created}}</td>
                         <td class="mark_notification_as_read" onClick="mark_notification_as_read({{notification.id}})">X</td>
@@ -87,7 +87,7 @@ Dashboard
                     
                     {% if newsfeed.newsfeed_type == 'update_issue' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="{{newsfeed.newsfeed_type}}">Update</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td><a href="/issue/{{newsfeed.issue.id}}" title="{{newsfeed.issue.description}}">{{newsfeed.issue.summary}}</a></td>
@@ -98,7 +98,7 @@ Dashboard
 
                     {% if newsfeed.newsfeed_type == 'create_issue' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="New Issue">New</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td><a href="/issue/{{newsfeed.issue.id}}" title="{{newsfeed.issue.description}}">{{newsfeed.issue.summary}}</a></td>
@@ -109,7 +109,7 @@ Dashboard
 
                     {% if newsfeed.newsfeed_type == 'comment' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="Issue Comment">Comment</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}">{{newsfeed.project.name}}</a></td>
                             <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
@@ -119,7 +119,7 @@ Dashboard
                     {% endif %}
                     {% if newsfeed.newsfeed_type == 'update_project' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="Project Edit">Update</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td>None</td>
@@ -129,7 +129,7 @@ Dashboard
                     {% endif %}
                     {% if newsfeed.newsfeed_type == 'create_project' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="New Project">New</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td>None</td>
@@ -139,7 +139,7 @@ Dashboard
                     {% endif %}
                     {% if newsfeed.newsfeed_type == 'create_checklist' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="New Checklist">New</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
@@ -149,7 +149,7 @@ Dashboard
                     {% endif %}
                     {% if newsfeed.newsfeed_type == 'update_checklist' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="Edit Checklist">Update</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
@@ -159,7 +159,7 @@ Dashboard
                     {% endif %}
                     {% if newsfeed.newsfeed_type == 'create_checklist_item' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="New Checklist Item">New</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
@@ -169,7 +169,7 @@ Dashboard
                     {% endif %}
                     {% if newsfeed.newsfeed_type == 'update_checklist_item' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="Edit Checklist Item">Update</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
@@ -180,7 +180,7 @@ Dashboard
 
                     {% if newsfeed.newsfeed_type == 'create_checklist_instance' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="New Checklist Instance">New</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td><a href="{% url 'checklists.views.instance_edit' newsfeed.comment %}">{{newsfeed.checklist.name}}</a></td>
@@ -190,7 +190,7 @@ Dashboard
                     {% endif %}
                     {% if newsfeed.newsfeed_type == 'update_checklist_instance' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="Edit Checklist Instance">Update</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td><a href="{% url 'checklists.views.instance_edit' newsfeed.comment %}">{{newsfeed.checklist.name}}</a></td>
@@ -200,7 +200,7 @@ Dashboard
                     {% endif %}
                     {% if newsfeed.newsfeed_type == 'update_checklist_instance_tag' %}
                         <tr>
-                            <td><a href="/auth/user/{{newsfeed.user.id}}">{{newsfeed.user}}</a></td>
+                            <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="/newsfeed/{{newsfeed.newsfeed_type}}" title="Edit Checklist Instance Tag">Update</a></td>
                             <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td><a href="{% url 'checklists.views.instance_edit' newsfeed.description %}">{{newsfeed.checklist.name}}</a></td>
