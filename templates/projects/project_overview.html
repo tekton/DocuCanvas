@@ -33,15 +33,15 @@ Project
 
 {% block contextNav %}
 	<li class="nav-header">New</li>
-	<li><a href="/issue/new/{{project_O.id}}">Issue</a></li>
+	<li><a href="/issue/new/{{baseContent.id}}">Issue</a></li>
 	<li><a href="/issue/meta/new">Meta Issue</a></li>
-	<li><a href="/issue/new/{{project_O.id}}">Risk</a></li>
-	<li><a href="{% url 'checklists.views.checklist_form_project' project_O.id %}">Checklist</a></li>
+	<li><a href="/issue/new/{{project.id}}">Risk</a></li>
+	<li><a href="{% url 'checklists.views.checklist_form_project' project.id %}">Checklist</a></li>
 	<li class="nav-header">Lists</li>
-	<li><a href="/project/{{project_O.id}}/stats">Report</a></li>
-	<li><a href="{% url 'checklists.views.project_checklists' project_O.id %}">Checklists</a></li>
+	<li><a href="/project/{{project.id}}/stats">Report</a></li>
+	<li><a href="{% url 'checklists.views.project_checklists' project.id %}">Checklists</a></li>
 	<li class="divider"></li>
-	<li><a href="/project/{{project_O.id}}/edit">Edit Project</a></li>
+	<li><a href="/project/{{project.id}}/edit">Edit Project</a></li>
 {% endblock%}
 
 {% block bodyContent %}
@@ -53,7 +53,7 @@ Project
 						<header>
 							<h3 class="media-header">Scope</h3>
 						</header>
-						{{project_O.scope}}
+						{{project.scope}}
 					</div>
 				</section>
 				<section class="media">
@@ -61,7 +61,7 @@ Project
 						<header>
 							<h3 class="media-header">Description</h3>
 						</header>
-						{{project_O.description}}
+						{{project.description}}
 					</div>
 				</section>
 				<section class="media">
@@ -69,7 +69,7 @@ Project
 						<header>
 							<h3 class="media-header">Business Case</h3>
 						</header>
-						{{project_O.business_case}}
+						{{project.business_case}}
 					</div>
 				</section>
 			</div>
@@ -160,39 +160,39 @@ Project
 				<div id="project-metainfo-content" class="metainfo-content">
 					<dl>
 						<dt>Status:</dt>
-							<dd>{{project_O.status}}</dd>
+							<dd>{{project.status}}</dd>
 						<dt>Product Owner:</dt>
-						{% if project_O.product_owner.id %}
-							<dd><a href="{% url 'auth.views.user_overview' project_O.product_owner.id %}">{{project_O.product_owner}}</a></dd>
+						{% if project.product_owner.id %}
+							<dd><a href="{% url 'auth.views.user_overview' project.product_owner.id %}">{{project.product_owner}}</a></dd>
 						{% else %}
-							<dd>{{project_O.product_owner}}</dd>
+							<dd>{{project.product_owner}}</dd>
 						{% endif %}
 						<dt>Project Manager:</dt>
-						{% if project_O.project_manager.id %}
-							<dd><a href="{% url 'auth.views.user_overview' project_O.project_manager.id %}">{{project_O.project_manager}}</a></dd>
+						{% if project.project_manager.id %}
+							<dd><a href="{% url 'auth.views.user_overview' project.project_manager.id %}">{{project.project_manager}}</a></dd>
 						{% else %}
-							<dd>{{project_O.project_manager}}</dd>
+							<dd>{{project.project_manager}}</dd>
 						{% endif %}	
 						<dt>Lead Developer:</dt>
-						{% if project_O.lead_developer.id %}
-							<dd><a href="{% url 'auth.views.user_overview' project_O.lead_developer.id %}">{{project_O.lead_developer}}</a></dd>
+						{% if project.lead_developer.id %}
+							<dd><a href="{% url 'auth.views.user_overview' project.lead_developer.id %}">{{project.lead_developer}}</a></dd>
 						{% else %}
-							<dd>{{project_O.lead_developer}}</dd>
+							<dd>{{project.lead_developer}}</dd>
 						{% endif %}
 						<dt>Priority:</dt>
-							<dd>{{project_O.priority}}</dd>
+							<dd>{{project.priority}}</dd>
 						<dt>Slug:</dt>
-							<dd>{{project_O.slug}}</dd>
+							<dd>{{project.slug}}</dd>
 						<dt>Logo:</dt>
-							<dd>{{project_O.logo}}</dd>
+							<dd>{{project.logo}}</dd>
 						<dt>Potential End Date:</dt>
-							<dd>{{project_O.potential_end_date}}</dd>
+							<dd>{{project.potential_end_date}}</dd>
 						<dt>Current Phase:</dt>
-							<dd>{{project_O.current_phase}}</dd>
+							<dd>{{project.current_phase}}</dd>
 						<dt>Phase Planning Start:</dt>
-							<dd>{{project_O.phase_planning_start}}</dd>
+							<dd>{{project.phase_planning_start}}</dd>
 						<dt>Phase Planning End:</dt>
-							<dd>{{project_O.phase_planning_end}}</dd>
+							<dd>{{project.phase_planning_end}}</dd>
 					</dl>
 				</div>
 			</aside>
