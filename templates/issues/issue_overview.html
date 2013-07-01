@@ -9,7 +9,7 @@
 {% endif %}
 {% if issue %}
 <span class="title-separator title-seperator-issuestatus">::</span>
-<small class="title-issuestatus label {{issueLabelClass}}">{{issue.get_status_display}}</small>
+<span class="title-issuestatus label {{issueLabelClass}}">{{issue.get_status_display}}</span>
 {% endif %}
 {% endblock %}
 
@@ -195,24 +195,7 @@
 
 						<dt>Status:</dt>
 							<dd>
-								<span class="label
-								{% if issue.status == 'not_a_bug' %}
-									label-info">Not a Bug
-								{% elif issue.status == 'wont_fix' %}
-									label-info">Won't Fix
-								{% elif issue.status == 'duplicate' %}
-									label-info">Duplicate
-								{% elif issue.status == 'active' %}
-									label-warning">Active
-								{% elif issue.status == 'fixed' %}
-									label-success">Fixed
-								{% elif issue.status == 'retest' %}
-									label-warning">Retest
-								{% elif issue.status == 'unverified' %}
-									label-default">Unverified
-								{% else %}
-									label-default">None
-								{% endif %}</span>
+								<span class="label {{issueLabelClass}}">{{issue.get_status_display}}</span>
 							</dd>
 
 						<dt>Criticality:</dt>
