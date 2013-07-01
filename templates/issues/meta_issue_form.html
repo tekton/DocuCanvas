@@ -33,6 +33,10 @@
     {% endif %}
 {% endblock%}
 
+{% block pageTitle %}
+New Meta Issue
+{% endblock %}
+
 {% block bodyContent %}
     <form id="miform" action="{% if new %}{% url 'issues.views.meta_issue_form' %}{% else %}{% url 'issues.views.meta_issue_form' form.instance.id %}{% endif %}" method="post">
         {% csrf_token %}
