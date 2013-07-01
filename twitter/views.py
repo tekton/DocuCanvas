@@ -18,9 +18,9 @@ CONSUMER_KEY		= '8nY1q44v3YWGgqfP2eCjFg'
 CONSUMER_SECRET		= 's2MFyXSLbHTmGbz9qBGNFubaeTRivsLJpHsnESnlfE'
 ACCESS_KEY			= '1535252624-YWB7X7lbBwdmzKmWA5Aiep7wis3ARc0EA8hDqIj'
 ACCESS_SECRET		= 'MBrOvB34fuQtQ8vzyfMcA48ZbEhg3zpqgMvAuTSDDk'
-request_token_url	= 'http://twitter.com/oauth/request_token'
-access_token_url	= 'http://twitter.com/oauth/access_token'
-authenticate_url	= 'http://twitter.com/oauth/authenticate'
+# request_token_url	= 'http://twitter.com/oauth/request_token'
+# access_token_url	= 'http://twitter.com/oauth/access_token'
+# authenticate_url	= 'http://twitter.com/oauth/authenticate'
 
 
 @login_required
