@@ -28,13 +28,13 @@
         <li><a href="{% url 'issues.views.issue_form' %}">New Issue</a></li>
         <li><a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a></li>
         <li><a href="{% url 'food.views.all_food' %}">Food Requests</a></li>
-        <li><a href="/reports/edit">Daily Reports</a></li>
-        <li><a href="/help/user/{{user.id}}">Help</a></li>
+        <li><a href="{% url 'daily_reports.views.edit_report' %}">Daily Reports</a></li>
+        <li><a href="{% url 'helpdesknew.views.user_help' %}">Help</a></li>
     {% endif %}
 {% endblock%}
 
 {% block bodyContent %}
-    <form id="miform" action="/issue/meta/{% if new %}new{% else %}{{ form.instance.id }}/edit{% endif %}" method="post">
+    <form id="miform" action="{% if new %}{% url 'issues.views.meta_issue_form' %}{% else %}{% url 'issues.views.meta_issue_form' form.instance.id %}{% endif %}" method="post">
         {% csrf_token %}
         <table>
             {{form.as_table}}
