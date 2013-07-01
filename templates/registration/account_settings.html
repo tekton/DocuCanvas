@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block contextNav %}
-    <a href="/">Dashboard</a>
+    <a href="{% url 'dashboard.views.home' %}">Dashboard</a>
     <a href="/auth/user/{{user.id}}">{{user}}</a>
     <a href="{% url 'issues.views.issue_form' %}">New Issue</a>
     <a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a>
