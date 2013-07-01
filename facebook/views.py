@@ -3,7 +3,6 @@ import hashlib
 import urllib
 import urlparse
 import json
-import simplejson
 
 import oauth2 as oauth
 
