@@ -17,4 +17,4 @@ pil==1.1.7
 django-tinymce==1.5.1
 tweepy==2.0
 facepy==0.8.4
-oauth==2.0
+oauth2==1.5.211
