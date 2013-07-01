@@ -1,6 +1,6 @@
-{% extends "theme/default/base.html" %}
+{% extends "base.html" %}
 
-{% block context_nav %}
+{% block contextNav %}
     <li><a href="{% url 'food.views.food_form' %}">New Food Request</a></li>
     <li><a href="{% url 'food.views.food_overview_complete' %}">Completed Requests</a></li>
     <li><a href="{% url 'food.views.food_overview' %}">Pending Requests</a></li>
