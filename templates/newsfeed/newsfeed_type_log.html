@@ -28,7 +28,7 @@ Newsfeed
                     <tr>
                         <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                         <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}">{{newsfeed.project.name}}</a></td>
-                        <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
+                        <td><a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}">{{newsfeed.issue.summary}}</a></td>
                         <td>{{newsfeed.field_change|truncatechars:80}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
                         <td>{{newsfeed.timestamp}}</td>
                     </tr>
@@ -38,7 +38,7 @@ Newsfeed
                     <tr>
                         <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                         <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}">{{newsfeed.project.name}}</a></td>
-                        <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
+                        <td><a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}">{{newsfeed.issue.summary}}</a></td>
                         <td>None</td>
                         <td>{{newsfeed.timestamp}}</td>
                     </tr>
@@ -48,7 +48,7 @@ Newsfeed
                     <tr>
                         <td><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                         <td><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}">{{newsfeed.project.name}}</a></td>
-                        <td><a href="/issue/{{newsfeed.issue.id}}">{{newsfeed.issue.summary}}</a></td>
+                        <td><a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}">{{newsfeed.issue.summary}}</a></td>
                         <td>{{newsfeed.comment|truncatechars:80}}</td>
                         <td>{{newsfeed.timestamp}}</td>
                     </tr>
