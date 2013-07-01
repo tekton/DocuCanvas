@@ -1,35 +1,31 @@
-{% extends "base.html" %}
+{% extends "theme/default/base.html" %}
 
-{% block contextNav %}
-    <li><a href="/food/new">New Food Request</a></li>
-    <li><a href="/food/complete">Completed Requests</a></li>
-    <li><a href="/food/overview">Pending Requests</a></li>
+{% block context_nav %}
+    <li><a href="{% url 'food.views.food_form' %}">New Food Request</a></li>
+    <li><a href="{% url 'food.views.food_overview_complete' %}">Completed Requests</a></li>
+    <li><a href="{% url 'food.views.food_overview' %}">Pending Requests</a></li>
 {% endblock %}
 
 {% block baseContent %}
 
 <h2><a href="{% url 'food.views.all_food' %}">Pending Food Requests:</a></h2>
 <table>
-    <thead>
-        <tr>
-            <th>Requested By:</th>
-            <th>Item Requested:</th>
-            <th>Quantity:</th>
-            <th>Total Cost:</th>
-            <th>Expected By:</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for food in pending_food %}
-            <tr>
-                <td><a href="/food/view/{{food.id}}">{{food.user}}</a></td>
-                <td><a href="/food/comp/{{food.id}}">{{food.item}}</a></td>
-                <td>{{food.quantity}}</td>
-                <td>{{food.total_cost}}</td>
-                <td>{{food.desired_completion}}</td>
-            </tr>
-        {% endfor%}
-    </tbody>
+    <tr>
+        <td><b>Requested By: </b></td>
+        <td><b>Item Requested: </b></td>
+        <td><b>Quantity: </b></td>
+        <td><b>Total Cost: </b></td>
+        <td><b>Expected By: </b></td>
+    </tr>
+    {% for food in pending_food%}
+    <tr>
+        <td><a href="{% url 'food.views.user_food_overview' food.id %}">{{food.user}}</a></td>
+        <td><a href="/food/comp/{{food.id}}">{{food.item}}</a></td>
+        <td>{{food.quantity}}</td>
+        <td>{{food.total_cost}}</td>
+        <td>{{food.desired_completion}}</td>
+    </tr>
+    {% endfor%}
 </table>
 
 {% endblock %}
