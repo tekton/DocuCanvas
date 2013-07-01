@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block contextNav %}
-    <li><a href="/project/{{project.id}}">{{project.name}}</a></li>
+    <li><a href={% url 'projects.views.project_overview' project.id %}>{{project.name}}</a></li>
     <li><a href="/checklist/project/{{project.id}}">{{project.name}} Checklists</a></li>
 {% endblock%}
 

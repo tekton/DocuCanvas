@@ -19,7 +19,7 @@ All Projects
 		<tbody>
 		{% for project in projects %}
 			<tr>
-				<td><a href="/project/{{project.id}}">{{project.name}}</a></td>
+				<td><a href={% url 'projects.views.project_overview' project.id %}>{{project.name}}</a></td>
 				<td>{%if project.product_owner %}<a href="/auth/user/{{project.product_owner.id}}">{{project.product_owner}}</a> {% else %}{{project.product_owner}}{% endif %}</td>
 			</tr>
 		{% endfor%}

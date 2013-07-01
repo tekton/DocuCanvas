@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block context_nav %} 
-    <a href="/project/{{project.id}}">{{project.name}}</a>
+    <a href={% url 'projects.views.project_overview' project.id %}>{{project.name}}</a>
    <a href="/issue/new/{{project_O.id}}">New Issue</a>
     <a href="{% url 'issues.views.meta_issue_form' %}">New Meta Issue</a>
     <a href="/issue/new/{{project_O.id}}">New Risk</a>
