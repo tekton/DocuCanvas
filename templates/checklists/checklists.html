@@ -1,7 +1,7 @@
 {% extends "checklists/base.html" %}
 
 {% block contextNav %}
-    <!--<a href={% url 'projects.views.project_overview' project.id %}>{{project.name}}</a>-->
+    <!--<a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a>-->
     <li><a href="/checklist/new/{{project.id}}">New Checklist</a></li>
     <li><a href="/checklist/project/{{project.id}}">Project Checklists</a></li>
 
