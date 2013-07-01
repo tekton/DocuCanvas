@@ -79,7 +79,9 @@
         {% block baseContent %}{% endblock %}
     </div>
 
-    {% block modalsIncluded %}{% endblock %}
+    <div class="hidden">
+        {% block modalsIncluded %}{% endblock %}
+    </div>
     
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
