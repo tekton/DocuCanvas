@@ -1,4 +1,4 @@
-{% extends "base_issues.html" %}
+{% extends "issues/base.html" %}
 
 {% block contextNav %}
 	<li><a href="{% url 'issues.views.issue_form' %}">New Issue : {{issue.project.name}}</a></li>

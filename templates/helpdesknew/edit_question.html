@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "helpdesknew/base.html" %}
 
 {% block contextNav %}
     <li><a href="/help/new">Ask a Question</a></li>
@@ -7,10 +7,12 @@
     <li><a href="/help/user">Your Questions</a></li>
 {% endblock %}
 
-{% block style %}
+{% block additionalHead %}
+<style>
 #image_upload_preview{
     opacity: 0;
 }
+</style>
 {% endblock %}
 
 {% block bodyContent %}

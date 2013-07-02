@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "twitter/base.html" %}
 
 {% block contextNav %}
 	<li><a href="/help/new">Ask a Question</a></li>
@@ -7,7 +7,7 @@
 	<li><a href="/help/user">Your Questions</a></li>
 {% endblock %}
 
-{% block baseContent %}
+{% block bodyContent %}
 	<form action="/twitter/deactivate" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		<p>Remove Subscription to Twitter DM's?</p>

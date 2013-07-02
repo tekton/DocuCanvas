@@ -1,5 +1,32 @@
 {% extends "issues/base.html" %}
 {% load markup %}
+{% load humanize %}
+{% comment %}
+Extends /templates/issue/base.html
+
+==Blocks Available==
+	additionalHead (from /templates/base.html)
+		Used to add additional <link/>, <style/>, and/or <script/> tags to the <head/>
+		SHOULD BE USED SPARINGLY - if CSS or JS needs to be added, refer to Gadget.css and Gadget.js, respectively
+	contextNav (from /templates/base.html)
+		Used to add/modify the context menu items
+	baseContent (from /templates/base.html)
+		Content that appears in the <body/> of the document. Is wrapped within <div#globalwrap/> and appears after <div#sitenav/>
+		**NOTE: using baseContent will OVERRIDE bodyContent unless a bodyContent block is contained within**
+	modalsIncluded (from /templates/base.html)
+		Used specifically to contain the HTML for modals used by Bootstrap
+		This content is hidden by default, is wrapped within a <div/> after <div#globalwrap/> and appears before any end scripts
+	endScripts (from /templates/base.html)
+		Used to include additional <script/> for the page
+		Appears outside of <div#globalwrap/>, after any global <script/> and before the closing <body/> tag
+	pageTitle (from /templates/issue/base.html)
+		Supplies text to be displayed at the top of the page below the global nav bar
+		Appears in <h1#pagetitle/> within <header#pageheader>
+	bodyContent (from /templates/issue/base.html)
+		Used to display any and all of the pages content
+		Appears within <div#maincontent>
+		**NOTE: made available by baseContent - if baseContent is defined within the template,bodyContent will not be displayed unless contained within baseContent**
+{% endcomment %}
 
 {% block pageTitle %}
 <span class="title-pagetype">{{page_type}}</span>
@@ -117,7 +144,12 @@
 						<article id="issue-comment-{{comment.id}}" class="issue-comment" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}">
 							<div class="media-body">
 								<aside class="clearfix">
-									<p class="muted"><span class="pull-left">{{comment.user}}</span> <span class="pull-right">{{comment.created|date:"M d, Y g:i A"}} </span></p>
+									<p class="muted">
+										<span class="pull-left">{{comment.user}}</span>
+										<span class="pull-right">
+											<time datetime="{{comment.created|date:"c"}}">{{comment.created|naturaltime}}</time>
+										</span>
+									</p>
 								</aside>
 								<button class="btn btn-mini pull-right comment-editbutton" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}" data-commentcontent="{{comment.description}}"><i class="icon-edit"></i></button>
 								<div class="comment-content">

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "food/base.html" %}
 
 {% block contextNav %}
     <li><a href="{% url 'food.views.food_form' %}">New Food Request</a></li>
@@ -7,7 +7,7 @@
 {% endblock %}  
 
 
-{% block baseContent%}
+{% block bodyContent%}
 <h2>All Registered Food Requests</h2>
 <table>
     <tr>

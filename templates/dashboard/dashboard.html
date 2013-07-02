@@ -9,7 +9,8 @@
 Dashboard
 {% endblock %}
 
-{% block additionaljs %}
+{% block endScripts %}
+<script>
     var num_notifications = '{{num_notifications}}';
 
     function mark_notification_as_read(notification_id){
@@ -37,6 +38,7 @@ Dashboard
             }
         });
     }
+    </script>
 {% endblock %}
 
 {% block bodyContent %}

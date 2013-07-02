@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "food/base.html" %}
 
 {% block contextNav %}
     <li><a href="{% url 'food.views.food_form' %}">New Food Request</a></li>
@@ -6,7 +6,7 @@
     <li><a href="{% url 'food.views.food_overview' %}">Pending Requests</a></li>
 {% endblock %}
 
-{% block baseContent %}
+{% block bodyContent %}
 
 <h2><a href="{% url 'food.views.all_food' %}">Pending Food Requests:</a></h2>
 <table>
@@ -20,7 +20,7 @@
     {% for food in pending_food%}
     <tr>
         <td><a href="{% url 'food.views.user_food_overview' food.id %}">{{food.user}}</a></td>
-        <td><a href="/food/comp/{{food.id}}">{{food.item}}</a></td>
+        <td><a href="{% url 'food.views.food_received' food.id %}">{{food.item}}</a></td>
         <td>{{food.quantity}}</td>
         <td>{{food.total_cost}}</td>
         <td>{{food.desired_completion}}</td>

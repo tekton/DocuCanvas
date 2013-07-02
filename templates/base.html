@@ -89,6 +89,13 @@
     <script src="{% static 'js/ajax_tools.js' %}"></script>
     <script src="{% static 'js/bootstrap-lightbox.min.js' %}"></script>
     <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
+    <script>
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader('X-CSRFToken', '{{csrf_token}}');
+        }
+    });
+    </script>
     <script src="{% static 'js/gadget.js' %}"></script>
     {% block endScripts %}{% endblock %}
 </body>

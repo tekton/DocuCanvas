@@ -1,47 +1,6 @@
 {% extends 'daily_reports/base.html' %}
 {% load set_var %}
-
-{% block additionalHead %}
-<style>
-table{
-	border: 1px solid #F2F2F2;
-	box-shadow: 0 1px 4px #5A5A5A;
-	width: 100%;
-}
-td{
-	padding: 10px;
-}
-tr{
-	padding: 10px;
-}
-.user{
-	text-align: center;
-	width: 20%;
-}
-.reportDiv{
-	border: 1px solid #F2F2F2;
-	box-shadow: 0 1px 4px #5A5A5A;
-	padding: 10px;
-	height: 300px;
-	width: 80%;
-	overflow: scroll;
-	overflow-x: hidden;
-}
-.reportDate{
-	background-color: #ddd;
-	text-align: left;
-}
-div[class^='reportView']{
-	padding: 5px;
-	padding-left: 30px;
-	margin-bottom:10px;
-	width: 80%;
-}
-.dates{
-	text-align: left;
-}
-</style>
-{% endblock %}
+{% load humanize %}
 
 {% block contextNav %}
 <li><a href="{% url 'daily_reports.views.edit_report' %}">Daily Reports</a></li>
@@ -52,35 +11,51 @@ div[class^='reportView']{
 {% endblock %}
 
 {% block bodyContent %}
-	<table class='userDiv'>
-{% for user in users %}
-{% set username = user %}
-
-		<tr>
-			<td class='user'>
-		<!-- <div class='userName'> -->
-		{{user}}
-		<!-- </div> -->
-			</td>
-	<td>
-		<div class = 'reportDiv'>
-			{% for report in reports %}
-				{% if username == report.user %}
-				<div class='reportDate'>
-					<a href='#' onClick='expandReport("reportView_{{user}}_{{forloop.counter}}")'>{{report.date}}</a>
-					<b>Date Created:</b> {{report.created}}
-					<b>Date Modified:</b> {{report.modified}}
-				</div>
-				<div class='reportView_{{user}}_{{forloop.counter}}' style='display: none'>
-					{{report.description|safe}}<br />
-				</div>
-				{% endif %}
-			{% endfor %}
-		</div>
-		<td>
-		</tr>
-{% endfor %}
-	</table>
+<table class="table table-swimline dailyreports-all">
+	<tbody>
+		{% for user in users %}
+	    	<tr>
+	    		<td class="swimline-column1 swimline-rowhead">
+	    			<div class="swimline-rotatewrapper">
+	    				<div class="swimline-rotate">
+	    					<a href="#">{{user}}</a>
+	    				</div>
+	    			</div>
+	    		</td>
+	    		<td class="swimline-column2">
+    				<ul>
+	    				{% for report in reports  %}
+	    					{% if user == report.user %}
+	    						<li>
+	    							<a href="#" onClick='expandReport("reportView_{{user}}_{{forloop.counter}}")'><time datetime="{{report.date|date:'c'}}">{{report.date|date:'M j, Y'}}</time></a>
+	    							<ul>
+	    								<div class = 'reportView_{{user}}_{{forloop.counter}}' style='display: none'>
+	    									<li>
+	    										{{report.description|safe}}
+	    									</li>
+	    								</div>
+	    							</ul>
+	    						</li>
+	    					{% endif %}
+    					{% endfor %}
+    				</ul>
+	    		</td>
+	    		<td class="swimline-column3">
+	    			<table class="table">
+	    				<tr>
+	    					<td></td>
+	    					<td></td>
+	    				</tr>
+	    				<tr>
+	    					<td></td>
+	    					<td></td>
+	    				</tr>
+	    			</table>
+	    		</td>
+	    	</tr>
+    	{% endfor %}
+    </tbody>
+</table>
 {% endblock %}
 {% block endScripts %}
 <script>

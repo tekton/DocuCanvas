@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "checklists/base.html" %}
 {% block style %}
 label{
     text-align:left;
@@ -9,7 +9,59 @@ textarea{
 }
 {% endblock %}
 
-{% block additionalHead %}
+
+
+
+
+{% block contextNav %}
+    <li><a href="{% url 'projects.views.project_overview' checklist_instance.checklist.project.id %}">{{checklist_instance.checklist.project.name}}</a></li>
+    <li><a href="{% url 'checklists.views.project_checklists' checklist_instance.checklist.id %}">{{checklist_instance.checklist.name}}</a></li>
+    <li><a href="{% url 'checklists.views.checklist_form_project' checklist_instance.checklist.project.id %}">New Checklist Instance</a></li>
+{% endblock%}
+
+{% block bodyContent %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.management_form}}
+        <table>
+
+
+        {% for f in form %}
+                {{f.id.as_hidden}}
+                {{f.checklist_instance.as_hidden}}
+            <tr>
+                <td>
+                    {% if f.completion_status.value %}
+                        <input checked="checked" type="checkbox" name="checkbox{{f.id.value}}" id="checkbox{{f.id.value}}" onClick='toggle_status("{{f.id.value}}")'/>
+                    {% else %}
+                        <input  type="checkbox" name="checkbox{{f.id.value}}" id="checkbox{{f.id.value}}" onClick='toggle_status("{{f.id.value}}")'/>
+                    {% endif %}
+
+                </td>
+                <td>
+                    {{f.name.value}}
+                    {{f.name.as_hidden}}
+                </td>
+                <td>
+                    <textarea id="comment_{{f.id.value}}">{% if f.comment.value %}{{f.comment.value}}{% endif %}</textarea>
+                </td>
+                <td>
+                    <input type="button" onClick='submit_comment("{{f.id.value}}")' value="Submit Comment"/>
+                </td>
+                {{f.modified_by.as_hidden}}
+                {{f.modified.as_hidden}}
+            </tr>
+
+        {% endfor %}
+
+
+        </table>
+
+    </form>
+
+{% endblock %}
+
+{% block endScripts %}
 <script type="text/javascript">
 
     function toggle_status(id) {
@@ -66,53 +118,4 @@ textarea{
     }
 
 </script>
-
-{% endblock %}
-
-{% block contextNav %}
-    <li><a href="{% url 'projects.views.project_overview' checklist_instance.checklist.project.id %}">{{checklist_instance.checklist.project.name}}</a></li>
-    <li><a href="{% url 'checklists.views.project_checklists' checklist_instance.checklist.id %}">{{checklist_instance.checklist.name}}</a></li>
-    <li><a href="{% url 'checklists.views.checklist_form_project' checklist_instance.checklist.project.id %}">New Checklist Instance</a></li>
-{% endblock%}
-
-{% block bodyContent %}
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{form.management_form}}
-        <table>
-
-
-        {% for f in form %}
-                {{f.id.as_hidden}}
-                {{f.checklist_instance.as_hidden}}
-            <tr>
-                <td>
-                    {% if f.completion_status.value %}
-                        <input checked="checked" type="checkbox" name="checkbox{{f.id.value}}" id="checkbox{{f.id.value}}" onClick='toggle_status("{{f.id.value}}")'/>
-                    {% else %}
-                        <input  type="checkbox" name="checkbox{{f.id.value}}" id="checkbox{{f.id.value}}" onClick='toggle_status("{{f.id.value}}")'/>
-                    {% endif %}
-
-                </td>
-                <td>
-                    {{f.name.value}}
-                    {{f.name.as_hidden}}
-                </td>
-                <td>
-                    <textarea id="comment_{{f.id.value}}">{% if f.comment.value %}{{f.comment.value}}{% endif %}</textarea>
-                </td>
-                <td>
-                    <input type="button" onClick='submit_comment("{{f.id.value}}")' value="Submit Comment"/>
-                </td>
-                {{f.modified_by.as_hidden}}
-                {{f.modified.as_hidden}}
-            </tr>
-
-        {% endfor %}
-
-
-        </table>
-
-    </form>
-
 {% endblock %}

@@ -36,37 +36,6 @@ Extends /templates/projects/base.html
     <li><a href="/project/{{project.id}}/edit">Edit Project</a></li>
 {% endblock%}
 
-{% block extra_head%}
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#blank_count').click(function(){
-                $('.tbl-project-blank-count').fadeToggle('slow', function(){});
-            });
-            $('#active_count').click(function(){
-                $('.tbl-project-active-count').fadeToggle('slow', function(){});
-            });
-            $('#not_a_bug_count').click(function(){
-                $('.tbl-project-not-a-bug-count').fadeToggle('slow', function(){});
-            });
-            $('#wont_fix_count').click(function(){
-                $('.tbl-project-wont-fix-count').fadeToggle('slow', function(){});
-            });
-            $('#duplicate_count').click(function(){
-                $('.tbl-project-duplicate-count').fadeToggle('slow', function(){});
-            });
-            $('#fixed_count').click(function(){
-                $('.tbl-project-fixed-count').fadeToggle('slow', function(){});
-            });
-            $('#retest_count').click(function(){
-                $('.tbl-project-retest-count').fadeToggle('slow', function(){});
-            });
-            $('#unverified_count').click(function(){
-                $('.tbl-project-unverified-count').fadeToggle('slow', function(){});
-            });
-        });
-    </script>
-{% endblock %}
-
 {% block bodyContent %}
 <h3>Issues</h3>
 <table class="tbl-generic">
@@ -268,4 +237,35 @@ Extends /templates/projects/base.html
         </tr>
     {% endfor %}
 </table><br><br>
+{% endblock %}
+
+{% block endScripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#blank_count').click(function(){
+                $('.tbl-project-blank-count').fadeToggle('slow', function(){});
+            });
+            $('#active_count').click(function(){
+                $('.tbl-project-active-count').fadeToggle('slow', function(){});
+            });
+            $('#not_a_bug_count').click(function(){
+                $('.tbl-project-not-a-bug-count').fadeToggle('slow', function(){});
+            });
+            $('#wont_fix_count').click(function(){
+                $('.tbl-project-wont-fix-count').fadeToggle('slow', function(){});
+            });
+            $('#duplicate_count').click(function(){
+                $('.tbl-project-duplicate-count').fadeToggle('slow', function(){});
+            });
+            $('#fixed_count').click(function(){
+                $('.tbl-project-fixed-count').fadeToggle('slow', function(){});
+            });
+            $('#retest_count').click(function(){
+                $('.tbl-project-retest-count').fadeToggle('slow', function(){});
+            });
+            $('#unverified_count').click(function(){
+                $('.tbl-project-unverified-count').fadeToggle('slow', function(){});
+            });
+        });
+    </script>
 {% endblock %}

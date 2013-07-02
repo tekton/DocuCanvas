@@ -63,7 +63,7 @@ def project_overview(request, project_id):
     except:
         print 'Unable to load projects'
 
-    return render_to_response("projects/project_overview.html", {'project_O': project, "metas": metas, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_type": "Project", "page_value": project.name}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_overview.html", {'project': project, "metas": metas, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_value": project.name}, context_instance=RequestContext(request))
 
 
 @login_required

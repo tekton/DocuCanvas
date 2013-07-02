@@ -1,8 +1,4 @@
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        xhr.setRequestHeader('X-CSRFToken', '{{csrf_token}}');
-    }
-});
+
 
 var AlertMessage = (function(){
     var msgContainer = $('#pagemessage');
