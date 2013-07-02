@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "helpdesknew/base.html" %}
 {% block contextNav %}
     <li><a href="/help/new">Ask a Question</a></li>
     <li><a href="/help/resolved">Resolved Questions</a></li>
@@ -7,10 +7,12 @@
 {% endblock %}
 
 
-{% block style %}
+{% block additionalHead %}
+<style>
 .helpdesk-question{
 	word-break: break-all;
 }
+</style>
 {% endblock %}
 
 {% block bodyContent %}

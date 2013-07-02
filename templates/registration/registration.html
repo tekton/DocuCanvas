@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+{% extends "registration/base.html" %}
 
-{% block baseContent %}
+{% block bodyContent %}
 <form action="/accounts/register" method="post" enctype="multipart/form-data">
     {% csrf_token %}
         <table>
