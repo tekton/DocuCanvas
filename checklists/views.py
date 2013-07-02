@@ -104,6 +104,7 @@ def checklist_edit(request, checklist_id):
     else:
         formset = ChecklistLayoutItemsFormset(instance=checklist)
         checklist_form = ChecklistForm(instance=checklist)
+        print 'sup'
 
     return render_to_response("checklists/checklist_overview.html", {"formset": formset,
                                                                      "checklist_form": checklist_form,

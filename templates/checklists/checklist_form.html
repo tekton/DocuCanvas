@@ -34,8 +34,8 @@
 </div>
 {% endblock %}
 
-{% block additionaljs %}
-//<script>
+{% block endScripts %}
+<script>
 var checklistNumber = 1;
 function addCheckListItem(){
     $('#checklistContainer').append("<div><label for='id_checklistlayoutitems_set-"+checklistNumber+"-title'>Title: </label><input id='id_checklistlayoutitems_set-"+checklistNumber+"-title' maxlength='255' name='checklistlayoutitems_set-"+checklistNumber+"-title' type='text' /><input id='sort' name='checklistlayoutitems_set-"+checklistNumber+"-order' type='hidden' value = '"+checklistNumber+"' /></div><input id='id_checklistlayoutitems_set-"+checklistNumber+"-Checklist' name='checklistlayoutitems_set-"+checklistNumber+"-Checklist' type='hidden' /><input id='id_checklistlayoutitems_set-"+checklistNumber+"-id' name='checklistlayoutitems_set-"+checklistNumber+"-id' type='hidden' />");
@@ -56,5 +56,5 @@ $(function() {
     });
     $("#checklistContainer").disableSelection();
   });
-//</script>
+</script>
 {% endblock %}
