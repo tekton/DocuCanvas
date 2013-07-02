@@ -27,13 +27,13 @@
 	    				{% for report in reports  %}
 	    					{% if user == report.user %}
 	    						<li>
-	    							<a href="#"><time datetime="{{report.date|date:'c'}}">{{report.date|date:'M j, Y'}}</time></a>
+	    							<a href="#" onClick='expandReport("reportView_{{user}}_{{forloop.counter}}")'><time datetime="{{report.date|date:'c'}}">{{report.date|date:'M j, Y'}}</time></a>
 	    							<ul>
-	    								<li>
-	    									<div>
+	    								<div class = 'reportView_{{user}}_{{forloop.counter}}' style='display: none'>
+	    									<li>
 	    										{{report.description|safe}}
-	    									</div>
-	    								</li>
+	    									</li>
+	    								</div>
 	    							</ul>
 	    						</li>
 	    					{% endif %}
