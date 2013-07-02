@@ -9,13 +9,14 @@ import facebook
 
 import oauth2 as oauth
 
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render
-from facebook.models import FacebookProfile
+from facebook.models import FacebookProfile, FBNotification
 
 
 APP_ID				= "441109929301348"
@@ -23,7 +24,7 @@ APP_SECRET			= "8c218d00b2384a38c7938e4b74156da1"
 ACCESS_TOKEN_URL	= "https://graph.facebook.com/oauth/access_token"
 REQUEST_TOKEN_URL	= "https://www.facebook.com/dialog/oauth"
 CHECK_AUTH			= "https://graph.facebook.com/me"
-PHOTO_BASE_URL		= "https://graph.facebook.com/"
+GRAPH_URL			= "https://graph.facebook.com/"
 
 
 def getAccessToken(request):
@@ -42,8 +43,9 @@ def getAccessToken(request):
 		try:
 			print "are we still here?!?!"
 			myprofile = FacebookProfile.objects.get(user=request.user)
+			myprofile.update_token(access_token)
 		except:
-			myprofile = FacebookProfile(user=request.user, facebook_id=userid, image_url=(PHOTO_BASE_URL + content_dict['username'] + '/picture'))
+			myprofile = FacebookProfile(user=request.user, facebook_id=userid, image_url=(GRAPH_URL + content_dict['username'] + '/picture'), access_token=access_token)
 			myprofile.get_remote_image()
 			myprofile.save()
 		# user = authenticate(username=profile.user.username, password=hashlib.new(profile.fb_uid).hexdigest())
@@ -55,3 +57,48 @@ def facebookConnect(request):
 	callback_url = 'http://' + request.META['HTTP_HOST'] + '/facebook/getAccessToken'
 	return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&redirect_uri=%s&scope=%s' % (APP_ID, urllib.quote_plus(callback_url),'email,user_photos'))
 
+'''
+def getNewToken(request):
+	callback_url = 'http://' + request.META['HTTP_HOST'] + '/facebook/updateToken'
+	return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&redirect_uri=%s&scope=%s' % (APP_ID, urllib.quote_plus(callback_url), 'email,user_photos'))
+
+
+def updateToken(request):
+	code = request.GET.get('code')
+	consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
+	client = oauth.Client(consumer)
+	redirect_uri = 'http://localhost:8000/facebook/updateToken'
+	request_url = ACCESS_TOKEN_URL + '?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s' % (APP_ID, redirect_uri, APP_SECRET, code)
+	resp, content = client.request(request_url, 'GET')
+	access_token = dict(urlparse.parse_qsl(content))['access_token']
+	request_url = CHECK_AUTH + '?access_token=%s' % access_token
+	if resp['status'] == '200':
+		resp, content = client.request(request_url, 'GET')
+		content_dict = simplejson.loads(content)
+		userid = content_dict['id']
+		try:
+			myprofile = FacebookProfile.objects.get(user=request.user)
+			myprofile.updateToken(access_token)
+			myprofile.save()
+		except Exception, e:
+			print "Couldn't find user facebook profile object"
+	return redirect('dashboard.views.home')
+'''
+
+def sendNotification(request, user_id):
+	consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
+	client = oauth.Client(consumer)
+	try:
+		target_user = User.objects.get(pk=user_id)
+	except Exception, e:
+		print "Could not find user"
+	try:
+		facebook = FacebookProfile.objects.get(user=target_user)
+	except Exception, e:
+		print "Could not find facebook profile"
+	content = "What it do bitch"
+	request_url = GRAPH_URL + facebook.facebook_id + "/notifications?access_token=%s&template=%s&href=%s" % (facebook.access_token, content, 'deez')
+	resp, cont = client.request(request_url, 'POST')
+	notification = FBNotification(sender=request.user, fb_profile=facebook, text=content)
+	print resp
+	return redirect('dashboard.views.home')
