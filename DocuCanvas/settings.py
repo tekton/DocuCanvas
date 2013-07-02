@@ -153,6 +153,7 @@ INSTALLED_APPS = (
     'tinymce',
     'facebook',
     'twitter',
+    'django.contrib.humanize', ## wjmazza - 2013-07-02
  )
 
 # A sample logging configuration. The only tangible logging

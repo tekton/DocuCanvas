@@ -78,7 +78,7 @@
                 {% endif %}
 
                 <tr>
-                    <td class="tbl-project tbl-issue-historical-object" onClick="toggleHistoricalIssue({{historical_issue.id}})">Version:{{historical_issue.id}}:{{historical_issue.modified}}</a></td>
+                    <td class="tbl-project tbl-issue-historical-object" data-historical-id="{{historical_issue.id}}"><a href="#">Version:{{historical_issue.id}}:{{historical_issue.modified}}</a></td>
                 </tr>
 
                 {% for key, value in historical_issue.items%}
@@ -99,10 +99,15 @@
 {% endblock%}
 
 {% block endScripts %}
-    <script >
-        function toggleHistoricalIssue(historical_issue_id){
-            var historical_issue_class = '.historical_issue_' + historical_issue_id;
-            $(historical_issue_class).fadeToggle('slow', function(){});
-        }
+    <script>
+        $(function(){
+            $('.tbl-issue-historical-object').on('click', function(e){
+                e.preventDefault();
+                
+                historical_issue_id = $(this).attr('data-historical-id');
+                var historical_issue_class = '.historical_issue_' + historical_issue_id;
+                $(historical_issue_class).fadeToggle('slow', function(){});
+            })
+        })
     </script>
 {% endblock %}
