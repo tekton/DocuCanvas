@@ -58,16 +58,17 @@ def facebookConnect(request):
 	return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&redirect_uri=%s&scope=%s' % (APP_ID, urllib.quote_plus(callback_url),'email,user_photos'))
 
 '''
-def getNewToken(request):
-	callback_url = 'http://' + request.META['HTTP_HOST'] + '/facebook/updateToken'
+def notification(request, user_id):
+	callback_url = 'http://' + request.META['HTTP_HOST'] + '/facebook/updateToken/' + user_id
 	return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&redirect_uri=%s&scope=%s' % (APP_ID, urllib.quote_plus(callback_url), 'email,user_photos'))
 
 
-def updateToken(request):
+def updateToken(request, user_id):
 	code = request.GET.get('code')
+	print request.GET
 	consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
 	client = oauth.Client(consumer)
-	redirect_uri = 'http://localhost:8000/facebook/updateToken'
+	redirect_uri = 'http://localhost:8000/facebook/updateToken/' + user_id
 	request_url = ACCESS_TOKEN_URL + '?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s' % (APP_ID, redirect_uri, APP_SECRET, code)
 	resp, content = client.request(request_url, 'GET')
 	access_token = dict(urlparse.parse_qsl(content))['access_token']
@@ -82,7 +83,7 @@ def updateToken(request):
 			myprofile.save()
 		except Exception, e:
 			print "Couldn't find user facebook profile object"
-	return redirect('dashboard.views.home')
+	return redirect('facebook.views.sendNotification', user_id)
 '''
 
 def sendNotification(request, user_id):
@@ -101,4 +102,5 @@ def sendNotification(request, user_id):
 	resp, cont = client.request(request_url, 'POST')
 	notification = FBNotification(sender=request.user, fb_profile=facebook, text=content)
 	print resp
+	print cont
 	return redirect('dashboard.views.home')
