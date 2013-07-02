@@ -131,6 +131,52 @@ textarea {
     border-width: 1px 0 0;
 }
 
+.table-swimline {
+    width: auto;
+    max-width: none;
+    overflow: auto;
+    display: block;
+    height: auto;
+    padding: 0;
+}
+.table-swimline td {
+    border: 1px solid gray;
+    vertical-align: top;
+    padding: 0;
+    height: 330px;
+}
+.table-swimline .swimline-rowhead {
+    min-width: 0;
+    width: 25px;
+    padding: 0;
+}
+.table-swimline .swimline-rotatewrapper {
+    display: block;
+    width: 25px;
+    height: 330px;
+    overflow: hidden;
+}
+.table-swimline .swimline-rotate {
+    transform: rotate(-90deg);
+    width: 330px;
+    height: 330px;
+    vertical-align: top;
+    text-align: center;
+}
+.table-swimline table {}
+.table-swimline table td {
+    height: auto;
+    width: auto;
+}
+
+.dailyreports-all {}
+.dailyreports-all .swimline-column2 {
+    width: 615px;
+}
+.dailyreports-all .swimline-column3 {
+    width: 540px;
+}
+
 #maincontent {
     -o-animation: fadein .7s;
     -moz-animation: fadein .7s;
