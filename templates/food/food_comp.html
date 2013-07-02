@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "food/base.html" %}
 
 {% block contextNav %}
     <li><a href="{% url 'food.views.food_form' %}">New Food Request</a></li>
@@ -6,7 +6,7 @@
     <li><a href="{% url 'food.views.food_overview' %}">Pending Requests</a></li>
 {% endblock %}
 
-{% block baseContent %}
+{% block bodyContent %}
     <form action="{% url 'food.views.food_received' food.id %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <table>
