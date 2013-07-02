@@ -18,7 +18,7 @@
     </tr>
     {% for food in user_food%}
     <tr>
-        <td><a href="/food/comp/{{food.id}}">{{food.item}}</a></td>
+        <td><a href="{% url 'food.views.food_received' food.id %}">{{food.item}}</a></td>
         <td>{{food.quantity}}</td><td>{{food.total_cost}}</td>
         <td>{{food.desired_completion}}</td>
     </tr>
