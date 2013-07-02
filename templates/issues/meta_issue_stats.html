@@ -5,37 +5,6 @@
     <li><a href="{% url 'auth.views.account_settings' %}">Account Settings</a></li>
 {% endblock%}
 
-{% block additionalHead %}
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#blank_count').click(function(){
-                $('.tbl-meta-issue-blank-count').fadeToggle('slow', function(){});
-            });
-            $('#active_count').click(function(){
-                $('.tbl-meta-issue-active-count').fadeToggle('slow', function(){});
-            });
-            $('#not_a_bug_count').click(function(){
-                $('.tbl-meta-issue-not-a-bug-count').fadeToggle('slow', function(){});
-            });
-            $('#wont_fix_count').click(function(){
-                $('.tbl-meta-issue-wont-fix-count').fadeToggle('slow', function(){});
-            });
-            $('#duplicate_count').click(function(){
-                $('.tbl-meta-issue-duplicate-count').fadeToggle('slow', function(){});
-            });
-            $('#fixed_count').click(function(){
-                $('.tbl-meta-issue-fixed-count').fadeToggle('slow', function(){});
-            });
-            $('#retest_count').click(function(){
-                $('.tbl-meta-issue-retest-count').fadeToggle('slow', function(){});
-            });
-            $('#unverified_count').click(function(){
-                $('.tbl-meta-issue-unverified-count').fadeToggle('slow', function(){});
-            });
-        });
-    </script>
-{% endblock %}
-
 {% block bodyContent %}
 <h3>Issues by status</h3>
 <table class="tbl-generic">
@@ -215,4 +184,35 @@
         </tr>
     {% endfor %}
 </table><br><br>
+{% endblock %}
+
+{% block endScripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#blank_count').click(function(){
+                $('.tbl-meta-issue-blank-count').fadeToggle('slow', function(){});
+            });
+            $('#active_count').click(function(){
+                $('.tbl-meta-issue-active-count').fadeToggle('slow', function(){});
+            });
+            $('#not_a_bug_count').click(function(){
+                $('.tbl-meta-issue-not-a-bug-count').fadeToggle('slow', function(){});
+            });
+            $('#wont_fix_count').click(function(){
+                $('.tbl-meta-issue-wont-fix-count').fadeToggle('slow', function(){});
+            });
+            $('#duplicate_count').click(function(){
+                $('.tbl-meta-issue-duplicate-count').fadeToggle('slow', function(){});
+            });
+            $('#fixed_count').click(function(){
+                $('.tbl-meta-issue-fixed-count').fadeToggle('slow', function(){});
+            });
+            $('#retest_count').click(function(){
+                $('.tbl-meta-issue-retest-count').fadeToggle('slow', function(){});
+            });
+            $('#unverified_count').click(function(){
+                $('.tbl-meta-issue-unverified-count').fadeToggle('slow', function(){});
+            });
+        });
+    </script>
 {% endblock %}

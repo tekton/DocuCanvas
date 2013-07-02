@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "registration/base.html" %}
 
 {% block contextNav %}
     <a href="/">Dashboard</a>
@@ -6,7 +6,7 @@
     <a href="{% url 'auth.views.account_settings' %}">Account Settings</a>
 {% endblock%}
 
-{% block baseContent %}
+{% block bodyContent %}
 <form action="/accounts/change_email" method="post" enctype="multipart/form-data">
     {% csrf_token %}
         <table>

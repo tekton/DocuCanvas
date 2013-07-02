@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "registration/base.html" %}
 
 {% block contextNav %}
     <a href="{% url 'dashboard.views.home' %}">Dashboard</a>
@@ -11,7 +11,7 @@
 {% endblock%}
 
 
-{% block baseContent %}
+{% block bodyContent %}
 <a href="accounts/change_email">Change Email Address</a><br>
 <a href="/accounts/change_password">Change Password</a>
 {% endblock %}
