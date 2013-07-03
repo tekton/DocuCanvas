@@ -90,7 +90,7 @@ def sendNotification(request, user_id):
 	consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
 	client = oauth.Client(consumer)
 	redirect_uri = 'http://localhost:8000/facebook/notifications/' + user_id
-	request_url = ACCESS_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials' % (APP_ID, APP_SECRET)
+	request_url = ACCESS_TOKEN_URL + '?client_id=%s&client_secret=%s&grant_type=client_credentials' % (APP_ID, APP_SECRET)
 	resp, cont = client.request(request_url, 'GET')
 	print cont
 	access_token = dict(urlparse.parse_qsl(cont))['access_token']
