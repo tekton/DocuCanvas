@@ -3,7 +3,6 @@ import hashlib
 import urllib
 import urlparse
 import json
-import simplejson
 import subprocess
 import facebook
 
@@ -38,7 +37,7 @@ def getAccessToken(request):
 	request_url = CHECK_AUTH + '?access_token=%s' % access_token
 	if resp['status'] == '200':
 		resp, content = client.request(request_url, 'GET')
-		content_dict = simplejson.loads(content)
+		content_dict = json.loads(content)
 		userid = content_dict['id']
 		try:
 			print "are we still here?!?!"
@@ -87,8 +86,17 @@ def updateToken(request, user_id):
 '''
 
 def sendNotification(request, user_id):
+	code = request.GET.get('code')
 	consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
 	client = oauth.Client(consumer)
+	redirect_uri = 'http://localhost:8000/facebook/notifications/' + user_id
+	request_url = ACCESS_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials' % (APP_ID, APP_SECRET)
+	resp, cont = client.request(request_url, 'GET')
+	print cont
+	access_token = dict(urlparse.parse_qsl(cont))['access_token']
+	print 'ACCESS TOKEN:'
+	print access_token
+	print 'END ACCESS TOKEN'
 	try:
 		target_user = User.objects.get(pk=user_id)
 	except Exception, e:
@@ -97,10 +105,14 @@ def sendNotification(request, user_id):
 		facebook = FacebookProfile.objects.get(user=target_user)
 	except Exception, e:
 		print "Could not find facebook profile"
-	content = "What it do bitch"
-	request_url = GRAPH_URL + facebook.facebook_id + "/notifications?access_token=%s&template=%s&href=%s" % (facebook.access_token, content, 'deez')
+	content = "test"
+	request_url = GRAPH_URL + facebook.facebook_id + "/notifications?access_token=%s&template=%s&href=%s" % (access_token, content, 'http://' + request.META['HTTP_HOST'])
 	resp, cont = client.request(request_url, 'POST')
-	notification = FBNotification(sender=request.user, fb_profile=facebook, text=content)
 	print resp
-	print cont
+	notification = FBNotification(sender=request.user, fb_profile=facebook, text=content)
 	return redirect('dashboard.views.home')
+
+
+def getAppAccessToken(request, user_id):
+	callback_url = 'http://' + request.META['HTTP_HOST'] + '/facebook/notifications/' + user_id
+	return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
