@@ -43,11 +43,11 @@
 	    		<td class="swimline-column3">
 	    			<table class="table">
 	    				<tr>
-	    					<td></td>
+	    					<td><div id='statusReport'></div></td>
 	    					<td></td>
 	    				</tr>
 	    				<tr>
-	    					<td></td>
+	    					<td><div id='issuesReport'></div></td>
 	    					<td></td>
 	    				</tr>
 	    			</table>
@@ -58,6 +58,7 @@
 </table>
 {% endblock %}
 {% block endScripts %}
+<script src="//cdn.sencha.com/ext/gpl/4.2.0/ext-all-dev.js"></script>
 <script>
 function expandReport(div){
 	var divToExpand = "." + div;
@@ -68,5 +69,139 @@ function expandReport(div){
 	};
 
 };
+
+var projectStore, statusStore, projectChart, statusChart, projectPanel, statusPanel;
+
+        Ext.onReady(function(){
+            function seriesClickHandler(idPrefix){
+                return function(slice, eOpts){
+                    var record = slice.storeItem,
+                        name = record.get('name'),
+                        el, parent, tables;
+
+                    idSuffix = name.replace(/[^a-zA-Z\d\s]/g,'').replace(/\s/g,'-').replace(/-+/g,'-').trim().toLowerCase();
+
+                    parent = $('#'+idPrefix);
+                    el = $('#'+idPrefix+'-table-'+idSuffix);
+
+                    if (!el.is(':visible')) {
+                        parent.find('.table').hide();
+                        el.fadeIn();
+                    }
+                };
+            }
+
+            projectStore = new Ext.data.JsonStore({
+                fields: ['name','count'],
+                data: [
+                {name: 'something',
+            	count: 5},
+            	{name: 'something',
+            	count: 5},
+            	{name: 'something',
+            	count: 5},
+            	{name: 'something',
+            	count: 5},
+            	{name: 'something',
+            	count: 5},
+            	{name: 'something',
+            	count: 5}
+                ]
+            });
+
+            statusStore = new Ext.data.JsonStore({
+                fields: ['name','count'],
+                data: [
+                {name: 'something',
+            	count: 5},
+            	{name: 'something',
+            	count: 5},
+            	{name: 'something',
+            	count: 5},
+            	{name: 'something',
+            	count: 5},
+            	{name: 'something',
+            	count: 5},
+            	{name: 'something',
+            	count: 5}
+                ]
+            });
+
+            projectChart = new Ext.chart.Chart({
+                animate: true,
+                store: projectStore,
+                shadow: true,
+                legend: false,
+                insetPadding: 20,
+                series: [
+                    {
+                        type: 'pie',
+                        field: 'count',
+                        showInLegend: true,
+                        highlight: false,
+                        donut: false,
+                        label: {
+                            field: 'name',
+                            display: 'rotate',
+                            contrast: true,
+                            font: '14px Arial'
+                        },
+                        listeners: {
+                            itemmousedown: seriesClickHandler('projectbreakdown')
+                        }
+                    }
+                ]
+            });
+
+            statusChart = new Ext.chart.Chart({
+                animate: true,
+                store: statusStore,
+                shadow: true,
+                legend: false,
+                insetPadding: 20,
+                axes: [
+                    {
+                        type: 'Numeric',
+                        position: 'left',
+                        fields: 'count',
+                        grid: true,
+                        minimum: 0
+                    },
+                    {
+                        type: 'Category',
+                        position: 'bottom',
+                        fields: 'name'
+                    }
+                ],
+                series: [
+                    {
+                        type: 'column',
+                        axis: 'left',
+                        hightlight: false,
+                        xField: 'name',
+                        yField: 'count',
+                        listeners: {
+                            itemmousedown: seriesClickHandler('statusbreakdown')
+                        }
+                    }
+                ]
+            });
+
+            projectPanel = new Ext.Panel({
+                width: 260,
+                height: 130,
+                layout: 'fit',
+                items: projectChart,
+                renderTo: Ext.get('issuesReport')
+            })
+
+            statusPanel = new Ext.Panel({
+                width: 260,
+                height: 130,
+                layout: 'fit',
+                items: statusChart,
+                renderTo: Ext.get('statusReport')
+            })
+        });
 </script>
 {% endblock %}
