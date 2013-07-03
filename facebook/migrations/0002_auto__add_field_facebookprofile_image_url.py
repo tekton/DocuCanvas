@@ -8,31 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'FacebookProfile'
-        db.create_table(u'facebook_facebookprofile', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
-            ('facebook_id', self.gf('django.db.models.fields.CharField')(max_length=150)),
-            ('profilePicture', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True, blank=True)),
-        ))
-        db.send_create_signal(u'facebook', ['FacebookProfile'])
-
-        # Adding model 'FBNotification'
-        db.create_table(u'facebook_fbnotification', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('sender', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('fb_profile', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['facebook.FacebookProfile'])),
-            ('text', self.gf('django.db.models.fields.TextField')()),
-        ))
-        db.send_create_signal(u'facebook', ['FBNotification'])
+        # Adding field 'FacebookProfile.image_url'
+        db.add_column(u'facebook_facebookprofile', 'image_url',
+                      self.gf('django.db.models.fields.URLField')(default=1, max_length=200),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'FacebookProfile'
-        db.delete_table(u'facebook_facebookprofile')
-
-        # Deleting model 'FBNotification'
-        db.delete_table(u'facebook_fbnotification')
+        # Deleting field 'FacebookProfile.image_url'
+        db.delete_column(u'facebook_facebookprofile', 'image_url')
 
 
     models = {
@@ -76,6 +60,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'FacebookProfile'},
             'facebook_id': ('django.db.models.fields.CharField', [], {'max_length': '150'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'image_url': ('django.db.models.fields.URLField', [], {'max_length': '200'}),
             'profilePicture': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['auth.User']", 'unique': 'True'})
         },
