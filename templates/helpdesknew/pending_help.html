@@ -2,10 +2,10 @@
 
 
 {% block contextNav %}
-    <li><a href="/help/new">Ask a Question</a></li>
-    <li><a href="/help/resolved">Resolved Questions</a></li>
-    <li><a href="/help/pending">Unresolved Questions</a></li>
-    <li><a href="/help/user">Your Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
+    <li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.get_pending' %}">Unresolved Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.user_help' %}">Your Questions</a></li>
 {% endblock %}
 
 {% block additionalHead %}
@@ -53,40 +53,40 @@ img.pending-image-help{
         <tr id="pending-help-rowelement">
             <td>
                 {% if help.edit_status_bool %}
-                <a href="/help/{{help.id}}">
-                    <a class='popup' href="/help/{{help.id}}">
+                <a href="{% url 'helpdesknew.views.get_help' help.id %}">
+                    <a class='popup' href="{% url 'helpdesknew.views.get_help' help.id %}">
                         {{help.name}} [*EDITED*]<span>{{help.question|truncatechars:80}}</span>
                     </a>
                 </a>
                 {% else %}
-                <a href="/help/{{help.id}}">
-                    <a class='popup' href="/help/{{help.id}}">
+                <a href="{% url 'helpdesknew.views.get_help' help.id %}">
+                    <a class='popup' href="{% url 'helpdesknew.views.get_help' help.id %}">
                         {{help.name}}<span>{{help.question|truncatechars:80}}</span>
                     </a>
                 </a>
                 {% endif %}
             </td>
             <td>
-                <a href="/help/{{help.id}}">{{help.user}}</a>
+                <a href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.user}}</a>
             </td>
             <td>
-                <a href="/help/{{help.id}}">{{help.request_init}}</a>
+                <a href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.request_init}}</a>
             </td>
             {% if help.status == '(1, 1)' %}
                 <td>
-                    <a href="/help/{{help.id}}">No Responses</a>
+                    <a href="{% url 'helpdesknew.views.get_help' help.id %}">No Responses</a>
                 </td>
             {% elif help.status = "('active', 'Active Responses')" %}
                 <td>
-                    <a href="/help/{{help.id}}">Active</a>
+                    <a href="{% url 'helpdesknew.views.get_help' help.id %}">Active</a>
                 </td>
             {% elif help.status = "('reopened', 'Re-Opened')" %}
                 <td>
-                    <a href="/help/{{help.id}}">Re-Opened</a>
+                    <a href="{% url 'helpdesknew.views.get_help' help.id %}">Re-Opened</a>
                 </td>
             {% else %}
                 <td>
-                    <a href="/help/{{help.id}}">{{help.status}}</a>
+                    <a href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.status}}</a>
                 </td>
             {% endif %}
         </tr>

@@ -4,7 +4,7 @@
 {% if user.is_superuser%}
 <li><a href="/notification/new">Notification</a></li>
 {% endif %}
-<li><a href="/help/new">Help Desk</a></li>
+<li><a href="{% url 'helpdesknew.views.help_form' %}">Help Desk</a></li>
 <li class="nav-header">Lists</li>
 <li><a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a></li>
 <li><a href="{% url 'food.views.all_food' %}">Food Requests</a></li>

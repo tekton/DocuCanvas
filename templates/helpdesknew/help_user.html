@@ -1,10 +1,10 @@
 {% extends "helpdesknew/base.html" %}
 
 {% block contextNav %}
-	<li><a href="/help/new">Ask a Question</a></li>
-	<li><a href="/help/resolved">Resolved Questions</a></li>
-	<li><a href="/help/pending">Unresolved Questions</a></li>
-	<li><a href="/help/user">Your Questions</a></li>
+	<li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
+	<li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
+	<li><a href="{% url 'helpdesknew.views.get_pending' %}">Unresolved Questions</a></li>
+	<li><a href="{% url 'helpdesknew.views.user_help' %}">Your Questions</a></li>
 {% endblock %}
 
 {% block additionalHead %}
@@ -55,8 +55,8 @@ img.pending-image-help{
 				{% for help in responses %}
 					<tr>
 						<td>
-							<a href="/help/{{help.id}}">
-								<a class='popup' href="/help/{{help.id}}">
+							<a href="{% url 'helpdesknew.views.get_help' help.id %}">
+								<a class='popup' href="{% url 'helpdesknew.views.get_help' help.id %}">
 									{% if help.edit_status_bool %}
 										{{help.name}} [*EDITED*]<span>{{help.question|truncatechars:80}}</span>
 									{% else %}
@@ -65,19 +65,19 @@ img.pending-image-help{
 								</a>
 							</a>
 						</td>
-						<td><a href="/help/{{help.id}}">{{help.request_init}}</a></td>
+						<td><a href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.request_init}}</a></td>
 						{% if help.status == '(1, 1)' %}
-							<td><a href="/help/{{help.id}}">No Responses</a></td>
+							<td><a href="{% url 'helpdesknew.views.get_help' help.id %}">No Responses</a></td>
 						{% elif help.status == "('active', 'Active Responses')" %}
-							<td><a href="/help/{{help.id}}">Active</a></td>
+							<td><a href="{% url 'helpdesknew.views.get_help' help.id %}">Active</a></td>
 						{% elif help.status == "('reopened', 'Re-Opened')" %}
-							<td><a href="/help/{{help.id}}">Re-Opened</a></td>
+							<td><a href="{% url 'helpdesknew.views.get_help' help.id %}">Re-Opened</a></td>
 						{% elif help.status == "('resolved', 'Resolved')" %}
-							<td><a href="/help/{{help.id}}">Resolved</a></td>
+							<td><a href="{% url 'helpdesknew.views.get_help' help.id %}">Resolved</a></td>
 						{% elif help.status == "('closed', 'Closed')" %}
-							<td><a href="/help/{{help.id}}">Solved & Sealed</a></td>
+							<td><a href="{% url 'helpdesknew.views.get_help' help.id %}">Solved &amp; Sealed</a></td>
 						{% else %}
-							<td><a href="/help/{{help.id}}">{{help.status}}</a></td>
+							<td><a href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.status}}</a></td>
 						{% endif %}
 					</tr>
 				{% endfor %}
@@ -99,8 +99,8 @@ img.pending-image-help{
 				{% for answer in answers %}
 					<tr>
 						<td>
-							<a href="/help/{{answer.id}}">
-								<a class='popup' href="/help/{{answer.id}}">
+							<a href="{% url 'helpdesknew.views.get_help' answer.id %}">
+								<a class='popup' href="{% url 'helpdesknew.views.get_help' answer.id %}">
 									{% if answer.edit_status_bool %}
 										{{answer.name}} [*EDITED*]<span>{{answer.question|truncatechars:80}}</span>
 									{% else %}
@@ -109,8 +109,8 @@ img.pending-image-help{
 								</a>
 							</a>
 						</td>
-						<td><a href="/help/{{answer.id}}">{{answer.request_init}}</a></td>
-						<td><a href="/help/{{answer.id}}">Resolved</a></td>
+						<td><a href="{% url 'helpdesknew.views.get_help' answer.id %}">{{answer.request_init}}</a></td>
+						<td><a href="{% url 'helpdesknew.views.get_help' answer.id %}">Resolved</a></td>
 					</tr>
 				{% endfor %}
 			{% else %}
@@ -130,8 +130,8 @@ img.pending-image-help{
 			{% for close in more_answers %}
 			<tr>
 				<td>
-					<a href="/help/{{close.id}}">
-						<a class='popup' href="/help/{{close.id}}">
+					<a href="{% url 'helpdesknew.views.get_help' close.id %}">
+						<a class='popup' href="{% url 'helpdesknew.views.get_help' close.id %}">
 							{% if close.edit_status_bool %}
 								{{close.name}} [*EDITED*]<span>{{close.question|truncatechars:80}}</span>
 							{% else %}
@@ -140,8 +140,8 @@ img.pending-image-help{
 						</a>
 					</a>
 				</td>
-				<td><a href="/help/{{close.id}}">{{close.request_init}}</a></td>
-				<td><a href="/help/{{close.id}}">Solved & Sealed</a></td>
+				<td><a href="{% url 'helpdesknew.views.get_help' close.id %}">{{close.request_init}}</a></td>
+				<td><a href="{% url 'helpdesknew.views.get_help' close.id %}">Solved &amp; Sealed</a></td>
 			</tr>
 			{% endfor %}
 			{% endif %}
