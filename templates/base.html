@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{% static 'css/gadget.css' %}">
     {% block additionalHead %}{% endblock %}
 </head>
-<body>
+<body class="{% block bodyClass %}{% endblock %}">
     <div id="globalwrap">
         <div id="sitenav" class="navbar navbar-fixed-top">
             <div class="navbar-inner">

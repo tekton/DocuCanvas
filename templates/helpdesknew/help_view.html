@@ -2,13 +2,13 @@
 {% load set_var %}
 
 {% block contextNav %}
-    <li><a href="/help/new">Ask a Question</a></li>
-    <li><a href="/help/resolved">Resolved Questions</a></li>
-    <li><a href="/help/pending">Unresolved Questions</a></li>
-    <li><a href="/help/user">Your Questions</a></li>
-    <li><a href="/help/edit/{{help.id}}">Edit Question</a></li>
+    <li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
+    <li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.get_pending' %}">Unresolved Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.user_help' %}">Your Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.edit_question' help.id %}">Edit Question</a></li>
     {% if user.is_staff %}
-    	<li><a href="/help/close_question_91990/{{help.id}}">Admin - Close Question</a></li>
+    	<li><a href="{% url 'helpdesknew.views.close_question' help.id %}">Admin - Close Question</a></li>
     {% endif %}
 {% endblock %}
 
@@ -81,7 +81,7 @@
 										</button>
 									{% endif %}
 									{% if user.id == help.user.id %}
-										<a href="/help/acknowledge/{{arrow.id}}" class="btn btn-mini">
+										<a href="{% url 'helpdesknew.views.ack_answer' arrow.id %}" class="btn btn-mini">
 											{% if help.ack_response %}<i class="icon-edit"></i> Edit Response
 											{% else %}<i class="icon-share"></i> Respond to Answer{% endif %}
 										</a>
@@ -94,7 +94,7 @@
 								and it properly references the ID of the form it belongs to
 							{% endcomment %}
 							{% if btnRemoveAnswer == 'true' %}
-								<form id="helpdesk-answerform" action="/help/mark_the_input/{{arrow.id}}" method="POST" enctype="multipart/form-data" class="hidden">
+								<form id="helpdesk-answerform" action="{% url 'helpdesknew.views.mark_the_input' arrow.id %}" method="POST" enctype="multipart/form-data" class="hidden">
 									{% csrf_token %}
 								</form>
 							{% endif %}
@@ -128,7 +128,7 @@
 					TODO: apply 'accordion' feature to add comment so form is not always visible
 				{% endcomment %}
 				<div id="helpdesk-comments-add">
-					<form class="form-inline" action="/help/response/{{help.id}}" method="POST" enctype="multipart/form-data">
+					<form class="form-inline" action="{% url 'helpdesknew.views.submit_response' help.id %}" method="POST" enctype="multipart/form-data">
 						{% csrf_token %}
 						<input type="hidden" name="helprequest" value="{{help.id}}">
 						<input type="hidden" name="user" value="{{user.id}}">
@@ -156,7 +156,7 @@
 												</button>
 											{% endif %}
 											{% if comment.user == user %}
-												<a class="btn btn-mini" href="/help/cmmtedit/{{comment.id}}">
+												<a class="btn btn-mini" href="{% url 'helpdesknew.views.edit_comment' comment.id %}">
 													<i class="icon-edit"></i> Edit
 												</a>
 											{% endif %}
@@ -167,7 +167,7 @@
 											and it properly references the ID of the form it belongs to
 										{% endcomment %}
 										{% if btnMarkAsAnswered == 'true' %}
-											<form id="helpdesk-markform-{{comment.id}}" class="hidden" action="/help/mark_the_answer/{{comment.id}}" method="POST" enctype="multipart/form-data">
+											<form id="helpdesk-markform-{{comment.id}}" class="hidden" action="{% url 'helpdesknew.views.mark_the_answer' comment.id %}" method="POST" enctype="multipart/form-data">
 												{% csrf_token %}
 											</form>
 										{% endif %}

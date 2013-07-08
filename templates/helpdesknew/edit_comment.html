@@ -1,10 +1,10 @@
 {% extends "helpdesknew/base.html" %}
 
 {% block contextNav %}
-    <li><a href="/help/new">Ask a Question</a></li>
-    <li><a href="/help/resolved">Resolved Questions</a></li>
-    <li><a href="/help/pending">Unresolved Questions</a></li>
-    <li><a href="/help/user">Your Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
+    <li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.get_pending' %}">Unresolved Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.user_help' %}">Your Questions</a></li>
 {% endblock %}
 
 {% block bodyContent %}
@@ -19,6 +19,6 @@
 	</form>
 {% else %}
 	<p>Error - you can only edit content submitted under your account</p>
-	<a href="/help/{{comment.helprequest.id}}">Click here to return to question overview page</a>
+	<a href="{% url 'helpdesknew.views.get_help' comment.helprequest.id %}">Click here to return to question overview page</a>
 {% endif %}
 {% endblock %}

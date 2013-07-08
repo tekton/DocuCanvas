@@ -1,10 +1,10 @@
 {% extends "helpdesknew/base.html" %}
 
 {% block contextNav %}
-    <li><a href="/help/new">Ask a Question</a></li>
-    <li><a href="/help/resolved">Resolved Questions</a></li>
-    <li><a href="/help/pending">Unresolved Questions</a></li>
-    <li><a href="/help/user">Your Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
+    <li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.get_pending' %}">Unresolved Questions</a></li>
+    <li><a href="{% url 'helpdesknew.views.user_help' %}">Your Questions</a></li>
 {% endblock %}
 
 {% block additionalHead %}
@@ -54,21 +54,21 @@ img.pending-image-help{
     <tr>
         <td>
             {% if help.edit_status_bool %}
-                <a class='popup' href="/help/{{help.id}}">{{help.name}} [*EDITED*]<span>{{help.question|truncatechars:80}}</span></a></td>
+                <a class='popup' href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.name}} [*EDITED*]<span>{{help.question|truncatechars:80}}</span></a></td>
             {% else %}
-                <a class='popup' href="/help/{{help.id}}">{{help.name}}<span>{{help.question|truncatechars:80}}</span></a></td>
+                <a class='popup' href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.name}}<span>{{help.question|truncatechars:80}}</span></a></td>
             {% endif %}
         <td>
-            <a href="/help/{{help.id}}">{{help.user}}</a>
+            <a href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.user}}</a>
         </td>
         <td>
-            <a href="/help/{{help.id}}">{{help.request_init}}</a>
+            <a href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.request_init}}</a>
         </td>
     </tr>
     {% endfor %}
     {% if closed %}
     <tr>
-        <td class="tbl-fauxth" colspan=3><h3>Solved & Sealed</h3></td>
+        <td class="tbl-fauxth" colspan=3><h3>Solved &amp; Sealed</h3></td>
     </tr>
     <tr class="tbl-rowheader">
         <td class="tbl-fauxth">Summary</td>
@@ -78,17 +78,17 @@ img.pending-image-help{
     {% for close in closed %}
     <tr>
         <td>
-            <a href="/help/{{close.id}}">
-                <a class='popup' href="/help/{{close.id}}">
+            <a href="{% url 'helpdesknew.views.get_help' close.id %}">
+                <a class='popup' href="{% url 'helpdesknew.views.get_help' close.id %}">
                     {{close.name}}<span>{{close.question|truncatechars:80}}</span>
                 </a>
             </a>
         </td>
         <td>
-            <a href="/help/{{close.id}}">{{close.user}}</a>
+            <a href="{% url 'helpdesknew.views.get_help' close.id %}">{{close.user}}</a>
         </td>
         <td>
-            <a href="/help/{{close.id}}">{{close.request_init}}</a>
+            <a href="{% url 'helpdesknew.views.get_help' close.id %}">{{close.request_init}}</a>
         </td>
     </tr>
     {% endfor %}
