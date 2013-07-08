@@ -151,8 +151,9 @@ INSTALLED_APPS = (
     'helpdesknew',
     'gapps',
     'tinymce',
-    'facebook',
-    'twitter',
+    #'facebook',
+    #'twitter',
+    'socialplatform',
     'django.contrib.humanize', ## wjmazza - 2013-07-02
  )
 
