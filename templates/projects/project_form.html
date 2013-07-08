@@ -28,10 +28,10 @@ Extends /templates/projects/base.html
 {% endcomment %}
 
 {% block contextNav %}
-	<li><a href="/project">Projects</a></li>
+	<li><a href="{% url 'projects.views.home' %}">Projects</a></li>
     <li><a href="{% url 'issues.views.issue_form' %}">New Issue</a></li>
     <li><a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a></li>
-    <li><a href="/food/all">Food Requests</a></li>
+    <li><a href="{% url 'food.views.all_food' %}">Food Requests</a></li>
     <li><a href="{% url 'daily_reports.views.edit_report' %}">Daily Reports</a></li>
     <li><a href="{% url 'helpdesknew.views.user_help' %}">Help</a></li>
 {% endblock%}
@@ -41,7 +41,7 @@ New Project
 {% endblock %}
 
 {% block bodyContent %}
-	<form action="/project/new" method="post" enctype="multipart/form-data">
+	<form action="{% url 'projects.views.project_form' %}" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		<table>
 		{{form.as_table}}
