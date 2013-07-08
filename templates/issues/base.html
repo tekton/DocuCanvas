@@ -35,6 +35,7 @@ Used for all templates in /templates/issues
 		Provides a CSS class for Bootstrap labels depending on what the issue's current status is
 {% endcomment %}
 
+{% block bodyClass %}page-issues{% endblock %}
 {% block baseContent %}
 
 {% if issue.status == 'not_a_bug' %}
