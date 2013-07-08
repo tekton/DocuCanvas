@@ -6,6 +6,8 @@ class Notification(models.Model):
     creator = models.ForeignKey(User)
     message = models.CharField(max_length=255, blank=True, null=True)
     created = models.DateField(auto_now_add=True)
+    facebook = models.NullBooleanField(null=True, blank=True, default=False)
+    twitter = models.NullBooleanField(null=True, blank=True, default=False)
     def __unicode__(self):
         return self.message
 

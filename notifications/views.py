@@ -48,7 +48,13 @@ def notification_form(request):
                 n = notification_form.save()
                 formset.save()
                 print 'saving form'
-                return redirect('dashboard.views.home')
+                if request.POST['platform1'] == 'Facebook':
+                    n.facebook = True
+                if request.POST['platform2'] == 'Twitter':
+                    n.twitter = True
+                print n.facebook
+                print n.twitter
+                return redirect('socialplatform.views.access_for_broadcast', n.id)
             else:
                 print notification_form.errors
                 print formset.errors

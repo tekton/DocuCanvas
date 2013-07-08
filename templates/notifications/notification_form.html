@@ -11,6 +11,8 @@
         {% csrf_token %}
         <input maxlength="255" name="creator" type="hidden" value="{{user.id}}"  />
         Message: <input maxlength="255" name="message" type="text" /><br />
+        <input type="checkbox" name="platform1" value="Facebook">Notify with Facebook</br>
+        <input type="checkbox" name="platform2" value="Twitter">Notify with Twitter</br></br>
         Send To: <br/>
         <div id="notificationContainer" style = 'border: solid 1px'>
             <div>
