@@ -5,9 +5,7 @@
 {% include "_includes/contextnav-default.html" %}
 {% endblock%}
 
-{% block pageTitle %}
-User
-{% endblock %}
+{% block pageTitle %}User{% endblock %}
 
 {% block bodyContent %}
     {% regroup issues by project as issuesGroupedByProject %}
@@ -108,9 +106,12 @@ User
             </div>
         </section>
     </div>
-    {% endblock %}
+{% endblock %}
 
-    {% block endScripts %}
+{% block endScripts %}
+    {% regroup issues by project as issuesGroupedByProject %}
+    {% regroup issues by get_status_display as issuesGroupedByStatus %}
+    
     <script src="//cdn.sencha.com/ext/gpl/4.2.0/ext-all.js"></script>
     <script>
         var projectStore, statusStore, projectChart, statusChart, projectPanel, statusPanel;
@@ -138,6 +139,7 @@ User
                 fields: ['name','count'],
                 data: [
                 {% autoescape off %}
+
                 {% for issuegroup in issuesGroupedByProject %}
                     {
                         name: '{{issuegroup.grouper|escapejs}}',

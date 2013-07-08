@@ -29,11 +29,11 @@ Extends /templates/projects/base.html
 
 {% block context_nav %} 
     <li><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></li>
-    <li><a href="/issue/new/{{project_O.id}}">New Issue</a></li>
+    <li><a href="{% url 'issues.views.issue_form_project' project_O.id %}">New Issue</a></li>
     <li><a href="{% url 'issues.views.meta_issue_form' %}">New Meta Issue</a></li>
-    <li><a href="/issue/new/{{project_O.id}}">New Risk</a></li>
+    <li><a href="{% url 'issues.views.issue_form_project' project_O.id %}">New Risk</a></li>
     <li><a href="{% url 'checklists.views.checklist_form_project' project_O.id %}">New Checklist</a></li>
-    <li><a href="/project/{{project_O.id}}/stats">Report</a></li>
+    <li><a href="{% url 'projects.views.project_stats' project_O.id %}">Report</a></li>
     <li><a href="{% url 'checklists.views.project_checklists' project_O.id %}">Checklists</a></li>
 {% endblock%}
 
@@ -42,7 +42,7 @@ New Project
 {% endblock %}
 
 {% block bodyContent %}
-    <form action="/project/{{project.id}}/edit" method="post" enctype="multipart/form-data">
+    <form action="{% url 'projects.views.edit' project.id %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <table>
         {{form.as_table}}
