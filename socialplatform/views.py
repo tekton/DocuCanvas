@@ -24,6 +24,8 @@ from notifications.models import Notification, NotificationRecipient
 # Facebook API info
 APP_ID					= "441109929301348"
 APP_SECRET				= "8c218d00b2384a38c7938e4b74156da1"
+
+# Facebook API urls
 ACCESS_TOKEN_URL		= "https://graph.facebook.com/oauth/access_token"
 REQUEST_TOKEN_URL		= "https://www.facebook.com/dialog/oauth"
 CHECK_AUTH				= "https://graph.facebook.com/me"

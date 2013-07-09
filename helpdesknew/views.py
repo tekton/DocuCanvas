@@ -10,6 +10,7 @@ from django.forms.models import inlineformset_factory
 from helpdesknew.forms import HelpForm, HelpFormResponse, ResponseFormValue, AckForm, HelpPhotoForm
 from helpdesknew.models import HelpRequest, HelpResponse, HelpImageFile
 from projects.models import Project
+from socialplatform.models import FacebookProfile
 
 
 @login_required
@@ -23,6 +24,10 @@ def help_form(request):
         if 'submit' in request.POST:
             helpForm = HelpForm(request.POST, instance=helpRequest)
             if helpForm.is_valid():
+                try:
+                    helpRequest.facebook = FacebookProfile.objects.get(user=request.user)
+                except Exception, e:
+                    print e
                 try:
                     helpRequest = helpForm.save()
                 except:
@@ -79,6 +84,10 @@ def submit_response(request, help_id):
         try:
             form = HelpFormResponse(request.POST, instance=help_me)
             if form.is_valid():
+                try:
+                    help_me.facebook = FacebookProfile.objects.get(user=request.user)
+                except Exception, e:
+                    raise e
                 try:
                     help_me = form.save()
                 except Exception as e:

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
+from socialplatform.models import FacebookProfile
 
 
 class HelpRequest(models.Model):
@@ -12,6 +13,7 @@ class HelpRequest(models.Model):
 		('closed', 'Closed'),
 	)
 	user = models.ForeignKey(User)
+	facebook = models.ForeignKey(FacebookProfile, null=True, blank=True)
 	name = models.CharField(max_length=140)
 	question = models.TextField(blank=True, null=True)
 	request_init = models.DateField(auto_now_add=True, null=True, blank=True)
@@ -47,6 +49,7 @@ class HelpResponse(models.Model):
 		('answer', 'Answer'),
 	)
 	user = models.ForeignKey(User)
+	facebook = models.ForeignKey(FacebookProfile, null=True, blank=True)
 	helprequest = models.ForeignKey(HelpRequest)
 	response = models.TextField(blank=True, null=True)
 	created = models.DateField(auto_now_add=True, null=True, blank=True)
