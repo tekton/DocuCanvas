@@ -188,8 +188,9 @@ def social_broadcast(request, notification_id):
 				twitter = TwitterProfile.objects.get(user=user)
 			except Exception, e:
 				print e
-			try:
-				api.send_direct_message(screen_name=twitter.user_name, text=notification.message)
-			except Exception, e:
-				print e
+			if twitter.active:
+				try:
+					api.send_direct_message(screen_name=twitter.user_name, text=notification.message)
+				except Exception, e:
+					print e
 	return redirect('dashboard.views.home')
