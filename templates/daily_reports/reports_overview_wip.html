@@ -18,190 +18,157 @@
 	    		<td class="swimline-column1 swimline-rowhead">
 	    			<div class="swimline-rotatewrapper">
 	    				<div class="swimline-rotate">
-	    					<a href="#">{{user}}</a>
+	    					<a href="{% url 'auth.views.user_overview' user.id %}">{{user}}</a>
 	    				</div>
 	    			</div>
 	    		</td>
 	    		<td class="swimline-column2">
-    				<ul>
-	    				{% for report in reports  %}
-	    					{% if user == report.user %}
-	    						<li>
-	    							<a href="#" onClick='expandReport("reportView_{{user}}_{{forloop.counter}}")'><time datetime="{{report.date|date:'c'}}">{{report.date|date:'M j, Y'}}</time></a>
-	    							<ul>
-	    								<div class = 'reportView_{{user}}_{{forloop.counter}}' style='display: none'>
-	    									<li>
-	    										{{report.description|safe}}
-	    									</li>
-	    								</div>
-	    							</ul>
-	    						</li>
-	    					{% endif %}
-    					{% endfor %}
-    				</ul>
+                    <div id="list-dailyreport-{{user|slugify|lower}}" class="dailyreport-list">
+        				<dl>
+    	    				{% for report in reports  %}
+    	    					{% if user == report.user %}
+    	    						<dt>
+    	    							<a href="#"><time datetime="{{report.date|date:'c'}}">{{report.date|date:'M j, Y'}}</time></a>
+                                    </dt>
+	    							<dd>
+    									<div>
+                                            {{report.description|safe}}
+                                        </div>
+	    							</dd>
+    	    					{% endif %}
+        					{% endfor %}
+        				</dl>
+                    </div>
 	    		</td>
 	    		<td class="swimline-column3">
-	    			<table class="table">
-	    				<tr>
-	    					<td><div id='statusReport'></div></td>
-	    					<td></td>
-	    				</tr>
-	    				<tr>
-	    					<td><div id='issuesReport'></div></td>
-	    					<td></td>
-	    				</tr>
-	    			</table>
+                    <div id="chart-status-{{user|slugify|lower}}" class="dailyreport-chart"></div>
 	    		</td>
+                <td class="swimline-column4">
+                    <div id="chart-project-{{user|slugify|lower}}" class="dailyreport-chart"></div>
+                </td>
 	    	</tr>
     	{% endfor %}
     </tbody>
 </table>
 {% endblock %}
+
 {% block endScripts %}
-<script src="//cdn.sencha.com/ext/gpl/4.2.0/ext-all-dev.js"></script>
+<script src="//cdn.sencha.com/ext/gpl/4.2.0/ext-all.js"></script>
+
+{% regroup newsfeeditems by user as NewsfeedItemsByUser %}
 <script>
-function expandReport(div){
-	var divToExpand = "." + div;
-	if($(divToExpand).css('display') == 'none'){
-		$(divToExpand).css('display', 'inline-block');
-	}else if($(divToExpand).css('display') == 'inline-block'){
-		$(divToExpand).css('display', 'none');
-	};
-
-};
-
-var projectStore, statusStore, projectChart, statusChart, projectPanel, statusPanel;
-
-        Ext.onReady(function(){
-            function seriesClickHandler(idPrefix){
-                return function(slice, eOpts){
-                    var record = slice.storeItem,
-                        name = record.get('name'),
-                        el, parent, tables;
-
-                    idSuffix = name.replace(/[^a-zA-Z\d\s]/g,'').replace(/\s/g,'-').replace(/-+/g,'-').trim().toLowerCase();
-
-                    parent = $('#'+idPrefix);
-                    el = $('#'+idPrefix+'-table-'+idSuffix);
-
-                    if (!el.is(':visible')) {
-                        parent.find('.table').hide();
-                        el.fadeIn();
-                    }
-                };
-            }
-
-            projectStore = new Ext.data.JsonStore({
-                fields: ['name','count'],
-                data: [
-                {name: 'something',
-            	count: 5},
-            	{name: 'something',
-            	count: 5},
-            	{name: 'something',
-            	count: 5},
-            	{name: 'something',
-            	count: 5},
-            	{name: 'something',
-            	count: 5},
-            	{name: 'something',
-            	count: 5}
-                ]
-            });
-
-            statusStore = new Ext.data.JsonStore({
-                fields: ['name','count'],
-                data: [
-                {name: 'something',
-            	count: 5},
-            	{name: 'something',
-            	count: 5},
-            	{name: 'something',
-            	count: 5},
-            	{name: 'something',
-            	count: 5},
-            	{name: 'something',
-            	count: 5},
-            	{name: 'something',
-            	count: 5}
-                ]
-            });
-
-            projectChart = new Ext.chart.Chart({
-                animate: true,
-                store: projectStore,
-                shadow: true,
-                legend: false,
-                insetPadding: 20,
-                series: [
+    var data = {};
+    {% for newsfeeditem in NewsfeedItemsByUser %}
+        data['{{newsfeeditem.grouper|slugify|lower}}'] = {
+            "status": [
+                {% regroup newsfeeditem.list|dictsort:"new_value" by field_change as NewsfeedItemsByUserByFieldChange %}
+                {% for itembyfieldchange in NewsfeedItemsByUserByFieldChange %}
+                    {% if itembyfieldchange.grouper == 'status' %}
+                        {% regroup itembyfieldchange.list by new_value as NewsfeedItemsByUserByFieldChangeByNewValue %}
+                        {% for item in NewsfeedItemsByUserByFieldChangeByNewValue %}
+                            {
+                                "name": "{{item.grouper|escapejs}}",
+                                "count": {{item.list|length}}
+                            }{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            ],
+            "project": [
+                {% regroup newsfeeditem.list by project as IssuesUpdatedByUserByProject %}
+                {% for issue in IssuesUpdatedByUserByProject %}
                     {
-                        type: 'pie',
-                        field: 'count',
-                        showInLegend: true,
-                        highlight: false,
-                        donut: false,
-                        label: {
-                            field: 'name',
-                            display: 'rotate',
-                            contrast: true,
-                            font: '14px Arial'
+                        "name": "{{issue.grouper|escapejs}}",
+                        "count": {{issue.list|length}}
+                    }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]
+        };
+    {% endfor %}
+
+    $('.dailyreport-list dt a').click(function(evt){
+        evt.preventDefault();
+        $(this).parent().next().toggle();
+    })
+
+    Ext.onReady(function(){
+        var chartWidth = 300,
+            chartHeight = 300;
+
+        Ext.Object.each(data,function(user,dataSet,allData){
+
+            new Ext.Panel({
+                width: chartWidth,
+                height: chartHeight,
+                layout: 'fit',
+                items: new Ext.chart.Chart({
+                    animate: true,
+                    store: new Ext.data.JsonStore({
+                        fields: ['name','count'],
+                        data: dataSet.status
+                    }),
+                    shadow: true,
+                    legend: false,
+                    insetPadding: 20,
+                    axes: [
+                        {
+                            type: 'Numeric',
+                            position: 'left',
+                            fields: 'count',
+                            grid: true,
+                            minimum: 0
                         },
-                        listeners: {
-                            itemmousedown: seriesClickHandler('projectbreakdown')
+                        {
+                            type: 'Category',
+                            position: 'bottom',
+                            fields: 'name'
                         }
-                    }
-                ]
+                    ],
+                    series: [
+                        {
+                            type: 'column',
+                            axis: 'left',
+                            hightlight: false,
+                            xField: 'name',
+                            yField: 'count'
+                        }
+                    ]
+                }),
+                renderTo: Ext.get('chart-status-'+user)
             });
 
-            statusChart = new Ext.chart.Chart({
-                animate: true,
-                store: statusStore,
-                shadow: true,
-                legend: false,
-                insetPadding: 20,
-                axes: [
-                    {
-                        type: 'Numeric',
-                        position: 'left',
-                        fields: 'count',
-                        grid: true,
-                        minimum: 0
-                    },
-                    {
-                        type: 'Category',
-                        position: 'bottom',
-                        fields: 'name'
-                    }
-                ],
-                series: [
-                    {
-                        type: 'column',
-                        axis: 'left',
-                        hightlight: false,
-                        xField: 'name',
-                        yField: 'count',
-                        listeners: {
-                            itemmousedown: seriesClickHandler('statusbreakdown')
+            new Ext.Panel({
+                width: chartWidth,
+                height: chartHeight,
+                layout: 'fit',
+                items: new Ext.chart.Chart({
+                    animate: true,
+                    store: new Ext.data.JsonStore({
+                        fields: ['name','count'],
+                        data: dataSet.project
+                    }),
+                    shadow: true,
+                    legend: false,
+                    insetPadding: 20,
+                    series: [
+                        {
+                            type: 'pie',
+                            field: 'count',
+                            showInLegend: true,
+                            highlight: false,
+                            donut: false,
+                            label: {
+                                field: 'name',
+                                display: 'rotate',
+                                contrast: true,
+                                font: '14px Arial'
+                            }
                         }
-                    }
-                ]
+                    ]
+                }),
+                renderTo: Ext.get('chart-project-'+user)
             });
-
-            projectPanel = new Ext.Panel({
-                width: 260,
-                height: 130,
-                layout: 'fit',
-                items: projectChart,
-                renderTo: Ext.get('issuesReport')
-            })
-
-            statusPanel = new Ext.Panel({
-                width: 260,
-                height: 130,
-                layout: 'fit',
-                items: statusChart,
-                renderTo: Ext.get('statusReport')
-            })
         });
+    });
 </script>
 {% endblock %}

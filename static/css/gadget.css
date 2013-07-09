@@ -170,12 +170,37 @@ textarea {
 }
 
 .dailyreports-all {}
+.dailyreports-all td,
+.dailyreports-all .dailyreport-list,
+.dailyreports-all .swimline-rotate,
+.dailyreports-all .swimline-rotatewrapper {
+    height: 300px;
+}
+.dailyreports-all .swimline-rotate  {
+    width: 300px;
+}
 .dailyreports-all .swimline-column2 {
-    width: 615px;
+    width: 480px;
 }
-.dailyreports-all .swimline-column3 {
-    width: 540px;
+.dailyreports-all .swimline-column3,
+.dailyreports-all .swimline-column4 {
+    width: 330px;
 }
+
+.dailyreports-all .dailyreport-list {
+    width: 480px;
+    padding: 10px 15px 10px 10px;
+    maring: 0;
+    overflow: auto;
+}
+
+.dailyreport-list dl {
+    margin: 0;
+}
+.dailyreport-list dl dd {
+    display: none;
+}
+
 
 #maincontent {
     -o-animation: fadein .7s;

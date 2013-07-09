@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from forms import ReportForm
 from projects.models import Project
+from newsfeed.models import NewsFeedItem
 from models import *
 
 
@@ -144,7 +145,7 @@ def mail_report():
     except:
         return False
 
-
+@login_required
 def index(request):
     projects = Project.objects.all()
     reports = UserDailyReport.objects.filter(user=request.user).order_by('-date')[:5]
@@ -158,9 +159,11 @@ def view_reports_wip(request, year_start, month_start, day_start, year_end,  mon
     date_range_end = str(year_end) + '-' + str(month_end) + '-' + str(day_end)
     print date_range_start
     users = User.objects.all()
-    reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end])
 
-    return render_to_response('daily_reports/reports_overview_wip.html', {'users': users, 'reports': reports, 'projects':projects}, context_instance=RequestContext(request))
+    reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end])
+    newsfeeditems = NewsFeedItem.objects.filter(timestamp__range=[date_range_start, date_range_end]).order_by('user','project','field_change')
+
+    return render_to_response('daily_reports/reports_overview_wip.html', {'users': users, 'newsfeeditems':newsfeeditems, 'reports': reports, 'projects':projects}, context_instance=RequestContext(request))
 
 @user_passes_test(lambda u: u.is_superuser)
 def report_selection(request):
