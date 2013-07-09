@@ -15,6 +15,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, User
 from django.contrib.auth.decorators import login_required
 from accounts.models import *
 from issues.models import *
+from socialplatform.models import TwitterProfile
 
 from django.utils import simplejson
 
@@ -93,7 +94,12 @@ def account_settings(request):
         projects = Project.objects.all()
     except Exception, e:
         print e
-    return render_to_response("registration/account_settings.html", {"projects": projects}, context_instance=RequestContext(request))
+    try:
+        twat = TwitterProfile.objects.get(user=request.user)
+    except Exception, e:
+        twat = TwitterProfile(user=request.user, user_name='admin', active=False)
+        print e
+    return render_to_response("registration/account_settings.html", {"projects": projects, "tw": twat}, context_instance=RequestContext(request))
 
 
 def change_password(request):
