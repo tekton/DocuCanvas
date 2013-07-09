@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load set_var %}
+
+{% block bodyClass %}page-pages{% endblock %}
+{% block baseContent %}
+<div id="maincontent" class="container">
+	<header id="pageheader">
+		<h1 id="pagetitle" class="page-header">
+			{% block pageTitle %}{% endblock %}
+		</h1>
+	</header>
+	<div id="pagemessage"></div>
+	{% block bodyContent %}{% endblock %}
+</div>
+{% endblock %}

@@ -97,6 +97,7 @@
 
         Ext.Object.each(data,function(user,dataSet,allData){
 
+            /* Issues by Status - Column Chart */
             new Ext.Panel({
                 width: chartWidth,
                 height: chartHeight,
@@ -121,7 +122,42 @@
                         {
                             type: 'Category',
                             position: 'bottom',
-                            fields: 'name'
+                            fields: 'name',
+                            label: {
+                                rotate: {
+                                    degrees: -90
+                                },
+                                renderer: function(label){
+                                    var text = '';
+                                    switch (label) {
+                                        case 'active':
+                                            text = 'Active';
+                                            break;
+                                        case 'duplicate':
+                                            text = 'Duplicate';
+                                            break;
+                                        case 'fixed':
+                                            text = 'Fixed';
+                                            break;
+                                        case 'not_a_bug':
+                                            text = 'Not a Bug';
+                                            break;
+                                        case 'unverified':
+                                            text = 'Unverified';
+                                            break;
+                                        case 'wont_fix':
+                                            text = 'Won\'t Fix';
+                                            break;
+                                        case 'retest':
+                                            text = 'Retest';
+                                            break;
+                                        default:
+                                            text = label;
+                                            break;
+                                    }
+                                    return text;
+                                }
+                            }
                         }
                     ],
                     series: [
@@ -130,13 +166,38 @@
                             axis: 'left',
                             hightlight: false,
                             xField: 'name',
-                            yField: 'count'
+                            yField: 'count',
+                            renderer: function(sprite,record,attributes,index,store) {
+                                var color = '#999999';
+
+                                switch (record.get('name')) {
+                                    case 'not_a_bug':
+                                    case 'wont_fix':
+                                    case 'duplicate':
+                                        color = '#3A87AD';
+                                        break;
+
+                                    case 'active':
+                                    case 'retest':
+                                        color = '#F89406';
+                                        break;
+
+                                    case 'fixed':
+                                        color = '#468847';
+                                        break;
+                                }
+
+                                return Ext.apply(attributes,{
+                                    fill: color
+                                })
+                            }
                         }
                     ]
                 }),
                 renderTo: Ext.get('chart-status-'+user)
             });
-
+        
+            /* Issues by Project - Pie Chart */
             new Ext.Panel({
                 width: chartWidth,
                 height: chartHeight,
