@@ -4,34 +4,36 @@ import urlparse
 import json
 import subprocess
 import facebook
+import tweepy
 
 import oauth2 as oauth
 
+from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, render_to_response
 from django.contrib.auth.decorators import login_required
 from socialplatform.models import FacebookProfile, FBNotification, TwitterProfile, Tweet, DMAll, DMIndividual
 from socialplatform.forms import TwitterForm, TweetForm, DMAForm, DMIForm
 from notifications.models import Notification, NotificationRecipient
 
 # Facebook API info
-APP_ID				= "441109929301348"
-APP_SECRET			= "8c218d00b2384a38c7938e4b74156da1"
-ACCESS_TOKEN_URL	= "https://graph.facebook.com/oauth/access_token"
-REQUEST_TOKEN_URL	= "https://www.facebook.com/dialog/oauth"
-CHECK_AUTH			= "https://graph.facebook.com/me"
-GRAPH_URL			= "https://graph.facebook.com/"
-
+APP_ID					= "441109929301348"
+APP_SECRET				= "8c218d00b2384a38c7938e4b74156da1"
+ACCESS_TOKEN_URL		= "https://graph.facebook.com/oauth/access_token"
+REQUEST_TOKEN_URL		= "https://www.facebook.com/dialog/oauth"
+CHECK_AUTH				= "https://graph.facebook.com/me"
+GRAPH_URL				= "https://graph.facebook.com/"
+	
 # Twitter API info
-TWITTER_TWITTER_CONSUMER_KEY		= '8nY1q44v3YWGgqfP2eCjFg'
-TWITTER_CONSUMER_SECRET		= 's2MFyXSLbHTmGbz9qBGNFubaeTRivsLJpHsnESnlfE'
-TWITTER_TWITTER_ACCESS_KEY			= '1535252624-YWB7X7lbBwdmzKmWA5Aiep7wis3ARc0EA8hDqIj'
-TWITTER_TWITTER_ACCESS_SECRET		= 'MBrOvB34fuQtQ8vzyfMcA48ZbEhg3zpqgMvAuTSDDk'
+TWITTER_CONSUMER_KEY	= '8nY1q44v3YWGgqfP2eCjFg'
+TWITTER_CONSUMER_SECRET	= 's2MFyXSLbHTmGbz9qBGNFubaeTRivsLJpHsnESnlfE'
+TWITTER_ACCESS_KEY		= '1535252624-YWB7X7lbBwdmzKmWA5Aiep7wis3ARc0EA8hDqIj'
+TWITTER_ACCESS_SECRET	= 'MBrOvB34fuQtQ8vzyfMcA48ZbEhg3zpqgMvAuTSDDk'
 
 
 @login_required
@@ -146,12 +148,12 @@ def access_for_broadcast(request, notification_id):
 @login_required
 def social_broadcast(request, notification_id):
 	notification = Notification.objects.get(pk=notification_id)
-	message = notification.message
-	'''
-	for char in message:
-		if char == " ":
-			char = '+'
-			'''
+	message = ""
+	for char in notification.message:
+		if(char == " "):
+			message += "+"
+		else:
+			message += char
 	code = request.GET.get('code')
 	consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
 	client = oauth.Client(consumer)
@@ -164,25 +166,22 @@ def social_broadcast(request, notification_id):
 	except Exception, e:
 		print "No target"
 
-	for target in targets:
-		print "hello"
-		print target.user.id
-
 	if notification.facebook:
 		for target in targets:
-			user = target.user
+			myuser = target.user
 			try:
-				facebook = FacebookProfile.objects.get(user=user)
+				facebook = FacebookProfile.objects.get(user=myuser)
 			except Exception, e:
 				print e
 			request_url = (GRAPH_URL
 						 + facebook.facebook_id 
 						 + ("/notifications?access_token=%s&template=%s&href=%s" % (access_token, message, 'http://' + request.META['HTTP_HOST'])))
+           	print request_url
            	resp, cont = client.request(request_url, 'POST')
-		if notification.twitter:
-			auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
-			auth.set_access_token(TWITTER_ACCESS_KEY, TWITTER_ACCESS_SECRET)
-			api = tweepy.API(auth)
+	if notification.twitter:
+		auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+		auth.set_access_token(TWITTER_ACCESS_KEY, TWITTER_ACCESS_SECRET)
+		api = tweepy.API(auth)
 		for target in targets:
 			user = target.user
 			try:

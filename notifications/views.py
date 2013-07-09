@@ -48,12 +48,11 @@ def notification_form(request):
                 n = notification_form.save()
                 formset.save()
                 print 'saving form'
-                if request.POST['platform1'] == 'Facebook':
+                if 'facebook' in request.POST:
                     n.facebook = True
-                if request.POST['platform2'] == 'Twitter':
+                if 'twitter' in request.POST:
                     n.twitter = True
-                print n.facebook
-                print n.twitter
+                n.save()
                 return redirect('socialplatform.views.access_for_broadcast', n.id)
             else:
                 print notification_form.errors
@@ -97,3 +96,4 @@ def mark_as_read(request):
         except Exception, e:
             print e
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
+
