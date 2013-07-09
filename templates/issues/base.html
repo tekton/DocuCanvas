@@ -46,10 +46,10 @@ Used for all templates in /templates/issues
 	{% set issueLabelClass = 'label-info' %}
 {% elif issue.status == 'active' %}
 	{% set issueLabelClass = 'label-warning' %}
-{% elif issue.status == 'fixed' %}
-	{% set issueLabelClass = 'label-success' %}
 {% elif issue.status == 'retest' %}
 	{% set issueLabelClass = 'label-warning' %}
+{% elif issue.status == 'fixed' %}
+	{% set issueLabelClass = 'label-success' %}
 {% elif issue.status == 'unverified' %}
 	{% set issueLabelClass = 'label-default' %}
 {% else %}

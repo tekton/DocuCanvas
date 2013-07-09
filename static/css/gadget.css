@@ -186,19 +186,19 @@ textarea {
 .dailyreports-all .swimline-column4 {
     width: 330px;
 }
-
 .dailyreports-all .dailyreport-list {
     width: 480px;
     padding: 10px 15px 10px 10px;
     maring: 0;
     overflow: auto;
 }
-
-.dailyreport-list dl {
-    margin: 0;
+.dailyreport-list .accordion {}
+.dailyreport-list .accordion .accordion-heading a {
+    background-color: #f7f7f9;
+    outline: none;
 }
-.dailyreport-list dl dd {
-    display: none;
+.dailyreport-list .accordion .accordion-heading.collapsed a {
+    background-color: transparent;
 }
 
 

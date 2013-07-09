@@ -24,20 +24,24 @@
 	    		</td>
 	    		<td class="swimline-column2">
                     <div id="list-dailyreport-{{user|slugify|lower}}" class="dailyreport-list">
-        				<dl>
-    	    				{% for report in reports  %}
-    	    					{% if user == report.user %}
-    	    						<dt>
-    	    							<a href="#"><time datetime="{{report.date|date:'c'}}">{{report.date|date:'M j, Y'}}</time></a>
-                                    </dt>
-	    							<dd>
-    									<div>
-                                            {{report.description|safe}}
+                        <div id="accordion-dailyreport-{{user|slugify|lower}}" class="accordion">
+                            {% for report in reports  %}
+                                {% if user == report.user %}
+                                    <div class="accordion-group">
+                                        <div class="accordion-heading">
+                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-dailyreport-{{user|slugify|lower}}" href="#dailyreport-{{user|slugify|lower}}-{{report.date|date:'c'|slugify}}">
+                                                <time datetime="{{report.date|date:'c'}}">{{report.date|date:'M j, Y'}}</time>
+                                            </a>
                                         </div>
-	    							</dd>
-    	    					{% endif %}
-        					{% endfor %}
-        				</dl>
+                                        <div id="dailyreport-{{user|slugify|lower}}-{{report.date|date:'c'|slugify}}" class="accordion-body collapse">
+                                            <div class="accordion-inner">
+                                                {{report.description|safe}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     </div>
 	    		</td>
 	    		<td class="swimline-column3">
@@ -86,17 +90,13 @@
         };
     {% endfor %}
 
-    $('.dailyreport-list dt a').click(function(evt){
-        evt.preventDefault();
-        $(this).parent().next().toggle();
-    })
-
     Ext.onReady(function(){
         var chartWidth = 300,
             chartHeight = 300;
 
         Ext.Object.each(data,function(user,dataSet,allData){
 
+            /* Issues by Status - Column Chart */
             new Ext.Panel({
                 width: chartWidth,
                 height: chartHeight,
@@ -121,7 +121,42 @@
                         {
                             type: 'Category',
                             position: 'bottom',
-                            fields: 'name'
+                            fields: 'name',
+                            label: {
+                                rotate: {
+                                    degrees: -90
+                                },
+                                renderer: function(label){
+                                    var text = '';
+                                    switch (label) {
+                                        case 'active':
+                                            text = 'Active';
+                                            break;
+                                        case 'duplicate':
+                                            text = 'Duplicate';
+                                            break;
+                                        case 'fixed':
+                                            text = 'Fixed';
+                                            break;
+                                        case 'not_a_bug':
+                                            text = 'Not a Bug';
+                                            break;
+                                        case 'unverified':
+                                            text = 'Unverified';
+                                            break;
+                                        case 'wont_fix':
+                                            text = 'Won\'t Fix';
+                                            break;
+                                        case 'retest':
+                                            text = 'Retest';
+                                            break;
+                                        default:
+                                            text = label;
+                                            break;
+                                    }
+                                    return text;
+                                }
+                            }
                         }
                     ],
                     series: [
@@ -130,13 +165,38 @@
                             axis: 'left',
                             hightlight: false,
                             xField: 'name',
-                            yField: 'count'
+                            yField: 'count',
+                            renderer: function(sprite,record,attributes,index,store) {
+                                var color = '#999999';
+
+                                switch (record.get('name')) {
+                                    case 'not_a_bug':
+                                    case 'wont_fix':
+                                    case 'duplicate':
+                                        color = '#3A87AD';
+                                        break;
+
+                                    case 'active':
+                                    case 'retest':
+                                        color = '#F89406';
+                                        break;
+
+                                    case 'fixed':
+                                        color = '#468847';
+                                        break;
+                                }
+
+                                return Ext.apply(attributes,{
+                                    fill: color
+                                })
+                            }
                         }
                     ]
                 }),
                 renderTo: Ext.get('chart-status-'+user)
             });
-
+        
+            /* Issues by Project - Pie Chart */
             new Ext.Panel({
                 width: chartWidth,
                 height: chartHeight,
