@@ -8,13 +8,14 @@ import tweepy
 
 import oauth2 as oauth
 
+from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, render_to_response
 from django.contrib.auth.decorators import login_required
 from socialplatform.models import FacebookProfile, FBNotification, TwitterProfile, Tweet, DMAll, DMIndividual
 from socialplatform.forms import TwitterForm, TweetForm, DMAForm, DMIForm
