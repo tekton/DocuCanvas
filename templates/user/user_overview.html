@@ -21,7 +21,6 @@
             {% for status_update in status_updates%}
                 {% if newest_status_timestamp != status_update.time_stamp %}
                     {% set newest_status_timestamp = status_update.time_stamp%}
-                        <!--<tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{status_update.time_stamp|date:'M-d-Y'}}</td></tr>-->
                         <tr><td colspan="4">{{newest_status_timestamp}}</td></tr>
                 {% endif %}
                 <tr>
@@ -219,6 +218,30 @@
                         yField: 'count',
                         listeners: {
                             itemmousedown: seriesClickHandler('statusbreakdown')
+                        },
+                        renderer: function(sprite,record,attributes,index,store) {
+                            var color = '#999999';
+
+                            switch (record.get('name').toLowerCase()) {
+                                case 'not a bug':
+                                case 'won\'t fix':
+                                case 'duplicate':
+                                    color = '#3A87AD';
+                                    break;
+
+                                case 'active':
+                                case 'retest':
+                                    color = '#F89406';
+                                    break;
+
+                                case 'fixed':
+                                    color = '#468847';
+                                    break;
+                            }
+
+                            return Ext.apply(attributes,{
+                                fill: color
+                            })
                         }
                     }
                 ]

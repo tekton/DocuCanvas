@@ -88,7 +88,7 @@ def login_func(request):
 
     return render_to_response("registration/login.html", {'a_form': form, 'next': next, 'state': state}, context_instance=RequestContext(request))
 
-
+@login_required
 def account_settings(request):
     try:
         projects = Project.objects.all()
@@ -101,7 +101,7 @@ def account_settings(request):
         print e
     return render_to_response("registration/account_settings.html", {"projects": projects, "tw": twat}, context_instance=RequestContext(request))
 
-
+@login_required
 def change_password(request):
     try:
         projects = Project.objects.all()
@@ -126,7 +126,7 @@ def change_password(request):
         form = EditAccountForm(SetPasswordForm)
     return render_to_response("registration/change_password.html", {'form': form, "projects": projects}, context_instance=RequestContext(request))
 
-
+@login_required
 def change_email(request):
     try:
         projects = Project.objects.all()
@@ -154,80 +154,17 @@ def change_email(request):
         form = ChangeEmailForm()
     return render_to_response("registration/change_email.html", {'form': form, "projects": projects}, context_instance=RequestContext(request))
 
-
+@login_required
 def user_overview(request, user_id):
     try:
-        projects = Project.objects.all()
-    except Exception, e:
-        print e
-
-    try:
         gadget_user = User.objects.get(pk=user_id)
-        #issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-created')
-        issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-project')
+        issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-project','-status')
         issue_status_updates = IssueStatusUpdate.objects.filter(user=gadget_user).order_by('-time_stamp')
-
-        blank_issues = issues.filter(status=None)
-        not_a_bug_issues = issues.filter(status='not_a_bug')
-        wont_fix_issues = issues.filter(status='wont_fix')
-        duplicate_issues = issues.filter(status='duplicate')
-        active_issues = issues.filter(status='active')
-        fixed_issues = issues.filter(status='fixed')
-        retest_issues = issues.filter(status='retest')
-        unverified_issues = issues.filter(status='unverified')
-
-        blank_count = blank_issues.count()
-        not_a_bug_count = not_a_bug_issues.count()
-        wont_fix_count = wont_fix_issues.count()
-        duplicate_count = duplicate_issues.count()
-        active_count = active_issues.count()
-        fixed_count = fixed_issues.count()
-        retest_count = retest_issues.count()
-        unverified_count = unverified_issues.count()
-
-        #assignment count by project
-        projects = Project.objects.all()
-        project_dict = {}
-        for project in projects:
-            temp_dict = {}
-            project_issues = Issue.objects.filter(project=project, assigned_to=gadget_user)
-            for issue in project_issues:
-                temp_dict[issue.id] = issue.summary
-            temp_dict[project.name] = Issue.objects.filter(project=project, assigned_to=gadget_user).count()
-            project_dict[project.name] = temp_dict
-            #project_dict[project.name] = Issue.objects.filter(project=project, assigned_to=gadget_user).count()
-
-        project_array = []
-
-        project_list = []
-        issue_list = []
-        for project in projects:
-
-            # List of Projects
-            project_data = {}
-            project_data["id"] = project.id
-            project_data["name"] = project.name
-            project_list.append(project_data)
-
-            project_info = {}
-            project_info["name"] = project.name
-            project_info["issues"] = []
-
-            project_issues = Issue.objects.filter(project=project, assigned_to=gadget_user)
-            for issue in project_issues:
-                issue_info = {}
-                issue_info["id"] = issue.id
-                issue_info["summary"] = issue.summary
-                issue_info["status"] = issue.status
-                issue_info["project"] = issue.project.name
-
-                project_info["issues"].append(issue_info)
-
-            project_array.append(project_info)
-
-        project_json = simplejson.dumps(project_array)
-
     except Exception, e:
         print e
 
-    return render_to_response("user/user_overview.html", {"projectsAsJson": project_json, "gadget_user": gadget_user, "issues": issues, "status_updates": issue_status_updates, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues ,"project_dict": project_dict , "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "projects": projects, "page_type": gadget_user.username}, context_instance=RequestContext(request))
+    return render_to_response("user/user_overview.html", {
+        "gadget_user": gadget_user,
+        "issues": issues,
+        "status_updates": issue_status_updates,
+        }, context_instance=RequestContext(request))
