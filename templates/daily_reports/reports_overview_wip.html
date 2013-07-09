@@ -24,20 +24,24 @@
 	    		</td>
 	    		<td class="swimline-column2">
                     <div id="list-dailyreport-{{user|slugify|lower}}" class="dailyreport-list">
-        				<dl>
-    	    				{% for report in reports  %}
-    	    					{% if user == report.user %}
-    	    						<dt>
-    	    							<a href="#"><time datetime="{{report.date|date:'c'}}">{{report.date|date:'M j, Y'}}</time></a>
-                                    </dt>
-	    							<dd>
-    									<div>
-                                            {{report.description|safe}}
+                        <div id="accordion-dailyreport-{{user|slugify|lower}}" class="accordion">
+                            {% for report in reports  %}
+                                {% if user == report.user %}
+                                    <div class="accordion-group">
+                                        <div class="accordion-heading">
+                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-dailyreport-{{user|slugify|lower}}" href="#dailyreport-{{user|slugify|lower}}-{{report.date|date:'c'|slugify}}">
+                                                <time datetime="{{report.date|date:'c'}}">{{report.date|date:'M j, Y'}}</time>
+                                            </a>
                                         </div>
-	    							</dd>
-    	    					{% endif %}
-        					{% endfor %}
-        				</dl>
+                                        <div id="dailyreport-{{user|slugify|lower}}-{{report.date|date:'c'|slugify}}" class="accordion-body collapse">
+                                            <div class="accordion-inner">
+                                                {{report.description|safe}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     </div>
 	    		</td>
 	    		<td class="swimline-column3">
@@ -85,11 +89,6 @@
             ]
         };
     {% endfor %}
-
-    $('.dailyreport-list dt a').click(function(evt){
-        evt.preventDefault();
-        $(this).parent().next().toggle();
-    })
 
     Ext.onReady(function(){
         var chartWidth = 300,
