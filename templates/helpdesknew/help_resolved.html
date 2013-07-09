@@ -1,5 +1,9 @@
 {% extends "helpdesknew/base.html" %}
 
+{% block pageTitle %}
+Resolved Questions
+{% endblock %}
+
 {% block contextNav %}
     <li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
     <li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
@@ -40,16 +44,14 @@ img.pending-image-help{
 {% endblock %}
 
 {% block bodyContent %}
-<h2>Resolved Questions</h2>
-<table class="tbl-generic tbl-overview">
-    <tr>
-        <td class="tbl-fauxth" colspan=3><h3>Resolved</h3></td>
-    </tr>
-    <tr class="tbl-rowheader">
-        <td class="tbl-fauxth">Summary</td>
-        <td class="tbl-fauxth">Asked By</td>
-        <td class="tbl-fauxth">Date Asked</td>
-    </tr>
+<table class="tbl-generic tbl-overview table table-striped">
+    <thead>
+        <tr class="tbl-rowheader">
+            <th class="tbl-fauxth">Summary</th>
+            <th class="tbl-fauxth">Asked By</th>
+            <th class="tbl-fauxth">Date Asked</th>
+        </tr>
+    </thead>
     {% for help in form %}
     <tr>
         <td>

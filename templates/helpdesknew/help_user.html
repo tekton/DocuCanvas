@@ -1,5 +1,9 @@
 {% extends "helpdesknew/base.html" %}
 
+{% block pageTitle %}
+All Questions from {{myuser.username}}
+{% endblock %}
+
 {% block contextNav %}
 	<li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
 	<li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
@@ -40,18 +44,17 @@ img.pending-image-help{
 {% endblock %}
 
 {% block bodyContent %}
-<h2>All Questions from {{myuser.username}}</h2>
 	{% if responses or answers or more_answers %}
-		<table class="tbl-generic tbl-overview">
-			<tr>
-				<td class="tbl-fauxth" colspan=3><h3>Pending</h3></td>
-			</tr>
+	    <h2>Pending</h2>
+		<table class="tbl-generic tbl-overview table table-striped">
 			{% if responses %}
+			<thead>
 				<tr class="tbl-rowheader">
-					<td class="tbl-fauxth">Summary</td>
-					<td class="tbl-fauxth">Date Asked</td>
-					<td class="tbl-fauxth">Status</td>
+					<th class="tbl-fauxth span8">Summary</th>
+					<th class="tbl-fauxth span2">Date Asked</th>
+					<th class="tbl-fauxth span2">Status</th>
 				</tr>
+			</thead>
 				{% for help in responses %}
 					<tr>
 						<td>
@@ -86,16 +89,18 @@ img.pending-image-help{
 					<td colspan=3>There are no pending question objects.</td>
 				</tr>
 			{% endif %}
-			<tr>
-				<td class="tbl-fauxth" colspan=3><h3>Resolved</h3></td>
-			</tr>
+		</table>
+		
+		<h2>Resolved</h2>
+		<table class="tbl-generic tbl-overview table table-striped">
 			{% if answers %}
+			<thead>
 				<tr class="tbl-rowheader">
-					<td class="tbl-fauxth">Summary</td>
-					<td class="tbl-fauxth">Image Attached</td>
-					<td class="tbl-fauxth">Date Asked</td>
-					<td class="tbl-fauxth">Status</td>
+					<th class="tbl-fauxth span8">Summary</th>
+					<th class="tbl-fauxth span2">Date Asked</th>
+					<th class="tbl-fauxth span2">Status</th>
 				</tr>
+			</thead>
 				{% for answer in answers %}
 					<tr>
 						<td>

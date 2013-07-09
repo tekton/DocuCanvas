@@ -19,10 +19,10 @@
 						</td>
 					</tr>
 					<tr>
-						<td>{{help.questiom}}</td>
+						<td>{{help.question}}</td>
 					</tr>
 				</table>
-				<input type="submit" value="Lock Question"/>
+				<input type="submit" value="Lock Question" class="btn btn-danger" />
 			</form>
 		{% elif help.status == "('closed', 'Closed')" %}
 			<form action="{{help.id}}" method="post" enctype="multipart/form-data">
@@ -34,10 +34,10 @@
 						</td>
 					</tr>
 					<tr>
-						<td>{{help.questiom}}</td>
+						<td>{{help.question}}</td>
 					</tr>
 				</table>
-				<input type="submit" value="Unlock Question"/>
+				<input type="submit" value="Unlock Question" class="btn btn-success" />
 			</form>
 		{% else %}
 			<p>A question must be either CLOSED or RESOLVED to use this feature</p>

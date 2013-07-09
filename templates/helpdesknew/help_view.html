@@ -1,6 +1,10 @@
 {% extends "helpdesknew/base.html" %}
 {% load set_var %}
 
+{% block pageTitle %}
+{{help.name}}
+{% endblock %}
+
 {% block contextNav %}
     <li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
     <li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
@@ -124,23 +128,6 @@
 				<header>
 					<h3>Comments</h3>
 				</header>
-				{% comment %}
-					TODO: apply 'accordion' feature to add comment so form is not always visible
-				{% endcomment %}
-				<div id="helpdesk-comments-add">
-					<form class="form-inline" action="{% url 'helpdesknew.views.submit_response' help.id %}" method="POST" enctype="multipart/form-data">
-						{% csrf_token %}
-						<input type="hidden" name="helprequest" value="{{help.id}}">
-						<input type="hidden" name="user" value="{{user.id}}">
-						<div class="control-group">
-							<label class="control-label" for="{{help_response.id}}">Comment</label>
-							<div class="control-group">
-								{{help_response.response}}
-							</div>
-						</div>
-						<button type="submit" class="btn btn-primary">Submit</button>
-					</form>
-				</div>
 				<ul id="helpdesk-comments-list" class="media-list">
 					{% for comment in comments%}
 						<li class="media">
@@ -177,6 +164,26 @@
 						</li>
 					{% endfor %}
 				</ul>
+				
+				<h4>Add your comment</h4>
+				{% comment %}
+					TODO: apply 'accordion' feature to add comment so form is not always visible
+				{% endcomment %}
+				<div id="helpdesk-comments-add">
+					<form class="form-inline" action="{% url 'helpdesknew.views.submit_response' help.id %}" method="POST" enctype="multipart/form-data">
+						{% csrf_token %}
+						<input type="hidden" name="helprequest" value="{{help.id}}">
+						<input type="hidden" name="user" value="{{user.id}}">
+						<div class="control-group">
+							<label class="control-label" for="{{help_response.id}}">Comment</label>
+							<div class="control-group">
+								{{help_response.response}}
+							</div>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</form>
+				</div>
+				
 			</aside>
 		</div>
 {% endblock %}

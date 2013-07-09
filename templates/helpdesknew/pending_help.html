@@ -1,5 +1,8 @@
 {% extends "helpdesknew/base.html" %}
 
+{% block pageTitle %}
+Unresolved Questions
+{% endblock %}
 
 {% block contextNav %}
     <li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
@@ -41,14 +44,15 @@ img.pending-image-help{
 {% endblock %}
 
 {% block bodyContent %}
-<h2>Unresolved Questions</h2>
-<table class="tbl-generic tbl-overview">
-    <tr class="tbl-rowheader">
-        <td class="tbl-fauxth">Summary</td>
-        <td class="tbl-fauxth">Asked By</td>
-        <td class="tbl-fauxth">Date Asked</td>
-        <td class="tbl-fauxth">Status</td>
-    </tr>
+<table class="tbl-generic tbl-overview table table-striped">
+    <thead>
+        <tr class="tbl-rowheader">
+            <th class="tbl-fauxth">Summary</th>
+            <th class="tbl-fauxth">Asked By</th>
+            <th class="tbl-fauxth">Date Asked</th>
+            <th class="tbl-fauxth">Status</th>
+        </tr>
+    </thead>
     {% for help in form %}
         <tr id="pending-help-rowelement">
             <td>
