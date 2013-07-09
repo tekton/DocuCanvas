@@ -1,5 +1,9 @@
 {% extends "helpdesknew/base.html" %}
 
+{% block pageTitle %}
+Edit Comment
+{% endblock %}
+
 {% block contextNav %}
     <li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
     <li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
@@ -8,14 +12,13 @@
 {% endblock %}
 
 {% block bodyContent %}
-<h2>Comment Edit</h2>
 {% if user.id == comment.user.id %}
-	<form action="{{comment.id}}" method="post" enctype="multipart/form-data">
+	<form action="{{comment.id}}" method="post" enctype="multipart/form-data" class="span6">
 		{% csrf_token %}
 		{{form.response}}
 		<input type='hidden' name="helprequest" id="id_helprequest" value='{{comment.helprequest.id}}'/>
 		<input type='hidden' name="user" id="id_user" value='{{comment.user.id}}'/>
-		<input type="submit" value="Submit Changes">
+		<input type="submit" value="Submit Changes" class="btn btn-primary">
 	</form>
 {% else %}
 	<p>Error - you can only edit content submitted under your account</p>

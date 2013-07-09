@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block bodyContent %}
-	<form action="/twitter/add_account" method="post" enctype="multipart/form-data">
+	<form action="{% url 'twitter.views.add_twitter_acct' %}" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		<table>
 			<tr><td>Username:</td></tr>

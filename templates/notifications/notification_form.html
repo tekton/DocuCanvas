@@ -1,16 +1,18 @@
 {% extends "notifications/base.html" %}
 
 {% block contextNav %}
-    <li><a href="/notification/all">All Notifications</a></li>
-    <li><a href="/notification/new">New Notification</a></li>
+    <li><a href="{% url 'notifications.views.notifications' %}">All Notifications</a></li>
+    <li><a href="{% url 'notifications.views.notification_form' %}">New Notification</a></li>
 {% endblock%}
 
 {% block bodyContent %}
 <div id="formContainer">
-    <form action="/notification/new" id = "checkListForm" method="post" enctype="multipart/form-data">
+    <form action="{% url 'notifications.views.notification_form' %}" id = "checkListForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input maxlength="255" name="creator" type="hidden" value="{{user.id}}"  />
         Message: <input maxlength="255" name="message" type="text" /><br />
+        <input type="checkbox" name="platform1" value="Facebook">Notify with Facebook</br>
+        <input type="checkbox" name="platform2" value="Twitter">Notify with Twitter</br></br>
         Send To: <br/>
         <div id="notificationContainer" style = 'border: solid 1px'>
             <div>

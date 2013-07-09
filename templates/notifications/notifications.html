@@ -1,7 +1,7 @@
 {% extends "notifications/base.html" %}
 
 {% block contextNav %}
-    <li><a href="/notification/new">New Notification</a></li>
+    <li><a href="{% url 'notifications.views.notification_form' %}">New Notification</a></li>
 {% endblock%}
 
 {% block pageTitle %}

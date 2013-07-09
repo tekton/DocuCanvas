@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block bodyContent %}
-	<form action="/twitter/newTweet" method="post" enctype="multipart/form-data">
+	<form action="{% url 'twitter.views.new_tweet' %}" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		<input type='text' name='twit-content'/>
 		<input type='submit' value='TWEET IT'/>

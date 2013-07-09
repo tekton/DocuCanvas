@@ -153,7 +153,7 @@
                     </div>
                 </div>
                 {% endif %}
-                <form action="/accounts/login" method="post" enctype="multipart/form-data" autocomplete="off">
+                <form action="{% url 'auth.views.login_func' %}" method="post" enctype="multipart/form-data" autocomplete="off">
                     {% csrf_token %}
                     <input type="hidden" name="next" id="next" value="{{next}}" />
                     <p>
@@ -175,7 +175,7 @@
     </div>
 
     <div id="account-registrationform" class="modal hide fade" role="dialog">
-        <form class="form-horizontal" action="/accounts/register" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal" action="{% url 'auth.views.register' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <input type="hidden" name="next" id="next" value="{{next}}">
             <header class="modal-header">

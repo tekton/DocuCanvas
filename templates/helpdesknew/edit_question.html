@@ -1,5 +1,9 @@
 {% extends "helpdesknew/base.html" %}
 
+{% block pageTitle %}
+Edit Question
+{% endblock %}
+
 {% block contextNav %}
     <li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
     <li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
@@ -16,18 +20,28 @@
 {% endblock %}
 
 {% block bodyContent %}
-<h2>Question Edit</h2>
 {% if user.id == help.user.id %}
-	<form action="{{help.id}}" method="post" enctype="multipart/form-data">
+	<form action="{{help.id}}" method="post" enctype="multipart/form-data" class="form-horizontal span6">
 		{% csrf_token %}
-		<b>Edit Summary</b></br>
-		{{form.name}}</br>
-		<b>Edit Description</b></br>
-		{{form.question}}</br>
-		<b>Upload Screenshot(s)</b></br>
-		<input type='file' name='myfiles' multiple/>
-	    <input type='hidden' name="user" id="id_user" value='{{help.user.id}}'/><br>
-		<input type="submit" value="Submit Changes">
+		
+		<div class="control-group">
+            <label class="control-label" for="id_name">Edit Summary:</label>
+            <div class="controls">{{form.name}}</div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="id_question">Edit Description:</label>
+            <div class="controls">{{form.question}}</div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">Upload Screenshot(s):</label>
+            <div class="controls"><input type="file" name="myfiles" multiple></div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <input type="submit" name='submit' value="Submit Changes" class="btn btn-primary" />
+            </div>
+        </div>
+        <input type='hidden' name="user" id="id_user" value='{{help.user.id}}'/><br>
 	</form>
 {% else %}
 	<p>You're not {{help.user}}!</p>

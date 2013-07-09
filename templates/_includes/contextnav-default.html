@@ -2,10 +2,10 @@
 <li><a href="{% url 'issues.views.issue_form' %}">Issue</a></li>
 <li><a href="{% url 'daily_reports.views.edit_report' %}">Daily Report</a></li>
 {% if user.is_superuser%}
-<li><a href="/notification/new">Notification</a></li>
+<li><a href="{% url 'notifications.views.notification_form' %}">Notification</a></li>
 {% endif %}
 <li><a href="{% url 'helpdesknew.views.help_form' %}">Help Desk</a></li>
 <li class="nav-header">Lists</li>
 <li><a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a></li>
 <li><a href="{% url 'food.views.all_food' %}">Food Requests</a></li>
-<li><a href="/notification/all">Past Notifications</a></li>
+<li><a href="{% url 'notifications.views.notifications' %}">Past Notifications</a></li>

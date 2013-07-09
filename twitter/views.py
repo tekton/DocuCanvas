@@ -10,14 +10,15 @@ from projects.models import Project
 from issues.models import Issue, IssueComment
 from twitter.models import TwitterProfile, Tweet, DMAll, DMIndividual
 from twitter.forms import TwitterForm, TweetForm, DMAForm, DMIForm
+from notifications.models import Notification, NotificationRecipient
 
 import sys
 import tweepy
 
-CONSUMER_KEY		= '8nY1q44v3YWGgqfP2eCjFg'
-CONSUMER_SECRET		= 's2MFyXSLbHTmGbz9qBGNFubaeTRivsLJpHsnESnlfE'
-ACCESS_KEY			= '1535252624-YWB7X7lbBwdmzKmWA5Aiep7wis3ARc0EA8hDqIj'
-ACCESS_SECRET		= 'MBrOvB34fuQtQ8vzyfMcA48ZbEhg3zpqgMvAuTSDDk'
+TWITTER_TWITTER_CONSUMER_KEY		= '8nY1q44v3YWGgqfP2eCjFg'
+TWITTER_CONSUMER_SECRET		= 's2MFyXSLbHTmGbz9qBGNFubaeTRivsLJpHsnESnlfE'
+TWITTER_TWITTER_ACCESS_KEY			= '1535252624-YWB7X7lbBwdmzKmWA5Aiep7wis3ARc0EA8hDqIj'
+TWITTER_TWITTER_ACCESS_SECRET		= 'MBrOvB34fuQtQ8vzyfMcA48ZbEhg3zpqgMvAuTSDDk'
 # request_token_url	= 'http://twitter.com/oauth/request_token'
 # access_token_url	= 'http://twitter.com/oauth/access_token'
 # authenticate_url	= 'http://twitter.com/oauth/authenticate'
@@ -71,8 +72,8 @@ def send_dm_comment_update(request, user_id, issue_comment_id):
 		comment = IssueComment.objects.get(pk=issue_comment_id)
 		issue = comment.issue
 		project = issue.project
-		auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+		auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+		auth.set_access_token(TWITTER_ACCESS_KEY, TWITTER_ACCESS_SECRET)
 		api = tweepy.API(auth)
 		content = comment.user + " commented on issue " + issue.summary + " in project " + project.name
 		if twat.active:
@@ -90,8 +91,8 @@ def send_dm_new_issue(request, user_id, issue_id):
 		twat = TwitterProfile.objects.get(user=myuser)
 		issue = Issue.objects.get(pk=issue_id)
 		project = issue.project
-		auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+		auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+		auth.set_access_token(TWITTER_ACCESS_KEY, TWITTER_ACCESS_SECRET)
 		api = tweepy.API(auth)
 		content = "New issue in project, " + project.name + "\n" + "Issue Summary: " + issue.summary
 		if twat.active:
@@ -108,8 +109,8 @@ def send_dm_new_issue_all(request, issue_id):
 		twat = TwitterProfile.objects.all()
 		issue = Issue.objects.get(pk=issue_id)
 		project = issue.project
-		auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+		auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+		auth.set_access_token(TWITTER_ACCESS_KEY, TWITTER_ACCESS_SECRET)
 		api = tweepy.API(auth)
 		content = "New issue in project, " + project.name + "\n" + "Issue Summary: " + issue.summary
 		print issue.summary
@@ -128,8 +129,8 @@ def send_dm_new_project(request, user_id, project_id):
 		myuser = User.objects.get(pk=user_id)
 		twat = TwitterProfile.objects.get(user=myuser)
 		project = Project.objects.get(pk=project_id)
-		auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+		auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+		auth.set_access_token(TWITTER_ACCESS_KEY, TWITTER_ACCESS_SECRET)
 		api = tweepy.API(auth)
 		content = "New Project Created! " + project.name
 		if twat.active:
@@ -142,8 +143,8 @@ def send_dm_new_project_all(request, project_id):
 	if request.user.is_staff:
 		twat = TwitterProfile.objects.all()
 		project = Project.objects.get(pk=project_id)
-		auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+		auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+		auth.set_access_token(TWITTER_ACCESS_KEY, TWITTER_ACCESS_SECRET)
 		api = tweepy.API(auth)
 		content = "New Project Created! " + project.name
 		for twit in twat:
@@ -159,8 +160,8 @@ def send_dm_new_project_all(request, project_id):
 def new_project_tweet(request, project_id):
 	if request.user.is_staff:
 		project = Project.objects.get(pk=project_id)
-		auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+		auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+		auth.set_access_token(TWITTER_ACCESS_KEY, TWITTER_ACCESS_SECRET)
 		api = tweepy.API(auth)
 		content = "New Project Created! " + project.name
 		api.update_status(status=content)
@@ -173,8 +174,8 @@ def new_tweet(request):
 			content = request.POST['twit-content']
 			tweet = Tweet(tweet_user=request.user, content=content)
 			if content != '':
-				auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-				auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+				auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+				auth.set_access_token(TWITTER_ACCESS_KEY, TWITTER_ACCESS_SECRET)
 				api = tweepy.API(auth)
 				try:
 					api.update_status(status=tweet.content)
