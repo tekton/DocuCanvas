@@ -37,5 +37,5 @@ urlpatterns = patterns('',
     #url(r'^twitter/', include('twitter.urls')),
     url(r'^socialplatform/', include('socialplatform.urls')),
 
-    url(r'^pages/', include('pages.urls')),                         # wjmazza - 2013.07.09 - TEMP - R&D Test View
+    url(r'^docs/', include('docs.urls')),                         # wjmazza - 2013.07.09 - TEMP - R&D Test View
 )

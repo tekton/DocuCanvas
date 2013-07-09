@@ -1,5 +1,6 @@
 body {
     font-size: 16px;
+    padding-top: 55px;
 }
 textarea {
     width: 98%;
@@ -201,6 +202,10 @@ textarea {
     background-color: transparent;
 }
 
+.page-styleguide article section {
+    padding-top: 55px; /* same as body's padding-top -- used to counter fixed position site navbar */
+}
+
 
 #maincontent {
     -o-animation: fadein .7s;
@@ -243,9 +248,7 @@ textarea {
 }
 
 @media (min-width: 980px) {
-    #globalwrap {
-        padding-top: 55px;
-    }
+    
 }
 
 /* Large Desktop */
