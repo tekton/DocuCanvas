@@ -5,57 +5,12 @@
 {% endblock%}
 
 {% block bodyContent %}
-    <table class="table-swimline">
-    	<thead>
-    		<tr>
-    			<th class="table-swimline-rowhead"></th>
-    			<th>Column 1</th>
-    			<th>Column 2</th>
-    			<th>Column 3</th>
-    			<th>Column 4</th>
-    			<th>Flex Column</th>
-    		</tr>
-    	</thead>
-    	<tbody>
-	    	<tr>
-	    		<td class="swimline-column1 swimline-rowhead">
-	    			<div class="swimline-rotatewrapper">
-	    				<div class="swimline-rotate">
-	    					<a href="#">User Name</a>
-	    				</div>
-	    			</div>
-	    		</td>
-	    		<td class="swimline-column2">
-	    			<div style="width:450px;">
-	    				<ul>
-	    					<li><a href="#">Link 1</a></li>
-	    					<li><a href="#">Link 2</a></li>
-	    					<li><a href="#">Link 3</a></li>
-	    					<li><a href="#">Link 4</a></li>
-	    					<li><a href="#">Link 5</a></li>
-	    					<li><a href="#">Link 6</a></li>
-	    				</ul>
-	    			</div>
-	    		</td>
-	    		<td class="swimline-column3">
-	    			<div style="width:225px;height:225px;line-height:225px;text-align:center;">
-	    				Chart
-	    			</div>
-	    		</td>
-	    		<td class="swimline-column4">
-	    			<div style="width:225px;height:225px;line-height:225px;text-align:center;">
-	    				Chart
-	    			</div>
-	    		</td>
-	    		<td class="swimline-column5">
-	    			<div style="width:225px;height:225px;line-height:225px;text-align:center;">
-	    				Chart
-	    			</div>
-	    		</td>
-	    		<td class="swimline-column6">
-	    			Anything goes here
-	    		</td>
-	    	</tr>
-	    </tbody>
-    </table>
+	{% for report in reports %}
+		<div class="dashboard_container_section">
+			<div style="padding: 5px; background-color: #ddd; width: 100%; margin: 0;">{{report.user.username}} ({{report.date}}) <!--({{report.user.first_name}} {{report.user.last_name}})--></div>
+			<div>{{report.description|safe}}</div>
+		</div>
+		{% empty %}
+			<div>There are no reports for this user.</div></div>
+	{% endfor %}
 {% endblock %}
