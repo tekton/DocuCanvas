@@ -6,11 +6,7 @@
 {% endblock %}
 
 {% block contextNav %}
-<li><a href="{% url 'daily_reports.views.edit_report' %}">Daily Reports</a></li>
-<li><a href="{% url 'daily_reports.views.view_reports' %}">View Daily Reports</a></li>
-{% if user.is_superuser%}
-<li><a href="{% url 'daily_reports.views.report_selection' %}">Report Selection</a></li>
-{% endif %}
+{% include '_includes/contextnav-daily_reports.html' %}
 {% endblock %}
 
 {% block additionalHead %}
