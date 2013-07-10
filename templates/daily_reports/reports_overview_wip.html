@@ -30,7 +30,7 @@
                                     <div class="accordion-group">
                                         <div class="accordion-heading">
                                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-dailyreport-{{user|slugify|lower}}" href="#dailyreport-{{user|slugify|lower}}-{{report.date|date:'c'|slugify}}">
-                                                <time datetime="{{report.date|date:'c'}}">{{report.date|date:'M j, Y'}}</time>
+                                                <time datetime="{{report.date|date:'c'}}">{{report.date|date:'l, F j, Y'}}</time>
                                             </a>
                                         </div>
                                         <div id="dailyreport-{{user|slugify|lower}}-{{report.date|date:'c'|slugify}}" class="accordion-body collapse">
@@ -113,19 +113,16 @@
                     axes: [
                         {
                             type: 'Numeric',
-                            position: 'left',
+                            position: 'bottom',
                             fields: 'count',
                             grid: true,
                             minimum: 0
                         },
                         {
                             type: 'Category',
-                            position: 'bottom',
+                            position: 'left',
                             fields: 'name',
                             label: {
-                                rotate: {
-                                    degrees: -90
-                                },
                                 renderer: function(label){
                                     var text = '';
                                     switch (label) {
@@ -161,7 +158,7 @@
                     ],
                     series: [
                         {
-                            type: 'column',
+                            type: 'bar',
                             axis: 'left',
                             hightlight: false,
                             xField: 'name',

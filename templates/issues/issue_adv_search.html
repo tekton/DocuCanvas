@@ -4,9 +4,7 @@
 	<li><a href="{% url 'issues.views.issue_form' %}">New Issue : {{issue.project.name}}</a></li>
 {% endblock%}
 
-{% block pageTitle %}
-	Advanced Search
-{% endblock %}
+{% block pageTitle %}Advanced Search :: {{block.super}}{% endblock %}
 
 {% block bodyContent %}
 	<form action="{% url 'issues.views.issue_search_advanced' %}" method="POST">
