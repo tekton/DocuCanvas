@@ -85,10 +85,6 @@ def submit_response(request, help_id):
             form = HelpFormResponse(request.POST, instance=help_me)
             if form.is_valid():
                 try:
-                    help_me.facebook = FacebookProfile.objects.get(user=request.user)
-                except Exception, e:
-                    raise e
-                try:
                     help_me = form.save()
                 except Exception as e:
                     return render_to_response('helpdesknew/error_page.html', {'error_id': '8'}, context_instance=RequestContext(request))
