@@ -36,6 +36,7 @@ urlpatterns = patterns('',
     #url(r'^facebook/', include('facebook.urls')),
     #url(r'^twitter/', include('twitter.urls')),
     url(r'^socialplatform/', include('socialplatform.urls')),
+    url(r'^polls/', include('polls.urls')),
 
     url(r'^docs/', include('docs.urls')),                         # wjmazza - 2013.07.09 - TEMP - R&D Test View
 )
