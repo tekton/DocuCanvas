@@ -167,6 +167,7 @@ def set_bug_state(request):
 @login_required
 def unlink_issues(request):
     to_json = {}
+    status_code = 200
     print 'unlinking'
     try:
         primary_issue = Issue.objects.get(pk=request.POST['primary_issue'])
@@ -179,20 +180,24 @@ def unlink_issues(request):
                 if primary_issue.status == 'duplicate':
                     primary_issue.status = None
                     primary_issue.save(request.user)
+                status_code = 200
                 to_json['response'] = 'Unlinked Issue ' + str(request.POST['primary_issue']) + ' and Issue ' + str(request.POST['secondary_issue'])
 
             except Exception, e:
                 print e
+                status_code = 400
                 to_json['response'] = 'Unable to find Issue to Issue Link'
 
         except Exception, e:
             print e
+            status_code = 400
             to_json['response'] = 'Cannot find Secondary Issue'
     except Exception, e:
         print e
         print 'cannot find primary issue'
+        status_code = 400
         to_json['response'] = 'Cannot find Primary Issue'
-    return HttpResponse(json.dumps(to_json), mimetype='application/json')
+    return HttpResponse(json.dumps(to_json), mimetype='application/json', status=status_code)
 
 
 @login_required
@@ -223,6 +228,8 @@ def issue_to_issue_link(request):
                         if request.POST['link_type'] == 'duplicate':
                             primary_issue.status = request.POST['link_type']
                             primary_issue.save(request.user)
+                            secondary_issue.status = request.POST['link_type']
+                            secondary_issue.save(request.user)
 
                         to_json['response'] = 'Changed old link from ' + str(old_link_type) + ' to ' + str(request.POST['link_type'])
 
@@ -236,6 +243,8 @@ def issue_to_issue_link(request):
                     if request.POST['link_type'] == 'duplicate':
                         primary_issue.status = request.POST['link_type']
                         primary_issue.save(request.user)
+                        secondary_issue.status = request.POST['link_type']
+                        secondary_issue.save(request.user)
 
                     to_json['response'] = 'Linked Issue: ' + str(request.POST['primary_issue']) + ' to Issue: ' + str(request.POST['secondary_issue']) + ' as ' + str(request.POST['link_type'])
 

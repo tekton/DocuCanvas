@@ -289,15 +289,17 @@ Extends /templates/issue/base.html
 							</tr>
 						</thead>
 						<tbody>
+							{% for issue_to_issue in related_issues %}
 							<tr>
 								<td>
-									<a href="{% url 'issues.views.issue_overview' issue_to_issue.secondary_issue.id %}">{{issue_to_issue.secondary_issue.description}}</a>
+									<a href="{% url 'issues.views.issue_overview' issue_to_issue.secondary_issue.id %}">{{issue_to_issue.secondary_issue.summary}}</a>
 								</td>
 								<td>
-									<a class="btn btn-mini pull-right" onClick="unlink_issue('{{issue_to_issue.secondary_issue.id}}')"><i class="icon-remove-circle"></i></a>
+									<a class="btn btn-mini pull-right unlink" data-unlink-primary="{{issue.id}}" data-unlink-secondary="{{issue_to_issue.secondary_issue.id}}"><i class="icon-remove-circle"></i></a>
 									{{issue_to_issue.link_type}}
 								</td>
 							</tr>
+							{% endfor %}
 						</tbody>
 					</table>
 					{% endif %}
@@ -309,6 +311,24 @@ Extends /templates/issue/base.html
 
 {% block endScripts %}
 	<script>
+		$('.unlink').click(function(evt){
+			var el = $(this);
+
+			$.ajax({
+			    type: 'POST',
+			    url: '/issue/unlink',
+			    data:{
+			    	primary_issue: el.attr('data-unlink-primary'),
+					secondary_issue: el.attr('data-unlink-secondary')
+			    },
+			    success: function(data){
+					AlertMessage.success(data.response);
+				},
+				error: function(data){
+					AlertMessage.error(data.responseJSON.response);
+				}
+			});
+		});
 		// Context menu - Status
 		$('#context-issue-status .btn').click(function(){
 			var btn = $(this),
