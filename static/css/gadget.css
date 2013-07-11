@@ -210,6 +210,9 @@ textarea {
     padding-top: 55px; /* same as body's padding-top -- used to counter fixed position site navbar */
 }
 
+.dropdown-backdrop {
+    position: static;
+}
 
 #maincontent {
     -o-animation: fadein .7s;
