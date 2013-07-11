@@ -1,0 +1,7 @@
+<li class="nav-header">Daily Reports</li>
+<li><a href="{% url 'daily_reports.views.edit_report' %}">New</a></li>
+<li><a href="{% url 'daily_reports.views.view_reports' %}">View</a></li>
+{% if user.is_superuser%}
+<li class="nav-header">Admin</li>
+<li><a href="{% url 'daily_reports.views.report_selection' %}">Report Selection</a></li>
+{% endif %}

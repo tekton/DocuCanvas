@@ -160,7 +160,7 @@ def view_reports_wip(request, year_start, month_start, day_start, year_end,  mon
     print date_range_start
     users = User.objects.all()
 
-    reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end])
+    reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end]).order_by('date')
     newsfeeditems = NewsFeedItem.objects.filter(timestamp__range=[date_range_start, date_range_end]).order_by('user','project','field_change')
 
     return render_to_response('daily_reports/reports_overview_wip.html', {'users': users, 'newsfeeditems':newsfeeditems, 'reports': reports, 'projects':projects}, context_instance=RequestContext(request))
