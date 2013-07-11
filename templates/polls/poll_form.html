@@ -7,22 +7,24 @@
 <div id="formContainer">
     <form action="{% url 'polls.views.new_poll' %}" id = "pollForm" method="post" enctype="multipart/form-data">        
         {% csrf_token %}
-        <input id="id_pollitems_set-TOTAL_FORMS" name="pollitems_set-TOTAL_FORMS" type="hidden" value="1" />
-        <input id="id_pollitems_set-INITIAL_FORMS" name="pollitems_set-INITIAL_FORMS" type="hidden" value="0" />
-        <input id="id_pollitems_set-MAX_NUM_FORMS" name="pollitems_set-MAX_NUM_FORMS" type="hidden" value="1000" />
+        {{ formset.management_form }}
+        <input id="id_pollitem_set-TOTAL_FORMS" name="pollitem_set-TOTAL_FORMS" type="hidden" value="1" />
+        <input id="id_pollitem_set-INITIAL_FORMS" name="pollitem_set-INITIAL_FORMS" type="hidden" value="0" />
+        <input id="id_pollitem_set-MAX_NUM_FORMS" name="pollitem_set-MAX_NUM_FORMS" type="hidden" value="1000" />
         Name: {{poll_form.name}}<br />
         Context: {{poll_form.context}}<br/>
         <div id="pollContainer" style = 'border: solid 1px'>
             <div>
-                <label for="id_pollitems_set-0-title">Title: </label>
-                <input id="id_pollitems_set-0-title" maxlength="255" name="pollitems_set-0-title" type="text" />
-                <input id="sort" name="pollitems_set-0-order" type="hidden" value = "0"/>
+                <label for="id_pollitem_set-0-item">Title: </label>
+                <input id="id_pollitem_set-0-item" maxlength="255" name="pollitem_set-0-item" type="text" />
+                <input type='hidden' name='pollitem_set-0-added_by' id='id_pollitem_set-0-added_by' value='{{user.id}}'/>
+                <!--<input id="sort" name="pollitem_set-0-order" type="hidden" value = "0"/>-->
             </div>
-            <input id="id_pollitems_set-0-poll" name="pollitems_set-0-poll" type="hidden" />
-            <input id="id_pollitems_set-0-id" name="pollitems_set-0-id" type="hidden" />
+            <input id="id_pollitem_set-0-poll" name="pollitem_set-0-poll" type="hidden" />
+            <input id="id_pollitem_set-0-id" name="pollitem_set-0-id" type="hidden" />
         </div>
         <input title='Add a new poll item' type='button' name='add_poll_item' value='Add Item' onclick = 'addpollItem()'/>
-        <input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
+        <input type='hidden' name="creator" id="id_user" value='{{user.id}}'/>
         <input type="submit" name="submit" value="Submit"/>
     </form>
 </div>
@@ -32,12 +34,12 @@
 <script>
 var pollNumber = 1;
 function addpollItem(){
-    $('#pollContainer').append("<div><label for='id_pollitems_set-"+pollNumber+"-title'>Title: </label><input id='id_pollitems_set-"+pollNumber+"-title' maxlength='255' name='pollitems_set-"+pollNumber+"-title' type='text' /><input id='sort' name='pollitems_set-"+pollNumber+"-order' type='hidden' value = '"+pollNumber+"' /></div><input id='id_pollitems_set-"+pollNumber+"-poll' name='pollitems_set-"+pollNumber+"-poll' type='hidden' /><input id='id_pollitems_set-"+pollNumber+"-id' name='pollitems_set-"+pollNumber+"-id' type='hidden' /><input type='hidden' name='user' id='id_user' value='{{user.id}}'/>");
+    $('#pollContainer').append("<div><label for='id_pollitem_set-"+pollNumber+"-item'>Title: </label><input id='id_pollitem_set-"+pollNumber+"-item' maxlength='255' name='pollitem_set-"+pollNumber+"-item' type='text' /><input id='id_pollitem_set-"+pollNumber+"-added_by' name='pollitem_set-"+pollNumber+"-added_by' type='hidden' value='{{user.id}}' /></div><input id='id_pollitem_set-"+pollNumber+"-poll' name='pollitem_set-"+pollNumber+"-poll' type='hidden' /><input id='id_pollitem_set-"+pollNumber+"-id' name='pollitem_set-"+pollNumber+"-id' type='hidden' />");
     pollNumber ++;
-    $('#id_pollitems_set-TOTAL_FORMS').val(function(i, oldval){
+    $('#id_pollitem_set-TOTAL_FORMS').val(function(i, oldval){
         return ++oldval;
     });
-    console.log($('#id_pollitems_set-TOTAL_FORMS').val());
+    console.log($('#id_pollitem_set-TOTAL_FORMS').val());
     //$('#pollTable').append('<input type="submit" name="submit" value="Submit">');
 };
 $(function() {
