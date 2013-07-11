@@ -1,0 +1,36 @@
+{% extends "polls/base.html" %}
+
+{% block contextNav %}
+{% endblock%}
+
+{% block baseContent %}
+<h2>Sup</h2>
+<table>
+    <tr>
+        <td></td>
+        <td><b>Item</b></td>
+        <td><b>Votes</b></td>
+        <td></td>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <form action="{% url 'polls.views.vote' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+            <td>
+                {% if myuser.voted != 0 %}
+                    <input type="submit" name="submit" value="Submit"/>
+                {% else %}
+                    You already voted, asshole
+                {% endif %}
+            </td>
+            <td>{{item.item}}</td>
+            <td>{{item.votes}}</td>
+            <td><input type='hidden' name='item' id='id_item' value='{{item.id}}'/></td>
+        </form>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
+{% block endScripts %}
+{% endblock %}
