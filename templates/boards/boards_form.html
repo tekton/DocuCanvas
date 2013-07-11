@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block basecontent %}
+{% block baseContent %}
 	<h2>New Board</h2>
 	<form action="{% url 'boards.views.boards_form' %}" method="post" onsubmit = 'return checkFormData()' enctype="multipart/form-data">
 		{% csrf_token %}
