@@ -228,8 +228,8 @@ def issue_to_issue_link(request):
                         if request.POST['link_type'] == 'duplicate':
                             primary_issue.status = request.POST['link_type']
                             primary_issue.save(request.user)
-                            secondary_issue.status = request.POST['link_type']
-                            secondary_issue.save(request.user)
+                            #secondary_issue.status = request.POST['link_type']
+                            #secondary_issue.save(request.user)
 
                         to_json['response'] = 'Changed old link from ' + str(old_link_type) + ' to ' + str(request.POST['link_type'])
 
@@ -243,8 +243,8 @@ def issue_to_issue_link(request):
                     if request.POST['link_type'] == 'duplicate':
                         primary_issue.status = request.POST['link_type']
                         primary_issue.save(request.user)
-                        secondary_issue.status = request.POST['link_type']
-                        secondary_issue.save(request.user)
+                        #secondary_issue.status = request.POST['link_type']
+                        #secondary_issue.save(request.user)
 
                     to_json['response'] = 'Linked Issue: ' + str(request.POST['primary_issue']) + ' to Issue: ' + str(request.POST['secondary_issue']) + ' as ' + str(request.POST['link_type'])
 
@@ -470,7 +470,7 @@ def issue_overview(request, issue_id):
         subscribe = None
 
     try:
-        related_issues = IssueToIssue.objects.select_related().filter(primary_issue=issue)
+        related_issues = IssueToIssue.objects.select_related().filter(Q(primary_issue=issue) | Q(secondary_issue=issue))
     except:
         print 'Unable to find any related issues'
 

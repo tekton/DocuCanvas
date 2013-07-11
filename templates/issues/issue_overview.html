@@ -295,7 +295,7 @@ Extends /templates/issue/base.html
 									<a href="{% url 'issues.views.issue_overview' issue_to_issue.secondary_issue.id %}">{{issue_to_issue.secondary_issue.summary}}</a>
 								</td>
 								<td>
-									<a class="btn btn-mini pull-right unlink" data-unlink-primary="{{issue.id}}" data-unlink-secondary="{{issue_to_issue.secondary_issue.id}}"><i class="icon-remove-circle"></i></a>
+									<a class="btn btn-mini pull-right unlink" data-unlink-primary="{{issue_to_issue.primary_issue.id}}" data-unlink-secondary="{{issue_to_issue.secondary_issue.id}}"><i class="icon-remove-circle"></i></a>
 									{{issue_to_issue.link_type}}
 								</td>
 							</tr>
