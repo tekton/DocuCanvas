@@ -131,3 +131,17 @@ def vote(request, poll_id):
             except Exception, e:
                 print e
     return redirect('polls.views.poll_overview', poll_id)
+
+
+
+@login_required
+def all_polls(request):
+    try:
+        polls = Poll.objects.all()
+    except Exception, e:
+        print e
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        raise e
+    return render_to_response("polls/all.html", {'polls': polls, 'projects': projects}, context_instance=RequestContext(request))

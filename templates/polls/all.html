@@ -1,0 +1,14 @@
+{% extends "polls/base.html" %}
+
+{% block contextNav %}
+{% endblock%}
+
+{% block baseContent %}
+<h2>All Polls</h2>
+{% for poll in polls %}
+<a href='overview/{{poll.id}}'>{{poll.name}}</a></br>
+{% endfor %}
+{% endblock %}
+
+{% block endScripts %}
+{% endblock %}
