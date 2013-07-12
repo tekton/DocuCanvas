@@ -100,6 +100,7 @@ def board_edit(request, board_id):
     print nodeType
     if nodeType == 'note':
         if request.method == 'POST':
+            # check for nodeId to see if a node is being updated
             if nodeId:
                 boardNode = BoardNode.objects.get(pk=nodeId)
             else:
@@ -129,7 +130,6 @@ def board_edit(request, board_id):
         else:
             form = BoardNoteForm()
     else:
-        print 'IT\'S PROBABLY AN ISSUE'
         if request.method == 'POST':
             if nodeId:
                 boardNode = BoardNode.objects.get(pk=nodeId)
