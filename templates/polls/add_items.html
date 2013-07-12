@@ -5,14 +5,14 @@
 
 {% block baseContent %}
 <div id="formContainer">
-    <form action="{% url 'polls.views.new_poll' %}" id = "pollForm" method="post" enctype="multipart/form-data">        
+    <form action="{% url 'polls.views.add_items' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">        
         {% csrf_token %}
         {{ formset.management_form }}
         <input id="id_pollitem_set-TOTAL_FORMS" name="pollitem_set-TOTAL_FORMS" type="hidden" value="1" />
         <input id="id_pollitem_set-INITIAL_FORMS" name="pollitem_set-INITIAL_FORMS" type="hidden" value="0" />
         <input id="id_pollitem_set-MAX_NUM_FORMS" name="pollitem_set-MAX_NUM_FORMS" type="hidden" value="1000" />
-        Name: {{poll_form.name}}<br />
-        Context: {{poll_form.context}}<br/>
+        Name: {{poll.name}}<br />
+        Context: {{poll.context}}<br/>
         <div id="pollContainer" style = 'border: solid 1px'>
             <div>
                 <label for="id_pollitem_set-0-item">Item: </label>
@@ -24,7 +24,6 @@
             <input id="id_pollitem_set-0-id" name="pollitem_set-0-id" type="hidden" />
         </div>
         <input title='Add a new poll item' type='button' name='add_poll_item' value='Add Item' onclick = 'addpollItem()'/>
-        <input type='hidden' name="creator" id="id_user" value='{{user.id}}'/>
         <input type="submit" name="submit" value="Submit"/>
     </form>
 </div>

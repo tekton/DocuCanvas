@@ -7,6 +7,7 @@ from polls.models import Poll, PollItem, PollUser
 from polls.forms import PollForm, ItemForm
 
 
+@login_required
 def new_poll(request):
     PollItemFormset = inlineformset_factory(Poll, PollItem, can_delete=False, extra=1)
     poll = Poll()
@@ -32,6 +33,8 @@ def new_poll(request):
                     item.save()
                 except Exception, e:
                     print e
+            poll.total_items = b
+            poll.save()
             print 'saving form'
             return redirect('polls.views.poll_overview', p.id)
         else:
@@ -44,11 +47,16 @@ def new_poll(request):
     return render_to_response("polls/poll_form.html", {'poll': poll, 'formset': formset, "poll_form": poll_form, "projects": projects}, context_instance=RequestContext(request))
 
 
+@login_required
 def poll_overview(request, poll_id):
     try:
         poll = Poll.objects.get(pk=poll_id)
     except Exception, e:
         print e
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        raise e
     try:
         items = PollItem.objects.filter(poll=poll).order_by('-votes')
     except Exception, e:
@@ -60,9 +68,50 @@ def poll_overview(request, poll_id):
     sup = True
     if myuser.count() != 0:
         sup = False
-    return render_to_response("polls/poll_view.html", {'poll': poll, 'items': items, 'myuser': myuser, 'sup': sup}, context_instance=RequestContext(request))
+    return render_to_response("polls/poll_view.html", {'poll': poll, 'items': items, 'myuser': myuser, 'sup': sup, 'projects': projects}, context_instance=RequestContext(request))
 
 
+@login_required
+def add_items(request, poll_id):
+    PollItemFormset = inlineformset_factory(Poll, PollItem, can_delete=False, extra=1)
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    try:
+        poll = Poll.objects.get(pk=poll_id)
+    except Exception, e:
+        return redirect('polls.views.poll_overview', poll_id)
+    if request.method == 'POST':
+        formset = PollItemFormset(request.POST, instance=poll)
+        if formset.is_valid():
+            b = 0
+            for a in request.POST.getlist('pollitem_set-TOTAL_FORMS'):
+                if(int(a) > b):
+                    b=a
+            for i in range(0, (int(b) - poll.total_items + 1)):
+                text = 'pollitem_set-' + str(i) + '-item'
+                value = request.POST[text]
+                item = PollItem(added_by=request.user, item=value, poll=poll)
+                try:
+                    item.save()
+                except Exception, e:
+                    print e
+            poll.total_items = b
+            poll.save()
+            print 'saving form'
+            return redirect('polls.views.poll_overview', poll_id)
+        else:
+            print poll_form.errors
+            print formset.errors
+    else:
+        formset = PollItemFormset(instance=poll)
+
+    return render_to_response("polls/add_items.html", {'poll': poll, 'formset': formset, "projects": projects}, context_instance=RequestContext(request))
+
+
+
+@login_required
 def vote(request, poll_id):
     if request.method == 'POST':
         item_id = request.POST['item']
