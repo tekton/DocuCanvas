@@ -12,7 +12,8 @@
         <input id="id_pollitem_set-INITIAL_FORMS" name="pollitem_set-INITIAL_FORMS" type="hidden" value="0" />
         <input id="id_pollitem_set-MAX_NUM_FORMS" name="pollitem_set-MAX_NUM_FORMS" type="hidden" value="1000" />
         Name: {{poll_form.name}}<br />
-        Context: {{poll_form.context}}<br/>
+        Context: {{poll_form.context}}<br />
+        End Date: <input type="text" id="pollenddate" name="end_date"/><br />
         <div id="pollContainer" style = 'border: solid 1px'>
             <div>
                 <label for="id_pollitem_set-0-item">Item: </label>
@@ -52,5 +53,8 @@ $(function() {
     });
     $("#pollContainer").disableSelection();
   });
+$(function(){
+    $('#pollenddate').datepicker({dateFormat: 'mm/dd/yy'});
+});
 </script>
 {% endblock %}
