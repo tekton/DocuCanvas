@@ -24,7 +24,6 @@ class PollUser(models.Model):
     user = models.ForeignKey(User)
     poll = models.ForeignKey(Poll)
     ip = models.IPAddressField(blank=True, null=True)
-    voted = models.IntegerField(default=0)
 
 
 admin.site.register(Poll)

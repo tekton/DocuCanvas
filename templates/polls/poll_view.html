@@ -4,7 +4,8 @@
 {% endblock%}
 
 {% block baseContent %}
-<h2>Sup</h2>
+<h2>{{poll.name}}</h2>
+<p>{{poll.context}}</p>
 <table>
     <tr>
         <td></td>
@@ -17,10 +18,9 @@
         <form action="{% url 'polls.views.vote' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
             <td>
-                {% if myuser.voted != 0 %}
+                {% if sup %}
                     <input type="submit" name="submit" value="Submit"/>
                 {% else %}
-                    You already voted, asshole
                 {% endif %}
             </td>
             <td>{{item.item}}</td>
