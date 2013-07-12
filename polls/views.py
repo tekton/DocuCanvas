@@ -65,18 +65,17 @@ def vote(request, poll_id):
         item_id = request.POST['item']
         try:
             mypoll = Poll.objects.get(pk=poll_id)
-            myuser = PollUser.objects.filter(poll=mypoll)
+            myuser = PollUser.objects.filter(poll=mypoll).filter(user=request.user)
         except Exception, e:
             print e
-        try:
-            user = myuser.objects.get(user=request.user)
-        except Exception, e:
-            user = PollUser(poll=mypoll, user=request.user)
-        if user.voted == 0:
+        print myuser.count()
+        if myuser.count() == 0:
             try:
+                newuser = PollUser(user=request.user, poll=mypoll)
                 item = PollItem.objects.get(pk=int(item_id))
                 item.votes += 1
                 item.save()
+                newuser.save()
             except Exception, e:
                 print e
     return redirect('polls.views.poll_overview', poll_id)
