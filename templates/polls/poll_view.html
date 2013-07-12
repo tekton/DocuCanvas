@@ -17,7 +17,7 @@
         <form action="{% url 'polls.views.vote' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
             <td>
-                {% if myuser.voted != 0 %}
+                {% if sup %}
                     <input type="submit" name="submit" value="Submit"/>
                 {% else %}
                     You already voted, asshole

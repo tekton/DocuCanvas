@@ -57,7 +57,10 @@ def poll_overview(request, poll_id):
         myuser = PollUser.objects.filter(poll=poll).filter(user=request.user)
     except Exception, e:
         print e
-    return render_to_response("polls/poll_view.html", {'poll': poll, 'items': items, 'myuser': myuser}, context_instance=RequestContext(request))
+    sup = True
+    if myuser.count() != 0:
+        sup = False
+    return render_to_response("polls/poll_view.html", {'poll': poll, 'items': items, 'myuser': myuser, 'sup': sup}, context_instance=RequestContext(request))
 
 
 def vote(request, poll_id):
