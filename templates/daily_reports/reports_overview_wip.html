@@ -69,7 +69,7 @@
                             {
                                 "name": "{{item.grouper|escapejs}}",
                                 "count": {{item.list|length}}
-                            }{% if not forloop.last %},{% endif %}
+                            }{% if not forloop.last or not forloop.parentloop.last %},{% endif %}
                         {% endfor %}
                     {% endif %}
                 {% endfor %}
