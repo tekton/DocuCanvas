@@ -1,11 +1,20 @@
 {% extends "checklists/base.html" %}
 
+{% block additionalHead %}
+<style>
+#checklistContainer{
+    border: 1px solid #F2F2F2;
+    box-shadow: 0 1px 4px #5A5A5A;
+    padding: 5px;
+}
+</style>
+{% endblock %}
 {% block contextNav %}
     <li><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></li>
     <li><a href="{% url 'checklists.views.project_checklists' project.id %}">{{project.name}} Checklists</a></li>
 {% endblock%}
 
-{% block baseContent %}
+{% block bodyContent %}
 <div id="formContainer">
     <form action="{% url 'checklists.views.checklist_form_project' project.id %}" id = "checkListForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -19,7 +28,7 @@
                 <option value="{{forloop.counter}}">{{i.name}}</option>
             {% endfor %}
         </select><br />
-        <div id="checklistContainer" style = 'border: solid 1px'>
+        <div id="checklistContainer">
             <div>
                 <label for="id_checklistlayoutitems_set-0-title">Title: </label>
                 <input id="id_checklistlayoutitems_set-0-title" maxlength="255" name="checklistlayoutitems_set-0-title" type="text" />
@@ -54,7 +63,6 @@ $(function() {
         })
       }
     });
-    $("#checklistContainer").disableSelection();
   });
 </script>
 {% endblock %}
