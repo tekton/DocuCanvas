@@ -29,4 +29,4 @@ class DMIForm(forms.ModelForm):
 class FacebookPermissions(forms.ModelForm):
 	class Meta:
 		model = FacebookProfile
-		fields = ('helpdesk', 'notifications')
+		fields = ('active', 'helpdesk', 'notifications')

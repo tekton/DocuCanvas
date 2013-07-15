@@ -67,6 +67,13 @@ def getAccessToken(request):
 
 @login_required
 def facebookConnect(request):
+	try:
+		facebook = FacebookProfile.objects.get(user=request.user)
+		facebook.active = True
+		facebook.save()
+		return redirect('dashboard.views.home')
+	except Exception, e:
+		print e
 	callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/getAccessToken'
 	return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&redirect_uri=%s&scope=%s' % (APP_ID, urllib.quote_plus(callback_url),'email,user_photos'))
 
@@ -179,7 +186,7 @@ def social_broadcast(request, notification_id):
 						 + ("/notifications?access_token=%s&template=%s&href=%s" % (access_token, message, 'http://' + request.META['HTTP_HOST'])))
 			except Exception, e:
 				print e
-			if facebook.notification():
+			if facebook.notifications and facebook.active:
            			resp, cont = client.request(request_url, 'POST')
 	if notification.twitter:
 		auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
@@ -233,7 +240,7 @@ def broadcast_help(request, help_id):
 						 + ("/notifications?access_token=%s&template=%s&href=%s" % (access_token, message, 'http://' + request.META['HTTP_HOST'])))
 		except Exception, e:
 			print e
-		if facebook.help():
+		if facebook.helpdesk and facebook.active:
 				resp, cont = client.request(request_url, 'POST')
 	return redirect('helpdesknew.views.get_help', help_id)
 
@@ -257,8 +264,9 @@ def modify_permissions(request):
 				facebook = permission_form.save()
 			except Exception, e:
 				print e
+			if not facebook.active:
+				facebook.deactivate()
 			return redirect('dashboard.views.home')
 	else:
 		permission_form = FacebookPermissions(instance=facebook)
 	return render_to_response('socialplatform/facebook_permissions.html', {'facebook': facebook, 'form': permission_form}, context_instance=RequestContext(request))
-			

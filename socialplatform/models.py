@@ -15,12 +15,16 @@ class FacebookProfile(models.Model):
 	access_token = models.CharField(max_length=255)
 	helpdesk = models.NullBooleanField(default=True)
 	notifications = models.NullBooleanField(default=True)
+	active = models.NullBooleanField(default=True)
 
-	def help(self):
-		return helpdesk
+	def is_active(self):
+		return active
 
-	def notification(self):
-		return notifications
+	def deactivate(self):
+		helpdesk = False
+		notifications = False
+		active = False
+		self.save()
 
 	def get_remote_image(self):
 		if self.image_url and not self.profilePicture:

@@ -8,9 +8,13 @@
 {% block bodyContent %}
 <a href="{% url 'auth.views.change_email' %}">Change Email Address</a><br>
 <a href="{% url 'auth.views.change_password' %}">Change Password</a></br></br>
-<a href="{% url 'socialplatform.views.facebookConnect' %}">Add Facebook Account</a></br>
+{% if fb.active %}
+	<a href="{% url 'socialplatform.views.modify_permissions' %}">Manage Facebook Settings</a></br>
+{% else %}
+	<a href="{% url 'socialplatform.views.facebookConnect' %}">Add Facebook Account</a></br>
+{% endif %}
 {% if tw.active %}
-	<a href="{% url 'socialplatform.views.remove_twitter_acct' %}">Add Twitter Account</a>
+	<a href="{% url 'socialplatform.views.remove_twitter_acct' %}">Remove Twitter Account</a>
 {% else %}
 	<a href="{% url 'socialplatform.views.add_twitter_acct' %}">Add Twitter Account</a>
 {% endif %}

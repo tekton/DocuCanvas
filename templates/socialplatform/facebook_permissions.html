@@ -10,7 +10,7 @@
 {% block bodyContent %}
 	<form action="{% url 'socialplatform.views.modify_permissions' %}" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
-		{{form}}
+		{{form}}<br/>
 	<input type="submit" value="Submit Changes"/>
 	</form>
 {% endblock %}
