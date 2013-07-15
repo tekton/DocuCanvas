@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from projects.models import *
 from projects.forms import *
@@ -19,6 +20,7 @@ def home(request):
 
 
 @login_required
+@permission_required("projects.make_project", raise_exception=True)
 def project_form(request):
     if request.method == 'POST':
         project = Project()
@@ -101,6 +103,7 @@ def project_stats(request, project_id):
 
 
 @login_required
+@permission_required("projects.make_project", raise_exception=True)
 def edit(request, project_id):
     projects = Project.objects.all()
     if request.method == 'POST':
