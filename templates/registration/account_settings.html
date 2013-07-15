@@ -7,7 +7,7 @@
 
 {% block bodyContent %}
 <a href="{% url 'auth.views.change_email' %}">Change Email Address</a><br>
-<a href="{% url 'auth.views.change_password' %}">Change Password</a></br>
+<a href="{% url 'auth.views.change_password' %}">Change Password</a></br></br>
 <a href="{% url 'socialplatform.views.facebookConnect' %}">Add Facebook Account</a></br>
 {% if tw.active %}
 	<a href="{% url 'socialplatform.views.remove_twitter_acct' %}">Add Twitter Account</a>

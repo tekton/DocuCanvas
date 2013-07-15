@@ -18,7 +18,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render, render_to_response
 from django.contrib.auth.decorators import login_required
 from socialplatform.models import FacebookProfile, FBNotification, TwitterProfile, Tweet, DMAll, DMIndividual
-from socialplatform.forms import TwitterForm, TweetForm, DMAForm, DMIForm
+from socialplatform.forms import TwitterForm, TweetForm, DMAForm, DMIForm, FacebookPermissions
 from notifications.models import Notification, NotificationRecipient
 from helpdesknew.models import HelpRequest
 
@@ -174,13 +174,13 @@ def social_broadcast(request, notification_id):
 			myuser = target.user
 			try:
 				facebook = FacebookProfile.objects.get(user=myuser)
-			except Exception, e:
-				print e
-			request_url = (GRAPH_URL
+				request_url = (GRAPH_URL
 						 + facebook.facebook_id 
 						 + ("/notifications?access_token=%s&template=%s&href=%s" % (access_token, message, 'http://' + request.META['HTTP_HOST'])))
-           	print request_url
-           	resp, cont = client.request(request_url, 'POST')
+			except Exception, e:
+				print e
+			if facebook.notification():
+           			resp, cont = client.request(request_url, 'POST')
 	if notification.twitter:
 		auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
 		auth.set_access_token(TWITTER_ACCESS_KEY, TWITTER_ACCESS_SECRET)
@@ -231,9 +231,10 @@ def broadcast_help(request, help_id):
 			request_url = (GRAPH_URL
 						 + facebook.facebook_id 
 						 + ("/notifications?access_token=%s&template=%s&href=%s" % (access_token, message, 'http://' + request.META['HTTP_HOST'])))
-			resp, cont = client.request(request_url, 'POST')
 		except Exception, e:
 			print e
+		if facebook.help():
+				resp, cont = client.request(request_url, 'POST')
 	return redirect('helpdesknew.views.get_help', help_id)
 
 
@@ -241,3 +242,23 @@ def broadcast_help(request, help_id):
 def sending_help(request, help_id):
 	callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/helpbroadcast/' + help_id
 	return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
+
+
+@login_required
+def modify_permissions(request):
+	try:
+		facebook = FacebookProfile.objects.get(user=request.user)
+	except Exception, e:
+		return redirect('dashboard.views.home')
+	if request.method == 'POST':
+		permission_form = FacebookPermissions(request.POST, instance=facebook)
+		if permission_form.is_valid():
+			try:
+				facebook = permission_form.save()
+			except Exception, e:
+				print e
+			return redirect('dashboard.views.home')
+	else:
+		permission_form = FacebookPermissions(instance=facebook)
+	return render_to_response('socialplatform/facebook_permissions.html', {'facebook': facebook, 'form': permission_form}, context_instance=RequestContext(request))
+			

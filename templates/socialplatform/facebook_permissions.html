@@ -1,0 +1,16 @@
+{% extends "socialplatform/base.html" %}
+
+{% block contextNav %}
+	<li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
+	<li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
+	<li><a href="{% url 'helpdesknew.views.get_pending' %}">Unresolved Questions</a></li>
+	<li><a href="{% url 'helpdesknew.views.user_help' %}">Your Questions</a></li>
+{% endblock %}
+
+{% block bodyContent %}
+	<form action="{% url 'socialplatform.views.modify_permissions' %}" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		{{form}}
+	<input type="submit" value="Submit Changes"/>
+	</form>
+{% endblock %}

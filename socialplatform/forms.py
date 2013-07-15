@@ -1,5 +1,5 @@
 from django import forms
-from socialplatform.models import TwitterProfile, Tweet, DMAll, DMIndividual
+from socialplatform.models import TwitterProfile, Tweet, DMAll, DMIndividual, FacebookProfile
 
 
 class TwitterForm(forms.ModelForm):
@@ -24,3 +24,9 @@ class DMIForm(forms.ModelForm):
 	class Meta:
 		model = DMIndividual
 		fields = ('send_ind_user', 'target_user', 'content')
+
+
+class FacebookPermissions(forms.ModelForm):
+	class Meta:
+		model = FacebookProfile
+		fields = ('helpdesk', 'notifications')

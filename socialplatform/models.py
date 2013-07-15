@@ -13,6 +13,14 @@ class FacebookProfile(models.Model):
 	profilePicture = models.ImageField(upload_to="upload/facebook", null=True, blank=True)
 	image_url = models.URLField()
 	access_token = models.CharField(max_length=255)
+	helpdesk = models.NullBooleanField(default=True)
+	notifications = models.NullBooleanField(default=True)
+
+	def help(self):
+		return helpdesk
+
+	def notification(self):
+		return notifications
 
 	def get_remote_image(self):
 		if self.image_url and not self.profilePicture:
