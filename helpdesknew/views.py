@@ -38,7 +38,7 @@ def help_form(request):
                         image.save()
                     except:
                         return render_to-response('helpdesknew/error_page.html', {'error_id': "8"}, context_instance=RequestContext(request))
-                return redirect('helpdesknew.views.get_help', helpRequest.id)
+                return redirect('socialplatform.views.sending_help', helpRequest.id)
     helpForm = HelpForm(instance=helpRequest)
     return render_to_response('helpdesknew/help_form.html', {'form': helpForm, 'projects': projects}, context_instance=RequestContext(request))
 

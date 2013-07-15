@@ -20,6 +20,7 @@ from django.contrib.auth.decorators import login_required
 from socialplatform.models import FacebookProfile, FBNotification, TwitterProfile, Tweet, DMAll, DMIndividual
 from socialplatform.forms import TwitterForm, TweetForm, DMAForm, DMIForm
 from notifications.models import Notification, NotificationRecipient
+from helpdesknew.models import HelpRequest
 
 # Facebook API info
 APP_ID					= "441109929301348"
@@ -43,7 +44,7 @@ def getAccessToken(request):
 	code = request.GET.get('code')
 	consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
 	client = oauth.Client(consumer)
-	redirect_uri = 'http://localhost:8000/socialplatform/getAccessToken'
+	redirect_uri = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/getAccessToken'
 	request_url = ACCESS_TOKEN_URL + '?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s' % (APP_ID, redirect_uri, APP_SECRET, code)
 	resp, content = client.request(request_url, 'GET')
 	access_token = dict(urlparse.parse_qsl(content))['access_token']
@@ -75,7 +76,7 @@ def sendTestNotification(request, user_id):
 	code = request.GET.get('code')
 	consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
 	client = oauth.Client(consumer)
-	redirect_uri = 'http://localhost:8000/socialplatform/notifications_test/' + user_id
+	redirect_uri = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/notifications_test/' + user_id
 	request_url = ACCESS_TOKEN_URL + '?client_id=%s&client_secret=%s&grant_type=client_credentials' % (APP_ID, APP_SECRET)
 	resp, cont = client.request(request_url, 'GET')
 	access_token = dict(urlparse.parse_qsl(cont))['access_token']
@@ -159,7 +160,7 @@ def social_broadcast(request, notification_id):
 	code = request.GET.get('code')
 	consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
 	client = oauth.Client(consumer)
-	redirect_uri = 'http://localhost:8000/socialplatform/notifications_test/' + notification_id
+	redirect_uri = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/notifications_test/' + notification_id
 	request_url = ACCESS_TOKEN_URL + '?client_id=%s&client_secret=%s&grant_type=client_credentials' % (APP_ID, APP_SECRET)
 	resp, cont = client.request(request_url, 'GET')
 	access_token = dict(urlparse.parse_qsl(cont))['access_token']
@@ -196,3 +197,47 @@ def social_broadcast(request, notification_id):
 				except Exception, e:
 					print e
 	return redirect('dashboard.views.home')
+
+
+@login_required
+def broadcast_help(request, help_id):
+	message = ""
+	try:
+		help = HelpRequest.objects.get(pk=help_id)
+		user = help.user
+	except Exception, e:
+		print e
+	for char in help.name:
+		if(char == " "):
+			message += "+"
+		else:
+			message += char
+	code = request.GET.get('code')
+	consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
+	client = oauth.Client(consumer)
+	redirect_uri = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/helpbroadcast/' + help_id
+	request_url = ACCESS_TOKEN_URL + '?client_id=%s&client_secret=%s&grant_type=client_credentials' % (APP_ID, APP_SECRET)
+	resp, cont = client.request(request_url, 'GET')
+	access_token = dict(urlparse.parse_qsl(cont))['access_token']
+	try:
+		targets = User.objects.filter(is_staff=True)
+		for target in targets:
+			print target
+	except Exception, e:
+		print e
+	for target in targets:
+		try:
+			facebook = FacebookProfile.objects.get(user=target)
+			request_url = (GRAPH_URL
+						 + facebook.facebook_id 
+						 + ("/notifications?access_token=%s&template=%s&href=%s" % (access_token, message, 'http://' + request.META['HTTP_HOST'])))
+			resp, cont = client.request(request_url, 'POST')
+		except Exception, e:
+			print e
+	return redirect('helpdesknew.views.get_help', help_id)
+
+
+@login_required
+def sending_help(request, help_id):
+	callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/helpbroadcast/' + help_id
+	return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
