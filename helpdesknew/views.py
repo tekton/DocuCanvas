@@ -106,7 +106,7 @@ def get_pending(request):
     except Exception, e:
         print e
     try:
-        requests_pending = HelpRequest.objects.exclude(status="('resolved', 'Resolved')").exclude(status="('closed', 'Closed')").order_by("-id")
+        requests_pending = HelpRequest.objects.exclude(status="('resolved', 'Resolved')").exclude(status="('closed', 'Closed')").exclude(status="('suggestion', 'Suggestion')").order_by("-id")
     except Exception as e:
         return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     return render_to_response('helpdesknew/pending_help.html', {'form': requests_pending, 'projects': projects}, context_instance=RequestContext(request))
@@ -126,7 +126,11 @@ def get_resolved(request):
         closed = HelpRequest.objects.filter(status="('closed', 'Closed')").order_by('-id')
     except Exception as e:
         return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
-    return render_to_response('helpdesknew/help_resolved.html', {'form': resolved, 'closed': closed, 'projects': projects}, context_instance=RequestContext(request))
+    try:
+        suggestions = HelpRequest.objects.filter(status="('suggestion', 'Suggestion')").order_by('-id')
+    except Exception, e:
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/help_resolved.html', {'form': resolved, 'closed': closed, 'suggestions': suggestions, 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -140,7 +144,7 @@ def user_help(request):
     except Exception as e:
         return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     try:
-        responses = requests_from_user.exclude(status="('resolved', 'Resolved')").exclude(status="('closed', 'Closed')").order_by("-id")
+        responses = requests_from_user.exclude(status="('resolved', 'Resolved')").exclude(status="('closed', 'Closed')").exclude(status="('suggestion', 'Suggestion')").order_by("-id")
     except Exception as e:
         return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
     try:
@@ -151,7 +155,11 @@ def user_help(request):
         more_answers = requests_from_user.filter(status="('closed', 'Closed')").order_by('-id')
     except Exception as e:
         return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
-    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user, 'responses': responses, 'answers': answers, "myuser": request.user, "more_answers": more_answers, "projects": projects}, context_instance=RequestContext(request))
+    try:
+        suggestions = requests_from_user.filter(status="('suggestion', 'Suggestion')").order_by('-id')
+    except Exception, e:
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
+    return render_to_response('helpdesknew/help_user.html', {'requests': requests_from_user, 'responses': responses, 'answers': answers, "myuser": request.user, "more_answers": more_answers, "suggestions": suggestions, "projects": projects}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -226,6 +234,18 @@ def mark_the_input(request, response_id):
             answer.helprequest.save()
             return redirect('helpdesknew.views.get_help', answer.helprequest.id)
     return redirect('helpdesknew.views.get_help', answer.helprequest.id, permanent=False)
+
+
+@login_required
+def mark_suggestion(request, help_id):
+    try:
+        suggestion = HelpRequest.objects.get(pk=help_id)
+        suggestion.update_status(5)
+        suggestion.save()
+        return redirect('helpdesknew.views.get_help', help_id)
+    except Exception, e:
+        return render_to_response('helpdesknew/error_page.html', {'error_id': '7'}, context_instance=RequestContext(request))
+    return redirect('helpdesknew.views.get_help', help_id)
 
 
 @login_required

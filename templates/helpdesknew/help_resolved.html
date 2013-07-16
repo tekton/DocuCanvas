@@ -95,5 +95,32 @@ img.pending-image-help{
     </tr>
     {% endfor %}
     {% endif %}
+    {% if suggestions %}
+    <tr>
+        <td class="tbl-fauxth" colspan=3><h3>Suggestions &amp; Requests</h3></td>
+    </tr>
+    <tr class="tbl-rowheader">
+        <td class="tbl-fauxth">Summary</td>
+        <td class="tbl-fauxth">Asked By</td>
+        <td class="tbl-fauxth">Date Asked</td>
+    </tr>
+    {% for suggestion in suggestions %}
+    <tr>
+        <td>
+            <a href="{% url 'helpdesknew.views.get_help' suggestion.id %}">
+                <a class='popup' href="{% url 'helpdesknew.views.get_help' suggestion.id %}">
+                    {{suggestion.name}}<span>{{suggestion.question|truncatechars:80}}</span>
+                </a>
+            </a>
+        </td>
+        <td>
+            <a href="{% url 'helpdesknew.views.get_help' suggestion.id %}">{{suggestion.user}}</a>
+        </td>
+        <td>
+            <a href="{% url 'helpdesknew.views.get_help' suggestion.id %}">{{suggestion.request_init}}</a>
+        </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
 </table>
 {% endblock %}

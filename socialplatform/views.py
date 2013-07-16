@@ -252,6 +252,50 @@ def sending_help(request, help_id):
 
 
 @login_required
+def notify_assignment(request, issue_id):
+	callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/assignbroadcast/' + issue_id
+	return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
+
+
+@login_required
+def assignment_broadcast(request, issue_id):
+	try:
+		issue = Issue.objects.get(pk=issue_id)
+		user = issue.assigned_to
+	except Exception, e:
+		print e
+	message = "You+have+been+assigned+to+an+issue,+"
+	for char in issue.summary:
+		if char == " ":
+			message += "+"
+		else:
+			message += char
+	message += "+in+"
+	for char in issue.project.name:
+		if char == " ":
+			message += "+"
+		else:
+			message += char
+	code = request.GET.get('code')
+	consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
+	client = oauth.Client(consumer)
+	redirect_uri = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/assignbroadcast/' + issue_id
+	request_url = ACCESS_TOKEN_URL + '?client_id=%s&client_secret=%s&grant_type=client_credentials' % (APP_ID, APP_SECRET)
+	resp, cont = client.request(request_url, 'GET')
+	access_token = dict(urlparse.parse_qsl(cont))['access_token']
+	try:
+		facebook = FacebookProfile.objects.get(user=user)
+		request_url = (GRAPH_URL
+					 + facebook.facebook_id 
+					 + ("/notifications?access_token=%s&template=%s&href=%s" % (access_token, message, 'http://' + request.META['HTTP_HOST'])))
+	except Exception, e:
+		print e
+	if facebook.issue and facebook.active:
+		resp, cont = client.request(request_url, 'POST')
+	return redirect('issues.views.issue_overview', issue_id)
+
+
+@login_required
 def modify_permissions(request):
 	try:
 		facebook = FacebookProfile.objects.get(user=request.user)

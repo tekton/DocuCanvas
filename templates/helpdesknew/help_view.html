@@ -13,6 +13,7 @@
     <li><a href="{% url 'helpdesknew.views.edit_question' help.id %}">Edit Question</a></li>
     {% if user.is_staff %}
     	<li><a href="{% url 'helpdesknew.views.close_question' help.id %}">Admin - Close Question</a></li>
+    	<li><a href="{% url 'helpdesknew.views.mark_suggestion' help.id %}">Admin - Make Suggestion</a></li>
     {% endif %}
 {% endblock %}
 

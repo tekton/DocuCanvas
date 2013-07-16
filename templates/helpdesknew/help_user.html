@@ -151,6 +151,39 @@ img.pending-image-help{
 			{% endfor %}
 			{% endif %}
 		</table>
+		<h2>Suggestions & Requests</h2>
+		<table class="tbl-generic tbl-overview table table-striped">
+			{% if suggestions %}
+			<thead>
+				<tr class="tbl-rowheader">
+					<th class="tbl-fauxth span8">Summary</th>
+					<th class="tbl-fauxth span2">Date Asked</th>
+					<th class="tbl-fauxth span2">Status</th>
+				</tr>
+			</thead>
+				{% for suggestion in suggestions %}
+					<tr>
+						<td>
+							<a href="{% url 'helpdesknew.views.get_help' suggestion.id %}">
+								<a class='popup' href="{% url 'helpdesknew.views.get_help' suggestion.id %}">
+									{% if suggestion.edit_status_bool %}
+										{{suggestion.name}} [*EDITED*]<span>{{suggestion.question|truncatechars:80}}</span>
+									{% else %}
+										{{suggestion.name}}<span>{{suggestion.question|truncatechars:80}}</span>
+									{% endif %}
+								</a>
+							</a>
+						</td>
+						<td><a href="{% url 'helpdesknew.views.get_help' suggestion.id %}">{{suggestion.request_init}}</a></td>
+						<td><a href="{% url 'helpdesknew.views.get_help' suggestion.id %}">Suggestion/Request</a></td>
+					</tr>
+				{% endfor %}
+			{% else %}
+				<tr>
+					<td colspan=3>You have not submitted any suggestions.</td>
+				</tr>
+			{% endif %}
+		</table>
 	{% else %}
 		<p>You have not submitted any questions yet.</p>
 	{% endif %}

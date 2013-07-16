@@ -11,6 +11,7 @@ class HelpRequest(models.Model):
 		('resolved', 'Resolved'),
 		('reopened', 'Re-Opened'),
 		('closed', 'Closed'),
+		('suggestion', 'Suggestion'),
 	)
 	user = models.ForeignKey(User)
 	facebook = models.ForeignKey(FacebookProfile, null=True, blank=True)
@@ -35,6 +36,8 @@ class HelpRequest(models.Model):
 			self.status = self.help_state[2]
 		elif n==4:
 			self.status = self.help_state[4]
+		elif n==5:
+			self.status = self.help_state[5]
 		else:
 			self.status = self.help_state[1]
 		print "status updated"

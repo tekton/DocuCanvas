@@ -14,5 +14,6 @@ urlpatterns = patterns('',
     (r'^user$', 'helpdesknew.views.user_help'),
     (r'^mark_the_answer/([A-Za-z0-9_\.-]+)$', 'helpdesknew.views.mark_the_answer'),
     (r'^mark_the_input/([A-Za-z0-9_\.-]+)$', 'helpdesknew.views.mark_the_input'),
+    (r'^suggestion/([A-Za-z0-9_\.-]+)$', 'helpdesknew.views.mark_suggestion'),
     (r'^([A-Za-z0-9_\.-]+)$', 'helpdesknew.views.get_help'),
 )

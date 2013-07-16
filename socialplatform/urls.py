@@ -12,5 +12,7 @@ urlpatterns = patterns('',
     (r'^deactivate', 'socialplatform.views.remove_twitter_acct'),
     (r'^helpbroadcast/([A-Za-z0-9_\.-]+)$', 'socialplatform.views.broadcast_help'),
     (r'^helpnotify/([A-Za-z0-9_\.-]+)$', 'socialplatform.views.sending_help'),
+    (r'^issuenotify/([A-Za-z0-9_\.-]+)$', 'socialplatform.views.notify_assignment'),
+    (r'^assignbroadcast([A-Za-z0-9_\.-]+)$', 'socialplatform.views.assignment_broadcast'),
     (r'^modify_permission$', 'socialplatform.views.modify_permissions'),
 )
