@@ -1,0 +1,25 @@
+{% with obj=result.object %}</pre>
+<div class="accordion-group">
+<div class="accordion-heading"><a class="accordion-toggle" href="#collapse_{{ obj.id }}" data-toggle="collapse" data-parent="#accordion2">
+ {{ obj.name }}
+ </a>
+<div style="padding: 8px 15px;">
+Company: {{ obj.company }}
+ 
+Type: {{ obj.type }}
+ 
+ {% if obj.salary %}
+Salary: {{ obj.salary }}
+ 
+{% endif %}
+ </div>
+</div>
+<div id="collapse_{{ obj.id }}" class="accordion-body collapse in">
+<div class="accordion-inner">
+Contact: <a href="mailto:{{ obj.get_contact_email }}">{{ obj.get_contact_email }}</a>
+ 
+ {{ obj.description }}</div>
+</div>
+</div>
+<pre>
+{% endwith %}

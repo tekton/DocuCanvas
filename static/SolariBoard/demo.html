@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <title>Solari</title>
+</head>
+<body>
+	<div id="container"></div>
+  <script src="lib/underscore.js"></script>
+  <script src="lib/Three.js"></script>
+  <script src="lib/stats.js"></script>
+  <script src="lib/events.js"></script>
+  <script src="src/SolariTexture.js"></script>
+  <script src="src/SolariRow.js"></script>
+  <script src="src/SolariFlap.js"></script>
+  <script src="src/Solari.js"></script>
+  <script>
+  (function () {
+  var board = window.Board = new Solari;
+  new SolariTexture().bind('load', function () {
+    var alphaSet = this,
+        row;
+
+    document.getElementById('container').appendChild(board.el);
+
+    // Set up the board
+    _(8).times(function () {
+      row = new SolariRow(board.y);
+
+      _(24).times(function () {
+        row.add(alphaSet);
+      });
+      board.add(row);
+    });
+
+    Board.start();
+
+    // Set a message
+    setTimeout(function () {
+      Board.setMessage([
+        'THUNDERCATS',
+        'ARE ON THE MOVE',
+        'THUNDERCATS ARE LOOSE',
+        'FEEL THE MAGIC',
+        'HEAR THE ROAR',
+        'THUNDERCATS ARE LOOSE',
+        'THUNDER THUNDER THUNDER',
+        'THUNDERCATS HO'
+      ])
+    }, 2000);
+  }).load('img/chars.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-.# '.split(''), 70, 63);
+
+  })();
+  </script>
+  <style>
+  *{
+    margin:0;
+    padding:0;
+    overflow:hidden;
+  }
+  body{
+    background:#111;
+  }
+  </style>
+</body>
+</html>

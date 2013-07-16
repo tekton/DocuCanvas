@@ -105,6 +105,14 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr',
+    },
+}
+
+
 ROOT_URLCONF = 'DocuCanvas.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -144,13 +152,13 @@ INSTALLED_APPS = (
     'issues',
     'nodes',
     'projects',
-    'issues',
     'daily_reports',
     'boards',
     'food',
     'helpdesknew',
     'gapps',
     'tinymce',
+    'haystack',
     #'facebook',
     #'twitter',
     'socialplatform',
