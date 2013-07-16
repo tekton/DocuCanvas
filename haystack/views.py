@@ -1,14 +1,32 @@
 from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage
-from django.http import Http404
-from django.shortcuts import render_to_response
+from django.http import HttpResponse, Http404
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from haystack.forms import ModelSearchForm, FacetedSearchForm
 from haystack.query import EmptySearchQuerySet
+from helpdesknew.views import help_form
+from django.forms.models import model_to_dict
+from HTMLParser import HTMLParser
+
+import json
 
 
 RESULTS_PER_PAGE = getattr(settings, 'HAYSTACK_SEARCH_RESULTS_PER_PAGE', 20)
 
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
+
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
 
 class SearchView(object):
     template = 'search/search.html'
@@ -40,6 +58,7 @@ class SearchView(object):
 
         Relies on internal, overridable methods to construct the response.
         """
+
         self.request = request
 
         self.form = self.build_form()
@@ -140,8 +159,26 @@ class SearchView(object):
             context['suggestion'] = self.form.get_suggestion()
 
         context.update(self.extra_context())
-        return render_to_response(self.template, context, context_instance=self.context_class(self.request))
 
+        try:
+            if self.request.GET['ajax']:
+                to_json = {"success": True}
+                results = []
+
+                for result in self.results:
+                    result_dictionary = {}
+                    result_dictionary['id'] = result.object.id
+                    result_dictionary['description'] = strip_tags(result.object.description)
+                    result_dictionary['summary'] = result.object.summary
+                    results.append(result_dictionary)
+                to_json['results'] = results
+                print to_json
+                return HttpResponse(json.dumps(to_json), mimetype='application/json')
+        except Exception, e:
+            print e
+
+        return help_form(self.request, context)
+        #return render_to_response(self.template, context, context_instance=self.context_class(self.request))
 
 def search_view_factory(view_class=SearchView, *args, **kwargs):
     def search_view(request):

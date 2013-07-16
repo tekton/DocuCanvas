@@ -26,6 +26,7 @@ Ask A Question
 {% endblock %}
 
 {% block bodyContent %}
+
 <form action="{% url 'helpdesknew.views.help_form' %}" method="post" enctype="multipart/form-data" class="form-horizontal span6">
     {% csrf_token %}
     <div class="control-group">
@@ -40,7 +41,7 @@ Ask A Question
         <label class="control-label">Upload Screenshot(s):</label>
         <div class="controls"><input type="file" name="myfiles" multiple></div>
     </div>
-    <div class="control-group">
+    <div>
         <div class="controls">
             <input type="submit" name='submit' value="Submit" class="btn btn-primary" />
         </div>
@@ -48,16 +49,56 @@ Ask A Question
     <input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
     
 </form>
+
+<div style="float:right;height:500px;width:500px;border-style:solid;border-width:1px;border-color:#cccccc;font-size: 14px;color: #555555;">
+    <table name="similar_questions_results">
+    </table>
+</div>
 {% endblock %}
 
 {% block endScripts %}
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<!--<script src="http://code.jquery.com/jquery-1.9.1.js"></script>-->
 <script type="text/javascript">
     $(document).ready(function(){
         $('#id_photo').click(function(){
             $('#image_upload_preview').fadeTo("fast", 1);
         });
+
+        $('#id_name').keyup( $.debounce(350, getSimilarQuestions));
     });
+
+
+    function getSimilarQuestions(){
+        $.ajax({
+                type: 'GET',
+                url: '/search/',
+                data:{
+                    q: $('#id_name').val(),
+                    ajax: "Yes"
+                },
+                success: function(data){
+                    $('[name="similar_questions_results"]').empty();
+                    for(result in data.results){
+                        var similar_issue_container = $('<tr></tr>');
+                        var summary = $('<a></a>');
+
+                        similar_issue = data.results[result]
+
+                        summary.text(similar_issue['summary']);
+                        similar_issue_container.attr('title', similar_issue['description']);
+                        summary.attr('href', "/issue/" + similar_issue['id'] );
+
+                        similar_issue_container.append(summary);
+                        $('[name="similar_questions_results"]').append(similar_issue_container);
+                    }
+                },
+                error: function(data){
+                    //AlertMessage.error(data.responseJSON.response);
+                    console.log(data.responseJSON.response)
+                }
+            });
+    }
+
     function readImage(input){
         if(input.files && input.files[0]){
             var reader = new FileReader();
