@@ -1,10 +1,7 @@
 {% extends "socialplatform/base.html" %}
 
 {% block contextNav %}
-	<li><a href="{% url 'helpdesknew.views.help_form' %}">Ask a Question</a></li>
-	<li><a href="{% url 'helpdesknew.views.get_resolved' %}">Resolved Questions</a></li>
-	<li><a href="{% url 'helpdesknew.views.get_pending' %}">Unresolved Questions</a></li>
-	<li><a href="{% url 'helpdesknew.views.user_help' %}">Your Questions</a></li>
+	{% include '_includes/contextnav-default.html' %}
 {% endblock %}
 
 {% block bodyContent %}
