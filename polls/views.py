@@ -5,6 +5,7 @@ from django.template import RequestContext
 from projects.models import Project
 from polls.models import Poll, PollItem, PollUser
 from polls.forms import PollForm, ItemForm
+from datetime import date, timedelta
 
 
 @login_required
@@ -49,6 +50,89 @@ def new_poll(request):
 
 @login_required
 def poll_overview(request, poll_id):
+    
+    try:
+        poll = Poll.objects.get(pk=poll_id)
+    except Exception, e:
+        print e
+    today = str(date.today()) #2013-07-15
+    end_date = str(poll.end_date) #07/18/2013
+
+    today_year = int(today[:4])
+    today_month = int(today[5:7])
+    today_day = int(today[8:])
+    end_year = int(end_date[:4])
+    end_month = int(end_date[5:7])
+    end_day = int(end_date[8:])
+    after = True
+    if today_year > end_year:
+        after = False
+    elif today_year == end_year and today_month > end_month:
+        after = False
+    elif today_year == end_year and today_month == end_month and today_day > end_day:
+        after = False
+    else:
+        after = True
+
+    if after:
+
+        try:
+            projects = Project.objects.all()
+        except Exception, e:
+            raise e
+        try:
+            items = PollItem.objects.filter(poll=poll).order_by('-votes')
+        except Exception, e:
+            print e
+        try:
+            myuser = PollUser.objects.filter(poll=poll).filter(user=request.user)
+        except Exception, e:
+            print e
+        sup = True
+        if myuser.count() != 0:
+            sup = False
+        most_votes = 0
+        for item in items:
+            if item.votes > most_votes:
+                most_votes = item.votes
+        
+        return render_to_response("polls/poll_view.html", {'poll': poll, 'items': items, 'myuser': myuser, 'sup': sup, 'projects': projects, 'most_votes': most_votes}, context_instance=RequestContext(request))
+    return redirect("polls.views.poll_results", poll_id)
+
+@login_required
+def end_poll(request, poll_id):
+    if request.method == 'POST':
+        try:
+            mypoll = Poll.objects.get(pk=poll_id)
+            myuser = PollUser.objects.filter(poll=mypoll).filter(user=request.user)
+        except Exception, e:
+            print e
+        try:
+            mypoll.end_date = date.today()-timedelta(days=1)
+            mypoll.save()
+        except Exception, e:
+            print e
+    return redirect('polls.views.poll_overview', poll_id)
+
+
+@login_required
+def restart_poll(request, poll_id):
+    try:
+        mypoll = Poll.objects.get(pk=poll_id)
+    except Exception, e:
+        print e
+    if request.method == 'POST':
+        try:
+            mypoll.end_date = request.POST['end_date']
+            print mypoll.end_date
+            mypoll.save()
+        except Exception, e:
+            print e
+        return redirect('polls.views.poll_overview', poll_id)
+    return render_to_response("polls/restart_poll.html", {'poll': mypoll}, context_instance=RequestContext(request))
+
+
+def poll_results(request, poll_id):
     try:
         poll = Poll.objects.get(pk=poll_id)
     except Exception, e:
@@ -68,7 +152,12 @@ def poll_overview(request, poll_id):
     sup = True
     if myuser.count() != 0:
         sup = False
-    return render_to_response("polls/poll_view.html", {'poll': poll, 'items': items, 'myuser': myuser, 'sup': sup, 'projects': projects}, context_instance=RequestContext(request))
+    most_votes = 0
+    for item in items:
+        if item.votes > most_votes:
+            most_votes = item.votes
+        
+    return render_to_response("polls/poll_results.html", {'poll': poll, 'items': items, 'myuser': myuser, 'sup': sup, 'projects': projects, 'most_votes': most_votes}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -111,6 +200,7 @@ def add_items(request, poll_id):
 
 
 
+
 @login_required
 def vote(request, poll_id):
     if request.method == 'POST':
@@ -131,6 +221,7 @@ def vote(request, poll_id):
             except Exception, e:
                 print e
     return redirect('polls.views.poll_overview', poll_id)
+
 
 
 

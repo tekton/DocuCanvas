@@ -10,6 +10,7 @@ class Poll(models.Model):
     context = models.CharField(max_length=255, null=True, blank=True)
     created = models.DateField(auto_now_add=True, null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
+    max_votes = models.IntegerField(default=1, null=True, blank=True)
 
 
 class PollItem(models.Model):

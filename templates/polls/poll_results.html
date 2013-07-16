@@ -1,0 +1,27 @@
+{% extends "polls/base.html" %}
+
+{% block contextNav %}
+{% endblock%}
+
+{% block baseContent %}
+<h2>{{poll.name}}</h2>
+<p>{{poll.context}}</p>
+<p>End Date: {{poll.end_date}}</p>
+
+{% for item in items %}
+<meter style="width:75%;height:25px;" id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{item.votes}}">Value can be here too</meter>
+{% endfor %}
+
+{% if user == poll.creator %}
+<form action="{% url 'polls.views.end_poll' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="submit" name="end_poll" value="End Poll"/>
+</form>
+{% endif %}
+
+{% endblock %}
+
+{% block endScripts %}
+
+
+{% endblock %}

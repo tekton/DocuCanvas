@@ -7,7 +7,9 @@
 <h2>{{poll.name}}</h2>
 <p>{{poll.context}}</p>
 <p>End Date: {{poll.end_date}}</p>
-<table>
+<form action="{% url 'polls.views.vote' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
     <tr>
         <td></td>
         <td><b>Item</b></td>
@@ -15,23 +17,45 @@
         <td></td>
     </tr>
     {% for item in items %}
-    <tr>
-        <form action="{% url 'polls.views.vote' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+    <tr>        
             <td>
                 {% if sup %}
-                    <input type="submit" name="submit" value="Submit"/>
+                    <input id="#poll input[type='checkbox']" type="checkbox" name="{{item.id}}" value="Submit" >   
                 {% else %}
                 {% endif %}
             </td>
             <td>{{item.item}}</td>
             <td>{{item.votes}}</td>
             <td><input type='hidden' name='item' id='id_item' value='{{item.id}}'/></td>
-        </form>
+        
     </tr>
     {% endfor %}
+    <input id="#poll input[type='submit']" type="submit" name="submit" value="Submit"/>
+
 </table>
+</form>
+<SCRIPT>
+var elems = $("#poll input[type='checkbox']"),
+    subm  = $("#poll input[type='submit']").hide();
+
+elems.on('change', function () {
+    var limit = 2,
+        _check = elems.filter(':checked').length;
+
+    if (_check == limit) {
+        subm.show();
+    }else if (_check > limit) {
+        alert("You can only select a maximum of " + limit + " checkboxes")
+        this.checked = false;
+    }else{
+        subm.hide();
+    }
+});
+</SCRIPT>
+
 {% endblock %}
 
 {% block endScripts %}
+
+
 {% endblock %}

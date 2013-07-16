@@ -1,0 +1,26 @@
+{% extends "polls/base.html" %}
+
+{% block contextNav %}
+{% endblock%}
+
+{% block baseContent %}
+
+{% if user == poll.creator %}
+<form action="{% url 'polls.views.restart_poll' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" id="pollenddate" name="end_date"/>
+    <input type="submit" name="restart_poll" value="Restart Poll"/>
+</form>
+{% endif %}
+
+
+{% endblock %}
+
+{% block endScripts %}
+<script>
+$(function(){
+    $('#pollenddate').datepicker({dateFormat: 'yy-mm-dd'});
+});
+</script>
+
+{% endblock %}

@@ -1,5 +1,9 @@
 {% extends "socialplatform/base.html" %}
 
+{% block pageTitle %}
+Facebook Notifications Settings
+{% endblock %}
+
 {% block contextNav %}
 	{% include '_includes/contextnav-default.html' %}
 {% endblock %}
@@ -7,7 +11,34 @@
 {% block bodyContent %}
 	<form action="{% url 'socialplatform.views.modify_permissions' %}" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
-		{{form}}<br/>
-	<input type="submit" value="Submit Changes"/>
+		<!--
+		Active: </br>
+		{{form.active}}<br/>
+		Notification Settings:<br/>
+		Help Desk:     {{form.helpdesk}}<br/>
+		Notifications: {{form.notifications}}</br>
+	-->
+		<table>
+			<tr>
+				<td colspan="2"><b>Turn Gadget Notifications On/Off</b></td>
+			</tr>
+			<tr>
+				<td colspan="2">{{form.active}}</td>
+			</tr>
+		</table><br/><br/>
+		<table>
+			<tr>
+				<td colspan="2"><b>Turn Gadget App Specific Notifications On/Off</b></td>
+			</tr>
+			<tr>
+				<td>Help Desk</td>
+				<td>{{form.helpdesk}}</td>
+			</tr>
+			<tr>
+				<td>Notifications</td>
+				<td>{{form.notifications}}</td>
+			</tr>
+		</table><br/><br/>
+	<input type="submit" value="Save Changes"/>
 	</form>
 {% endblock %}
