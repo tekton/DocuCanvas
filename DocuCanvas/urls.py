@@ -40,4 +40,5 @@ urlpatterns = patterns('',
     url(r'^polls/', include('polls.urls')),
 
     url(r'^docs/', include('docs.urls')),                         # wjmazza - 2013.07.09 - TEMP - R&D Test View
+    url(r'^tv/', include('solari.urls')),                         # wjmazza - 2013.07.15 - TEMP - R&D Test View
 )
