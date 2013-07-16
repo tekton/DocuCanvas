@@ -10,4 +10,3 @@ celerybeat-schedule
 *.idea
 *celery.log
 *.orig
-static/upload

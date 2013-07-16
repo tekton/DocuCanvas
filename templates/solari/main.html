@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+	{% load set_var %}
+	<title>Solari</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+		body {
+			background: #111;
+		}
+	</style>
+</head>
+<body>
+	<div id="container"></div>
+	<script src="/static/SolariBoard/lib/underscore.js"></script>
+	<script src="/static/SolariBoard/lib/Three.js"></script>
+	<script src="/static/SolariBoard/lib/stats.js"></script>
+	<script src="/static/SolariBoard/lib/events.js"></script>
+	<script src="/static/SolariBoard/src/SolariTexture.js"></script>
+	<script src="/static/SolariBoard/src/SolariRow.js"></script>
+	<script src="/static/SolariBoard/src/SolariFlap.js"></script>
+	<script src="/static/SolariBoard/src/Solari.js"></script>
+	<script>
+		(function () {
+			var board = window.Board = new Solari;
+
+			new SolariTexture().bind('load', function () {
+				var alphaSet = this,
+				row;
+
+				document.getElementById('container').appendChild(board.el);
+
+				// Set up the board
+				_(8).times(function () {
+					row = new SolariRow(board.y);
+
+					_(30).times(function () {
+						row.add(alphaSet);
+					});
+
+					board.add(row);
+				});
+
+				Board.start();
+
+				// Set a message
+				setTimeout(function () {
+					Board.setMessage([
+						{% for newsfeed in newsfeeds %}
+							'{{newsfeed.project.name|truncatechars:15|upper|escapejs}} {{newsfeed.issue.summary|truncatechars:9|upper|escapejs}}',
+						{% endfor %}
+					])
+				}, 2000);
+
+			}).load('/static/SolariBoard/img/chars.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-.# '.split(''), 70, 63);
+		})();
+	</script>
+</body>
+</html>

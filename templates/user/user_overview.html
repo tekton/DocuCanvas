@@ -108,8 +108,8 @@
 {% endblock %}
 
 {% block endScripts %}
-    {% regroup issues by project as issuesGroupedByProject %}
-    {% regroup issues by get_status_display as issuesGroupedByStatus %}
+    {% regroup issues|dictsort:"project" by project as issuesGroupedByProject %}
+    {% regroup issues|dictsort:"status" by get_status_display as issuesGroupedByStatus %}
     
     <script src="//cdn.sencha.com/ext/gpl/4.2.0/ext-all.js"></script>
     <script>
