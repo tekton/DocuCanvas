@@ -1,0 +1,23 @@
+Instructions for creating Schema for Solr/Haystack
+
+
+Starting from scratch:
+
+1.) Run:  python manage.py build_solr_schema
+    to build a schema.xml file
+
+2.) Copy and paste this into a file called "schema.xml" and move it to Solr installs conf folder, 
+    in our case its: solr-4.3.0/example/solr/collection1/conf/
+
+3.) wherever the word stopwords_en.txt exist in this schema.xml file, replace it with lang/stopdword_en.txt
+
+4.) add this line in the fields section of the schema.xml file under fields django_ct and django_id
+    <field name="_version_" type="long" indexed="true" stored="true"/>
+
+5.) Run: python manage.py rebuild_index 
+
+Done! You now have a built index ready to be searched!
+
+Updating the index:
+
+Run: python manage.py update_index
