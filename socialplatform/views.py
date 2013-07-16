@@ -21,6 +21,7 @@ from socialplatform.models import FacebookProfile, FBNotification, TwitterProfil
 from socialplatform.forms import TwitterForm, TweetForm, DMAForm, DMIForm, FacebookPermissions
 from notifications.models import Notification, NotificationRecipient
 from helpdesknew.models import HelpRequest
+from projects.models import Project
 
 # Facebook API info
 APP_ID                  = "441109929301348"
@@ -113,6 +114,10 @@ def getAppAccessToken(request, user_id):
 
 @login_required
 def add_twitter_acct(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
     twat = TwitterProfile()
     if request.method == 'POST':
         twatForm = TwitterForm(request.POST, instance=twat)
@@ -137,7 +142,7 @@ def add_twitter_acct(request):
         else:
             print "form not valid"
     twatForm = TwitterForm(instance=twat)
-    return render_to_response('socialplatform/twit_form.html', {'form': twatForm}, context_instance=RequestContext(request))
+    return render_to_response('socialplatform/twit_form.html', {'form': twatForm, 'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -301,6 +306,10 @@ def assignment_broadcast(request, issue_id):
 @login_required
 def modify_permissions(request):
     try:
+        projects = Project.objects.all()
+    except Exception, e:
+        raise e
+    try:
         facebook = FacebookProfile.objects.get(user=request.user)
     except Exception, e:
         return redirect('dashboard.views.home')
@@ -316,4 +325,4 @@ def modify_permissions(request):
             return redirect('dashboard.views.home')
     else:
         permission_form = FacebookPermissions(instance=facebook)
-    return render_to_response('socialplatform/facebook_permissions.html', {'facebook': facebook, 'form': permission_form}, context_instance=RequestContext(request))
+    return render_to_response('socialplatform/facebook_permissions.html', {'facebook': facebook, 'form': permission_form, 'projects': projects}, context_instance=RequestContext(request))
