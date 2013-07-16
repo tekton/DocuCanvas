@@ -102,8 +102,8 @@ def account_settings(request):
     try:
         fb = FacebookProfile.objects.get(user=request.user)
     except Exception, e:
-        fb = FacebookProfile(active=False)
-        raise e
+        fb = FacebookProfile()
+        print e
     return render_to_response("registration/account_settings.html", {"projects": projects, "tw": twat, "fb": fb}, context_instance=RequestContext(request))
 
 @login_required

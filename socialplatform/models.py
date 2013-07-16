@@ -15,7 +15,7 @@ class FacebookProfile(models.Model):
 	access_token = models.CharField(max_length=255)
 	helpdesk = models.NullBooleanField(default=True)
 	notifications = models.NullBooleanField(default=True)
-	active = models.NullBooleanField(default=True)
+	active = models.NullBooleanField(default=False)
 	issue = models.NullBooleanField(default=True)
 
 	def is_active(self):
