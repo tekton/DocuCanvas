@@ -2,7 +2,6 @@
 # Part of tekton/tools!
 import os
 
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -106,10 +105,12 @@ MIDDLEWARE_CLASSES = (
 )
 
 HAYSTACK_CONNECTIONS = {
+
     'default': {
-        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://127.0.0.1:8983/solr',
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
     },
+
 }
 
 
