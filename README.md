@@ -62,4 +62,7 @@ Copyright (C) 2013, Tyler Agee
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+Solr licensed under the Apache License V2 http://www.eng.lsu.edu/mirrors/apache/lucene/solr/4.3.0/
+Haystack licensed under the license found here https://github.com/toastdriven/django-haystack/blob/master/LICENSE, source:  https://github.com/toastdriven/django-haystack
+
 See also the file: LICENSE
