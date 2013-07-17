@@ -109,6 +109,7 @@ def end_poll(request, poll_id):
             print e
         try:
             mypoll.end_date = date.today()-timedelta(days=1)
+            print mypoll.end_date
             mypoll.save()
         except Exception, e:
             print e

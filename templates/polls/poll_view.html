@@ -1,6 +1,8 @@
 {% extends "polls/base.html" %}
 
 {% block contextNav %}
+    <li><a href="{% url 'polls.views.new_poll' %}">Create New Poll</a></li>
+    <li><a href="{% url 'polls.views.all_polls' %}">View All Polls</a></li>
 {% endblock%}
 
 {% block pageTitle %}
@@ -19,6 +21,7 @@
         <td><b>Item</b></td>
         <td><b>Votes</b></td>
         <td></td>
+        <td></td>
     </tr>
     {% for item in items %}
     <tr>        
@@ -31,12 +34,26 @@
             <td>{{item.item}}</td>
             <td>{{item.votes}}</td>
             <td><input type='hidden' name='item' id='id_item' value='{{item.id}}'/></td>
-        
+            
+            <td><meter style="width:200px;height:25px;" id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{item.votes}}">Value can be here too< meter></td>    
     </tr>
     {% endfor %}
 </table>
+{% if sup %}
 <input type="submit" name="submit" value="Submit"/>
+{% endif %}
+
 </form>
+
+
+
+{% if user == poll.creator %}
+<form action="{% url 'polls.views.end_poll' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="submit" name="end_poll" value="End Poll"/>
+</form>
+{% endif %}
+
 {% endblock %}
 
 {% block endScripts %}
