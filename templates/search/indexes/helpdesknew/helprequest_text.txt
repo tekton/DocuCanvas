@@ -1,0 +1,8 @@
+{{ object.user }}
+{{ object.facebook }}
+{{ object.name }}
+{{ object.question }}
+{{ object.request_init }}
+{{ object.status }}
+{{ object.edit_status_bool }}
+{{ object.ack_response }}

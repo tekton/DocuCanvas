@@ -1,0 +1,10 @@
+{{ object.user }}
+{{ object.item }}
+{{ object.quantity }}
+{{ object.quantity_type }}
+{{ object.request_initiated }}
+{{ object.desired_completion }}
+{{ object.request_completed_bool }}
+{{ object.request_completed_date }}
+{{ object.cost_per_quantity }}
+{{ object.total_cost }}

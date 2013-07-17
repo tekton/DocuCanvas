@@ -1,0 +1,6 @@
+{{ object.creator }}
+{{ object.message }}
+{{ object.created }}
+{{ object.facebook }}
+{{ object.twitter }}
+

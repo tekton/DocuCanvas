@@ -1,0 +1,6 @@
+{{ object.user }}
+{{ object.facebook }}
+{{ object.helprequest }}
+{{ object.response }}
+{{ object.created }}
+{{ object.value }}
