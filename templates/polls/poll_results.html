@@ -8,15 +8,26 @@
 <p>{{poll.context}}</p>
 <p>End Date: {{poll.end_date}}</p>
 
+ <table>
+    <tr>
+        <td></td>
+        <td><b>Item</b></td>
+        <td><b>Votes</b></td>
+        <td></td>
+        <td></td>
+    </tr>
+
 {% for item in items %}
-<meter style="width:75%;height:25px;" id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{item.votes}}">Value can be here too</meter>
+<tr>
+<td>{{item.item}}</td>
+<td>{{item.votes}}</td>
+<td><meter style="width:200px;height:25px;" id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{item.votes}}">Value can be here too</meter></td>
+</tr>
 {% endfor %}
+</table>
 
 {% if user == poll.creator %}
-<form action="{% url 'polls.views.end_poll' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="submit" name="end_poll" value="End Poll"/>
-</form>
+<a href= "{% url 'polls.views.restart_poll' poll.id %}"> Click here to restart poll</a>
 {% endif %}
 
 {% endblock %}
