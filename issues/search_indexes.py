@@ -11,7 +11,7 @@ class IssueIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     project = indexes.CharField(model_attr='project')
     #status = indexes.CharField(model_attr='status')
-    created_by = indexes.CharField(model_attr='created_by')
+    #created_by = indexes.CharField(model_attr='created_by')
     #assigned_to = indexes.CharField(model_attr='assigned_to')
     #type = indexes.CharField(model_attr='type', faceted=True)
     #location = indexes.CharField(model_attr='location', faceted=True)
