@@ -3,10 +3,14 @@
 {% block contextNav %}
 {% endblock%}
 
+{% block pageTitle %}
+{{poll.name}}
+{% endblock %}
+
 {% block baseContent %}
-<h2>{{poll.name}}</h2>
-<p>{{poll.context}}</p>
-<p>End Date: {{poll.end_date}}</p>
+<p>{{poll.context}}</p><br/>
+<p>End Date: {{poll.end_date}}</p><br/>
+<p>Votes Allowed Per Person: {{poll.max_votes}}</p><br/>
 <form action="{% url 'polls.views.vote' poll.id %}" id="poll" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <table>
@@ -30,9 +34,8 @@
         
     </tr>
     {% endfor %}
-    <input type="submit" name="submit" value="Submit"/>
-
 </table>
+<input type="submit" name="submit" value="Submit"/>
 </form>
 {% endblock %}
 

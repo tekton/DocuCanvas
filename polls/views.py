@@ -214,9 +214,11 @@ def vote(request, poll_id):
         if myuser.count() == 0:
             try:
                 newuser = PollUser(user=request.user, poll=mypoll)
-                item = PollItem.objects.get(pk=int(item_id))
-                item.votes += 1
-                item.save()
+                items = PollItem.objects.filter(poll=mypoll)
+                for item in items:
+                    if str(item.id) in request.POST:
+                        item.votes += 1
+                        item.save()
                 newuser.save()
             except Exception, e:
                 print e
