@@ -275,7 +275,7 @@ def meta_issue_form(request, issue_id=-1):
             if not request.user.has_perm("issues.add_metaissue"):
                 raise PermissionDenied
 
-            return render_to_response('issues/meta_issue_form.html', {'form': MetaIssueForm(), 'new': True, 'pform': PermissionForm(), "projects": projects}, context_instance=RequestContext(request))
+            return render_to_response('issues/meta_issue_wizard.html', {'form': MetaIssueForm(), 'new': True, 'pform': PermissionForm(), "projects": projects}, context_instance=RequestContext(request))
 
         try:
             mi = MetaIssue.objects.get(pk=issue_id)
