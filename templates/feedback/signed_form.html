@@ -3,8 +3,12 @@
 {% block contextNav %}
 {% endblock %}  
 
+{% block pageTitle %}
+Signed Feedback Form
+{% endblock %}
 
 {% block bodyContent%}
+<p>Submitting feedback using this form will attach your User Name.  To submit anonymous feedback, use the <a href="{% url 'feedback.views.anonymous_feedback' %}">Anonymous Feedback Form</a>.</p>
 <form action="{% url 'feedback.views.signed_feedback' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     Summary:<br/>

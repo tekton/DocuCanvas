@@ -3,6 +3,9 @@
 {% block contextNav %}
 {% endblock %}  
 
+{% block pageTitle %}
+Anonymous Feedback Form
+{% endblock %}
 
 {% block bodyContent%}
 <form action="{% url 'feedback.views.anonymous_feedback' %}" method="post" enctype="multipart/form-data">
