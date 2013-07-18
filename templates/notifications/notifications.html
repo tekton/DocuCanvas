@@ -21,7 +21,7 @@
             <tbody>
                 {% for notification in notifications %}
                     <tr id="notification_{{notification.id}}">
-                        <td><a href="{% url 'auth.views.user_overview' notification.creator.id %}">{{notification.notification.creator}}</a></td>
+                        <td><a href="{% url 'auth.views.user_overview' notification.notification.creator.id %}">{{notification.notification.creator}}</a></td>
                         <td>{{notification.notification.message}}</td>
                         <td>{{notification.created}}</td>
                     </tr>
