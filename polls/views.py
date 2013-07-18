@@ -37,7 +37,7 @@ def new_poll(request):
             poll.total_items = b
             poll.save()
             print 'saving form'
-            return redirect('polls.views.poll_overview', p.id)
+            return redirect('socialplatform.views.notify_new_poll', p.id)
         else:
             print poll_form.errors
             print formset.errors

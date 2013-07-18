@@ -40,7 +40,7 @@ def signed_feedback(request):
 				feedback = form.save()
 			except Exception, e:
 				print "feedback form did not save"
-			return redirect('feedback.view.signed_view', feedback.id)
+			return redirect('feedback.views.signed_view', feedback.id)
 	else:
 		form = SignedForm()
 	return render_to_response('feedback/signed_form.html', {'form': form, 'feedback': feedback, 'projects': projects}, context_instance=RequestContext(request))
@@ -91,4 +91,4 @@ def all_signed(request):
 		feedback = SignedFeedback.objects.all()
 	except Exception, e:
 		print e
-	return render_to-resposne('feedback/signed_all.html', {'projects': projects, 'sigend': feedback}, context_instance=RequestContext(request))
+	return render_to_response('feedback/signed_all.html', {'projects': projects, 'signed': feedback}, context_instance=RequestContext(request))

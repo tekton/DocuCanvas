@@ -1,8 +1,15 @@
 {% extends "feedback/base.html" %}
 
 {% block contextNav %}
+    <li><a href="{% url 'feedback.views.anonymous_feedback' %}">Create New Anonymous Feedback</a></li>
+    <li><a href="{% url 'feedback.views.signed_feedback' %}">Create New Signed Feedback</a></li>
+    <li><a href="{% url 'feedback.views.all_anonymous' %}">View All Anonymous Feedback</a></li>
+    <li><a href="{% url 'feedback.views.all_signed' %}">View All Signed Feedbacks</a></li>
 {% endblock %}  
 
+{% block pageTitle %}
+Anonymous Feedback Form
+{% endblock %}
 
 {% block bodyContent%}
 <form action="{% url 'feedback.views.anonymous_feedback' %}" method="post" enctype="multipart/form-data">
