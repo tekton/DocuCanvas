@@ -145,6 +145,9 @@ class SearchView(object):
         """
         Generates the actual HttpResponse to send back to the user.
         """
+        to_json = {"success": True}
+        results = []
+
         (paginator, page) = self.build_page()
 
         context = {
@@ -162,22 +165,24 @@ class SearchView(object):
 
         try:
             if self.request.GET['ajax']:
-                to_json = {"success": True}
-                results = []
 
                 for result in self.results:
-                    result_dictionary = {}
-                    result_dictionary['id'] = result.object.id
-                    result_dictionary['description'] = strip_tags(result.object.description)
-                    result_dictionary['summary'] = result.object.summary
+                    result_dictionary = model_to_dict(result.object)
+                    try:
+                        result_dictionary['description'] = strip_tags(result_dictionary['description'])
+                    except:
+                        pass
+
+                    for k,v in result_dictionary.items():
+                        result_dictionary[k] = str(result_dictionary[k])
                     results.append(result_dictionary)
+
                 to_json['results'] = results
-                print to_json
-                return HttpResponse(json.dumps(to_json), mimetype='application/json')
         except Exception, e:
             print e
 
-        return help_form(self.request, context)
+        return HttpResponse(json.dumps(to_json), mimetype='application/json')
+        #return help_form(self.request, context)
         #return render_to_response(self.template, context, context_instance=self.context_class(self.request))
 
 def search_view_factory(view_class=SearchView, *args, **kwargs):

@@ -1,8 +1,8 @@
-{% extends "projects/base.html" %}
+{% extends "issues/base.html" %}
 {% load set_var %}
 
 {% comment %}
-Extends /templates/projects/base.html
+Extends /templates/issues/base.html
 
 ==Blocks Available==
 	additionalHead (from /templates/base.html)
@@ -28,7 +28,7 @@ Extends /templates/projects/base.html
 		**NOTE: made available by baseContent - if baseContent is defined within the template, bodyContent will not be displayed unless contained within baseContent**
 {% endcomment %}
 
-{% block pageTitle %}New Project Wizard{% endblock %}
+{% block pageTitle %}New Meta Issue Wizard{% endblock %}
 
 {% block contextNav %}
 {% include '_includes/contextnav-default.html' %}
@@ -36,6 +36,9 @@ Extends /templates/projects/base.html
 
 {% block bodyContent %}
 	<style>
+		/* 
+		 * TODO : move to Gadget CSS
+		 */
 		.wizard-card {display:none;}
 		.wizard-card.active {display:block;}
 		/*
@@ -51,84 +54,66 @@ Extends /templates/projects/base.html
 			padding-top: 5px;
 		}
 	</style>
-	<form action="{% url 'projects.views.project_form' %}" method="POST" enctype="multipart/form-data" class="form-horizontal" autocomplete="off">
+	<form action="{% if new %}{% url 'issues.views.meta_issue_form' %}{% else %}{% url 'issues.views.meta_issue_form' form.instance.id %}{% endif %}" method="POST" enctype="multipart/form-data" class="form-horizontal" autocomplete="off">
 		{% csrf_token %}
-		<div class="hide">
-			<!-- hidden form fields from wizard
-				need to be submitted, even if blank, to validate form servier-side -->
-			{{form.slug}}
-			{{form.priority}}
-			{{form.status}}
-			{{form.logo}}
-			{{form.created}}
-			{{form.modified}}
-			{{form.repository_url}}
-			{{form.deployment_server}}
-			{{form.deployment_url}}
-			{{form.code_name}}
-		</div>
-		<div id="project-wizard" class="wizard">
+		<div id="metaissue-wizard" class="wizard">
 
 			<div class="wizard-inner">
 				<section class="wizard-card active">
 					<div class="wizard-cardhelp">
-						<p>To create a new project, first provide a project name, description, and the current potential end date.</p>
+						<p>To create a new meta issue, first specify the project which the issue belongs to and the type of issue it is.</p>
 					</div>
 					<fieldset>
 						<legend>Step 1</legend>
-						{% set field = form.name %}
+						{% set field = form.project %}
 						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.description %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.potential_end_date %}
+						{% set field = form.mi_type %}
 						{% include '_includes/form-defaultcontrolgroup.html' %}
 					</fieldset>
 				</section>
 
 				<section class="wizard-card">
 					<div class="wizard-cardhelp">
-						<p>Now specify the purpose (scope) of the project and why it is needed (business case)</p>
+						<p>Now specify the name and provide a description for the meta issue.</p>
 					</div>
 					<fieldset>
 						<legend>Step 2</legend>
-						{% set field = form.scope %}
+						{% set field = form.title %}
 						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.business_case %}
+						{% set field = form.description %}
 						{% include '_includes/form-defaultcontrolgroup.html' %}
 					</fieldset>
 				</section>
 
 				<section class="wizard-card">
 					<div class="wizard-cardhelp">
-						<p>Define the core members of this project</p>
+						<p>A user story and code name can also be assigned to this issue. If you would like to provide this information, input it now.</p>
 					</div>
 					<fieldset>
 						<legend>Step 3</legend>
-						{% set field = form.product_owner %}
+						{% set field = form.code_name %}
 						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.project_manager %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.lead_developer %}
+						{% set field = form.user_story %}
 						{% include '_includes/form-defaultcontrolgroup.html' %}
 					</fieldset>
 				</section>
 
 				<section class="wizard-card">
 					<div class="wizard-cardhelp">
-						<p>Define the current phase the project is currently in. Also include the dates for the planning and research states</p>
+						<p>Meta issues can have their own permissions assigned to them. You can grant and revoke user permissions here. You can also change this after the issue is created.</p>
 					</div>
 					<fieldset>
 						<legend>Step 4</legend>
-						{% set field = form.current_phase %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.phase_planning_start %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.phase_planning_end %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.phase_research_start %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.phase_research_end %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
+						<div class="row">
+							<div class="span4 offset1">
+								{% set field = pform.view_users %}
+								{% include '_includes/form-defaultcontrolgroup.html' %}
+							</div>
+							<div class="span4 offset2">
+								{% set field = pform.update_users %}
+								{% include '_includes/form-defaultcontrolgroup.html' %}
+							</div>
+						</div>
 					</fieldset>
 				</section>
 
@@ -138,31 +123,21 @@ Extends /templates/projects/base.html
 					</div>
 					<fieldset>
 						<legend>Final Step: Confirmation</legend>
-						{% set field = form.name %}
+						{% set field = form.project %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.mi_type %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
+						{% set field = form.title %}
 						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.description %}
 						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.potential_end_date %}
+						{% set field = form.code_name %}
 						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.scope %}
+						{% set field = form.user_story %}
 						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.business_case %}
+						{% set field = pform.view_users%}
 						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.product_owner %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.project_manager %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.lead_developer %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.current_phase %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.phase_planning_start %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.phase_planning_end %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.phase_research_start %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.phase_research_end %}
+						{% set field = pform.update_users %}
 						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 					</fieldset>
 				</section>
@@ -240,14 +215,6 @@ $('.wizard *:input').change(function(evt){
 		else {
 			displayField.html(inputField.val());
 		}
-});
-
-$(function(){
-    $('#id_potential_end_date').datepicker();
-    $('#id_phase_planning_start').datepicker();
-    $('#id_phase_planning_end').datepicker();
-    $('#id_phase_research_start').datepicker();
-    $('#id_phase_research_end').datepicker();
 });
 </script>
 {% endblock %}

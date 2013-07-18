@@ -1,0 +1,5 @@
+{{ object.issue }}
+{{ object.user }}
+{{ object.created }}
+{{ object.updated }}
+{{ object.description }}
