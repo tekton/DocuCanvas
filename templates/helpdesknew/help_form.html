@@ -68,28 +68,65 @@ Ask A Question
     });
 
 
+    function returnModelLink(html_obj, model_dict){
+        var link_obj = $('<a></a>');
+
+        switch(model_dict['model_type'])
+        {
+            case "Project": 
+                link_obj.text(model_dict['name']);
+                html_obj.attr('title', model_dict['description']);
+                link_obj.attr('href', "/project/" + model_dict['id'] );
+                break;
+            case "Issue":
+                link_obj.text(model_dict['summary']);
+                html_obj.attr('title', model_dict['description']);
+                link_obj.attr('href', "/issue/" + model_dict['id'] );
+                break;
+            case "HelpRequest":
+                link_obj.text(model_dict['name']);
+                html_obj.attr('title', model_dict['question']);
+                link_obj.attr('href', "/help/" + model_dict['id'] );
+                break;
+            case "HelpResponse":
+                link_obj.text(model_dict['helprequest']);
+                html_obj.attr('title', model_dict['response']);
+                link_obj.attr('href', "/help/" + model_dict['id'] );
+                break;
+            case "FoodRequest":
+                link_obj.text(model_dict['item']);
+                html_obj.attr('title', model_dict['quantity'] + ' ' + model_dict['quantity_type']);
+                link_obj.attr('href', "/food/" + model_dict['id'] );
+                break;
+            case "Notification":
+                link_obj.text(model_dict['message']);
+                html_obj.attr('title', model_dict['creator']);
+                link_obj.attr('href', "/all/" );
+                break;
+
+        }
+        return html_obj.append(link_obj);
+
+    }
+
+
     function getSimilarQuestions(){
         $.ajax({
                 type: 'GET',
                 url: '/search/',
                 data:{
                     q: $('#id_name').val(),
-                    ajax: "Yes"
+                    ajax: "Yes",
                 },
                 success: function(data){
+                    
                     $('[name="similar_questions_results"]').empty();
                     for(result in data.results){
-                        var similar_issue_container = $('<tr></tr>');
-                        var summary = $('<a></a>');
+                        var similar_search_container = $('<tr></tr>');
+                        similar_search = data.results[result];
+                        similar_search_container = returnModelLink(similar_search_container, similar_search); 
+                        $('[name="similar_questions_results"]').append(similar_search_container);
 
-                        similar_issue = data.results[result]
-
-                        summary.text(similar_issue['summary']);
-                        similar_issue_container.attr('title', similar_issue['description']);
-                        summary.attr('href', "/issue/" + similar_issue['id'] );
-
-                        similar_issue_container.append(summary);
-                        $('[name="similar_questions_results"]').append(similar_issue_container);
                     }
                 },
                 error: function(data){

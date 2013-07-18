@@ -175,6 +175,8 @@ class SearchView(object):
 
                     for k,v in result_dictionary.items():
                         result_dictionary[k] = str(result_dictionary[k])
+
+                    result_dictionary['model_type'] = result._get_model().__name__
                     results.append(result_dictionary)
 
                 to_json['results'] = results
@@ -182,7 +184,6 @@ class SearchView(object):
             print e
 
         return HttpResponse(json.dumps(to_json), mimetype='application/json')
-        #return help_form(self.request, context)
         #return render_to_response(self.template, context, context_instance=self.context_class(self.request))
 
 def search_view_factory(view_class=SearchView, *args, **kwargs):
