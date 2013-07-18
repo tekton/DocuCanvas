@@ -22,6 +22,7 @@ from socialplatform.forms import TwitterForm, TweetForm, DMAForm, DMIForm, Faceb
 from notifications.models import Notification, NotificationRecipient
 from helpdesknew.models import HelpRequest
 from projects.models import Project
+from polls.models import Poll
 
 # Facebook API info
 APP_ID                  = "441109929301348"
@@ -301,6 +302,45 @@ def assignment_broadcast(request, issue_id):
     except Exception, e:
         print e
     return redirect('issues.views.issue_overview', issue_id)
+
+
+@login_required
+def notify_new_poll(request, poll_id):
+    callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/newpollbroadcast/' + poll_id
+    return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
+
+
+@login_required
+def new_poll_broadcast(request, poll_id):
+    try:
+        poll = Poll.objects.get(pk=poll_id)
+        targets = FacebookProfile.objects.all()
+    except Exception, e:
+        print e
+    message = 'New+poll+created,+"'
+    for char in poll.name:
+        if char == " ":
+            message += "+"
+        else:
+            message += char
+    message += '"'
+    code = request.GET.get('code')
+    consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
+    client = oauth.Client(consumer)
+    redirect_uri = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/newpollbroadcast/' + poll_id
+    request_url = ACCESS_TOKEN_URL + '?client_id=%s&client_secret=%s&grant_type=client_credentials' % (APP_ID, APP_SECRET)
+    resp, cont = client.request(request_url, 'GET')
+    access_token = dict(urlparse.parse_qsl(cont))['access_token']
+    for target in targets:
+        try:
+            request_url = (GRAPH_URL
+                         + target.facebook_id 
+                         + ("/notifications?access_token=%s&template=%s&href=%s" % (access_token, message, 'http://' + request.META['HTTP_HOST'])))
+            if target.polls and target.active:
+                resp, cont = client.request(request_url, 'POST')
+        except Exception, e:
+            print e
+    return redirect('polls.views.poll_overview', poll_id)
 
 
 @login_required

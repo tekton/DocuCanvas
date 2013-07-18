@@ -17,6 +17,7 @@ class FacebookProfile(models.Model):
 	notifications = models.NullBooleanField(default=True)
 	active = models.NullBooleanField(default=False)
 	issue = models.NullBooleanField(default=True)
+	polls = models.NullBooleanField(default=True)
 
 	def is_active(self):
 		return active
