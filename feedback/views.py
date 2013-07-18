@@ -91,4 +91,4 @@ def all_signed(request):
 		feedback = SignedFeedback.objects.all()
 	except Exception, e:
 		print e
-	return render_to-resposne('feedback/signed_all.html', {'projects': projects, 'sigend': feedback}, context_instance=RequestContext(request))
+	return render_to_response('feedback/signed_all.html', {'projects': projects, 'signed': feedback}, context_instance=RequestContext(request))
