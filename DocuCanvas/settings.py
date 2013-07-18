@@ -166,6 +166,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize', ## wjmazza - 2013-07-02
     'django.contrib.webdesign', ## wjmazza - 2013-07-09
     'polls',
+    'feedback',
  )
 
 # A sample logging configuration. The only tangible logging
