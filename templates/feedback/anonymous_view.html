@@ -1,0 +1,17 @@
+{% extends "feedback/base.html" %}
+
+{% block contextNav %}
+{% endblock %}  
+
+{% block pageTitle %}
+Anonymous Feedback
+{% endblock %}
+
+{% block bodyContent%}
+<b>Submited On:</b><br/>
+{{anonymous.timestamp}}<br/><br/>
+<b>Summary:</b><br/>
+{{anonymous.summary}}<br/><br/>
+<b>Details:</b><br/>
+{{anonymous.feedback}}
+{% endblock%}

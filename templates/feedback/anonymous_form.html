@@ -1,0 +1,13 @@
+{% extends "feedback/base.html" %}
+
+{% block contextNav %}
+{% endblock %}  
+
+
+{% block bodyContent%}
+<form action="{% url 'feedback.views.anonymous_feedback' %}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{form}}
+	<input type='submit' value='Submit'>
+</form>
+{% endblock%}

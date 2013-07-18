@@ -1,0 +1,17 @@
+{% extends "feedback/base.html" %}
+
+{% block contextNav %}
+{% endblock %}  
+
+{% block pageTitle %}
+Signed Feedback from {{signed.user}}
+{% endblock %}
+
+{% block bodyContent%}
+<b>Submited On:</b><br/>
+{{signed.timestamp}}<br/><br/>
+<b>Summary:</b><br/>
+{{signed.summary}}<br/><br/>
+<b>Details:</b><br/>
+{{signed.feedback}}
+{% endblock%}
