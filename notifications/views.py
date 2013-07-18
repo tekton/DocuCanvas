@@ -16,7 +16,7 @@ import json
 @login_required
 def notification_form(request):
 
-    if True:
+    if request.user.is_superuser:
         users_list = []
         users_dict = {}
         num_users = 0
