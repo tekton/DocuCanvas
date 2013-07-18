@@ -159,8 +159,14 @@ def remove_twitter_acct(request):
 
 @login_required
 def access_for_broadcast(request, notification_id):
-    callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/broadcast/' + notification_id
-    return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
+    try:
+        notification = Notification.objects.get(pk=notification_id)
+    except Exception, e:
+        print e
+    if notification.facebook:
+        callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/broadcast/' + notification_id
+        return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
+    return redirect('dashboard.views.home')
 
 
 @login_required
@@ -175,7 +181,7 @@ def social_broadcast(request, notification_id):
     code = request.GET.get('code')
     consumer = oauth.Consumer(key=APP_ID, secret=APP_SECRET)
     client = oauth.Client(consumer)
-    redirect_uri = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/notifications_test/' + notification_id
+    redirect_uri = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/broadcast/' + notification_id
     request_url = ACCESS_TOKEN_URL + '?client_id=%s&client_secret=%s&grant_type=client_credentials' % (APP_ID, APP_SECRET)
     resp, cont = client.request(request_url, 'GET')
     access_token = dict(urlparse.parse_qsl(cont))['access_token']
