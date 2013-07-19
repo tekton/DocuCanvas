@@ -1,0 +1,58 @@
+{% extends "issues/base.html" %}
+
+{% block contextNav %}
+    <li><a href="{% url 'dashboard.views.home' %}">Dashboard</a></li>
+    <li><a href="{% url 'auth.views.account_settings' %}">Account Settings</a></li>
+{% endblock%}
+
+{% block pageTitle %}
+{{metaissue.project}} <span class="title-separator title-seperator-pagevalue">::</span> Meta Issue
+{% endblock %}
+
+{% block bodyContent %}
+    <article class="row">
+        <div id="metaissue-column-main" class="span9 metainfo-maincolumn">
+            <div id="metaissue-details" class="well">
+                <div class="media">
+                    <div class="media-body">
+                        <h3 class="media-header">Title</h3>
+                        {{metaissue.title}}
+                    </div>
+                </div>
+                <div class="media">
+                    <div class="media-body">
+                        <h3 class="media-header">Description</h3>
+                        {{metaissue.description|safe}}
+                    </div>
+                </div>
+                <div class="media">
+                    <div class="media-body">
+                        <h3 class="media-header">User Story</h3>
+                        {{metaissue.user_story|safe}}
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <div id="metaissue-column-aside" class="span3 metainfo-asidecolumn">
+            <aside id="metaissue-metainfo" class="well metainfo metainfo-show">
+                <div class="pull-right">
+                    <button id="metainfo-toggle" class="btn btn-mini" type="button"><i class="icon-resize-small"></i></button>
+                </div>
+                <div id="metaissue-metainfo-content" class="metainfo-content">
+                    <dl>
+                        <dt>Code Name:</dt>
+                            <dd>{{metaissue.code_name}}</dd>
+
+                        <dt>Meta Issue Type:</dt>
+                            <dd>{{metaissue.mi_type}}</dd>
+
+                        <dt>Priority:</dt>
+                            <dd>{{metaissue.priority}}</dd>
+                    </dl>
+                </div>
+            </aside>
+        </div>
+    </article>
+{% endblock %}

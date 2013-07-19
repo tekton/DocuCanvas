@@ -90,7 +90,7 @@ Project
 						    </thead>
 						    <tbody>
 						        {% for meta in metas %}<tr>
-						            <td><a href="{% url 'issues.views.meta_issue_form'  meta.id  %}">{{ meta.title }}</a></td>
+						            <td><a href="{% url 'issues.views.meta_issue_overview'  meta.id  %}">{{ meta.title }}</a></td>
 						            <td>{{ meta.mi_type }}</td>
 						            <td><a href="{% url 'issues.views.meta_issue_stats' meta.id %}">Stats</a></td>
 						        </tr>{% empty %}<tr><td><em>No meta-issues for this project.</em></td></tr>

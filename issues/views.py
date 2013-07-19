@@ -327,6 +327,16 @@ def meta_issue_form(request, issue_id=-1):
 
 
 @login_required
+def meta_issue_overview(request, meta_issue_id):
+
+    meta_issue = MetaIssue.objects.get(pk=meta_issue_id)
+
+    return render_to_response('issues/meta_issue_overview.html', {
+        "metaissue": meta_issue
+        }, context_instance=RequestContext(request))
+
+
+@login_required
 def meta_issue_stats(request, meta_issue_id):
     try:
         meta_issue = MetaIssue.objects.get(pk=meta_issue_id)

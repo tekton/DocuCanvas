@@ -6,6 +6,7 @@ from django.conf.urls import *
 
 urlpatterns = patterns('',
     (r'meta/new$', 'issues.views.meta_issue_form'),
+    (r'meta/(\d+)/view', 'issues.views.meta_issue_overview'),
     (r'meta/(\d+)/stats', 'issues.views.meta_issue_stats'),
     (r'meta/(\d+)/edit$', 'issues.views.meta_issue_form'),
     (r'(\d+)/edit', 'issues.views.edit'),
