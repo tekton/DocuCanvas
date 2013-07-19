@@ -71,26 +71,26 @@ Extends /templates/projects/base.html
 
 			<div class="wizard-inner">
 				<section class="wizard-card active">
-					<div class="wizard-cardhelp">
-						<p>To create a new project, first provide a project name, description, and the current potential end date.</p>
-					</div>
 					<fieldset>
 						<legend>Step 1</legend>
+						<div class="wizard-cardhelp">
+							<p>To create a new project, first provide a project name, description, and the current potential end date.</p>
+						</div>
 						{% set field = form.name %}
 						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.description %}
 						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.potential_end_date %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-datefieldcontrolgroup.html' %}
 					</fieldset>
 				</section>
 
 				<section class="wizard-card">
-					<div class="wizard-cardhelp">
-						<p>Now specify the purpose (scope) of the project and why it is needed (business case)</p>
-					</div>
 					<fieldset>
 						<legend>Step 2</legend>
+						<div class="wizard-cardhelp">
+							<p>Now specify the purpose (scope) of the project and why it is needed (business case)</p>
+						</div>
 						{% set field = form.scope %}
 						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.business_case %}
@@ -99,11 +99,11 @@ Extends /templates/projects/base.html
 				</section>
 
 				<section class="wizard-card">
-					<div class="wizard-cardhelp">
-						<p>Define the core members of this project</p>
-					</div>
 					<fieldset>
 						<legend>Step 3</legend>
+						<div class="wizard-cardhelp">
+							<p>Define the core members of this project</p>
+						</div>
 						{% set field = form.product_owner %}
 						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.project_manager %}
@@ -114,30 +114,30 @@ Extends /templates/projects/base.html
 				</section>
 
 				<section class="wizard-card">
-					<div class="wizard-cardhelp">
-						<p>Define the current phase the project is currently in. Also include the dates for the planning and research states</p>
-					</div>
 					<fieldset>
 						<legend>Step 4</legend>
+						<div class="wizard-cardhelp">
+							<p>Define the current phase the project is currently in. Also include the dates for the planning and research states</p>
+						</div>
 						{% set field = form.current_phase %}
 						{% include '_includes/form-defaultcontrolgroup.html' %}
 						{% set field = form.phase_planning_start %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-datefieldcontrolgroup.html' %}
 						{% set field = form.phase_planning_end %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-datefieldcontrolgroup.html' %}
 						{% set field = form.phase_research_start %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-datefieldcontrolgroup.html' %}
 						{% set field = form.phase_research_end %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-datefieldcontrolgroup.html' %}
 					</fieldset>
 				</section>
 
 				<section class="wizard-card">
-					<div class="wizard-chardhelp">
-						<p>Confirm all the information provided is correct and hit submit</p>
-					</div>
 					<fieldset>
 						<legend>Final Step: Confirmation</legend>
+						<div class="wizard-chardhelp">
+							<p>Confirm all the information provided is correct and hit submit</p>
+						</div>
 						{% set field = form.name %}
 						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
 						{% set field = form.description %}
@@ -168,14 +168,12 @@ Extends /templates/projects/base.html
 				</section>
 			</div>
 
+			<ul class="pager">
+				<li class="previous hide" id="wizard-prevbtn"><a href="#"><i class="icon-arrow-left"></i> Previous</a></li>
+				<li class="pull-right"><button id="wizard-submitbtn" type="submit" class="btn btn-primary hide">Submit</button></li>
+				<li class="next" id="wizard-nextbtn"><a href="#">Next <i class="icon-arrow-right"></i></a></li>
+			</ul>
 
-
-			<div class="form-actions">
-				<button type="button" class="btn disabled" id="wizard-prevbtn">Previous</button>
-				<button type="button" class="btn" id="wizard-nextbtn">Next</button>
-
-				<button id="wizard-submitbtn" type="submit" class="btn btn-primary pull-right hide">Submit</button>
-			</div>
 		</div>
 	</form>
 {% endblock %}
@@ -185,8 +183,14 @@ Extends /templates/projects/base.html
 var wizardPrev = $('#wizard-prevbtn');
 var wizardNext = $('#wizard-nextbtn');
 
+$('.pager a').focus(function(){
+	$(this).blur();
+})
+
 wizardPrev.click(function(evt){
 	evt.preventDefault();
+
+	$(this).blur();
 	
 	var activeCard = $('.wizard .wizard-inner .wizard-card.active'),
 		prevCard = activeCard.prev(),
@@ -196,18 +200,20 @@ wizardPrev.click(function(evt){
 		activeCard.removeClass('active');
 		prevCard.addClass('active');
 
-		wizardNext.removeClass('disabled');
+		wizardNext.removeClass('hide');
 
 		if ( prevCard.prev().length == 0 ) {
-			$(this).addClass('disabled');
+			$(this).addClass('hide');
 		}
 	}
-
+	$('#wizard-nextbtn').show();
 	$('#wizard-submitbtn').hide();
 });
 
 wizardNext.click(function(evt){
 	evt.preventDefault();
+
+	$(this).blur();
 
 	var activeCard = $('.wizard-card.active'),
 		prevCard = activeCard.prev(),
@@ -217,10 +223,11 @@ wizardNext.click(function(evt){
 		activeCard.removeClass('active');
 		nextCard.addClass('active');
 
-		wizardPrev.removeClass('disabled');
+		wizardPrev.removeClass('hide');
 
 		if ( nextCard.next().length == 0 ) {
-			$(this).addClass('disabled');
+			$(this).addClass('hide');
+			$('#wizard-nextbtn').hide();
 			$('#wizard-submitbtn').show();
 		}
 	}
