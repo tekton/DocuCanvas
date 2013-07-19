@@ -75,3 +75,8 @@ $("#metainfo-toggle").click(function(){
 });
 
 $(".table-sortable").tablesorter();
+
+ $('.control-group-datefield a.add-on:has("i.icon-calendar")').click(function(evt){
+    evt.preventDefault();
+    $(this).siblings('input.hasDatepicker').focus();
+ });
