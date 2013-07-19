@@ -31,7 +31,11 @@ Ask A Question
     {% csrf_token %}
     <div class="control-group">
         <label class="control-label" for="id_name">Summary (required):</label>
-        <div class="controls">{{form.name}}</div>
+        <div class="controls">
+            {{form.name}}
+            <ul class="media-list" id="similar_questions_results">
+            </ul>
+        </div>
     </div>
     <div class="control-group">
         <label class="control-label" for="id_question">Description:</label>
@@ -49,11 +53,6 @@ Ask A Question
     <input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
     
 </form>
-
-<div style="float:right;height:500px;width:500px;border-style:solid;border-width:1px;border-color:#cccccc;font-size: 14px;color: #555555;">
-    <table name="similar_questions_results">
-    </table>
-</div>
 {% endblock %}
 
 {% block endScripts %}
@@ -69,44 +68,49 @@ Ask A Question
 
 
     function returnModelLink(html_obj, model_dict){
-        var link_obj = $('<a></a>');
+        var headingText, descriptionText;
 
         switch(model_dict['model_type'])
         {
-            case "Project": 
-                link_obj.text(model_dict['name']);
-                html_obj.attr('title', model_dict['description']);
-                link_obj.attr('href', "/project/" + model_dict['id'] );
+            case "Project":
+                headingText = '<a href="/project/"' + model_dict['id'] + '">' + model_dict['name'] + '</a>'
+                descriptionText = model_dict['description'];
                 break;
             case "Issue":
-                link_obj.text(model_dict['summary']);
-                html_obj.attr('title', model_dict['description']);
-                link_obj.attr('href', "/issue/" + model_dict['id'] );
+                headingText = '<a href="/issue/"' + model_dict['id'] + '">' + model_dict['summary'] + '</a>'
+                descriptionText = model_dict['description'];
                 break;
             case "HelpRequest":
-                link_obj.text(model_dict['name']);
-                html_obj.attr('title', model_dict['question']);
-                link_obj.attr('href', "/help/" + model_dict['id'] );
+                headingText = '<a href="/help/"' + model_dict['id'] + '">' + model_dict['name'] + '</a>'
+                descriptionText = model_dict['question'];
                 break;
             case "HelpResponse":
-                link_obj.text(model_dict['helprequest']);
-                html_obj.attr('title', model_dict['response']);
-                link_obj.attr('href', "/help/" + model_dict['id'] );
+                headingText = '<a href="/help/"' + model_dict['id'] + '">' + model_dict['helprequest'] + '</a>'
+                descriptionText = model_dict['response'];
                 break;
             case "FoodRequest":
-                link_obj.text(model_dict['item']);
-                html_obj.attr('title', model_dict['quantity'] + ' ' + model_dict['quantity_type']);
-                link_obj.attr('href', "/food/" + model_dict['id'] );
+                headingText = '<a href="/food/"' + model_dict['id'] + '">' + model_dict['quantity'] + ' ' + model_dict['quantity_type'] + '</a>'
                 break;
             case "Notification":
-                link_obj.text(model_dict['message']);
-                html_obj.attr('title', model_dict['creator']);
-                link_obj.attr('href', "/all/" );
+                headingText = '<a href="/all/">' + model_dict['message'] + '</a>'
+                descriptionText = model_dict['creator'];
                 break;
 
         }
-        return html_obj.append(link_obj);
 
+        var headingEl = $('<h5/>');
+            headingEl.addClass('media-heading');
+            headingEl.html(headingText);
+
+        var descriptionEl = $('<div/>');
+            descriptionEl.html(descriptionText);
+
+        var bodyEl = $('<div/>');
+            bodyEl.addClass('media-body');
+            bodyEl.append(headingEl);
+            bodyEl.append(descriptionEl);
+
+        html_obj.append(bodyEl);
     }
 
 
@@ -119,13 +123,16 @@ Ask A Question
                     ajax: "Yes",
                 },
                 success: function(data){
-                    
-                    $('[name="similar_questions_results"]').empty();
+                    var media_list = $('#similar_questions_results');
+                    media_list.empty();
                     for(result in data.results){
-                        var similar_search_container = $('<tr></tr>');
+                        var li = $('<li/>');
+                            li.addClass('media');
+
                         similar_search = data.results[result];
-                        similar_search_container = returnModelLink(similar_search_container, similar_search); 
-                        $('[name="similar_questions_results"]').append(similar_search_container);
+                        similar_search_container = returnModelLink(li, similar_search); 
+
+                        media_list.append(li);
 
                     }
                 },
