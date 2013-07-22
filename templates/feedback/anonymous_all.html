@@ -3,7 +3,9 @@
 {% block contextNav %}
     <li><a href="{% url 'feedback.views.anonymous_feedback' %}">New Anonymous Feedback</a></li>
     <li><a href="{% url 'feedback.views.signed_feedback' %}">New Signed Feedback</a></li>
+    {% if user.is_staff %}
     <li><a href="{% url 'feedback.views.all_anonymous' %}">All Anonymous Feedback</a></li>
+    {% endif %}
     <li><a href="{% url 'feedback.views.all_signed' %}">All Signed Feedbacks</a></li>
 {% endblock %} 
 
