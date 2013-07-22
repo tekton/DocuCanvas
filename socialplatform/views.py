@@ -262,14 +262,24 @@ def broadcast_help(request, help_id):
 
 @login_required
 def sending_help(request, help_id):
-    callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/helpbroadcast/' + help_id
-    return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
+    try:
+        facebook = FacebookProfile.objects.get(user=request.user)
+        callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/helpbroadcast/' + help_id
+        return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
+    except Exception, e:
+        return redirect('helpdesknew.views.get_help')
+    
 
 
 @login_required
 def notify_assignment(request, issue_id):
-    callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/assignbroadcast/' + issue_id
-    return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
+    try:
+        facebook = FacebookProfile.objects.get(user=request.user)
+        callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/assignbroadcast/' + issue_id
+        return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
+    except Exception, e:
+        return redirect('issues.views.issue_overview', issue_id)
+    
 
 
 @login_required
