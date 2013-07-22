@@ -24,15 +24,108 @@ New Issue
 {% endblock %}
 
 {% block bodyContent %}
-	<form action="{% url 'issues.views.issue_form' %}" method="post" enctype="multipart/form-data">
+	<form action="{% url 'issues.views.issue_form' %}" method="post" class="form-horizontal span11" enctype="multipart/form-data">
 		{% csrf_token %}
-		<table>
-			{{form.as_table}}
-		</table>
-        <input type="file" name="myfiles" multiple>
+        <div class="control-group">
+        <label class="control-label" for="id_project">Project:</label>
+            <div class="controls">
+                {{form.project}}
+            </div>
+        </div>
+        <div class="control-group">
+        <label class="control-label" for="id_summary">Summary (required):</label>
+            <div class="controls">
+                {{form.summary}}
+                <ul class="media-list" id="similar_issues_results">
+                </ul>
+            </div>
+        </div>
+        <div class="control-group">
+        <label class="control-label" for="id_description">Description</label>
+            <div class="controls">
+                {{form.description}}
+            </div>
+        </div>
 
-		<div class="form-actions">
-    		<input type="submit" value="Submit" class="btn btn-primary">
-		</div>
+        <div class="control-group">
+            <div class="controls">
+            <input type="file" name="myfiles" multiple>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <input type="submit" value="Submit" class="btn btn-primary">
+
+            </div>
+        </div>
 	</form>
+{% endblock %}
+
+{% block endScripts %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#id_summary').keyup( $.debounce(350, getSimilarIssues));
+
+        //$('#id_summary').append($('<ul class="media-list" id="similar_issues_results"></ul>'));
+        //$('<ul class="media-list" id="similar_issues_results"></ul>').insertAfter($('#id_summary'));
+    });
+
+        function returnModelLink(html_obj, model_dict){
+        var headingText, descriptionText;
+
+        if(model_dict['model_type'] == "Issue"){
+            headingText = '<a href="/issue/' + model_dict['id'] + '">' + model_dict['summary'] + ' [Issue]</a>'
+            descriptionText = model_dict['description'];
+
+            var headingEl = $('<h5/>');
+            headingEl.addClass('media-heading');
+            headingEl.html(headingText);
+
+            var descriptionEl = $('<div/>');
+                descriptionEl.html(descriptionText);
+
+            var bodyEl = $('<div/>');
+                bodyEl.addClass('media-body');
+                bodyEl.append(headingEl);
+                bodyEl.append(descriptionEl);
+
+            html_obj.append(bodyEl);
+        }
+
+        
+    }
+
+
+    function getSimilarIssues(){
+        $.ajax({
+                type: 'GET',
+                url: '/search/',
+                data:{
+                    q: $('#id_summary').val(),
+                    ajax: "Yes",
+                },
+                success: function(data){
+                    var media_list = $('#similar_issues_results');
+                    media_list.empty();
+
+                    for(result in data.results){
+                        var li = $('<li/>'), similar_issue, similar_issue_container;
+                            li.addClass('media');
+
+                        similar_issue = data.results[result];
+                        similar_issue_container = returnModelLink(li, similar_issue); 
+
+                        media_list.append(li);
+
+                    }
+                },
+                error: function(data){
+                    //AlertMessage.error(data.responseJSON.response);
+                    console.log(data.responseJSON.response)
+                }
+            });
+    }
+
+</script>
 {% endblock %}

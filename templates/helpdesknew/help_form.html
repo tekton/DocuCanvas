@@ -27,7 +27,7 @@ Ask A Question
 
 {% block bodyContent %}
 
-<form action="{% url 'helpdesknew.views.help_form' %}" method="post" enctype="multipart/form-data" class="form-horizontal span6">
+<form action="{% url 'helpdesknew.views.help_form' %}" method="post" enctype="multipart/form-data" class="form-horizontal span6" autocomplete="false">
     {% csrf_token %}
     <div class="control-group">
         <label class="control-label" for="id_name">Summary (required):</label>
@@ -56,8 +56,8 @@ Ask A Question
 {% endblock %}
 
 {% block endScripts %}
-<!--<script src="http://code.jquery.com/jquery-1.9.1.js"></script>-->
 <script type="text/javascript">
+
     $(document).ready(function(){
         $('#id_photo').click(function(){
             $('#image_upload_preview').fadeTo("fast", 1);
@@ -72,31 +72,32 @@ Ask A Question
 
         switch(model_dict['model_type'])
         {
-            case "Project":
-                headingText = '<a href="/project/"' + model_dict['id'] + '">' + model_dict['name'] + '</a>'
-                descriptionText = model_dict['description'];
-                break;
             case "Issue":
-                headingText = '<a href="/issue/"' + model_dict['id'] + '">' + model_dict['summary'] + '</a>'
+                headingText = '<a href="/issue/' + model_dict['id'] + '">' + model_dict['summary'] + ' [Issue]</a>'
                 descriptionText = model_dict['description'];
                 break;
             case "HelpRequest":
-                headingText = '<a href="/help/"' + model_dict['id'] + '">' + model_dict['name'] + '</a>'
+                headingText = '<a href="/help/' + model_dict['id'] + '">' + model_dict['name'] + ' [Help Request]</a>'
                 descriptionText = model_dict['question'];
                 break;
             case "HelpResponse":
-                headingText = '<a href="/help/"' + model_dict['id'] + '">' + model_dict['helprequest'] + '</a>'
+                headingText = '<a href="/help/' + model_dict['id'] + '">' + model_dict['helprequest'] + ' [Help Response]</a>'
                 descriptionText = model_dict['response'];
                 break;
-            case "FoodRequest":
-                headingText = '<a href="/food/"' + model_dict['id'] + '">' + model_dict['quantity'] + ' ' + model_dict['quantity_type'] + '</a>'
-                break;
-            case "Notification":
-                headingText = '<a href="/all/">' + model_dict['message'] + '</a>'
-                descriptionText = model_dict['creator'];
-                break;
-
         }
+
+
+            // case "FoodRequest":
+            //     headingText = '<a href="/food/' + model_dict['id'] + '">' + model_dict['quantity'] + ' ' + model_dict['quantity_type'] + '</a>'
+            //     break;
+            // case "Notification":
+            //     headingText = '<a href="/all/">' + model_dict['message'] + '</a>'
+            //     descriptionText = model_dict['creator'];
+            //     break;
+            // case "Project":
+            //     headingText = '<a href="/project/' + model_dict['id'] + '">' + model_dict['name'] + '</a>'
+            //     descriptionText = model_dict['description'];
+            //     break;
 
         var headingEl = $('<h5/>');
             headingEl.addClass('media-heading');
@@ -126,8 +127,9 @@ Ask A Question
                     var media_list = $('#similar_questions_results');
                     media_list.empty();
                     for(result in data.results){
-                        var li = $('<li/>');
+                        var li = $('<li/>'), similar_search, simlar_search_container;
                             li.addClass('media');
+
 
                         similar_search = data.results[result];
                         similar_search_container = returnModelLink(li, similar_search); 
