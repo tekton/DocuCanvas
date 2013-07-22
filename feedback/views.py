@@ -8,6 +8,7 @@ from feedback.models import AnonymousFeedback, SignedFeedback
 from feedback.forms import AnonymousForm, SignedForm
 
 
+@login_required
 def anonymous_feedback(request):
 	try:
 		projects = Project.objects.all()
@@ -27,6 +28,7 @@ def anonymous_feedback(request):
 	return render_to_response('feedback/anonymous_form.html', {'form': form, 'feedback': feedback, 'projects': projects}, context_instance=RequestContext(request))
 
 
+@login_required
 def signed_feedback(request):
 	try:
 		projects = Project.objects.all()
@@ -46,18 +48,23 @@ def signed_feedback(request):
 	return render_to_response('feedback/signed_form.html', {'form': form, 'feedback': feedback, 'projects': projects}, context_instance=RequestContext(request))
 
 
+@login_required
 def anonymous_view(request, feedback_id):
-	try:
-		projects = Project.objects.all()
-	except Exception, e:
-		print e
-	try:
-		feedback = AnonymousFeedback.objects.get(pk=feedback_id)
-	except Exception, e:
-		print e
-	return render_to_response('feedback/anonymous_view.html', {'projects': projects, 'anonymous': feedback}, context_instance=RequestContext(request))
+	if request.user.is_staff:
+		try:
+			projects = Project.objects.all()
+		except Exception, e:
+			print e
+		try:
+			feedback = AnonymousFeedback.objects.get(pk=feedback_id)
+		except Exception, e:
+			print e
+		return render_to_response('feedback/anonymous_view.html', {'projects': projects, 'anonymous': feedback}, context_instance=RequestContext(request))
+	else:
+		return redirect('feedback.views.all_signed')
 
 
+@login_required
 def signed_view(request, feedback_id):
 	try:
 		projects = Project.objects.all()
@@ -70,18 +77,23 @@ def signed_view(request, feedback_id):
 	return render_to_response('feedback/signed_view.html', {'projects': projects, 'signed': feedback}, context_instance=RequestContext(request))
 
 
+@login_required
 def all_anonymous(request):
-	try:
-		projects = Project.objects.all()
-	except Exception, e:
-		print e
-	try:
-		feedback = AnonymousFeedback.objects.all()
-	except Exception, e:
-		print e
-	return render_to_response('feedback/anonymous_all.html', {'projects': projects, 'anonymous': feedback}, context_instance=RequestContext(request))
+	if request.user.is_staff:
+		try:
+			projects = Project.objects.all()
+		except Exception, e:
+			print e
+		try:
+			feedback = AnonymousFeedback.objects.all()
+		except Exception, e:
+			print e
+		return render_to_response('feedback/anonymous_all.html', {'projects': projects, 'anonymous': feedback}, context_instance=RequestContext(request))
+	else:
+		return redirect('feedback.views.all_signed')
 
 
+@login_required
 def all_signed(request):
 	try:
 		projects = Project.objects.all()
