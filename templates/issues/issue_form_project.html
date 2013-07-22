@@ -24,14 +24,103 @@
         {% csrf_token %}
 
         {{form.project.as_hidden}}
-        Summary: {{form.summary}}<br>
+
+        <div class="control-group">
+        <label class="control-label" for="id_summary">Summary (required):</label>
+            <div class="controls">
+                {{form.summary}}
+                <ul class="media-list" id="similar_issues_results">
+                </ul>
+            </div>
+        </div>
+        <div class="control-group">
+        <label class="control-label" for="id_description">Description</label>
+            <div class="controls">
+                {{form.description}}
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+            <input type="file" name="myfiles" multiple>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <input type="submit" value="Submit" class="btn btn-primary">
+            </div>
+        </div>
+        <!--Summary: {{form.summary}}<br>
         Description{{form.description}}<br>
         Screenshot: 
         <input type="file" name="myfiles" multiple/><br>
 
 		<div class="form-actions">
 			<input type="submit" value="Submit" class="btn btn-primary" />
-		</div>
+		</div>-->
     </form>
 
+{% endblock %}
+
+{% block endScripts %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('[name="summary"]').keyup( $.debounce(350, getSimilarIssues));
+    });
+
+    function returnModelLink(html_obj, model_dict, project_id){
+        var headingText, descriptionText;
+
+        if(model_dict['model_type'] == "Issue" && model_dict['project'] == project_id){
+            headingText = '<a href="/issue/' + model_dict['id'] + '">' + model_dict['summary'] + '</a>'
+            descriptionText = model_dict['description'];
+
+            var headingEl = $('<h5/>');
+            headingEl.addClass('media-heading');
+            headingEl.html(headingText);
+
+            var descriptionEl = $('<div/>');
+                descriptionEl.html(descriptionText);
+
+            var bodyEl = $('<div/>');
+                bodyEl.addClass('media-body');
+                bodyEl.append(headingEl);
+                bodyEl.append(descriptionEl);
+
+            html_obj.append(bodyEl);
+        }
+    }
+
+    function getSimilarIssues(){
+        var media_list = $('#similar_issues_results');
+
+            $.ajax({
+                type: 'GET',
+                url: '/search/',
+                data:{
+                    q: $('[name="summary"]').val(),
+                    ajax: "Yes",
+                },
+                success: function(data){    
+                    media_list.empty();
+                    for(result in data.results){
+                        var li = $('<li/>'), similar_issue, similar_issue_container;
+                            li.addClass('media');
+
+                        similar_issue = data.results[result];
+                        console.log($('[name="project"]').val());
+                        similar_issue_container = returnModelLink(li, similar_issue, $('[name="project"]').val()); 
+
+                        media_list.append(li);
+
+                    }
+                },
+                error: function(data){
+                    //AlertMessage.error(data.responseJSON.response);
+                    console.log(data.responseJSON.response)
+                }
+            });  
+    }
+</script>
 {% endblock %}
