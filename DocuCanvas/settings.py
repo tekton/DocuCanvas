@@ -167,6 +167,7 @@ INSTALLED_APPS = (
     'django.contrib.webdesign', ## wjmazza - 2013-07-09
     'polls',
     'feedback',
+    'search',
  )
 
 # A sample logging configuration. The only tangible logging
