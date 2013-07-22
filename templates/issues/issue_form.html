@@ -66,16 +66,13 @@ New Issue
 <script type="text/javascript">
     $(document).ready(function(){
         $('#id_summary').keyup( $.debounce(350, getSimilarIssues));
-
-        //$('#id_summary').append($('<ul class="media-list" id="similar_issues_results"></ul>'));
-        //$('<ul class="media-list" id="similar_issues_results"></ul>').insertAfter($('#id_summary'));
     });
 
-        function returnModelLink(html_obj, model_dict){
+    function returnModelLink(html_obj, model_dict, project_id){
         var headingText, descriptionText;
 
-        if(model_dict['model_type'] == "Issue"){
-            headingText = '<a href="/issue/' + model_dict['id'] + '">' + model_dict['summary'] + ' [Issue]</a>'
+        if(model_dict['model_type'] == "Issue" && model_dict['project'] == project_id){
+            headingText = '<a href="/issue/' + model_dict['id'] + '">' + model_dict['summary'] + '</a>'
             descriptionText = model_dict['description'];
 
             var headingEl = $('<h5/>');
@@ -92,29 +89,27 @@ New Issue
 
             html_obj.append(bodyEl);
         }
-
-        
     }
 
 
     function getSimilarIssues(){
-        $.ajax({
+        var media_list = $('#similar_issues_results');
+        if($('#id_project').val()){
+            $.ajax({
                 type: 'GET',
                 url: '/search/',
                 data:{
                     q: $('#id_summary').val(),
                     ajax: "Yes",
                 },
-                success: function(data){
-                    var media_list = $('#similar_issues_results');
+                success: function(data){    
                     media_list.empty();
-
                     for(result in data.results){
                         var li = $('<li/>'), similar_issue, similar_issue_container;
                             li.addClass('media');
 
                         similar_issue = data.results[result];
-                        similar_issue_container = returnModelLink(li, similar_issue); 
+                        similar_issue_container = returnModelLink(li, similar_issue, $('#id_project').val()); 
 
                         media_list.append(li);
 
@@ -125,6 +120,26 @@ New Issue
                     console.log(data.responseJSON.response)
                 }
             });
+        }
+        else{
+
+            media_list.empty();
+            var headingEl = $('<h5/>');
+            headingEl.addClass('media-heading');
+            headingEl.html('Select a project!');
+
+            var bodyEl = $('<div/>');
+                bodyEl.addClass('media-body');
+                bodyEl.append(headingEl);
+
+            var li = $('<li/>');
+                li.addClass('media');
+
+            li.append(bodyEl);
+            media_list.append(li);
+
+        }
+        
     }
 
 </script>
