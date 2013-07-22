@@ -312,8 +312,13 @@ def assignment_broadcast(request, issue_id):
 
 @login_required
 def notify_new_poll(request, poll_id):
-    callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/newpollbroadcast/' + poll_id
-    return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
+    try:
+        facebook = FacebookProfile.objects.get(user=request.user)
+        callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/newpollbroadcast/' + poll_id
+        return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
+    except Exception, e:
+        return redirect('polls.views.poll_overview', poll_id)
+    
 
 
 @login_required
