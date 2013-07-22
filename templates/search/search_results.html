@@ -1,4 +1,4 @@
-{% extends "socialplatform/base.html" %}
+{% extends "search/base.html" %}
 
 {% block pageTitle %}
 Search Results
@@ -9,13 +9,15 @@ Search Results
 {% endblock %}
 
 {% block bodyContent %}
-<b>Issues:</b></br>
+<h2>Results in Issues</h2>
 {% for issue in issues %}
-<a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></br>
+	<a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></br>
 {% endfor %}
-</br>
-<b>Help Desk:</b></br>
+<h2>Results in Help Desk</h2>
 {% for help in help_requests %}
-<a href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.name}}</a></br>
+	<a href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.name}}</a></br>
 {% endfor %}
+{% endblock %}
+
+{% block endScripts %}
 {% endblock %}
