@@ -2,10 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from newsfeed.models import NewsFeedItem
+
+from haystack.management.commands import update_index
 # from django.utils.translation import ugettext as _
 from projects.models import Project
 from django.contrib import admin
 from tinymce.models import HTMLField
+
 
 ISSUETOISSUETYPE = (('duplicated', 'Duplicate'), ('related', 'Related'), ('child', 'Child'), ('parent', 'Parent'))
 ISSUETYPE = (("bug", "Bug"), ("task", "Task"), ("suggestion", "Suggestion"))
@@ -141,7 +144,13 @@ class Issue(models.Model):
                 'couldnt save historical issue'
                 print e
 
+            try:
+                update_index.Command().handle()
+            except Exception, e:
+                print 'unable to update index'
+                print e
         super(Issue, self).save()
+
 
 
 class IssueHistorical(models.Model):

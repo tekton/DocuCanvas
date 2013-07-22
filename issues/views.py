@@ -515,19 +515,12 @@ def edit(request, issue_id):
         print e
 
     if request.method == 'POST':
-
-        for k in request.POST:
-            print k
-            print request.POST[k]
-
         issue = Issue.objects.get(pk=issue_id)
         form = IssueFullForm(request.POST, instance=issue)
         if form.is_valid():
             try:
                 issue.modified_by = request.user
                 issue = form.save(request.user)
-                print 'issue is'
-                print issue
             except Exception, e:
                 print e
                 print form.errors
