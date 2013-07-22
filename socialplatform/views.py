@@ -48,22 +48,26 @@ def getAccessToken(request):
     client = oauth.Client(consumer)
     redirect_uri = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/getAccessToken'
     request_url = ACCESS_TOKEN_URL + '?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s' % (APP_ID, redirect_uri, APP_SECRET, code)
-    resp, content = client.request(request_url, 'GET')
-    access_token = dict(urlparse.parse_qsl(content))['access_token']
-    request_url = CHECK_AUTH + '?access_token=%s' % access_token
-    if resp['status'] == '200':
+
+    try:
         resp, content = client.request(request_url, 'GET')
-        content_dict = json.loads(content)
-        userid = content_dict['id']
-        try:
-            myprofile = FacebookProfile.objects.get(user=request.user)
-            myprofile.active = True
-            myprofile.update_token(access_token)
-        except:
-            myprofile = FacebookProfile(user=request.user, facebook_id=userid, image_url=(GRAPH_URL + content_dict['username'] + '/picture'), access_token=access_token)
-            myprofile.get_remote_image()
-            myprofile.active = True
-            myprofile.save()
+        access_token = dict(urlparse.parse_qsl(content))['access_token']
+        request_url = CHECK_AUTH + '?access_token=%s' % access_token
+        if resp['status'] == '200':
+            resp, content = client.request(request_url, 'GET')
+            content_dict = json.loads(content)
+            userid = content_dict['id']
+            try:
+                myprofile = FacebookProfile.objects.get(user=request.user)
+                myprofile.active = True
+                myprofile.update_token(access_token)
+            except:
+                myprofile = FacebookProfile(user=request.user, facebook_id=userid, image_url=(GRAPH_URL + content_dict['username'] + '/picture'), access_token=access_token)
+                myprofile.get_remote_image()
+                myprofile.active = True
+                myprofile.save()
+    except Exception, e:
+        print e
         # user = authenticate(username=profile.user.username, password=hashlib.new(profile.fb_uid).hexdigest())
         # login(request,user)
     return redirect('dashboard.views.home')
