@@ -271,7 +271,7 @@ def sending_help(request, help_id):
         callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/helpbroadcast/' + help_id
         return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
     except Exception, e:
-        return redirect('helpdesknew.views.get_help')
+        return redirect('helpdesknew.views.get_help', help_id)
     
 
 
