@@ -33,24 +33,25 @@ def search(request):
         response_to_issue.append(comment.issue)
     issue += response_to_issue
     issue.sort()
-    # last_issue = issue[-1]
-    for i in range(len(issue)-2, -1, -1):
-        if last_issue == issue[i]:
-            del help[i]
-        else:
-            last_issue = issue[i]
+    if issue:
+        last_issue = issue[-1]
+        for i in range(len(issue)-2, -1, -1):
+            if last_issue == issue[i]:
+                del help[i]
+            else:
+                last_issue = issue[i]
     help = list(q_help)
     response_to_help = list()
     for response in q_helpresponse:
         response_to_help.append(response.helprequest)
     help += response_to_help
     help.sort()
-    last_help = help[-1]
-    for i in range(len(help)-2, -1, -1):
-        if last_help == help[i]:
-            del help[i]
-        else:
-            last_help = help[i]
+    if help:
+        last_help = help[-1]
+        for i in range(len(help)-2, -1, -1):
+            if last_help == help[i]:
+                del help[i]
+            else:
+                last_help = help[i]
 
-
-    return render_to_response("search/search_results.html", {'issues': q_issue, 'help_requests': help, "projects": projects}, context_instance=RequestContext(request))
+    return render_to_response("search/search_results.html", {'issues': issue, 'help_requests': help, "projects": projects}, context_instance=RequestContext(request))
