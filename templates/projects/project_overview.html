@@ -1,5 +1,5 @@
 {% extends "projects/base.html" %}
-
+{% load staticfiles %}
 {% comment %}
 Extends /templates/projects/base.html
 
@@ -30,6 +30,20 @@ Extends /templates/projects/base.html
 {% block pageTitle %}
 Project
 {% endblock %}
+
+{% block additionalHead%}
+	<style type="text/css">
+    .meta-issue-object {
+        float: left;
+        height: 100px;
+        width: 100px;
+        border: 1px solid black;
+        margin: 10px;
+        position:absolute;
+    }
+</style>
+
+{% endblock%}
 
 {% block contextNav %}
 	<li class="nav-header">New</li>
@@ -75,80 +89,92 @@ Project
 			</div>
 
 			<div id="project-issues" class="well">
-				<section class="media">
-					<div class="media-body">
-						<header>
-							<h3 class="media-header">Meta Issues</h3>
-						</header>
-						<table class="table">
-							<thead>
-						        <tr>
-						            <th>Title</th>
-						            <th>Type</th>
-						            <th>Stats</th>
-						        </tr>
-						    </thead>
-						    <tbody>
-						        {% for meta in metas %}<tr>
-						            <td><a href="{% url 'issues.views.meta_issue_overview'  meta.id  %}">{{ meta.title }}</a></td>
-						            <td>{{ meta.mi_type }}</td>
-						            <td><a href="{% url 'issues.views.meta_issue_stats' meta.id %}">Stats</a></td>
-						        </tr>{% empty %}<tr><td><em>No meta-issues for this project.</em></td></tr>
-						        {% endfor %}
-						    </tbody>
-					    </table>
-					</div>
-				</section>
+				<header>
+						<h3 class="media-header"><a id="issue-view-toggle">Visual View</a></h3>
+				</header>
+				<div id="project-issues-text">
+					<section class="media">
+						
+						<div class="media-body">
+							<header>
+								<h3 class="media-header">Meta Issues</h3>
+							</header>
+							<table class="table">
+								<thead>
+							        <tr>
+							            <th>Title</th>
+							            <th>Type</th>
+							            <th>Stats</th>
+							        </tr>
+							    </thead>
+							    <tbody>
+							        {% for meta in metas %}<tr>
+							            <td><a href="{% url 'issues.views.meta_issue_overview'  meta.id  %}">{{ meta.title }}</a></td>
+							            <td>{{ meta.mi_type }}</td>
+							            <td><a href="{% url 'issues.views.meta_issue_stats' meta.id %}">Stats</a></td>
+							        </tr>{% empty %}<tr><td><em>No meta-issues for this project.</em></td></tr>
+							        {% endfor %}
+							    </tbody>
+						    </table>
+						</div>
+					</section>
 
-				<section class="media">
-					<div class="media-body">
-						<header>
-							<h3 class="media-header">Issues</h3>
-						</header>
-						<table class="table">
-							<caption>
-								Incomplete
-							</caption>
-							<thead>
-								<tr>
-									<th>Summary</th>
-									<th>Status</th>
-									<th>Assigned To</th>
-								</tr>
-							</thead>
-							<tbody>
-							{% for issue in incomplete_issues%}
-								<tr>
-									<td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
-									<td>{{issue.status}}</td>
-									<td>{{issue.assigned_to}}</td>
-								</tr>
-							{% endfor %}
-							</tbody>
-						</table>
-						<table class="table">
-							<caption>
-								Completed
-							</caption>
-							<thead>
-								<tr>
-									<th>Summary</th>
-									<th>Status</th>
-									<th>Assigned To</th>
-								</tr>
-							</thead>
-							<tbody>
-							{% for issue in fixed_issues%}
-								<tr>
-									<td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
-									<td>{{issue.status}}</td>
-									<td>{{issue.assigned_to}}</td>
-								</tr>
-							{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				</section>
+					<section class="media">
+						<div class="media-body">
+							<header>
+								<h3 class="media-header">Issues</h3>
+							</header>
+							<table class="table">
+								<caption>
+									Incomplete
+								</caption>
+								<thead>
+									<tr>
+										<th>Summary</th>
+										<th>Status</th>
+										<th>Assigned To</th>
+									</tr>
+								</thead>
+								<tbody>
+								{% for issue in incomplete_issues%}
+									<tr>
+										<td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
+										<td>{{issue.status}}</td>
+										<td>{{issue.assigned_to}}</td>
+									</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+							<table class="table">
+								<caption>
+									Completed
+								</caption>
+								<thead>
+									<tr>
+										<th>Summary</th>
+										<th>Status</th>
+										<th>Assigned To</th>
+									</tr>
+								</thead>
+								<tbody>
+								{% for issue in fixed_issues%}
+									<tr>
+										<td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
+										<td>{{issue.status}}</td>
+										<td>{{issue.assigned_to}}</td>
+									</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</section>
+				</div>
+				<div id="project-issues-visual" style="display:none;">
+					{% for meta in metas %}
+						<div id="meta-issue-{{meta.id}}" class="meta-issue-object"><strong>{{meta.title}}</strong></br></br></div>
+					{% endfor %}
+
+				</div>
 			</div>
 		</div>
 
@@ -198,4 +224,70 @@ Project
 			</aside>
 		</div>
 	</article>
+{% endblock %}
+
+
+
+
+{% block endScripts %}
+<script src="{% static 'js/jquery.jsPlumb-1.4.1-all-min.js' %}"></script>
+<script src="{% static 'js/jquery.ui.touch-punch.min.js' %}"></script>
+
+<script type="text/javascript">
+	var endpointOptions;
+
+	$(document).ready(function(){
+		jsPlumb.importDefaults({
+			DragOptions : { cursor: 'pointer', zIndex:2000 },
+			EndpointStyles : [{ fillStyle:'#225588' }, { fillStyle:'#558822' }],
+			Endpoints : [ [ "Dot", {radius:7} ], [ "Dot", { radius:11 } ]],
+		});
+		
+		endpointOptions = {
+			anchor:[ "LeftMiddle", "RightMiddle" ], 
+				isSource:true, 
+				isTarget:true,
+				connector : "Straight",
+				connectorStyle: { lineWidth:7, strokeStyle:'#005580' },
+
+		};
+
+		jsPlumb.draggable($('.meta-issue-object'));
+	})
+	
+	//$('.meta-issue-object').each(function(){
+		//jsPlumb.draggable($(this).attr('id'));
+		
+	//});
+
+	$('#issue-view-toggle').click(function(){
+		$('#project-issues-text').fadeToggle(function(){
+			$('#project-issues-visual').height($('#project-issues-text').height());
+			$('#project-issues-visual').width($('#project-issues-text').width());
+			$('#project-issues-visual').fadeToggle(function(){				
+				drawProjectOverview();
+			});	
+		});
+		
+	});
+
+	function drawProjectOverview(){
+		var meta1Endpoint = jsPlumb.addEndpoint('meta-issue-1', { anchor:"RightMiddle" }, endpointOptions );
+		var meta2Endpoint = jsPlumb.addEndpoint('meta-issue-2', { anchor:"LeftMiddle" }, endpointOptions );
+		var meta3Endpoint = jsPlumb.addEndpoint('meta-issue-3', { anchor:"LeftMiddle" }, endpointOptions );
+
+		jsPlumb.connect({ 
+			source:meta1Endpoint,
+			target:meta2Endpoint
+
+		});
+
+		jsPlumb.connect({ 
+			source:meta2Endpoint,
+			target:meta3Endpoint
+
+		});
+
+	}
+</script>
 {% endblock %}

@@ -287,4 +287,17 @@ class IssueScreenshot(models.Model):
     screenshot = models.ImageField(upload_to="upload/issues", blank=True, null=True)
 
 
+class ProjectPlannerItem(models.Model):
+    issue = models.ForeignKey(Issue)
+    item_type = models.CharField(max_length=255,blank=True, null=True, default="meta_issue")
+    x_coordinate = models.IntegerField(default=0)
+    y_coordinate = models.IntegerField(default=0)
+
+
+class ProjectPlannerItemConnection(models.Model):
+    project = models.ForeignKey(Project)
+    source = models.ForeignKey(ProjectPlannerItem, related_name='source')
+    target = models.ForeignKey(ProjectPlannerItem, related_name='target')
+
+
 admin.site.register(IssueScreenshot)
