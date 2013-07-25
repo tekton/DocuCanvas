@@ -170,10 +170,9 @@ Project
 					</section>
 				</div>
 				<div id="project-issues-visual" style="display:none;">
-					{% for meta in metas %}
-						<div id="meta-issue-{{meta.id}}" class="meta-issue-object"><strong>{{meta.title}}</strong></br></br></div>
+					{% for ppi in project_planner_items %}
+						<div id="meta-issue-{{ppi.meta_issue.id}}" class="meta-issue-object" style="top:{{ppi.y_coordinate}}px;left:{{ppi.x_coordinate}}px"><strong>{{ppi.meta_issue.title}}</strong></br></br></div>
 					{% endfor %}
-
 				</div>
 			</div>
 		</div>
@@ -252,14 +251,10 @@ Project
 
 		};
 
-		jsPlumb.draggable($('.meta-issue-object'));
+		jsPlumb.draggable($('.meta-issue-object'), {stop: function(){saveProjectPlannerItem($(this))}});
+
 	})
 	
-	//$('.meta-issue-object').each(function(){
-		//jsPlumb.draggable($(this).attr('id'));
-		
-	//});
-
 	$('#issue-view-toggle').click(function(){
 		$('#project-issues-text').fadeToggle(function(){
 			$('#project-issues-visual').height($('#project-issues-text').height());
@@ -287,7 +282,30 @@ Project
 			target:meta3Endpoint
 
 		});
-
 	}
+
+	function saveProjectPlannerItem(project_planner_item){
+
+		$.ajax({
+                type: 'POST',
+                url: "{% url 'projects.views.save_project_planner_item' %}",
+                data:{
+                	id: project_planner_item.attr('name'),
+                	project_id: '{{project.id}}',
+                	item_id: project_planner_item.attr('id').split('-')[2],
+                    x_coordinate: project_planner_item.css('left').slice(0, -2),
+                    y_coordinate: project_planner_item.css('top').slice(0, -2),
+                    type:'meta_issue',
+                },
+                success: function(data){    
+                    console.log(data.results)
+                },
+                error: function(data){
+                    //AlertMessage.error(data.responseJSON.response);
+                    console.log(data.responseJSON.response)
+                }
+        });
+	}
+
 </script>
 {% endblock %}

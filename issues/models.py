@@ -288,7 +288,8 @@ class IssueScreenshot(models.Model):
 
 
 class ProjectPlannerItem(models.Model):
-    issue = models.ForeignKey(Issue)
+    project = models.ForeignKey(Project)
+    meta_issue = models.ForeignKey(MetaIssue)
     item_type = models.CharField(max_length=255,blank=True, null=True, default="meta_issue")
     x_coordinate = models.IntegerField(default=0)
     y_coordinate = models.IntegerField(default=0)

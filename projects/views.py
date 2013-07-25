@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
+from django.forms.models import model_to_dict
 from django.db.models import Q
 from projects.models import *
 from projects.forms import *
@@ -67,7 +68,12 @@ def project_overview(request, project_id):
     except:
         print 'Unable to load projects'
 
-    return render_to_response("projects/project_overview.html", {'project': project, "metas": metas, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_value": project.name}, context_instance=RequestContext(request))
+    try:
+        project_planner_items = ProjectPlannerItem.objects.filter(project=project)
+    except:
+        print 'Unable to load project planner items'
+
+    return render_to_response("projects/project_overview.html", {'project': project, "project_planner_items": project_planner_items, "metas": metas, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_value": project.name}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -108,21 +114,33 @@ def project_stats(request, project_id):
 def save_project_planner_item(request):
     to_json = {'success': True}
     results = []
+
     if request.method == 'POST':
         try:
-            project_planner_item = ProjectPlannerItem.objects.get(pk=request.POST['id'])
-        except:
-            project_planner_item = ProjectPlannerItem()
-            try:
-                project_planner_item.issue = Issue.objects.get(pk=request.POST['issue_id'])
-                project_planner_item.type= request.POST['type']
-            except Exception, e:
-                print e
-                print 'Issue does not exist'
+            meta_issue = MetaIssue.objects.get(pk=request.POST['item_id'])
 
-        project_planner_item.x_coordinate = request.POST['x_coordinate']
-        project_planner_item.y_coordinate = request.POST['y_coordinate']
-        project_planner_item.save()
+            try:
+                project_planner_item = ProjectPlannerItem.objects.get(meta_issue=meta_issue)
+                project_planner_item.x_coordinate = request.POST['x_coordinate']
+                project_planner_item.y_coordinate = request.POST['y_coordinate']
+                project_planner_item.save()
+            except:
+                try:
+                    project = Project.objects.get(pk=request.POST['project_id'])
+                    project_planner_item = ProjectPlannerItem()
+                    project_planner_item.project = project
+                    project_planner_item.meta_issue = meta_issue
+                    project_planner_item.type = request.POST['type']
+                    project_planner_item.x_coordinate = request.POST['x_coordinate']
+                    project_planner_item.y_coordinate = request.POST['y_coordinate']
+                    project_planner_item.save()
+                except:
+                    print 'Project does not exist'
+
+            results.append(model_to_dict(project_planner_item))
+        except Exception, e:
+            print e
+            print 'Meta Issue does not exist'
 
     to_json['results'] = results
 
