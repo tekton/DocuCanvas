@@ -1,12 +1,14 @@
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required, permission_required
+from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from projects.models import *
 from projects.forms import *
 from issues.models import *
 
+import json
 
 @login_required
 def home(request):
@@ -100,6 +102,54 @@ def project_stats(request, project_id):
         print e
 
     return render_to_response("projects/project_stats.html", {"project": project, "projects": projects, "criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues, "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": project.name, "page_value":"Report"}, context_instance=RequestContext(request))
+
+
+@login_required
+def save_project_planner_item(request):
+    to_json = {'success': True}
+    results = []
+    if request.method == 'POST':
+        try:
+            project_planner_item = ProjectPlannerItem.objects.get(pk=request.POST['id'])
+        except:
+            project_planner_item = ProjectPlannerItem()
+            try:
+                project_planner_item.issue = Issue.objects.get(pk=request.POST['issue_id'])
+                project_planner_item.type= request.POST['type']
+            except Exception, e:
+                print e
+                print 'Issue does not exist'
+
+        project_planner_item.x_coordinate = request.POST['x_coordinate']
+        project_planner_item.y_coordinate = request.POST['y_coordinate']
+        project_planner_item.save()
+
+    to_json['results'] = results
+
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
+
+
+@login_required
+def save_project_planner_item_connection(request):
+    to_json = {'success': True}
+    results = []
+
+    if request.method == 'POST':
+        try:
+            project_planner_item_connection = ProjectPlannerItemConnection.objects.get(pk=request.POST['id'])
+        except:
+            project_planner_item_connection = ProjectPlannerItemConnection()
+            try:
+                project_planner_item_connection.project = Project.objects.get(request.POST['project_id'])
+                project_planner_item_connection.source = ProjectPlannerItem.objects.get(pk=request.POST['source_id'])
+                project_planner_item_connection.target = ProjectPlannerItem.objects.get(pk=request.POST['target_id'])
+            except Exception, e:
+                print e
+                print 'Project does not exist'
+
+        project_planner_item_connection.save()
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
+
 
 
 @login_required
