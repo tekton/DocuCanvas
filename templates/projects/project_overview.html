@@ -169,7 +169,7 @@ Project
 						</div>
 					</section>
 				</div>
-				<div id="project-issues-visual" style="display:none;">
+				<div id="project-issues-visual" style="display:none;" >
 					{% for ppi in project_planner_items %}
 						<div id="meta-issue-{{ppi.meta_issue.id}}" class="meta-issue-object" style="top:{{ppi.y_coordinate}}px;left:{{ppi.x_coordinate}}px"><strong>{{ppi.meta_issue.title}}</strong></br></br></div>
 					{% endfor %}
@@ -251,14 +251,14 @@ Project
 
 		};
 
-		jsPlumb.draggable($('.meta-issue-object'), {stop: function(){saveProjectPlannerItem($(this))}});
+		jsPlumb.draggable($('.meta-issue-object'), {containment:"parent", stop: function(){saveProjectPlannerItem($(this))}});
 
 	})
 	
 	$('#issue-view-toggle').click(function(){
 		$('#project-issues-text').fadeToggle(function(){
 			$('#project-issues-visual').height($('#project-issues-text').height());
-			$('#project-issues-visual').width($('#project-issues-text').width());
+			//$('#project-issues-visual').width($('#project-issues-text').width());
 			$('#project-issues-visual').fadeToggle(function(){				
 				drawProjectOverview();
 			});	
