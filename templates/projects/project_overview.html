@@ -256,7 +256,7 @@ Project
 				connectorStyle: { lineWidth:7, strokeStyle:'#005580' },
 				dropOptions:{ 
 			        drop: function(e, ui) { 
-			          saveProjectPlannerItemConnection(e, ui, $(this));
+			          saveProjectPlannerItemConnection(e, ui);
 			        } 
 			      }, 
 
@@ -266,7 +266,16 @@ Project
 			containment:"parent", 
 			stop: function(){saveProjectPlannerItem($(this))}
 		});
-			
+
+		jsPlumb.bind("click", function(conn){
+			jsPlumb.detach(conn);
+		});
+
+		jsPlumb.bind("beforeDetach", function(conn, blah){
+			conn.getAttachedElements()[0].setEnabled(true);
+			conn.getAttachedElements()[1].setEnabled(true);
+		});
+				
 	})
 	
 	$('#issue-view-toggle').click(function(){
@@ -299,6 +308,8 @@ Project
 				tgt_uuid = 'meta-issue-' + connections[connection]['target'] + '-target';
 			src_endpoint = jsPlumb.getEndpoint(src_uuid);
 			tgt_endpoint = jsPlumb.getEndpoint(tgt_uuid);
+			src_endpoint.setEnabled(false);
+			tgt_endpoint.setEnabled(false);
 			jsPlumb.connect({source: src_endpoint, target:tgt_endpoint});
 		}
 
@@ -337,7 +348,12 @@ Project
         });
 	}
 
-	function saveProjectPlannerItemConnection(source, target, connection){
+	function saveProjectPlannerItemConnection(source, target){
+
+		src_endpoint = jsPlumb.getEndpoint( $(target.draggable[0]).attr('id'));
+		tgt_endpoint = jsPlumb.getEndpoint($(source.target).attr('id'));
+		src_endpoint.setEnabled(false);
+		tgt_endpoint.setEnabled(false);
 
 		if($(target.draggable[0]).attr('id').split('-')[2] != $(source.target).attr('id').split('-')[2] ){
 			$.ajax({
