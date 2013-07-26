@@ -60,8 +60,6 @@ Extends /templates/projects/base.html
 			{{form.priority}}
 			{{form.status}}
 			{{form.logo}}
-			{{form.created}}
-			{{form.modified}}
 			{{form.repository_url}}
 			{{form.deployment_server}}
 			{{form.deployment_url}}
@@ -88,10 +86,8 @@ Extends /templates/projects/base.html
 						<div class="wizard-cardhelp">
 							<p>Now specify the purpose (scope) of the project and why it is needed (business case)</p>
 						</div>
-						{% set field = form.scope %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.business_case %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' with field=form.scope %}
+						{% include '_includes/form-defaultcontrolgroup.html' with field=form.business_case %}
 					</fieldset>
 				</section>
 
@@ -101,12 +97,9 @@ Extends /templates/projects/base.html
 						<div class="wizard-cardhelp">
 							<p>Define the core members of this project</p>
 						</div>
-						{% set field = form.product_owner %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.project_manager %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.lead_developer %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' with field=form.product_owner %}
+						{% include '_includes/form-defaultcontrolgroup.html' with field=form.project_manager %}
+						{% include '_includes/form-defaultcontrolgroup.html' with field=form.lead_developer %}
 					</fieldset>
 				</section>
 
@@ -116,16 +109,11 @@ Extends /templates/projects/base.html
 						<div class="wizard-cardhelp">
 							<p>Define the current phase the project is currently in. Also include the dates for the planning and research states</p>
 						</div>
-						{% set field = form.current_phase %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.phase_planning_start %}
-						{% include '_includes/form-datefieldcontrolgroup.html' %}
-						{% set field = form.phase_planning_end %}
-						{% include '_includes/form-datefieldcontrolgroup.html' %}
-						{% set field = form.phase_research_start %}
-						{% include '_includes/form-datefieldcontrolgroup.html' %}
-						{% set field = form.phase_research_end %}
-						{% include '_includes/form-datefieldcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' with field=form.current_phase %}
+						{% include '_includes/form-datefieldcontrolgroup.html' with field=form.phase_planning_start %}
+						{% include '_includes/form-datefieldcontrolgroup.html' with field=form.phase_planning_end %}
+						{% include '_includes/form-datefieldcontrolgroup.html' with field=form.phase_research_start %}
+						{% include '_includes/form-datefieldcontrolgroup.html' with field=form.phase_research_end %}
 					</fieldset>
 				</section>
 
@@ -135,32 +123,19 @@ Extends /templates/projects/base.html
 						<div class="wizard-chardhelp">
 							<p>Confirm all the information provided is correct and hit submit</p>
 						</div>
-						{% set field = form.name %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.description %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.potential_end_date %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.scope %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.business_case %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.product_owner %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.project_manager %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.lead_developer %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.current_phase %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.phase_planning_start %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.phase_planning_end %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.phase_research_start %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
-						{% set field = form.phase_research_end %}
-						{% include '_includes/form-newprojectwizard-confirmfield.html' %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.name %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.description %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.potential_end_date %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.scope %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.business_case %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.product_owner %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.project_manager %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.lead_developer %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.current_phase %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.phase_planning_start %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.phase_planning_end %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.phase_research_start %}
+						{% include '_includes/form-newprojectwizard-confirmfield.html' with field=form.phase_research_end %}
 					</fieldset>
 				</section>
 			</div>
