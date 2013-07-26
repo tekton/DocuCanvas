@@ -233,7 +233,7 @@ Project
 <script src="{% static 'js/jquery.ui.touch-punch.min.js' %}"></script>
 
 <script type="text/javascript">
-	var sourceOptions, targetOptions;
+	var sourceOptions, targetOptions, connections = JSON.parse('{{connections|safe}}');
 
 	$(document).ready(function(){
 		jsPlumb.importDefaults({
@@ -282,17 +282,25 @@ Project
 	function drawProjectOverview(){
 
 		$('.meta-issue-object').each(function(){
-			var id_string = 'meta-issue-' + $(this).attr('id').split('-')[2]
-			//endpointOptions['cssClass'] = id_string + '-source';
+			var id_string = 'meta-issue-' + $(this).attr('id').split('-')[2];
 
-			endpoint_obj = jsPlumb.addEndpoint(id_string, {anchor:"RightMiddle"}, sourceOptions);
 			endpoint_id_string = id_string + '-source';
+			endpoint_obj = jsPlumb.addEndpoint(id_string, {anchor:"RightMiddle", uuid: endpoint_id_string}, sourceOptions);
 			$(endpoint_obj.endpoint.getDisplayElements()[0]).attr('id', endpoint_id_string );
 
-			endpoint_obj = jsPlumb.addEndpoint(id_string, {anchor:"LeftMiddle"}, targetOptions);
 			endpoint_id_string = id_string + '-target';
+			endpoint_obj = jsPlumb.addEndpoint(id_string, {anchor:"LeftMiddle", uuid: endpoint_id_string}, targetOptions);
 			$(endpoint_obj.endpoint.getDisplayElements()[0]).attr('id', endpoint_id_string );
 		});
+
+
+		for(connection in connections){
+			var src_uuid = 'meta-issue-' + connections[connection]['source'] + '-source';
+				tgt_uuid = 'meta-issue-' + connections[connection]['target'] + '-target';
+			src_endpoint = jsPlumb.getEndpoint(src_uuid);
+			tgt_endpoint = jsPlumb.getEndpoint(tgt_uuid);
+			jsPlumb.connect({source: src_endpoint, target:tgt_endpoint});
+		}
 
 		/*jsPlumb.connect({ 
 			source:meta1Endpoint,
@@ -342,6 +350,9 @@ Project
 	                },
 	                success: function(data){    
 	                    console.log(data.success)
+	                    if (data.response){
+	                    	console.log(data.response)
+	                    }
 	                },
 	                error: function(data){
 	                    //AlertMessage.error(data.responseJSON.response);
