@@ -38,7 +38,7 @@
 		<h3>User Reports</h3>
 		{% for report in reports %}
 		<div class="user_report_container row-fluid">
-			<div class="span2 text-right">
+			<div class="user_report_meta span2 text-right">
 				<h4>{{report.user.username}} <!--({{report.user.first_name}} {{report.user.last_name}})--></h4>
 			</div>
 			<div class="user_report span10">{{report.description|safe}}</div>
