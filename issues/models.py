@@ -293,12 +293,15 @@ class ProjectPlannerItem(models.Model):
     item_type = models.CharField(max_length=255,blank=True, null=True, default="meta_issue")
     x_coordinate = models.IntegerField(default=0)
     y_coordinate = models.IntegerField(default=0)
+    def __unicode__(self):
+        return str(self.meta_issue.title)
 
 
 class ProjectPlannerItemConnection(models.Model):
     project = models.ForeignKey(Project)
     source = models.ForeignKey(ProjectPlannerItem, related_name='source')
     target = models.ForeignKey(ProjectPlannerItem, related_name='target')
-
+    def __unicode__(self):
+        return str(self.source.meta_issue.title) + ' -> ' + str(self.target.meta_issue.title)
 
 admin.site.register(IssueScreenshot)

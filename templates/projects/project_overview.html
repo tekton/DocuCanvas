@@ -233,7 +233,7 @@ Project
 <script src="{% static 'js/jquery.ui.touch-punch.min.js' %}"></script>
 
 <script type="text/javascript">
-	var endpointOptions;
+	var sourceOptions, targetOptions;
 
 	$(document).ready(function(){
 		jsPlumb.importDefaults({
@@ -242,9 +242,15 @@ Project
 			Endpoints : [ [ "Dot", {radius:7} ], [ "Dot", { radius:11 } ]],
 		});
 		
-		endpointOptions = {
-			anchor:[ "LeftMiddle", "RightMiddle" ], 
+		sourceOptions = {
+			anchor:[ "RightMiddle" ], 
 				isSource:true, 
+				connector : "Straight",
+				connectorStyle: { lineWidth:7, strokeStyle:'#005580' },
+		};
+
+		targetOptions = {
+			anchor:[ "LeftMiddle"], 
 				isTarget:true,
 				connector : "Straight",
 				connectorStyle: { lineWidth:7, strokeStyle:'#005580' },
@@ -279,11 +285,11 @@ Project
 			var id_string = 'meta-issue-' + $(this).attr('id').split('-')[2]
 			//endpointOptions['cssClass'] = id_string + '-source';
 
-			endpoint_obj = jsPlumb.addEndpoint(id_string, {anchor:"RightMiddle"}, endpointOptions);
+			endpoint_obj = jsPlumb.addEndpoint(id_string, {anchor:"RightMiddle"}, sourceOptions);
 			endpoint_id_string = id_string + '-source';
 			$(endpoint_obj.endpoint.getDisplayElements()[0]).attr('id', endpoint_id_string );
 
-			endpoint_obj = jsPlumb.addEndpoint(id_string, {anchor:"LeftMiddle"}, endpointOptions);
+			endpoint_obj = jsPlumb.addEndpoint(id_string, {anchor:"LeftMiddle"}, targetOptions);
 			endpoint_id_string = id_string + '-target';
 			$(endpoint_obj.endpoint.getDisplayElements()[0]).attr('id', endpoint_id_string );
 		});
@@ -314,7 +320,7 @@ Project
                     type:'meta_issue',
                 },
                 success: function(data){    
-                    console.log(data.results)
+                    console.log(data.success)
                 },
                 error: function(data){
                     //AlertMessage.error(data.responseJSON.response);
@@ -324,28 +330,25 @@ Project
 	}
 
 	function saveProjectPlannerItemConnection(source, target, connection){
-		console.log($(source.target).attr('id'));
-		console.log($(target.draggable[0]).attr('id'));
 
-		/*$.ajax({
-                type: 'POST',
-                url: "{% url 'projects.views.save_project_planner_item_connection' %}",
-                data:{
-                	id: project_planner_item.attr('name'),
-                	project_id: '{{project.id}}',
-                	item_id: project_planner_item.attr('id').split('-')[2],
-                    x_coordinate: project_planner_item.css('left').slice(0, -2),
-                    y_coordinate: project_planner_item.css('top').slice(0, -2),
-                    type:'meta_issue',
-                },
-                success: function(data){    
-                    console.log(data.results)
-                },
-                error: function(data){
-                    //AlertMessage.error(data.responseJSON.response);
-                    console.log(data.responseJSON.response)
-                }
-        });*/
+		if($(target.draggable[0]).attr('id').split('-')[2] != $(source.target).attr('id').split('-')[2] ){
+			$.ajax({
+	                type: 'POST',
+	                url: "{% url 'projects.views.save_project_planner_item_connection' %}",
+	                data:{
+	                	project_id: '{{project.id}}',
+	                    source_id: $(target.draggable[0]).attr('id').split('-')[2],
+	                    target_id: $(source.target).attr('id').split('-')[2],
+	                },
+	                success: function(data){    
+	                    console.log(data.success)
+	                },
+	                error: function(data){
+	                    //AlertMessage.error(data.responseJSON.response);
+	                    console.log(data.responseJSON.response)
+	                }
+	        });
+		}
 	}
 
 </script>

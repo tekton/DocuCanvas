@@ -113,7 +113,6 @@ def project_stats(request, project_id):
 @login_required
 def save_project_planner_item(request):
     to_json = {'success': True}
-    results = []
 
     if request.method == 'POST':
         try:
@@ -136,13 +135,12 @@ def save_project_planner_item(request):
                     project_planner_item.save()
                 except:
                     print 'Project does not exist'
+                    to_json['success'] = False
 
-            results.append(model_to_dict(project_planner_item))
         except Exception, e:
             print e
             print 'Meta Issue does not exist'
-
-    to_json['results'] = results
+            to_json['success'] = False
 
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
@@ -150,24 +148,30 @@ def save_project_planner_item(request):
 @login_required
 def save_project_planner_item_connection(request):
     to_json = {'success': True}
-    results = []
 
     if request.method == 'POST':
+        project_planner_item_connection = ProjectPlannerItemConnection()
         try:
-            project_planner_item_connection = ProjectPlannerItemConnection.objects.get(pk=request.POST['id'])
-        except:
-            project_planner_item_connection = ProjectPlannerItemConnection()
+            project_planner_item_connection.project = Project.objects.get(pk=request.POST['project_id'])
             try:
-                project_planner_item_connection.project = Project.objects.get(request.POST['project_id'])
                 project_planner_item_connection.source = ProjectPlannerItem.objects.get(pk=request.POST['source_id'])
                 project_planner_item_connection.target = ProjectPlannerItem.objects.get(pk=request.POST['target_id'])
+                project_planner_item_connection.save()
             except Exception, e:
+                print 'Project Planner item does not exist'
                 print e
-                print 'Project does not exist'
+                to_json['success'] = False
+        except Exception, e:
+            print e
+            print 'Project does not exist'
+            to_json['success'] = False
 
-        project_planner_item_connection.save()
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
+
+@login_required
+def remove_project_planner_item_connection(request):
+    pass
 
 
 @login_required
