@@ -1,23 +1,82 @@
 {% extends "search/base.html" %}
 
 {% block pageTitle %}
-Search Results
+Search Results for "{{search}}"
 {% endblock %}
 
 {% block contextNav %}
-	{% include '_includes/contextnav-default.html' %}
+    {% include '_includes/contextnav-default.html' %}
 {% endblock %}
 
 {% block bodyContent %}
-<h2>Results in Issues</h2>
-{% for issue in issues %}
-	<a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></br>
-{% endfor %}
-<h2>Results in Help Desk</h2>
-{% for help in help_requests %}
-	<a href="{% url 'helpdesknew.views.get_help' help.id %}">{{help.name}}</a></br>
-{% endfor %}
+<h2>Issues</h2>
+<div id="issue_results_container"></div>
+<h2>Help Desk</h2>
+<div id="help_results_container"></div>
+
+<input type='button' title='load help' name='load_help' value='Results in Help Desk' onclick = "loadHelp()" />
+<input type='button' value='Results in Issues' onclick = 'loadIssues()' />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    loadHelp();
+    loadIssues();
+});
+function loadHelp(){
+    var help = new Array();
+    var data = new Array();
+    var object = JSON.parse('{{help_response|safe}}');
+    for(var i = 0; i < {{response_count}}; i++){
+        help[(object['id-'+i.toString()])] = object['name-'+i.toString()];
+        data[(object['id-'+i.toString()])] = object['response-'+i.toString()];
+    }
+    var object = JSON.parse('{{help_question|safe}}');
+    for(var i = 0; i < {{question_count}}; i++){
+        help[(object['id-'+i.toString()])] = object['name-'+i.toString()];
+        data[(object['id-'+i.toString()])] = object['question-'+i.toString()];
+    }
+    var object = JSON.parse('{{help_name|safe}}');
+    for(var i = 0; i < {{name_count}}; i++){
+        help[(object['id-'+i.toString()])] = object['name-'+i.toString()];
+        data[(object['id-'+i.toString()])] = object['name-'+i.toString()];
+    }
+    var toAppend = "";
+    for(var i = 0; i < help.length; i++){
+        if(help[i]!=null){
+            toAppend = toAppend + "<a href='/help/" + i.toString() + "'>" + help[i] + "</a></br>" + data[i] + "</br></br>";
+        }
+    }
+    $('#help_results_container').append(toAppend);
+};
+function loadIssues(){
+    var issues = new Array();
+    var data = new Array();
+    var object = JSON.parse('{{issue_comment|safe}}');
+    for(var i = 0; i < {{comment_count}}; i++){
+        issues[object['id-'+i.toString()]] = object['summary-'+i.toString()];
+        data[object['id-'+i.toString()]] = object['comment-'+i.toString()];
+    }
+    var object = JSON.parse('{{issue_description|safe}}');
+    for(var i = 0; i < {{description_count}}; i++){
+        issues[object['id-'+i.toString()]] = object['summary-'+i.toString()];
+        data[object['id-'+i.toString()]] = object['description-'+i.toString()];
+    }
+    var object = JSON.parse('{{issue_summary|safe}}');
+    for(var i = 0; i < {{summary_count}}; i++){
+        issues[object['id-'+i.toString()]] = object['summary-'+i.toString()];
+        data[object['id-'+i.toString()]] = object['summary-'+i.toString()];
+    }
+    var toAppend = "";
+    for(var i = 0; i < issues.length; i++){
+        if(issues[i]!=null){
+            toAppend = toAppend + "<a href='/issue/" + i.toString() + "'>" + issues[i] + "</a></br>" + data[i] + "</br></br>";
+        }
+    }
+    $('#issue_results_container').append(toAppend);
+};
+</script>
 {% endblock %}
 
 {% block endScripts %}
+
 {% endblock %}
