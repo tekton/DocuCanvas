@@ -76,12 +76,9 @@ Extends /templates/projects/base.html
 						<div class="wizard-cardhelp">
 							<p>To create a new project, first provide a project name, description, and the current potential end date.</p>
 						</div>
-						{% set field = form.name %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.description %}
-						{% include '_includes/form-defaultcontrolgroup.html' %}
-						{% set field = form.potential_end_date %}
-						{% include '_includes/form-datefieldcontrolgroup.html' %}
+						{% include '_includes/form-defaultcontrolgroup.html' with field=form.name %}
+						{% include '_includes/form-defaultcontrolgroup.html' with field=form.description %}
+						{% include '_includes/form-datefieldcontrolgroup.html' with field=form.potential_end_date %}
 					</fieldset>
 				</section>
 
