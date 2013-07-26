@@ -258,8 +258,7 @@ Project
 			        drop: function(e, ui) { 
 			          saveProjectPlannerItemConnection(e, ui);
 			        } 
-			      }, 
-
+			    }, 
 		};
 
 		jsPlumb.draggable($('.meta-issue-object'), {
@@ -271,9 +270,15 @@ Project
 			jsPlumb.detach(conn);
 		});
 
-		jsPlumb.bind("beforeDetach", function(conn, blah){
-			conn.getAttachedElements()[0].setEnabled(true);
-			conn.getAttachedElements()[1].setEnabled(true);
+		jsPlumb.bind("beforeDetach", function(conn){
+			click = confirm("Delete connection?");
+
+			if(click == true){
+				var source_id = $(conn.getAttachedElements()[0].getElement()[0]).attr('id').split('-')[2],
+				target_id = $(conn.getAttachedElements()[1].getElement()[0]).attr('id').split('-')[2];
+				removeProjectPlannerItemConnection(source_id, target_id);
+			}
+			
 		});
 				
 	})
@@ -302,7 +307,6 @@ Project
 			$(endpoint_obj.endpoint.getDisplayElements()[0]).attr('id', endpoint_id_string );
 		});
 
-
 		for(connection in connections){
 			var src_uuid = 'meta-issue-' + connections[connection]['source'] + '-source';
 				tgt_uuid = 'meta-issue-' + connections[connection]['target'] + '-target';
@@ -313,16 +317,6 @@ Project
 			jsPlumb.connect({source: src_endpoint, target:tgt_endpoint});
 		}
 
-		/*jsPlumb.connect({ 
-			source:meta1Endpoint,
-			target:meta2Endpoint
-
-		});
-
-		jsPlumb.connect({ 
-			source:meta2Endpoint,
-			target:meta3Endpoint
-		});*/
 	}
 
 	function saveProjectPlannerItem(project_planner_item){
@@ -339,7 +333,7 @@ Project
                     type:'meta_issue',
                 },
                 success: function(data){    
-                    console.log(data.success)
+                    //console.log(data.success)
                 },
                 error: function(data){
                     //AlertMessage.error(data.responseJSON.response);
@@ -365,7 +359,6 @@ Project
 	                    target_id: $(source.target).attr('id').split('-')[2],
 	                },
 	                success: function(data){    
-	                    console.log(data.success)
 	                    if (data.response){
 	                    	console.log(data.response)
 	                    }
@@ -376,6 +369,33 @@ Project
 	                }
 	        });
 		}
+	}
+
+	function removeProjectPlannerItemConnection(source_id, target_id){
+
+		$.ajax({
+	                type: 'POST',
+	                url: "{% url 'projects.views.remove_project_planner_item_connection' %}",
+	                data:{
+	                	project_id: '{{project.id}}',
+	                    source_id: source_id,
+	                    target_id: target_id,
+	                },
+	                success: function(data){    
+	            		var source_string = 'meta-issue-' + source_id + '-source',
+	            			target_string = 'meta-issue-' + source_id + '-target';
+
+	                    console.log(data.success);
+	                    src_endpoint = jsPlumb.getEndpoint(source_string);
+						tgt_endpoint = jsPlumb.getEndpoint(target_string);
+						src_endpoint.setEnabled(true);
+						tgt_endpoint.setEnabled(true);
+	                },
+	                error: function(data){
+	                    //AlertMessage.error(data.responseJSON.response);
+	                    console.log(data.responseJSON.response)
+	                }
+	    });
 	}
 
 </script>

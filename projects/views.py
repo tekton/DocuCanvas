@@ -201,8 +201,29 @@ def save_project_planner_item_connection(request):
 
 @login_required
 def remove_project_planner_item_connection(request):
-    pass
+    to_json = {'success': True}
 
+    if request.method == 'POST':
+        try:
+            src_meta_issue = MetaIssue.objects.get(pk=request.POST['source_id'])
+            tgt_meta_issue = MetaIssue.objects.get(pk=request.POST['target_id'])
+            try:
+                source_item = ProjectPlannerItem.objects.get(meta_issue=src_meta_issue)
+                target_item = ProjectPlannerItem.objects.get(meta_issue=tgt_meta_issue)
+                try:
+                    connection = ProjectPlannerItemConnection.objects.get(source=source_item, target=target_item)
+                    connection.delete()
+                except Exception, e:
+                    print e
+                    print 'Could not find Project Planner Item Connection with given project planner Items'
+            except Exception, e:
+                print e
+                print 'Could not find Project Planner Items with given Meta Issues'
+        except Exception, e:
+            print e
+            print 'Could not load Meta Issues with given ids'
+
+    return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
 @login_required
 @permission_required("projects.make_project", raise_exception=True)
