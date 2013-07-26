@@ -12,29 +12,41 @@
 {% endblock %}
 
 {% block bodyContent %}
-
-	<h2>Daily Reports</h2>
-
-
-		Date:  <input type = "text" id = "datePicker">
-		<input type="button" value="Go" id="goToDate"/>
+		
+		<div class="form-inline daily-report-date-picker">
+			<label class="control-label">Date:</label>
+			<input type = "text" id = "datePicker">
+			<input type="button" value="Go" id="goToDate" class="btn" />
+		</div>
 
 		<form id="reportForm" action="{% url 'daily_reports.views.view_reports' %}"></form>
 		<input type="hidden" id="id_date" value="{{date|date:"Y-m-d"}}"/>
-		<br/>
-		{% if globalReport %}
-			Global Report: {{globalReport.description|safe}}</br>
-			<br/>
-		{% else %}
-			<em>No global report for this date.</em><br/>
-		{% endif %}
+		
+		<div class="global-report">
+			<h3>Global Report</h3>
+			<div class="row-fluid">
+				<div class="offset2">
+			{% if globalReport %}
+					{{globalReport.description|safe}}
+			{% else %}
+					<p><em>No global report for this date.</em></p>
+			{% endif %}
+				</div>
+			</div>
+		</div>
+		
+		<h3>User Reports</h3>
 		{% for report in reports %}
-		<div class="dashboard_container_section">
-			<div style="padding: 5px; background-color: #ddd; width: 100%; margin: 0;">{{report.user.username}} <!--({{report.user.first_name}} {{report.user.last_name}})--></div>
-			<div>{{report.description|safe}}</div>
+		<div class="user_report_container row-fluid">
+			<div class="span2 text-right">
+				<h4>{{report.user.username}} <!--({{report.user.first_name}} {{report.user.last_name}})--></h4>
+			</div>
+			<div class="user_report span10">{{report.description|safe}}</div>
 		</div>
 		{% empty %}
-			<div>There are no reports for this date.</div></div>
+		<div class="user_report_container row-fluid">
+			<div class="user_report span10 offset2"><em>There are no reports for this date.</em></div>
+		</div>
 		{% endfor %}
 
 {% endblock %}
