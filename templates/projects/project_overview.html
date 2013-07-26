@@ -248,17 +248,24 @@ Project
 				isTarget:true,
 				connector : "Straight",
 				connectorStyle: { lineWidth:7, strokeStyle:'#005580' },
+				dropOptions:{ 
+			        drop: function(e, ui) { 
+			          saveProjectPlannerItemConnection(e, ui, $(this));
+			        } 
+			      }, 
 
 		};
 
-		jsPlumb.draggable($('.meta-issue-object'), {containment:"parent", stop: function(){saveProjectPlannerItem($(this))}});
-
+		jsPlumb.draggable($('.meta-issue-object'), {
+			containment:"parent", 
+			stop: function(){saveProjectPlannerItem($(this))}
+		});
+			
 	})
 	
 	$('#issue-view-toggle').click(function(){
 		$('#project-issues-text').fadeToggle(function(){
 			$('#project-issues-visual').height($('#project-issues-text').height());
-			//$('#project-issues-visual').width($('#project-issues-text').width());
 			$('#project-issues-visual').fadeToggle(function(){				
 				drawProjectOverview();
 			});	
@@ -267,11 +274,21 @@ Project
 	});
 
 	function drawProjectOverview(){
-		var meta1Endpoint = jsPlumb.addEndpoint('meta-issue-1', { anchor:"RightMiddle" }, endpointOptions );
-		var meta2Endpoint = jsPlumb.addEndpoint('meta-issue-2', { anchor:"LeftMiddle" }, endpointOptions );
-		var meta3Endpoint = jsPlumb.addEndpoint('meta-issue-3', { anchor:"LeftMiddle" }, endpointOptions );
 
-		jsPlumb.connect({ 
+		$('.meta-issue-object').each(function(){
+			var id_string = 'meta-issue-' + $(this).attr('id').split('-')[2]
+			//endpointOptions['cssClass'] = id_string + '-source';
+
+			endpoint_obj = jsPlumb.addEndpoint(id_string, {anchor:"RightMiddle"}, endpointOptions);
+			endpoint_id_string = id_string + '-source';
+			$(endpoint_obj.endpoint.getDisplayElements()[0]).attr('id', endpoint_id_string );
+
+			endpoint_obj = jsPlumb.addEndpoint(id_string, {anchor:"LeftMiddle"}, endpointOptions);
+			endpoint_id_string = id_string + '-target';
+			$(endpoint_obj.endpoint.getDisplayElements()[0]).attr('id', endpoint_id_string );
+		});
+
+		/*jsPlumb.connect({ 
 			source:meta1Endpoint,
 			target:meta2Endpoint
 
@@ -280,8 +297,7 @@ Project
 		jsPlumb.connect({ 
 			source:meta2Endpoint,
 			target:meta3Endpoint
-
-		});
+		});*/
 	}
 
 	function saveProjectPlannerItem(project_planner_item){
@@ -305,6 +321,31 @@ Project
                     console.log(data.responseJSON.response)
                 }
         });
+	}
+
+	function saveProjectPlannerItemConnection(source, target, connection){
+		console.log($(source.target).attr('id'));
+		console.log($(target.draggable[0]).attr('id'));
+
+		/*$.ajax({
+                type: 'POST',
+                url: "{% url 'projects.views.save_project_planner_item_connection' %}",
+                data:{
+                	id: project_planner_item.attr('name'),
+                	project_id: '{{project.id}}',
+                	item_id: project_planner_item.attr('id').split('-')[2],
+                    x_coordinate: project_planner_item.css('left').slice(0, -2),
+                    y_coordinate: project_planner_item.css('top').slice(0, -2),
+                    type:'meta_issue',
+                },
+                success: function(data){    
+                    console.log(data.results)
+                },
+                error: function(data){
+                    //AlertMessage.error(data.responseJSON.response);
+                    console.log(data.responseJSON.response)
+                }
+        });*/
 	}
 
 </script>
