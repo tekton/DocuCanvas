@@ -1,9 +1,9 @@
-<div class="control-group control-group-datefield">
+<div class="control-group control-group-datefield {% if field.errors %}error{% endif %}">
 	<label class="control-label" for="{{field.auto_id}}">{{field.label}}</label>
 	<div class="controls">
 		<div class="input-append">
 			{{field}}
 			<a href="#" class="add-on"><i class="icon-calendar"></i></a>
-		</div>
+		</div>{% if field.errors %}<span class="help-inline">{% for error in field.errors %}<i class="icon-exclamation-sign"></i> {{error}}{% endfor %}</span>{% endif %}
 	</div>
 </div>
