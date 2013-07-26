@@ -73,8 +73,21 @@ def project_overview(request, project_id):
         project_planner_items = ProjectPlannerItem.objects.filter(project=project)
     except:
         print 'Unable to load project planner items'
+        project_planner_items = []
 
-    return render_to_response("projects/project_overview.html", {'project': project, "project_planner_items": project_planner_items, "metas": metas, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_value": project.name}, context_instance=RequestContext(request))
+    try:
+        connections = ProjectPlannerItemConnection.objects.select_related().filter(project=project)
+        to_json_connections = []
+        for connection in connections:
+            to_append = model_to_dict(connection)
+            to_append['source'] = connection.source.meta_issue.id
+            to_append['target'] = connection.target.meta_issue.id
+            to_json_connections.append(to_append)
+    except:
+        print 'Unable to load project planner item connections'
+        connections = []
+
+    return render_to_response("projects/project_overview.html", {'project': project, "project_planner_items": project_planner_items, "connections": json.dumps(to_json_connections), "metas": metas, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_value": project.name}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -151,20 +164,36 @@ def save_project_planner_item_connection(request):
     to_json = {'success': True}
 
     if request.method == 'POST':
-        project_planner_item_connection = ProjectPlannerItemConnection()
         try:
-            project_planner_item_connection.project = Project.objects.get(pk=request.POST['project_id'])
+            source_meta_issue = MetaIssue.objects.get(pk=request.POST['source_id'])
+            target_meta_issue = MetaIssue.objects.get(pk=request.POST['target_id'])
             try:
-                project_planner_item_connection.source = ProjectPlannerItem.objects.get(pk=request.POST['source_id'])
-                project_planner_item_connection.target = ProjectPlannerItem.objects.get(pk=request.POST['target_id'])
-                project_planner_item_connection.save()
+                source = ProjectPlannerItem.objects.get(meta_issue=source_meta_issue)
+                target = ProjectPlannerItem.objects.get(meta_issue=target_meta_issue)
+                try:
+                    project_planner_item_connection = ProjectPlannerItemConnection.objects.get(source=source, target=target)
+                    to_json['response'] = 'Connection between ' + str(source.meta_issue.title) + ' and ' + str(target.meta_issue.title) + ' already exists!'
+                except:
+                    try:
+                        project_planner_item_connection = ProjectPlannerItemConnection()
+                        project_planner_item_connection.project = Project.objects.get(pk=request.POST['project_id'])
+                        try:
+                            project_planner_item_connection.source = source
+                            project_planner_item_connection.target = target
+                            project_planner_item_connection.save()
+                        except Exception, e:
+                            print 'Project Planner item does not exist'
+                            print e
+                            to_json['success'] = False
+                    except Exception, e:
+                        print e
+                        print 'Project does not exist'
             except Exception, e:
-                print 'Project Planner item does not exist'
                 print e
-                to_json['success'] = False
-        except Exception, e:
+                print 'Project Planner Item does not exist'
+        except:
+            print 'Meta Issue does not exist'
             print e
-            print 'Project does not exist'
             to_json['success'] = False
 
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
