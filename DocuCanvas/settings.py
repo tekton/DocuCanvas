@@ -160,6 +160,7 @@ INSTALLED_APPS = (
     'gapps',
     'tinymce',
     'haystack',
+    'charts',
     #'facebook',
     #'twitter',
     'socialplatform',
