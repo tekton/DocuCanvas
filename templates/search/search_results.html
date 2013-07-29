@@ -9,13 +9,11 @@ Search Results for "{{search}}"
 {% endblock %}
 
 {% block bodyContent %}
-<h2>Issues</h2>
+<h2 id='issue_header'>Issues</h2>
 <div id="issue_results_container"></div>
-<h2>Help Desk</h2>
+<h2 id='help_header'>Help Desk</h2>
 <div id="help_results_container"></div>
 
-<input type='button' title='load help' name='load_help' value='Results in Help Desk' onclick = "loadHelp()" />
-<input type='button' value='Results in Issues' onclick = 'loadIssues()' />
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -41,11 +39,14 @@ function loadHelp(){
         data[(object['id-'+i.toString()])] = object['name-'+i.toString()];
     }
     var toAppend = "";
+    var help_count = 0;
     for(var i = 0; i < help.length; i++){
         if(help[i]!=null){
             toAppend = toAppend + "<a href='/help/" + i.toString() + "'>" + help[i] + "</a></br>" + data[i] + "</br></br>";
+            help_count = help_count + 1;
         }
     }
+    $('#help_header').innerHTML = "Help Desk (" + help_count.toString() + " results)";
     $('#help_results_container').append(toAppend);
 };
 function loadIssues(){
@@ -67,11 +68,14 @@ function loadIssues(){
         data[object['id-'+i.toString()]] = object['summary-'+i.toString()];
     }
     var toAppend = "";
+    var issue_count = 0;
     for(var i = 0; i < issues.length; i++){
         if(issues[i]!=null){
             toAppend = toAppend + "<a href='/issue/" + i.toString() + "'>" + issues[i] + "</a></br>" + data[i] + "</br></br>";
+            issue_count = issue_count + 1;
         }
     }
+    $('#issue_header').innerHTML= "Issues (" + issue_count.toString() + " results)";
     $('#issue_results_container').append(toAppend);
 };
 </script>
