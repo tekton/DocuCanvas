@@ -32,18 +32,13 @@ Charts
 {% block endScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var issues = JSON.parse('{{issues|safe}}'), source = [], projects = {}, 
-        project_labels = {0: "ganttRed", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0;
+        var projects = JSON.parse('{{projects_dict|safe}}'), source = [];
 
         $(function(){
-            for(issue in issues){
-                if(projects[issues[issue]['project']] == undefined){
-                    projects[issues[issue]['project']] = counter;
-                    counter++;
-                }
+            for(project in projects){
 
-                var start_time = new Date(issues[issue]['created']),
-                    end_time = new Date(issues[issue]['projected_end']);
+                var start_time = new Date(projects[project]['created']),
+                    end_time = new Date(projects[project]['potential_end_date']);
 
                 var start_friendly = "/Date(" + start_time.getTime() + ")/",
                     end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
@@ -51,15 +46,14 @@ Charts
                 var values_dict = {
                     from:start_friendly,
                     to: end_friendly,
-                    label:issues[issue]['summary'],
-                    customClass:project_labels[issues[issue]['project']]
+                    label:projects[project]['name'],
                 };
 
                 values.push(values_dict);
 
                 var gantt_item_dict = {
-                    name: issues[issue]['summary'],
-                    desc: issues[issue]['description'],
+                    name: projects[project]['name'],
+                    desc: projects[project]['description'],
                     values: values,
                 };
 
@@ -74,6 +68,7 @@ Charts
                 navigate: "scroll",
                 itemsPerPage: 15
             });
+
         });
         //$('#gantt01').addTask({ 'titles': 'Task04', 'start_date': '20130816', 'end_date': '20130828' });
     </script>

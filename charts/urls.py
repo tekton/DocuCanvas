@@ -5,7 +5,9 @@ from django.conf.urls import *
 '''
 
 urlpatterns = patterns('',
+    (r'^project/(\d+)/issues_chart', 'charts.views.issues_by_project_chart'),
+    (r'^project/(\d+)/meta_issues_chart', 'charts.views.meta_issues_by_project'),
+    (r'^projects_chart', 'charts.views.projects_chart'),
     (r'^$', 'charts.views.home'),
     (r'^test', 'charts.views.test'),
-
 )

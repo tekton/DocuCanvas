@@ -25,22 +25,16 @@ Charts
 {% block bodyContent %}
 <div class="span12 well" style="height:700px">
     <div id="gantt01"></div>
-
 </div>
 {% endblock %}
 
 {% block endScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var issues = JSON.parse('{{issues|safe}}'), source = [], projects = {}, 
-        project_labels = {0: "ganttRed", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0;
+        var issues = JSON.parse('{{issues|safe}}'), source = [];
 
         $(function(){
             for(issue in issues){
-                if(projects[issues[issue]['project']] == undefined){
-                    projects[issues[issue]['project']] = counter;
-                    counter++;
-                }
 
                 var start_time = new Date(issues[issue]['created']),
                     end_time = new Date(issues[issue]['projected_end']);
@@ -52,7 +46,6 @@ Charts
                     from:start_friendly,
                     to: end_friendly,
                     label:issues[issue]['summary'],
-                    customClass:project_labels[issues[issue]['project']]
                 };
 
                 values.push(values_dict);
@@ -74,6 +67,7 @@ Charts
                 navigate: "scroll",
                 itemsPerPage: 15
             });
+
         });
         //$('#gantt01').addTask({ 'titles': 'Task04', 'start_date': '20130816', 'end_date': '20130828' });
     </script>
