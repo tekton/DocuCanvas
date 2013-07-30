@@ -26,10 +26,13 @@ def home(request):
         issues = Issue.objects.all()
         to_json_issues = []
         for issue in issues:
+
             json_issue = model_to_dict(issue)
+            json_issue['created'] = issue.created
             for k,v in json_issue.items():
                 issue_dict = {}
                 json_issue[k] = str(v)
+
             to_json_issues.append(json_issue)
     except Exception, e:
         print e
