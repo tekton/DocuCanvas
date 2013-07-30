@@ -5,8 +5,69 @@
 Charts
 {% endblock %}
 
+{% block additionalHead%}
+    <style type="text/css">
+    </style>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock%}
+
+
 {% block contextNav %}{% endblock%}
 
-
 {% block bodyContent %}
+<div class="span12 well" style="height:700px">
+    <div id="gantt01"></div>
+
+</div>
+{% endblock %}
+
+{% block endScripts%}
+    <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
+    <script language="javascript" type="text/javascript">
+        var issues = JSON.parse('{{issues|safe}}'), source = [];
+
+        for(issue in issues){
+            var start_time = new Date(issues[issue]['projected_start']),
+                end_time = new Date(issues[issue]['projected_end']);
+
+            var start_friendly = "/Date(" + start_time.getTime() + ")/",
+                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
+
+            var values_dict = {
+                from:start_friendly,
+                to: end_friendly,
+                label:issues[issue]['summary'],
+                customClass:"gnattRed"
+            };
+
+            values.push(values_dict);
+
+            var gantt_item_dict = {
+                name: issues[issue]['summary'],
+                desc: issues[issue]['description'],
+                values: values,
+            };
+
+            source.push(gantt_item_dict);
+
+        }
+
+        $("#gantt01").gantt({
+            source:source,
+            scale: "days",
+            minScale: "days",
+            navigate: "scroll"
+        });
+
+
+        $("#gantt01").popover({
+                selector: ".bar",
+                title: "I'm a popover",
+                content: "And I'm the content of said popover.",
+                trigger: "hover"
+        });
+
+        //$('#gantt01').addTask({ 'titles': 'Task04', 'start_date': '20130816', 'end_date': '20130828' });
+    </script>
+
 {% endblock %}
