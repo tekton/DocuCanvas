@@ -38,7 +38,7 @@ def search(request):
     for item in q_issuecomment:
         json_comment["id-"+str(comment_count)] = item.issue.id
         json_comment["summary-"+str(comment_count)] = item.issue.summary
-        json_comment["comment-"+str(comment_count)] = item.comment
+        json_comment["comment-"+str(comment_count)] = item.description
         comment_count = comment_count + 1
     summary_count = 0
     q_issuesummary = Issue.objects.filter(Q(summary__contains=search))
