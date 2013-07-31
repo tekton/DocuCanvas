@@ -27,16 +27,15 @@ Charts
 {% endblock%}
 
 {% block bodyContent %}
-<div class="span12 well" style="height:700px">
+<div class="span12 well" style="min-height:700px">
     <div id="gantt01"></div>
-    <div id="gantt_chart_legend"></div>
 </div>
 {% endblock %}
 
 {% block endScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var issues = JSON.parse('{{issues|safe}}'), source = [], projects = {}, 
+        var issues = JSON.parse('{{issues|safe}}'), source = [], projects = {}, first_of_project = false; 
         project_labels = {0: "ganttRed", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0;
 
         $(function(){
@@ -45,6 +44,7 @@ Charts
                 if(projects[issues[issue]['project']] == undefined){
                     projects[issues[issue]['project']] = counter;
                     counter++;
+                    first_of_project = true;
                 }
 
                 var start_time = new Date(issues[issue]['created']),
@@ -68,15 +68,21 @@ Charts
                     desc:issues[issue]['description'],
                     customClass:project_labels[issues[issue]['project']],
                     dataObj: {'id': issues[issue]['id']},
-                    
+
                 };
 
                 values.push(values_dict);
 
                 var gantt_item_dict = {
-                    name: issues[issue]['summary'],
+                    desc: issues[issue]['summary'],
+                    name:"",
                     values: values,
                 };
+
+                if(first_of_project == true){
+                    gantt_item_dict['name'] = issues[issue]['project_name']
+                    first_of_project = false;
+                }
 
                 source.push(gantt_item_dict);
 
@@ -92,7 +98,10 @@ Charts
                     window.location = "/issue/" + data['id'];
                 }
             });
+
         });
+
+        
 
         //$('#gantt01').addTask({ 'titles': 'Task04', 'start_date': '20130816', 'end_date': '20130828' });
     </script>

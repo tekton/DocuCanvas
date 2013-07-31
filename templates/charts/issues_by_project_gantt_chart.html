@@ -20,6 +20,10 @@ Charts
     {% for project in projects%}
         <li><a href="{% url 'charts.views.issues_by_project_chart' project.id %}">{{project.name}}</a></li>
     {% endfor %}
+    <li class="nav-header">Issues by User</li>
+    {% for user in users%}
+        <li><a href="{% url 'charts.views.issues_by_user_chart' user.id %}">{{user.username}}</a></li>
+    {% endfor %}
 {% endblock%}
 
 {% block bodyContent %}
@@ -35,7 +39,7 @@ Charts
 
         $(function(){
             for(issue in issues){
-
+                
                 var start_time = new Date(issues[issue]['created']),
                     end_time = new Date(issues[issue]['projected_end']);
 

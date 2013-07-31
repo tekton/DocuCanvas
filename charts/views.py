@@ -37,6 +37,7 @@ def home(request):
         for issue in issues:
             json_issue = model_to_dict(issue)
             json_issue['created'] = issue.created
+            json_issue['project_name'] = issue.project.name
             if issue.assigned_to:
                 try:
                     json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
@@ -57,6 +58,11 @@ def home(request):
 @login_required
 def projects_chart(request):
     try:
+        users = User.objects.all()
+    except:
+        print "Can't get users"
+
+    try:
         to_json_projects = []
         projects = Project.objects.all()
         for project in projects:
@@ -70,7 +76,7 @@ def projects_chart(request):
         print 'Unable to grab all projects'
         projects = []
 
-    return render_to_response("charts/projects_gantt_chart.html", {"projects": projects, "projects_dict": json.dumps(to_json_projects).replace("'", r"\'")}, context_instance=RequestContext(request))
+    return render_to_response("charts/projects_gantt_chart.html", {"projects": projects, "projects_dict": json.dumps(to_json_projects).replace("'", r"\'"), "users": users}, context_instance=RequestContext(request))
 
 
 @login_required
