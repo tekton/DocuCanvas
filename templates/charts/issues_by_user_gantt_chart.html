@@ -29,7 +29,6 @@ Charts
 {% block bodyContent %}
 <div class="span12 well" style="height:700px">
     <div id="gantt01"></div>
-    <div id="gantt_chart_legend"></div>
 </div>
 {% endblock %}
 
@@ -41,7 +40,6 @@ Charts
 
         $(function(){
             for(issue in issues){
-
                 if(projects[issues[issue]['project']] == undefined){
                     projects[issues[issue]['project']] = counter;
                     counter++;
@@ -53,22 +51,13 @@ Charts
                 var start_friendly = "/Date(" + start_time.getTime() + ")/",
                     end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
 
-                if(issues[issue]['assigned_to'] == 'None'){
-                    var label = 'Assign';
-                }
-
-                else{
-                    var label = issues[issue]['assigned_to'];
-                }
-
                 var values_dict = {
                     from:start_friendly,
                     to: end_friendly,
-                    label:label,
+                    label: issues[issue]['project_name'],
                     desc:issues[issue]['description'],
                     customClass:project_labels[issues[issue]['project']],
                     dataObj: {'id': issues[issue]['id']},
-                    
                 };
 
                 values.push(values_dict);
@@ -79,7 +68,6 @@ Charts
                 };
 
                 source.push(gantt_item_dict);
-
             }
 
             $("#gantt01").gantt({
@@ -92,8 +80,8 @@ Charts
                     window.location = "/issue/" + data['id'];
                 }
             });
-        });
 
+        });
         //$('#gantt01').addTask({ 'titles': 'Task04', 'start_date': '20130816', 'end_date': '20130828' });
     </script>
 

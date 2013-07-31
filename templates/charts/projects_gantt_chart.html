@@ -46,14 +46,15 @@ Charts
                 var values_dict = {
                     from:start_friendly,
                     to: end_friendly,
+                    desc:projects[project]['description'],
                     label:projects[project]['name'],
+                    dataObj: {'id': projects[project]['id']}
                 };
 
                 values.push(values_dict);
 
                 var gantt_item_dict = {
                     name: projects[project]['name'],
-                    desc: projects[project]['description'],
                     values: values,
                 };
 
@@ -66,7 +67,10 @@ Charts
                 scale: "days",
                 minScale: "days",
                 navigate: "scroll",
-                itemsPerPage: 15
+                itemsPerPage: 15,
+                onItemClick: function(data){
+                    window.location = "/charts/project/" + data['id'] + "/issues_chart";
+                }
             });
 
         });

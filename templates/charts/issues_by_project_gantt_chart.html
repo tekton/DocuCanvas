@@ -42,17 +42,26 @@ Charts
                 var start_friendly = "/Date(" + start_time.getTime() + ")/",
                     end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
 
+                if(issues[issue]['assigned_to'] == 'None'){
+                    var label = 'Assign';
+                }
+
+                else{
+                    var label = issues[issue]['assigned_to'];
+                }
+
                 var values_dict = {
                     from:start_friendly,
                     to: end_friendly,
-                    label:issues[issue]['summary'],
+                    desc:issues[issue]['description'],
+                    label:label,
+                    dataObj: dataObj = {'id': issues[issue]['id']},
                 };
 
                 values.push(values_dict);
 
                 var gantt_item_dict = {
                     name: issues[issue]['summary'],
-                    desc: issues[issue]['description'],
                     values: values,
                 };
 
@@ -65,7 +74,10 @@ Charts
                 scale: "days",
                 minScale: "days",
                 navigate: "scroll",
-                itemsPerPage: 15
+                itemsPerPage: 15,
+                onItemClick: function(data){
+                        window.location = "/issue/" + data['id'];
+                }
             });
 
         });

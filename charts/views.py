@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
+from django.contrib.auth.models import User
 
 from projects.models import *
 from issues.models import Issue
@@ -11,11 +12,19 @@ import json
 
 @login_required
 def test(request):
-    return render_to_response("charts/test01.html", {}, context_instance=RequestContext(request))
+    return render_to_response("charts/index.html", {}, context_instance=RequestContext(request))
 
 
 @login_required
 def home(request):
+    users_dict = {}
+    try:
+        users = User.objects.all()
+        for user in users:
+            users_dict[user.id] = user.username
+    except:
+        print "Can't get users"
+
     try:
         projects = Project.objects.all()
     except:
@@ -26,19 +35,23 @@ def home(request):
         issues = Issue.objects.all()
         to_json_issues = []
         for issue in issues:
-
             json_issue = model_to_dict(issue)
             json_issue['created'] = issue.created
+            if issue.assigned_to:
+                try:
+                    json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
+                except Exception, e:
+                    print e
             for k,v in json_issue.items():
                 json_issue[k] = str(v)
 
             to_json_issues.append(json_issue)
     except Exception, e:
         print e
-        print 'Unable to grab all Isssues'
+        print 'Unable to grab all Issues'
         to_json_issues = []
 
-    return render_to_response("charts/charts.html", {"projects": projects, "issues": json.dumps(to_json_issues).replace("'", r"\'")}, context_instance=RequestContext(request))
+    return render_to_response("charts/charts.html", {"projects": projects, "issues": json.dumps(to_json_issues).replace("'", r"\'"), "users": users}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -61,7 +74,51 @@ def projects_chart(request):
 
 
 @login_required
+def issues_by_user_chart(request, user_id):
+    try:
+        users = User.objects.all()
+    except:
+        print "Can't get users"
+
+    try:
+        projects = Project.objects.all()
+    except:
+        print 'Unable to grab all projects'
+        projects = []
+
+    try:
+        user = User.objects.get(pk=user_id)
+        try:
+            issues = Issue.objects.filter(assigned_to=user)
+            to_json_issues = []
+            for issue in issues:
+                json_issue = model_to_dict(issue)
+                json_issue['created'] = issue.created
+                json_issue['project_name'] = issue.project.name
+                for k,v in json_issue.items():
+                    json_issue[k] = str(v)
+
+                to_json_issues.append(json_issue)
+        except Exception, e:
+            print e
+            print 'Unable to grab all Isssues'
+            to_json_issues = []
+    except:
+        print "User doesn't exist!"
+    return render_to_response("charts/issues_by_user_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues).replace("'", r"\'"), "users": users}, context_instance=RequestContext(request))
+
+
+
+@login_required
 def issues_by_project_chart(request, project_id):
+    users_dict = {}
+    try:
+        users = User.objects.all()
+        for user in users:
+            users_dict[user.id] = user.username
+    except:
+        print "Can't get users"
+
     try:
         projects = Project.objects.all()
     except:
@@ -76,6 +133,12 @@ def issues_by_project_chart(request, project_id):
             for issue in issues:
                 json_issue = model_to_dict(issue)
                 json_issue['created'] = issue.created
+                if issue.assigned_to:
+                    try:
+                        json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
+                    except:
+                        json_issue['assigned_to'] = None
+
                 for k,v in json_issue.items():
                     json_issue[k] = str(v)
 
@@ -86,7 +149,7 @@ def issues_by_project_chart(request, project_id):
             to_json_issues = []
     except:
         print 'Unable to find project'
-    return render_to_response("charts/issues_by_project_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues).replace("'", r"\'")}, context_instance=RequestContext(request))
+    return render_to_response("charts/issues_by_project_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues).replace("'", r"\'"), "users": users}, context_instance=RequestContext(request))
 
 @login_required
 def meta_issues_by_project(request, project_id):
