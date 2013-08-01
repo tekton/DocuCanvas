@@ -9,6 +9,7 @@ from projects.models import Project
 from django.contrib import admin
 from tinymce.models import HTMLField
 
+import datetime
 
 ISSUETOISSUETYPE = (('duplicated', 'Duplicate'), ('related', 'Related'), ('child', 'Child'), ('parent', 'Parent'))
 ISSUETYPE = (("bug", "Bug"), ("task", "Task"), ("suggestion", "Suggestion"))
@@ -128,6 +129,10 @@ class Issue(models.Model):
                                         print 'couldnt save status update'
                                         print e
 
+                    if self.status == 'fixed':
+                        self.actual_end = datetime.date.today()
+                    if self.status == 'active':
+                        self.actual_start = datetime.date.today()
                 except Exception, e:
                     print 'couldnt get old issue'
                     print e
