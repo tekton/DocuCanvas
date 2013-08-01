@@ -28,54 +28,130 @@ Charts
 
 {% block bodyContent %}
 <div class="span12 well" style="height:700px">
-    <div id="gantt01"></div>
+    <a id="switch_view_button">Switch View</a>
+    <div id="gantt_planning_container">
+        <h3>Planning</h3>
+        <div id="gantt_planning"></div>
+    </div>
+    <div id="gantt_review_container" style="display:none">
+        <h3>Review</h3>
+        <div id="gantt_review"></div>
+    </div>
 </div>
 {% endblock %}
 
 {% block endScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var issues = JSON.parse('{{issues|safe}}'), source = [];
+        var issues = JSON.parse('{{issues|safe}}'), source = [], review_source = [];
+        $(document).ready(function(){
+            $('#switch_view_button').click(function(){
+
+                if( $('#gantt_planning_container').css('display') != 'none'){
+                    $('#gantt_planning_container').fadeToggle(function(){
+                        $('#gantt_review_container').fadeToggle()
+                        $("#gantt_review").gantt({
+                            source:review_source,
+                            scale: "days",
+                            minScale: "days",
+                            navigate: "scroll",
+                            itemsPerPage: 15,
+                            onItemClick: function(data){
+                                window.location = "/issue/" + data['id'];
+                            }
+                        });
+                    });
+                }
+                else{
+                    $('#gantt_review_container').fadeToggle(function(){
+                        $('#gantt_planning_container').fadeToggle()
+                    });
+                }
+            });
+        });
+
+        function drawPlanningGanttObject(issue){
+            var start_time = new Date(issues[issue]['projected_start']),
+                end_time = new Date(issues[issue]['projected_end']);
+            var start_friendly = "/Date(" + start_time.getTime() + ")/",
+                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
+
+            if(issues[issue]['assigned_to'] == 'None'){
+                var label = 'Assign';
+            }
+            else{
+                var label = issues[issue]['assigned_to'];
+            }
+
+            var values_dict = {
+                from:start_friendly,
+                to: end_friendly,
+                label:label,
+                desc:issues[issue]['description'],
+                dataObj: {'id': issues[issue]['id']},
+            };
+
+            if(issues[issue]['projected_end'] == 'None'){
+                values_dict['customClass'] = 'ganttRed';
+            }
+
+            values.push(values_dict);
+
+            var gantt_item_dict = {
+                name: issues[issue]['summary'],
+                values: values,
+            };
+
+            return gantt_item_dict;
+        }
+
+        function drawReviewGanttObject(issue){
+            var start_time = new Date(issues[issue]['actual_start']),
+                end_time = new Date(issues[issue]['actual_end']);
+            var start_friendly = "/Date(" + start_time.getTime() + ")/",
+                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
+
+            if(issues[issue]['assigned_to'] == 'None'){
+                var label = 'Assign';
+            }
+            else{
+                var label = issues[issue]['assigned_to'];
+            }
+
+            var values_dict = {
+                from:start_friendly,
+                to: end_friendly,
+                label:label,
+                desc:issues[issue]['description'],
+                dataObj: {'id': issues[issue]['id']},
+            };
+
+            if(issues[issue]['projected_end'] == 'None'){
+                values_dict['customClass'] = 'ganttRed';
+            }
+
+            values.push(values_dict);
+
+            var gantt_item_dict = {
+                name: issues[issue]['summary'],
+                values: values,
+            };
+
+            return gantt_item_dict;
+        }
 
         $(function(){
             for(issue in issues){
-                
-                var start_time = new Date(issues[issue]['created']),
-                    end_time = new Date(issues[issue]['projected_end']);
-
-                var start_friendly = "/Date(" + start_time.getTime() + ")/",
-                    end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
-
-                if(issues[issue]['assigned_to'] == 'None'){
-                    var label = 'Assign';
-                }
-
-                else{
-                    var label = issues[issue]['assigned_to'];
-                }
-
-                var values_dict = {
-                    from:start_friendly,
-                    to: end_friendly,
-                    desc:issues[issue]['description'],
-                    label:label,
-                    dataObj: dataObj = {'id': issues[issue]['id']},
-                };
-
-                values.push(values_dict);
-
-                var gantt_item_dict = {
-                    name: issues[issue]['summary'],
-                    values: values,
-                };
+                gantt_item_dict = drawPlanningGanttObject(issue);
+                review_gantt_item_dict = drawReviewGanttObject(issue);
 
                 source.push(gantt_item_dict);
-
+                review_source.push(review_gantt_item_dict)
             }
 
-            $("#gantt01").gantt({
+            $("#gantt_planning").gantt({
                 source:source,
-                scale: "days",
+                scale: "weeks",
                 minScale: "days",
                 navigate: "scroll",
                 itemsPerPage: 15,
@@ -83,9 +159,8 @@ Charts
                         window.location = "/issue/" + data['id'];
                 }
             });
-
         });
-        //$('#gantt01').addTask({ 'titles': 'Task04', 'start_date': '20130816', 'end_date': '20130828' });
+
     </script>
 
 {% endblock %}
