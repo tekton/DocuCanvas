@@ -44,7 +44,7 @@ Charts
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
         var issues = JSON.parse('{{issues|safe}}'), source = [], review_source = [], projects = {}, review_chart_rendered = false,
-        project_labels = {0: "ganttRed", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0;
+        project_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0;
 
         $(document).ready(function(){
             $('#switch_view_button').click(function(){
@@ -76,19 +76,35 @@ Charts
 
         function drawPlanningGanttObject(issue){
             var start_time = new Date(issues[issue]['projected_start']),
-                    end_time = new Date(issues[issue]['projected_end']);
+                    end_time = new Date(issues[issue]['projected_end']), label = issues[issue]['project_name'];
 
                 var start_friendly = "/Date(" + start_time.getTime() + ")/",
                     end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
 
+                if(issues[issue]['projected_start'] == 'None' && issues[issue]['projected_end'] == 'None'){
+                    label += ': No start and end date';
+                }
+
+                if(issues[issue]['projected_start'] == 'None' && issues[issue]['projected_end'] != 'None'){
+                    label += ': No start date';
+                }
+
+                if(issues[issue]['projected_start'] != 'None' && issues[issue]['projected_end'] == 'None'){
+                    label += ': No end date';
+                }
+
                 var values_dict = {
                     from:start_friendly,
                     to: end_friendly,
-                    label: issues[issue]['project_name'],
+                    label: label,
                     desc:issues[issue]['description'],
-                    customClass:project_labels[issues[issue]['project']],
+                    customClass:project_labels[projects[issues[issue]['project']]],
                     dataObj: {'id': issues[issue]['id']},
                 };
+
+                if(issues[issue]['projected_end'] == 'None'){
+                values_dict['customClass'] = 'ganttRed';
+                }
 
                 values.push(values_dict);
 
@@ -101,19 +117,36 @@ Charts
 
         function drawReviewGanttObject(issue){
             var start_time = new Date(issues[issue]['actual_start']),
-                end_time = new Date(issues[issue]['actual_end']);
+                end_time = new Date(issues[issue]['actual_end']), label = issues[issue]['project_name'];
 
                 var start_friendly = "/Date(" + start_time.getTime() + ")/",
                     end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
 
+                if(issues[issue]['actual_start'] == 'None' && issues[issue]['actual_end'] == 'None'){
+                    label += ': No start and end date';
+                }
+
+                if(issues[issue]['actual_start'] == 'None' && issues[issue]['actual_end'] != 'None'){
+                    label += ': No start date';
+                }
+
+                if(issues[issue]['actual_start'] != 'None' && issues[issue]['actual_end'] == 'None'){
+                    label += ': No end date';
+                }
+
+
                 var values_dict = {
                     from:start_friendly,
                     to: end_friendly,
-                    label: issues[issue]['project_name'],
+                    label: label,
                     desc:issues[issue]['description'],
-                    customClass:project_labels[issues[issue]['project']],
+                    customClass:project_labels[projects[issues[issue]['project']]],
                     dataObj: {'id': issues[issue]['id']},
                 };
+
+                if(issues[issue]['actual_end'] == 'None'){
+                values_dict['customClass'] = 'ganttRed';
+                }
 
                 values.push(values_dict);
 
@@ -129,6 +162,9 @@ Charts
                 if(projects[issues[issue]['project']] == undefined){
                     projects[issues[issue]['project']] = counter;
                     counter++;
+                    if(counter > 2){
+                        counter = 0;
+                    }
                 }
 
                 gantt_item_dict = drawPlanningGanttObject(issue);

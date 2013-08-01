@@ -211,10 +211,10 @@
 }   
 
 .fn-gantt .ganttRed {
-    background-color: #F9C4E1;
+    background-color: #d13341;
 }
 .fn-gantt .ganttRed .fn-label {
-    color: #78436D !important;
+    color: #fff!important;
 }
 
 .fn-gantt .ganttGreen {

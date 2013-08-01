@@ -36,11 +36,13 @@ Charts
 {% block endScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var projects = JSON.parse('{{projects_dict|safe}}'), source = [];
+        var projects = JSON.parse('{{projects_dict|safe}}'), source = [], project_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0;
 
         $(function(){
             for(project in projects){
-
+                if(counter > 2){
+                    counter = 0;
+                }
                 var start_time = new Date(projects[project]['created']),
                     end_time = new Date(projects[project]['potential_end_date']);
 
@@ -52,6 +54,7 @@ Charts
                     to: end_friendly,
                     desc:projects[project]['description'],
                     label:projects[project]['name'],
+                    customClass: project_labels[counter],
                     dataObj: {'id': projects[project]['id']}
                 };
 
@@ -63,7 +66,7 @@ Charts
                 };
 
                 source.push(gantt_item_dict);
-
+                counter++;
             }
 
             $("#gantt_chart").gantt({

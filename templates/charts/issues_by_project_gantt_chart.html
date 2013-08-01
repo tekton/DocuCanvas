@@ -74,17 +74,38 @@ Charts
         });
 
         function drawPlanningGanttObject(issue){
-            var start_time = new Date(issues[issue]['projected_start']),
-                end_time = new Date(issues[issue]['projected_end']);
-            var start_friendly = "/Date(" + start_time.getTime() + ")/",
-                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
+            var start_time, end_time, label;
 
             if(issues[issue]['assigned_to'] == 'None'){
-                var label = 'Assign';
+                label = 'Assign';
             }
             else{
-                var label = issues[issue]['assigned_to'];
+                label = issues[issue]['assigned_to'];
             }
+
+            if(issues[issue]['projected_start'] == 'None'){
+                start_time = new Date();
+                label = 'No Start Date';
+            }
+            else{
+                start_time = new Date(issues[issue]['projected_start']);
+            }
+
+            if(issues[issue]['projected_end'] == 'None'){
+                end_time = new Date();
+                label = 'No End Date';
+            }
+            else{
+                end_time = new Date(issues[issue]['projected_end']);
+            }
+
+            if(issues[issue]['projected_end'] == 'None' && issues[issue]['projected_start'] == 'None'){
+                label = "No Start and End Date";
+            }   
+
+
+            var start_friendly = "/Date(" + start_time.getTime() + ")/",
+                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
 
             var values_dict = {
                 from:start_friendly,
@@ -109,17 +130,37 @@ Charts
         }
 
         function drawReviewGanttObject(issue){
-            var start_time = new Date(issues[issue]['actual_start']),
-                end_time = new Date(issues[issue]['actual_end']);
-            var start_friendly = "/Date(" + start_time.getTime() + ")/",
-                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
+            var start_time, end_time, label;
 
             if(issues[issue]['assigned_to'] == 'None'){
-                var label = 'Assign';
+                label = 'Assign';
             }
             else{
-                var label = issues[issue]['assigned_to'];
+                label = issues[issue]['assigned_to'];
             }
+
+            if(issues[issue]['actual_end'] == 'None'){
+                end_time = new Date();
+                label = 'No End Date'
+            }
+            else{
+                end_time = new Date(issues[issue]['actual_end'])
+            }
+
+            if(issues[issue]['actual_start'] == 'None'){
+                start_time = new Date(issues[issue]['created']);
+                label = 'No Start Date'
+            }
+            else{
+                start_time = new Date(issues[issue]['actual_start'])
+            }
+
+            if(issues[issue]['actual_start'] == 'None' && issues[issue]['actual_end']){
+                label = 'No Start and End Date'
+            }
+
+            var start_friendly = "/Date(" + start_time.getTime() + ")/",
+                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
 
             var values_dict = {
                 from:start_friendly,
