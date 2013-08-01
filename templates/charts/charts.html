@@ -14,7 +14,6 @@ Charts
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock%}
 
-
 {% block contextNav %}
     <li class="nav-header">All</li>
         <li><a href="{% url 'charts.views.projects_chart'%}">Projects</a></li>
@@ -60,7 +59,7 @@ Charts
                                 scale: "days",
                                 minScale: "days",
                                 navigate: "scroll",
-                                itemsPerPage: 15,
+                                itemsPerPage: 30,
                                 onItemClick: function(data){
                                     window.location = "/issue/" + data['id'];
                                 }
@@ -90,6 +89,8 @@ Charts
                 var label = issues[issue]['assigned_to'];
             }
 
+            
+
             var values_dict = {
                 from:start_friendly,
                 to: end_friendly,
@@ -97,7 +98,7 @@ Charts
                 desc:issues[issue]['description'],
                 customClass:project_labels[issues[issue]['project']],
                 dataObj: {'id': issues[issue]['id']},
-            };
+            }; 
 
             if(issues[issue]['projected_end'] == 'None'){
                 values_dict['customClass'] = 'ganttRed';
@@ -115,8 +116,23 @@ Charts
         }
 
         function drawReviewGanttObject(issue){
-            var start_time = new Date(issues[issue]['actual_start']),
-                end_time = new Date(issues[issue]['actual_end']);
+            var start_time,end_time;
+
+            if(issues[issue]['actual_end'] == 'None'){
+                end_time = new Date();
+            }
+            else{
+                end_time = new Date(issues[issue]['actual_end'])
+            }
+
+            if(issues[issue]['actual_start'] == 'None'){
+                console.log(issues[issue]['created']);
+                start_time = new Date(issues[issue]['created']);
+            }
+            else{
+                start_time = new Date(issues[issue]['actual_start'])
+            }
+
             var start_friendly = "/Date(" + start_time.getTime() + ")/",
                 end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
 
@@ -178,7 +194,7 @@ Charts
                 scale: "weeks",
                 minScale: "days",
                 navigate: "scroll",
-                itemsPerPage: 15,
+                itemsPerPage: 30,
                 onItemClick: function(data){
                     window.location = "/issue/" + data['id'];
                 }

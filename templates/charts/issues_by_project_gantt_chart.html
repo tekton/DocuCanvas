@@ -43,23 +43,26 @@ Charts
 {% block endScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var issues = JSON.parse('{{issues|safe}}'), source = [], review_source = [];
+        var issues = JSON.parse('{{issues|safe}}'), source = [], review_source = [], review_chart_rendered = false;
         $(document).ready(function(){
             $('#switch_view_button').click(function(){
 
                 if( $('#gantt_planning_container').css('display') != 'none'){
                     $('#gantt_planning_container').fadeToggle(function(){
                         $('#gantt_review_container').fadeToggle()
-                        $("#gantt_review").gantt({
-                            source:review_source,
-                            scale: "days",
-                            minScale: "days",
-                            navigate: "scroll",
-                            itemsPerPage: 15,
-                            onItemClick: function(data){
-                                window.location = "/issue/" + data['id'];
-                            }
-                        });
+                        if(!review_chart_rendered){
+                            $("#gantt_review").gantt({
+                                source:review_source,
+                                scale: "days",
+                                minScale: "days",
+                                navigate: "scroll",
+                                itemsPerPage: 30,
+                                onItemClick: function(data){
+                                    window.location = "/issue/" + data['id'];
+                                }
+                            });
+                            review_chart_rendered = true;
+                        }
                     });
                 }
                 else{
@@ -154,7 +157,7 @@ Charts
                 scale: "weeks",
                 minScale: "days",
                 navigate: "scroll",
-                itemsPerPage: 15,
+                itemsPerPage: 30,
                 onItemClick: function(data){
                         window.location = "/issue/" + data['id'];
                 }

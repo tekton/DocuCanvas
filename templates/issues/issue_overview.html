@@ -74,6 +74,7 @@ Extends /templates/issue/base.html
 		</a>
 	</li>
 	<li><a href="#" data-target="#modal-issue-related" data-toggle="modal">Set Related To...</a></li>
+	<li><a href="{% url 'charts.views.home'%}">Gantt Chart</a></li>
     <li><a href="{% url 'issues.views.history' issue.id %}">History</a></li>
 	<li><a href="{% url 'issues.views.edit' issue.id %}">Edit</a></li>
 {% endblock%}
