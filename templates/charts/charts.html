@@ -46,7 +46,7 @@ Charts
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
         var issues = JSON.parse('{{issues|safe}}'), source = [], review_source = [], projects = {}, first_of_project = false; 
-        project_labels = {0: "ganttRed", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0, review_chart_rendered = false;
+        project_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0, review_chart_rendered = false;
 
         $(document).ready(function(){
             $('#switch_view_button').click(function(){
@@ -89,14 +89,12 @@ Charts
                 var label = issues[issue]['assigned_to'];
             }
 
-            
-
             var values_dict = {
                 from:start_friendly,
                 to: end_friendly,
                 label:label,
                 desc:issues[issue]['description'],
-                customClass:project_labels[issues[issue]['project']],
+                customClass:project_labels[projects[issues[issue]['project']]],
                 dataObj: {'id': issues[issue]['id']},
             }; 
 
@@ -126,7 +124,6 @@ Charts
             }
 
             if(issues[issue]['actual_start'] == 'None'){
-                console.log(issues[issue]['created']);
                 start_time = new Date(issues[issue]['created']);
             }
             else{
@@ -143,12 +140,13 @@ Charts
                 var label = issues[issue]['assigned_to'];
             }
 
+            console.log(project_labels[projects[issues[issue]['project']]]);
             var values_dict = {
                 from:start_friendly,
                 to: end_friendly,
                 label:label,
                 desc:issues[issue]['description'],
-                customClass:project_labels[issues[issue]['project']],
+                customClass:project_labels[projects[issues[issue]['project']]],
                 dataObj: {'id': issues[issue]['id']},
             };
 
@@ -173,6 +171,9 @@ Charts
                     projects[issues[issue]['project']] = counter;
                     counter++;
                     first_of_project = true;
+                    if(counter > 2){
+                        counter = 0;
+                    }
                 }
 
                 gantt_item_dict = drawPlanningGanttObject(issue);
