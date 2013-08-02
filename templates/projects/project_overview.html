@@ -171,7 +171,13 @@ Project
 				</div>
 				<div id="project-issues-visual" style="display:none;" >
 					{% for ppi in project_planner_items %}
-						<div id="meta-issue-{{ppi.meta_issue.id}}" class="meta-issue-object" style="top:{{ppi.y_coordinate}}px;left:{{ppi.x_coordinate}}px"><strong>{{ppi.meta_issue.title}}</strong></br></br></div>
+						{% if ppi.x_coordinate == 0 and ppi.y_coordinate == 0%}
+							<div id="meta-issue-{{ppi.meta_issue.id}}" class="meta-issue-object" style="top:515px;left:355px"><strong>{{ppi.meta_issue.title}}</strong></br></br></div>
+						{% else %}
+							<div id="meta-issue-{{ppi.meta_issue.id}}" class="meta-issue-object" style="top:{{ppi.y_coordinate}}px;left:{{ppi.x_coordinate}}px"><strong>{{ppi.meta_issue.title}}</strong></br></br></div>
+						{% endif %}
+
+						
 					{% endfor %}
 				</div>
 			</div>

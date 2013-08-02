@@ -60,6 +60,19 @@ def project_overview(request, project_id):
         metas = MetaIssue.objects.filter(project=project)
         incomplete_issues = Issue.objects.filter(project=project).exclude(status='fixed').order_by('-created')
         fixed_issues = Issue.objects.filter(project=project, status='fixed').order_by('-created')
+
+        project_planner_items = ProjectPlannerItem.objects.filter(project=project)
+        if not project_planner_items:
+            project_planner_items = []
+            try:
+                for meta in metas:
+                    project_planner_item = ProjectPlannerItem()
+                    project_planner_item.project = project
+                    project_planner_item.meta_issue = meta
+                    project_planner_item.save()
+                    project_planner_items.append(project_planner_item)
+            except Exception, e:
+                print e
     except:
         print 'project not found'
 
@@ -68,12 +81,6 @@ def project_overview(request, project_id):
         projects = Project.objects.all().order_by('-created')
     except:
         print 'Unable to load projects'
-
-    try:
-        project_planner_items = ProjectPlannerItem.objects.filter(project=project)
-    except:
-        print 'Unable to load project planner items'
-        project_planner_items = []
 
     try:
         connections = ProjectPlannerItemConnection.objects.select_related().filter(project=project)
