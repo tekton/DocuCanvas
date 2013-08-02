@@ -56,6 +56,49 @@ def home(request):
 
 
 @login_required
+def users_chart(request):
+    users_dict = {}
+    project_dict = {}
+    try:
+        users = User.objects.all()
+        for user in users:
+            users_dict[user.id] = user.username
+    except:
+        print "Can't get users"
+
+    try:
+        projects = Project.objects.all()
+        for project in projects:
+            project_dict[project.id] = project.name
+    except:
+        print 'Unable to grab all projects'
+        projects = []
+
+    try:
+        issues = Issue.objects.all().order_by('-assigned_to')
+        to_json_issues = []
+        for issue in issues:
+            json_issue = model_to_dict(issue)
+            json_issue['created'] = issue.created
+            json_issue['project_name'] = issue.project.name
+            if issue.assigned_to:
+                try:
+                    json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
+                except Exception, e:
+                    print e   
+            for k,v in json_issue.items():
+                json_issue[k] = str(v)
+
+            to_json_issues.append(json_issue)
+    except Exception, e:
+        print e
+        print 'Unable to grab all Issues'
+        to_json_issues = []
+
+    return render_to_response("charts/users_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues).replace("'", r"\'"), "users": users}, context_instance=RequestContext(request))
+
+
+@login_required
 def projects_chart(request):
     try:
         users = User.objects.all()

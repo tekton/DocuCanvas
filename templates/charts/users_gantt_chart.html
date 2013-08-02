@@ -7,10 +7,12 @@ Charts
 
 {% block additionalHead%}
     <style type="text/css">
+        #gantt_review_container{
+            display:none;
+        }
     </style>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock%}
-
 
 {% block contextNav %}
     <li class="nav-header">All</li>
@@ -27,13 +29,13 @@ Charts
 {% endblock%}
 
 {% block bodyContent %}
-<div class="span12 well" style="height:700px">
+<div class="span12 well" style="min-height:700px">
     <a id="switch_view_button">Switch View</a>
     <div id="gantt_planning_container">
         <h3>Planning</h3>
         <div id="gantt_planning"></div>
     </div>
-    <div id="gantt_review_container" style="display:none">
+    <div id="gantt_review_container">
         <h3>Review</h3>
         <div id="gantt_review"></div>
     </div>
@@ -43,12 +45,14 @@ Charts
 {% block endScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var issues = JSON.parse('{{issues|safe}}'), source = [], review_source = [], review_chart_rendered = false;
+        var issues = JSON.parse('{{issues|safe}}'), source = [], review_source = [], projects = {}, users = {}, first_of_project = false, first_of_users = false; 
+        project_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"},project_counter = 0, user_counter = 0, review_chart_rendered = false;
+
         $(document).ready(function(){
             $('#switch_view_button').click(function(){
                 if( $('#gantt_planning_container').css('display') != 'none'){
                     $('#gantt_planning_container').fadeToggle(function(){
-                        $('#gantt_review_container').fadeToggle()
+                        $('#gantt_review_container').fadeToggle();
                         if(!review_chart_rendered){
                             $("#gantt_review").gantt({
                                 source:review_source,
@@ -73,46 +77,33 @@ Charts
         });
 
         function drawPlanningGanttObject(issue){
-            var start_time, end_time, label;
-
-            if(issues[issue]['assigned_to'] == 'None'){
-                label = 'Assign';
-            }
-            else{
-                label = issues[issue]['assigned_to'];
-            }
-
-            if(issues[issue]['projected_start'] == 'None'){
-                start_time = new Date();
-                label = 'No Start Date';
-            }
-            else{
-                start_time = new Date(issues[issue]['projected_start']);
-            }
-
-            if(issues[issue]['projected_end'] == 'None'){
-                end_time = new Date();
-                label = 'No End Date';
-            }
-            else{
+            var start_time = new Date(issues[issue]['projected_start']),
                 end_time = new Date(issues[issue]['projected_end']);
+            var start_friendly = "/Date(" + start_time.getTime() + ")/",
+                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [], no_start_or_end_date = false, label;
+
+            label = issues[issue]['summary'];
+
+            if(issues[issue]['projected_start'] == 'None' && issues[issue]['projected_end'] == 'None'){
+                label = 'No start and end date';
             }
 
-            if(issues[issue]['projected_end'] == 'None' && issues[issue]['projected_start'] == 'None'){
-                label = "No Start and End Date";
-            }   
+            if(issues[issue]['projected_start'] == 'None' && issues[issue]['projected_end'] != 'None'){
+                label = 'No start date';
+            }
 
-
-            var start_friendly = "/Date(" + start_time.getTime() + ")/",
-                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
+            if(issues[issue]['projected_start'] != 'None' && issues[issue]['projected_end'] == 'None'){
+                label = 'No end date';
+            }
 
             var values_dict = {
                 from:start_friendly,
                 to: end_friendly,
                 label:label,
                 desc:issues[issue]['description'],
+                customClass:project_labels[users[issues[issue]['assigned_to']]],
                 dataObj: {'id': issues[issue]['id']},
-            };
+            }; 
 
             if(issues[issue]['projected_end'] == 'None'){
                 values_dict['customClass'] = 'ganttRed';
@@ -121,7 +112,8 @@ Charts
             values.push(values_dict);
 
             var gantt_item_dict = {
-                name: issues[issue]['summary'],
+                desc: "",
+                name:"",
                 values: values,
             };
 
@@ -129,14 +121,10 @@ Charts
         }
 
         function drawReviewGanttObject(issue){
-            var start_time, end_time, label;
+            var start_time,end_time, label;
 
-            if(issues[issue]['assigned_to'] == 'None'){
-                label = 'Assign';
-            }
-            else{
-                label = issues[issue]['assigned_to'];
-            }
+            label = issues[issue]['summary'];
+
 
             if(issues[issue]['actual_end'] == 'None'){
                 end_time = new Date();
@@ -154,8 +142,8 @@ Charts
                 start_time = new Date(issues[issue]['actual_start'])
             }
 
-            if(issues[issue]['actual_start'] == 'None' && issues[issue]['actual_end']){
-                label = 'No Start and End Date'
+            if(issues[issue]['actual_start'] == 'None' && issues[issue]['actual_end'] == 'None'){
+                label = 'No Start and End Date';
             }
 
             var start_friendly = "/Date(" + start_time.getTime() + ")/",
@@ -166,17 +154,19 @@ Charts
                 to: end_friendly,
                 label:label,
                 desc:issues[issue]['description'],
+                customClass:project_labels[users[issues[issue]['assigned_to']]],
                 dataObj: {'id': issues[issue]['id']},
             };
 
-            if(issues[issue]['projected_end'] == 'None'){
+            if(issues[issue]['actual_end'] == 'None'){
                 values_dict['customClass'] = 'ganttRed';
             }
 
             values.push(values_dict);
 
             var gantt_item_dict = {
-                name: issues[issue]['summary'],
+                desc: "",
+                name:"",
                 values: values,
             };
 
@@ -185,11 +175,49 @@ Charts
 
         $(function(){
             for(issue in issues){
+                if(users[issues[issue]['assigned_to']] == undefined){
+                    users[issues[issue]['assigned_to']] = user_counter;
+                    user_counter++;
+                    first_of_users = true;
+                    if(user_counter > 2){
+                        user_counter = 0;
+                    }
+                    projects = {}; 
+                    first_of_project = true;  
+                }
+
+                if(projects[issues[issue]['project']] == undefined){
+                    projects[issues[issue]['project']] = project_counter;
+                    project_counter++;
+                    first_of_project = true;
+                    if(project_counter > 2){
+                        project_counter = 0;
+                    }
+                }
+
                 gantt_item_dict = drawPlanningGanttObject(issue);
                 review_gantt_item_dict = drawReviewGanttObject(issue);
 
+                if(first_of_users == true){
+                    var user_label;
+                    if(issues[issue]['assigned_to'] == 'None'){
+                        user_label = 'Not Assigned'
+                    }
+                    else{
+                        user_label = issues[issue]['assigned_to']
+                    }
+                    gantt_item_dict['name'] = user_label
+                    review_gantt_item_dict['name'] = user_label
+                    first_of_users = false;
+                }
+                if(first_of_project == true){
+                    gantt_item_dict['desc'] = issues[issue]['project_name']
+                    review_gantt_item_dict['desc'] = issues[issue]['project_name']
+                    first_of_project = false;
+                }
+
                 source.push(gantt_item_dict);
-                review_source.push(review_gantt_item_dict)
+                review_source.push(review_gantt_item_dict);
             }
 
             $("#gantt_planning").gantt({
@@ -199,11 +227,11 @@ Charts
                 navigate: "scroll",
                 itemsPerPage: 30,
                 onItemClick: function(data){
-                        window.location = "/issue/" + data['id'];
+                    window.location = "/issue/" + data['id'];
                 }
             });
-        });
 
+        });
     </script>
 
 {% endblock %}
