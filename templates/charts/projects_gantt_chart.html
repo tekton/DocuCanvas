@@ -38,7 +38,7 @@ Charts
 {% block endScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var projects = JSON.parse('{{projects_dict|escapejs}}'), source = [], project_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0;
+        var projects = JSON.parse('{{projects_dict|escapejs|safe}}'), source = [], project_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0;
 
         $(function(){
             for(project in projects){

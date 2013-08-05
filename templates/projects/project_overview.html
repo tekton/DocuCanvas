@@ -54,6 +54,7 @@ Project
 	<li class="nav-header">Lists</li>
 	<li><a href="{% url 'projects.views.project_stats' project.id %}">Report</a></li>
 	<li><a href="{% url 'checklists.views.project_checklists' project.id %}">Checklists</a></li>
+	<li><a href="{% url 'charts.views.issues_by_project_chart' project.id %}">Gantt Chart</a></li>
 	<li class="divider"></li>
 	<li><a href="{% url 'projects.views.edit' project.id %}">Edit Project</a></li>
 {% endblock%}
