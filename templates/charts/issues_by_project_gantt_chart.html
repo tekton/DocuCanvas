@@ -45,7 +45,7 @@ Charts
 {% block endScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var issues = JSON.parse('{{issues|safe}}'), source = [], review_source = [], review_chart_rendered = false;
+        var issues = JSON.parse('{{issues|escapejs}}'), source = [], review_source = [], review_chart_rendered = false;
         $(document).ready(function(){
             $('#switch_view_button').click(function(){
                 if( $('#gantt_planning_container').css('display') != 'none'){

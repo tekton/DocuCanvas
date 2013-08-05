@@ -32,7 +32,7 @@ def home(request):
         projects = []
 
     try:
-        issues = Issue.objects.all().order_by('-created')[:15]
+        issues = Issue.objects.all().order_by('-created')[:50]
         to_json_issues = []
         for issue in issues:
             json_issue = model_to_dict(issue)
@@ -45,14 +45,13 @@ def home(request):
                     print e
             for k,v in json_issue.items():
                 json_issue[k] = str(v)
-
             to_json_issues.append(json_issue)
     except Exception, e:
         print e
         print 'Unable to grab all Issues'
         to_json_issues = []
 
-    return render_to_response("charts/charts.html", {"projects": projects, "issues": json.dumps(to_json_issues).replace("'", r"\'"), "users": users}, context_instance=RequestContext(request))
+    return render_to_response("charts/charts.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -75,7 +74,7 @@ def users_chart(request):
         projects = []
 
     try:
-        issues = Issue.objects.all().order_by('-created')[:15]
+        issues = Issue.objects.all().order_by('-created')[:50]
         to_json_issues = []
         for issue in issues:
             json_issue = model_to_dict(issue)
@@ -95,7 +94,7 @@ def users_chart(request):
         print 'Unable to grab all Issues'
         to_json_issues = []
 
-    return render_to_response("charts/users_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues).replace("'", r"\'"), "users": users}, context_instance=RequestContext(request))
+    return render_to_response("charts/users_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -107,7 +106,7 @@ def projects_chart(request):
 
     try:
         to_json_projects = []
-        projects = Project.objects.all().order_by('-created')[:10]
+        projects = Project.objects.all().order_by('-created')[:20]
         for project in projects:
             json_project = model_to_dict(project)
             json_project['created'] = project.created
@@ -119,7 +118,7 @@ def projects_chart(request):
         print 'Unable to grab all projects'
         projects = []
 
-    return render_to_response("charts/projects_gantt_chart.html", {"projects": projects, "projects_dict": json.dumps(to_json_projects).replace("'", r"\'"), "users": users}, context_instance=RequestContext(request))
+    return render_to_response("charts/projects_gantt_chart.html", {"projects": projects, "projects_dict": json.dumps(to_json_projects), "users": users}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -136,7 +135,7 @@ def unassigned_issues_chart(request):
         print "Can't get users"
 
     try:
-        issues = Issue.objects.filter(assigned_to=None).order_by('-created')[:25]
+        issues = Issue.objects.filter(assigned_to=None).order_by('-created')[:50]
         to_json_issues = []
         for issue in issues:
             json_issue = model_to_dict(issue)
@@ -151,7 +150,7 @@ def unassigned_issues_chart(request):
         print 'Unable to grab all Isssues'
         to_json_issues = []
 
-    return render_to_response("charts/unassigned_issues_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues).replace("'", r"\'"), "users": users}, context_instance=RequestContext(request))
+    return render_to_response("charts/unassigned_issues_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
 
 
 
@@ -172,7 +171,7 @@ def issues_by_user_chart(request, user_id):
     try:
         user = User.objects.get(pk=user_id)
         try:
-            issues = Issue.objects.filter(assigned_to=user)[:25]
+            issues = Issue.objects.filter(assigned_to=user)[:50]
             to_json_issues = []
             for issue in issues:
                 json_issue = model_to_dict(issue)
@@ -188,8 +187,7 @@ def issues_by_user_chart(request, user_id):
             to_json_issues = []
     except:
         print "User doesn't exist!"
-    return render_to_response("charts/issues_by_user_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues).replace("'", r"\'"), "users": users}, context_instance=RequestContext(request))
-
+    return render_to_response("charts/issues_by_user_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -211,7 +209,7 @@ def issues_by_project_chart(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
         try:
-            issues = Issue.objects.filter(project=project).order_by('-created')[:25]
+            issues = Issue.objects.filter(project=project).order_by('-created')[:50]
             to_json_issues = []
             for issue in issues:
                 json_issue = model_to_dict(issue)
@@ -232,7 +230,7 @@ def issues_by_project_chart(request, project_id):
             to_json_issues = []
     except:
         print 'Unable to find project'
-    return render_to_response("charts/issues_by_project_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues).replace("'", r"\'"), "users": users}, context_instance=RequestContext(request))
+    return render_to_response("charts/issues_by_project_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
 
 @login_required
 def meta_issues_by_project(request, project_id):

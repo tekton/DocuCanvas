@@ -47,7 +47,7 @@ Charts
 {% block endScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var issues = JSON.parse('{{issues|safe}}'), source = [], review_source = [], projects = {}, first_of_project = false; 
+        var issues = JSON.parse('{{issues|escapejs}}'), source = [], review_source = [], projects = {}, first_of_project = false; 
         project_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0, review_chart_rendered = false;
 
         $(document).ready(function(){
