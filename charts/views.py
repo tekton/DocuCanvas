@@ -32,7 +32,7 @@ def home(request):
         projects = []
 
     try:
-        issues = Issue.objects.all().order_by('-created')[:50]
+        issues = Issue.objects.all().order_by('-created')[:15]
         to_json_issues = []
         for issue in issues:
             json_issue = model_to_dict(issue)
@@ -75,7 +75,7 @@ def users_chart(request):
         projects = []
 
     try:
-        issues = Issue.objects.all().order_by('-created')[:50]
+        issues = Issue.objects.all().order_by('-created')[:15]
         to_json_issues = []
         for issue in issues:
             json_issue = model_to_dict(issue)
@@ -107,7 +107,7 @@ def projects_chart(request):
 
     try:
         to_json_projects = []
-        projects = Project.objects.all().order_by('-created')[:15]
+        projects = Project.objects.all().order_by('-created')[:10]
         for project in projects:
             json_project = model_to_dict(project)
             json_project['created'] = project.created
@@ -136,7 +136,7 @@ def unassigned_issues_chart(request):
         print "Can't get users"
 
     try:
-        issues = Issue.objects.filter(assigned_to=None).order_by('-created')[:50]
+        issues = Issue.objects.filter(assigned_to=None).order_by('-created')[:25]
         to_json_issues = []
         for issue in issues:
             json_issue = model_to_dict(issue)
@@ -172,7 +172,7 @@ def issues_by_user_chart(request, user_id):
     try:
         user = User.objects.get(pk=user_id)
         try:
-            issues = Issue.objects.filter(assigned_to=user)[:50]
+            issues = Issue.objects.filter(assigned_to=user)[:25]
             to_json_issues = []
             for issue in issues:
                 json_issue = model_to_dict(issue)
@@ -211,7 +211,7 @@ def issues_by_project_chart(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
         try:
-            issues = Issue.objects.filter(project=project).order_by('-created')[:50]
+            issues = Issue.objects.filter(project=project).order_by('-created')[:25]
             to_json_issues = []
             for issue in issues:
                 json_issue = model_to_dict(issue)
