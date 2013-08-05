@@ -81,6 +81,7 @@ def project_overview(request, project_id):
         projects = Project.objects.all().order_by('-created')
     except:
         print 'Unable to load projects'
+        projects = []
 
     try:
         connections = ProjectPlannerItemConnection.objects.select_related().filter(project=project)
