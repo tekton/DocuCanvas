@@ -70,16 +70,16 @@ Used for all templates in /templates/projects
 {% block sharedScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var issues = JSON.parse('{{issues|escapejs|safe}}'), source = [], review_source = [], projects = {}, users = {}, first_of_project = false,
-            first_of_users = false, gantt_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, review_chart_rendered = false,
-            project_counter = 0, user_counter = 0;
+        var issues = JSON.parse('{{issues|escapejs|safe}}'), source = [], review_source = [], projects = {}, users = {}, projects_review = {}, users_review = {}, first_of_project = false, first_of_project_review = false, first_of_users_review = false, first_of_users = false, 
+            gantt_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, review_chart_rendered = false,
+            project_counter = 0, user_counter = 0, project_review_counter = 0, user_review_counter = 0;
 
             $(document).ready(function(){
             $('#switch_view_button').click(function(){
                 if( $('#gantt_planning_container').css('display') != 'none'){
                     $('#gantt_planning_container').fadeToggle(function(){
                         $('#gantt_review_container').fadeToggle();
-                        if(!review_chart_rendered){
+                        if(!review_chart_rendered && review_source.length > 0){
                             $("#gantt_review").gantt({
                                 source:review_source,
                                 scale: "days",

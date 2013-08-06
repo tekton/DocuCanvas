@@ -24,58 +24,99 @@ Charts
     <script language="javascript" type="text/javascript">
         $(function(){
             for(issue in issues){
-                if(users[issues[issue]['assigned_to']] == undefined){
-                    users[issues[issue]['assigned_to']] = user_counter;
-                    user_counter++;
-                    first_of_users = true;
-                    if(user_counter > 2){
-                        user_counter = 0;
+                if(issues[issue]['status'] == 'fixed'){
+                    if(users_review[issues[issue]['assigned_to']] == undefined){
+                        users_review[issues[issue]['assigned_to']] = user_review_counter;
+                        user_review_counter++;
+                        first_of_users_review = true;
+                        if(user_review_counter > 2){
+                            user_review_counter = 0;
+                        }
+                        projects_review = {}; 
+                        first_of_project_review = true;  
                     }
-                    projects = {}; 
-                    first_of_project = true;  
-                }
 
-                if(projects[issues[issue]['project']] == undefined){
-                    projects[issues[issue]['project']] = project_counter;
-                    project_counter++;
-                    first_of_project = true;
-                    if(project_counter > 2){
-                        project_counter = 0;
+                    if(projects_review[issues[issue]['project']] == undefined){
+                        projects_review[issues[issue]['project']] = project_review_counter;
+                        project_review_counter++;
+                        first_of_project_review = true;
+                        if(project_review_counter > 2){
+                            project_review_counter = 0;
+                        }
                     }
-                }
+                    review_gantt_item_dict = drawReviewGanttObject(issue, issues[issue]['project_name'] ,issues[issue]['assigned_to']  , issues[issue]['summary'], users[issues[issue]['assigned_to']]);
 
-                gantt_item_dict = drawPlanningGanttObject(issue, issues[issue]['project_name'],issues[issue]['assigned_to'], issues[issue]['summary'], users[issues[issue]['assigned_to']] );
-                review_gantt_item_dict = drawReviewGanttObject(issue, issues[issue]['project_name'] ,issues[issue]['assigned_to']  , issues[issue]['summary'], users[issues[issue]['assigned_to']]);
-
-                if(first_of_users == true){
-                    var user_label;
-                    if(issues[issue]['assigned_to'] == 'None'){
-                        user_label = 'Not Assigned';
+                    if(first_of_users_review == true){
+                        var user_label;
+                        if(issues[issue]['assigned_to'] == 'None'){
+                            user_label = 'Not Assigned';
+                        }
+                        else{
+                            user_label = issues[issue]['assigned_to']
+                        }
+                        review_gantt_item_dict['name'] = user_label;
+                        first_of_users_review = false;
                     }
                     else{
-                        user_label = issues[issue]['assigned_to']
+                        review_gantt_item_dict['name'] = "";
                     }
-                    gantt_item_dict['name'] = user_label;
-                    review_gantt_item_dict['name'] = user_label;
-                    first_of_users = false;
+
+                    if(first_of_project_review == true){
+                        review_gantt_item_dict['desc'] = issues[issue]['project_name'];
+                        first_of_project_review = false;
+                    }
+                    else{
+                        review_gantt_item_dict['desc'] = "";
+                    }
+
+                    review_source.push(review_gantt_item_dict);
                 }
                 else{
-                    gantt_item_dict['name'] = "";
-                    review_gantt_item_dict['name'] = "";
-                }
+                    if(users[issues[issue]['assigned_to']] == undefined){
+                        users[issues[issue]['assigned_to']] = user_counter;
+                        user_counter++;
+                        first_of_users = true;
+                        if(user_counter > 2){
+                            user_counter = 0;
+                        }
+                        projects = {}; 
+                        first_of_project = true;  
+                    }
 
-                if(first_of_project == true){
-                    gantt_item_dict['desc'] = issues[issue]['project_name'];
-                    review_gantt_item_dict['desc'] = issues[issue]['project_name'];
-                    first_of_project = false;
-                }
-                else{
-                    gantt_item_dict['desc'] = "";
-                    review_gantt_item_dict['desc'] = "";
-                }
+                    if(projects[issues[issue]['project']] == undefined){
+                        projects[issues[issue]['project']] = project_counter;
+                        project_counter++;
+                        first_of_project = true;
+                        if(project_counter > 2){
+                            project_counter = 0;
+                        }
+                    }
+                    gantt_item_dict = drawPlanningGanttObject(issue, issues[issue]['project_name'],issues[issue]['assigned_to'], issues[issue]['summary'], users[issues[issue]['assigned_to']] );
 
-                source.push(gantt_item_dict);
-                review_source.push(review_gantt_item_dict);
+                    if(first_of_users == true){
+                        var user_label;
+                        if(issues[issue]['assigned_to'] == 'None'){
+                            user_label = 'Not Assigned';
+                        }
+                        else{
+                            user_label = issues[issue]['assigned_to']
+                        }
+                        gantt_item_dict['name'] = user_label;
+                        first_of_users = false;
+                    }
+                    else{
+                        gantt_item_dict['name'] = "";
+                    }
+
+                    if(first_of_project == true){
+                        gantt_item_dict['desc'] = issues[issue]['project_name'];
+                        first_of_project = false;
+                    }
+                    else{
+                        gantt_item_dict['desc'] = "";
+                    }
+                    source.push(gantt_item_dict);
+                }
             }
 
             $("#gantt_planning").gantt({
@@ -83,7 +124,7 @@ Charts
                 scale: "weeks",
                 minScale: "days",
                 navigate: "scroll",
-                itemsPerPage: 30,
+                itemsPerPage: 50,
                 onItemClick: function(data){
                     window.location = "/issue/" + data['id'];
                 }

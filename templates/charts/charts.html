@@ -25,26 +25,40 @@ Charts
     <script language="javascript" type="text/javascript">
         $(function(){
             for(issue in issues){
-                if(projects[issues[issue]['project']] == undefined){
-                    projects[issues[issue]['project']] = project_counter;
-                    project_counter++;
-                    first_of_project = true;
-                    if(project_counter > 2){
-                        project_counter = 0;
+
+                if(issues[issue]['status'] == 'fixed'){
+                    if(projects_review[issues[issue]['project']] == undefined){
+                        projects_review[issues[issue]['project']] = project_review_counter;
+                        project_review_counter++;
+                        first_of_project_review = true;
+                        if(project_review_counter > 2){
+                            project_review_counter = 0;
+                        }
                     }
+                    review_gantt_item_dict = drawReviewGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'], projects[issues[issue]['project']] );
+                    if(first_of_project_review == true){
+                        review_gantt_item_dict['name'] = issues[issue]['project_name']
+                        first_of_project_review = false;
+                    }
+                    review_source.push(review_gantt_item_dict);
                 }
-
-                gantt_item_dict = drawPlanningGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'], projects[issues[issue]['project']]);
-                review_gantt_item_dict = drawReviewGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'], projects[issues[issue]['project']] );
-
-                if(first_of_project == true){
-                    gantt_item_dict['name'] = issues[issue]['project_name']
-                    review_gantt_item_dict['name'] = issues[issue]['project_name']
-                    first_of_project = false;
+                else{
+                    if(projects[issues[issue]['project']] == undefined){
+                        projects[issues[issue]['project']] = project_counter;
+                        project_counter++;
+                        first_of_project = true;
+                        if(project_counter > 2){
+                            project_counter = 0;
+                        }
+                    }
+                    gantt_item_dict = drawPlanningGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'], projects[issues[issue]['project']]);
+                    if(first_of_project == true){
+                        gantt_item_dict['name'] = issues[issue]['project_name']
+                        first_of_project = false;
+                    }
+                    source.push(gantt_item_dict);
+                    
                 }
-
-                source.push(gantt_item_dict);
-                review_source.push(review_gantt_item_dict);
 
             }
 
@@ -53,7 +67,7 @@ Charts
                 scale: "weeks",
                 minScale: "days",
                 navigate: "scroll",
-                itemsPerPage: 30,
+                itemsPerPage: 50,
                 onItemClick: function(data){
                     window.location = "/issue/" + data['id'];
                 }
