@@ -26,16 +26,16 @@ Charts
         $(function(){
             for(issue in issues){
                 if(projects[issues[issue]['project']] == undefined){
-                    projects[issues[issue]['project']] = counter;
-                    counter++;
+                    projects[issues[issue]['project']] = project_counter;
+                    project_counter++;
                     first_of_project = true;
-                    if(counter > 2){
-                        counter = 0;
+                    if(project_counter > 2){
+                        project_counter = 0;
                     }
                 }
 
-                gantt_item_dict = drawPlanningGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to']);
-                review_gantt_item_dict = drawReviewGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to']);
+                gantt_item_dict = drawPlanningGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'], projects[issues[issue]['project']]);
+                review_gantt_item_dict = drawReviewGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'], projects[issues[issue]['project']] );
 
                 if(first_of_project == true){
                     gantt_item_dict['name'] = issues[issue]['project_name']

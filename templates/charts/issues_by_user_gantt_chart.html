@@ -26,15 +26,15 @@ Charts
         $(function(){
             for(issue in issues){
                 if(projects[issues[issue]['project']] == undefined){
-                    projects[issues[issue]['project']] = counter;
-                    counter++;
-                    if(counter > 2){
-                        counter = 0;
+                    projects[issues[issue]['project']] = project_counter;
+                    project_counter++;
+                    if(project_counter > 2){
+                        project_counter = 0;
                     }
                 }
 
-                gantt_item_dict = drawPlanningGanttObject(issue, false, issues[issue]['summary'], issues[issue]['project_name']);
-                review_gantt_item_dict = drawReviewGanttObject(issue, false, issues[issue]['summary'], issues[issue]['project_name']);
+                gantt_item_dict = drawPlanningGanttObject(issue, false, issues[issue]['summary'], issues[issue]['project_name'], projects[issues[issue]['project']]);
+                review_gantt_item_dict = drawReviewGanttObject(issue, false, issues[issue]['summary'], issues[issue]['project_name'], projects[issues[issue]['project']]);
 
                 source.push(gantt_item_dict);
                 review_source.push(review_gantt_item_dict)

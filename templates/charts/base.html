@@ -70,8 +70,9 @@ Used for all templates in /templates/projects
 {% block sharedScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var issues = JSON.parse('{{issues|escapejs|safe}}'), source = [], review_source = [], projects = {}, first_of_project = false; 
-        gantt_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0, review_chart_rendered = false;
+        var issues = JSON.parse('{{issues|escapejs|safe}}'), source = [], review_source = [], projects = {}, users = {}, first_of_project = false,
+            first_of_users = false, gantt_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, review_chart_rendered = false,
+            project_counter = 0, user_counter = 0;
 
             $(document).ready(function(){
             $('#switch_view_button').click(function(){
@@ -101,10 +102,10 @@ Used for all templates in /templates/projects
             });
         });
 
-        function drawPlanningGanttObject(issue, gantt_desc, gantt_name, gantt_label){
-            var start_time, end_time, label;
+        function drawPlanningGanttObject(issue, gantt_desc, gantt_name, gantt_label, customClass){
+            var start_time, end_time, label, end_earlier_than_start = false, error_description = "";
 
-            if(issues[issue]['assigned_to'] == 'None'){
+            if(gantt_label == 'None'){
                 label = 'Assign';
             }
             else{
@@ -112,8 +113,8 @@ Used for all templates in /templates/projects
             }
 
             if(issues[issue]['projected_start'] == 'None'){
-                start_time = new Date();
-                label = 'No Start Date';
+                start_time = new Date(issues[issue]['created']);
+                error_description = 'No Start Date';
             }
             else{
                 start_time = new Date(issues[issue]['projected_start']);
@@ -121,30 +122,40 @@ Used for all templates in /templates/projects
 
             if(issues[issue]['projected_end'] == 'None'){
                 end_time = new Date();
-                label = 'No End Date';
+                error_description = 'No End Date';
             }
             else{
                 end_time = new Date(issues[issue]['projected_end']);
             }
 
             if(issues[issue]['projected_end'] == 'None' && issues[issue]['projected_start'] == 'None'){
-                label = "No Start and End Date";
-            }   
+                error_description = "No Start and End Date";
+            }
+
+            if(end_time < start_time){
+                var temp_time;
+                end_earlier_than_start = true;
+                error_description = "End time earlier than Start time";
+                temp_time = end_time;
+                end_time = start_time;
+                start_time = temp_time;
+            }
 
             var start_friendly = "/Date(" + start_time.getTime() + ")/",
-                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [], no_start_or_end_date = false, label;
+                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
 
             var values_dict = {
                 from:start_friendly,
                 to: end_friendly,
                 label:label,
                 desc:issues[issue]['description'],
-                customClass:gantt_labels[projects[issues[issue]['project']]],
+                customClass:gantt_labels[customClass],
                 dataObj: {'id': issues[issue]['id']},
             }; 
 
-            if(issues[issue]['projected_end'] == 'None'){
+            if(issues[issue]['projected_end'] == 'None' || end_earlier_than_start){
                 values_dict['customClass'] = 'ganttRed';
+                values_dict['desc'] = error_description;
             }
 
             values.push(values_dict);
@@ -164,34 +175,43 @@ Used for all templates in /templates/projects
             return gantt_item_dict;
         }
 
-        function drawReviewGanttObject(issue, gantt_desc, gantt_name, gantt_label){
-            var start_time,end_time, label;
+        function drawReviewGanttObject(issue, gantt_desc, gantt_name, gantt_label, customClass){
+            var start_time,end_time, label, end_earlier_than_start = false, error_description = "";
 
-            if(issues[issue]['assigned_to'] == 'None'){
+            if(gantt_label == 'None'){
                 label = 'Assign';
             }
             else{
-                label = issues[issue]['assigned_to'];
+                label = gantt_label;
             }
 
             if(issues[issue]['actual_end'] == 'None'){
                 end_time = new Date();
-                label = 'No End Date'
+                error_description = 'No End Date';
             }
             else{
-                end_time = new Date(issues[issue]['actual_end'])
+                end_time = new Date(issues[issue]['actual_end']);
             }
 
             if(issues[issue]['actual_start'] == 'None'){
                 start_time = new Date(issues[issue]['created']);
-                label = 'No Start Date'
+                error_description = 'No Start Date';
             }
             else{
-                start_time = new Date(issues[issue]['actual_start'])
+                start_time = new Date(issues[issue]['actual_start']);
             }
 
             if(issues[issue]['actual_start'] == 'None' && issues[issue]['actual_end'] == 'None'){
-                label = 'No Start and End Date';
+                error_description = 'No Start and End Date';
+            }
+
+            if(end_time < start_time){
+                var temp_time;
+                end_earlier_than_start = true;
+                error_description = "End time earlier than Start time";
+                temp_time = end_time;
+                end_time = start_time;
+                start_time = temp_time;
             }
 
             var start_friendly = "/Date(" + start_time.getTime() + ")/",
@@ -202,12 +222,13 @@ Used for all templates in /templates/projects
                 to: end_friendly,
                 label:label,
                 desc:issues[issue]['description'],
-                customClass:gantt_labels[projects[issues[issue]['project']]],
+                customClass:gantt_labels[customClass],
                 dataObj: {'id': issues[issue]['id']},
             };
 
-            if(issues[issue]['actual_end'] == 'None'){
+            if(issues[issue]['actual_end'] == 'None' || end_earlier_than_start){
                 values_dict['customClass'] = 'ganttRed';
+                values_dict['desc'] = error_description;
             }
 
             values.push(values_dict);
@@ -220,7 +241,6 @@ Used for all templates in /templates/projects
                 gantt_item_dict['desc'] = gantt_desc;  
             }
             if(gantt_name){
-
                 gantt_item_dict['name'] = gantt_name;
             }
 

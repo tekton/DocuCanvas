@@ -74,7 +74,7 @@ def users_chart(request):
         projects = []
 
     try:
-        issues = Issue.objects.all().order_by('-created')[:50]
+        issues = Issue.objects.all().order_by('-assigned_to')[:50]
         to_json_issues = []
         for issue in issues:
             json_issue = model_to_dict(issue)
