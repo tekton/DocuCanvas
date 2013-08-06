@@ -209,7 +209,8 @@ djcelery.setup_loader()
 ### given the prevelance of heroku usage, this is just an easy way to use that and fall back to localhost for dev
 BROKER_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 CELERY_RESULT_BACKEND = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
-# CELERY_IMPORTS = ("bg_tasks.tasks")  # Uncomment line to add where the tasks are! A suggest default is in there
+#CELERY_IMPORTS = ("haystack.update_index")  # Uncomment line to add where the tasks are! A suggest default is in there
+#CELERYBEAT_SCHEDULE = {'update_index': {'task': 'haystack.update_index.update_index', 'schedule': timedelta(days=1), },}
 ### /CELERY ###
 
 TINYMCE_DEFAULT_CONFIG ={

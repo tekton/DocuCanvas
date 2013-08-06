@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from newsfeed.models import NewsFeedItem
 
-from haystack.management.commands import update_index
 # from django.utils.translation import ugettext as _
 from projects.models import Project
 from django.contrib import admin
