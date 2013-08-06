@@ -5,15 +5,6 @@
 Charts
 {% endblock %}
 
-{% block additionalHead%}
-    <style type="text/css">
-        #gantt_review_container{
-            display:none;
-        }
-    </style>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-{% endblock%}
-
 {% block contextNav %}
     <li class="nav-header">All</li>
         <li><a href="{% url 'charts.views.projects_chart'%}">Projects</a></li>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load set_var %}
+{% load staticfiles %}
 
 {% comment %}
 Extends /templates/base.html
@@ -30,6 +31,10 @@ Used for all templates in /templates/projects
         Appears within <div#maincontent>
         **NOTE: made available by baseContent - if baseContent is defined within the template,bodyContent will not be displayed unless contained within baseContent**
 {% endcomment %}
+
+{% block additionalHead%}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock%}
 
 {% block bodyClass %}page-charts{% endblock %}
 {% block baseContent %}

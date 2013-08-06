@@ -247,6 +247,15 @@ textarea {
 }
 
 
+/* --- Gantt Charts
+-------------------------------------------------------*/
+
+    /* --- |  | --- */
+#gantt_review_container{
+    display:none;
+}
+
+
 
 .page-styleguide article section {
     padding-top: 55px; /* same as body's padding-top -- used to counter fixed position site navbar */
