@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block bodyContent %}
-    <form action="{% url 'issues.views.issue_form' %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'issues.views.issue_form' %}" method="post" enctype="multipart/form-data" autocomplete="off">
         {% csrf_token %}
 
         {{form.project.as_hidden}}

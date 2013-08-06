@@ -24,7 +24,7 @@ New Issue
 {% endblock %}
 
 {% block bodyContent %}
-	<form action="{% url 'issues.views.issue_form' %}" method="post" class="form-horizontal span11" enctype="multipart/form-data">
+	<form action="{% url 'issues.views.issue_form' %}" method="post" class="form-horizontal span11" enctype="multipart/form-data" autocomplete="off">
 		{% csrf_token %}
         <div class="control-group">
         <label class="control-label" for="id_project">Project:</label>
