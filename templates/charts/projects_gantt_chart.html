@@ -15,17 +15,34 @@ Charts
 {% endblock %}
 
 {% block endScripts%}
-    <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
         var projects = JSON.parse('{{projects_dict|escapejs|safe}}'), source = [], project_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0;
 
         $(function(){
             for(project in projects){
+                error_description = false;
                 if(counter > 2){
                     counter = 0;
                 }
-                var start_time = new Date(projects[project]['created']),
+
+                var start_time = new Date(projects[project]['created']),end_time;
+
+                if(projects[project]['potential_end_date'] == 'None'){
+                    end_time = new Date();
+                    error_description = 'No Potential End Date';
+                }
+                else{
                     end_time = new Date(projects[project]['potential_end_date']);
+                }
+
+                if(end_time < start_time){
+                    var temp_time;
+                    end_earlier_than_start = true;
+                    error_description = "End time earlier than Start time";
+                    temp_time = end_time;
+                    end_time = start_time;
+                    start_time = temp_time;
+                }
 
                 var start_friendly = "/Date(" + start_time.getTime() + ")/",
                     end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
@@ -38,6 +55,12 @@ Charts
                     customClass: project_labels[counter],
                     dataObj: {'id': projects[project]['id']}
                 };
+
+                if(error_description){
+                    values_dict['desc'] = error_description;
+                    values_dict['customClass'] = 'ganttRed';
+                }
+
 
                 values.push(values_dict);
 

@@ -50,19 +50,28 @@ Charts
                 if(first_of_users == true){
                     var user_label;
                     if(issues[issue]['assigned_to'] == 'None'){
-                        user_label = 'Not Assigned'
+                        user_label = 'Not Assigned';
                     }
                     else{
                         user_label = issues[issue]['assigned_to']
                     }
-                    gantt_item_dict['name'] = user_label
-                    review_gantt_item_dict['name'] = user_label
+                    gantt_item_dict['name'] = user_label;
+                    review_gantt_item_dict['name'] = user_label;
                     first_of_users = false;
                 }
+                else{
+                    gantt_item_dict['name'] = "";
+                    review_gantt_item_dict['name'] = "";
+                }
+
                 if(first_of_project == true){
-                    gantt_item_dict['desc'] = issues[issue]['project_name']
-                    review_gantt_item_dict['desc'] = issues[issue]['project_name']
+                    gantt_item_dict['desc'] = issues[issue]['project_name'];
+                    review_gantt_item_dict['desc'] = issues[issue]['project_name'];
                     first_of_project = false;
+                }
+                else{
+                    gantt_item_dict['desc'] = "";
+                    review_gantt_item_dict['desc'] = "";
                 }
 
                 source.push(gantt_item_dict);
