@@ -22,120 +22,7 @@ Charts
 {% block endScripts%}
     <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
     <script language="javascript" type="text/javascript">
-        var issues = JSON.parse('{{issues|escapejs|safe}}'), source = [], review_source = [], projects = {}, review_chart_rendered = false,
-        project_labels = {0: "ganttBlue", 1: "ganttGreen", 2:"ganttOrange"}, counter = 0;
-
-        $(document).ready(function(){
-            $('#switch_view_button').click(function(){
-                if( $('#gantt_planning_container').css('display') != 'none'){
-                    $('#gantt_planning_container').fadeToggle(function(){
-                        $('#gantt_review_container').fadeToggle()
-                        if(!review_chart_rendered){
-                            $("#gantt_review").gantt({
-                                source:review_source,
-                                scale: "days",
-                                minScale: "days",
-                                navigate: "scroll",
-                                itemsPerPage: 30,
-                                onItemClick: function(data){
-                                    window.location = "/issue/" + data['id'];
-                                }
-                            });
-                            review_chart_rendered = true;
-                        }
-                    });
-                }
-                else{
-                    $('#gantt_review_container').fadeToggle(function(){
-                        $('#gantt_planning_container').fadeToggle()
-                    });
-                }
-            });
-        });
-
-        function drawPlanningGanttObject(issue){
-            var start_time = new Date(issues[issue]['projected_start']),
-                    end_time = new Date(issues[issue]['projected_end']), label = issues[issue]['project_name'];
-
-                var start_friendly = "/Date(" + start_time.getTime() + ")/",
-                    end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
-
-                if(issues[issue]['projected_start'] == 'None' && issues[issue]['projected_end'] == 'None'){
-                    label += ': No start and end date';
-                }
-
-                if(issues[issue]['projected_start'] == 'None' && issues[issue]['projected_end'] != 'None'){
-                    label += ': No start date';
-                }
-
-                if(issues[issue]['projected_start'] != 'None' && issues[issue]['projected_end'] == 'None'){
-                    label += ': No end date';
-                }
-
-                var values_dict = {
-                    from:start_friendly,
-                    to: end_friendly,
-                    label: label,
-                    desc:issues[issue]['description'],
-                    customClass:project_labels[projects[issues[issue]['project']]],
-                    dataObj: {'id': issues[issue]['id']},
-                };
-
-                if(issues[issue]['projected_end'] == 'None'){
-                values_dict['customClass'] = 'ganttRed';
-                }
-
-                values.push(values_dict);
-
-                var gantt_item_dict = {
-                    name: issues[issue]['summary'],
-                    values: values,
-                };
-                return gantt_item_dict;
-        }
-
-        function drawReviewGanttObject(issue){
-            var start_time = new Date(issues[issue]['actual_start']),
-                end_time = new Date(issues[issue]['actual_end']), label = issues[issue]['project_name'];
-
-                var start_friendly = "/Date(" + start_time.getTime() + ")/",
-                    end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
-
-                if(issues[issue]['actual_start'] == 'None' && issues[issue]['actual_end'] == 'None'){
-                    label += ': No start and end date';
-                }
-
-                if(issues[issue]['actual_start'] == 'None' && issues[issue]['actual_end'] != 'None'){
-                    label += ': No start date';
-                }
-
-                if(issues[issue]['actual_start'] != 'None' && issues[issue]['actual_end'] == 'None'){
-                    label += ': No end date';
-                }
-
-
-                var values_dict = {
-                    from:start_friendly,
-                    to: end_friendly,
-                    label: label,
-                    desc:issues[issue]['description'],
-                    customClass:project_labels[projects[issues[issue]['project']]],
-                    dataObj: {'id': issues[issue]['id']},
-                };
-
-                if(issues[issue]['actual_end'] == 'None'){
-                values_dict['customClass'] = 'ganttRed';
-                }
-
-                values.push(values_dict);
-
-                var gantt_item_dict = {
-                    name: issues[issue]['summary'],
-                    values: values,
-                };
-                return gantt_item_dict;
-        }
-
+ 
         $(function(){
             for(issue in issues){
                 if(projects[issues[issue]['project']] == undefined){
@@ -146,8 +33,8 @@ Charts
                     }
                 }
 
-                gantt_item_dict = drawPlanningGanttObject(issue);
-                review_gantt_item_dict = drawReviewGanttObject(issue);
+                gantt_item_dict = drawPlanningGanttObject(issue, false, issues[issue]['summary'], issues[issue]['project_name']);
+                review_gantt_item_dict = drawReviewGanttObject(issue, false, issues[issue]['summary'], issues[issue]['project_name']);
 
                 source.push(gantt_item_dict);
                 review_source.push(review_gantt_item_dict)
@@ -165,7 +52,6 @@ Charts
             });
 
         });
-        //$('#gantt01').addTask({ 'titles': 'Task04', 'start_date': '20130816', 'end_date': '20130828' });
     </script>
 
 {% endblock %}

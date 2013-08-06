@@ -61,17 +61,26 @@ Charts
 
             label = issues[issue]['summary'];
 
-            if(issues[issue]['projected_start'] == 'None' && issues[issue]['projected_end'] == 'None'){
-                label = 'No start and end date';
+            if(issues[issue]['projected_start'] == 'None'){
+                start_time = new Date();
+                label = 'No Start Date';
+            }
+            else{
+                start_time = new Date(issues[issue]['projected_start']);
             }
 
-            if(issues[issue]['projected_start'] == 'None' && issues[issue]['projected_end'] != 'None'){
-                label = 'No start date';
+            if(issues[issue]['projected_end'] == 'None'){
+                end_time = new Date();
+                label = 'No End Date';
+            }
+            else{
+                end_time = new Date(issues[issue]['projected_end']);
             }
 
-            if(issues[issue]['projected_start'] != 'None' && issues[issue]['projected_end'] == 'None'){
-                label = 'No end date';
-            }
+            if(issues[issue]['projected_end'] == 'None' && issues[issue]['projected_start'] == 'None'){
+                label = "No Start and End Date";
+            }   
+
 
             var values_dict = {
                 from:start_friendly,
