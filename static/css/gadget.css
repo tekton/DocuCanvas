@@ -251,6 +251,10 @@ textarea {
 -------------------------------------------------------*/
 
     /* --- |  | --- */
+.chart-container{
+    min-height:400px
+}
+
 #gantt_review_container{
     display:none;
 }

@@ -5,24 +5,8 @@
 Charts
 {% endblock %}
 
-{% block contextNav %}
-    <li class="nav-header">All</li>
-        <li><a href="{% url 'charts.views.projects_chart'%}">Projects</a></li>
-        <li><a href="{% url 'charts.views.home'%}">Issues</a></li>
-    <li class="nav-header">Issues by Project</li>
-    {% for project in projects%}
-        <li><a href="{% url 'charts.views.issues_by_project_chart' project.id %}">{{project.name}}</a></li>
-    {% endfor %}
-    <li class="nav-header">Issues by User</li>
-    <li><a href="{% url 'charts.views.users_chart' %}">All</a></li>
-    {% for user in users%}
-        <li><a href="{% url 'charts.views.issues_by_user_chart' user.id %}">{{user.username}}</a></li>
-    {% endfor %}
-    <li><a href="{% url 'charts.views.unassigned_issues_chart' %}">Not Assigned</a></li>
-{% endblock%}
-
 {% block bodyContent %}
-<div class="span12 well" style="min-height:700px">
+<div class="span12 well chart-container">
     <a id="switch_view_button">Switch View</a>
     <div id="gantt_planning_container">
         <h3>Planning</h3>
