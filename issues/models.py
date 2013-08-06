@@ -149,11 +149,11 @@ class Issue(models.Model):
                 'couldnt save historical issue'
                 print e
 
-            try:
-                update_index.Command().handle()
-            except Exception, e:
-                print 'unable to update index'
-                print e
+            #try:
+            #    update_index.Command().handle()
+            #except Exception, e:
+            #    print 'unable to update index'
+            #    print e
         super(Issue, self).save()
 
 
