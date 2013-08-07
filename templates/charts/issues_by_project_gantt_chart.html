@@ -25,7 +25,7 @@ Charts
     <script language="javascript" type="text/javascript">
         $(function(){
             for(issue in issues){
-                if(issues[issue]['status'] == 'fixed'){
+                if(issues[issue]['status'] == 'fixed' || issues[issue]['status'] == 'wont_fix' || issues[issue]['status'] == 'not_a_bug'){
                     review_gantt_item_dict = drawReviewGanttObject(issue,false , issues[issue]['summary'], issues[issue]['assigned_to'], projects[issues[issue]['project']] );
                     review_source.push(review_gantt_item_dict)
                 }

@@ -24,7 +24,7 @@ Charts
     <script language="javascript" type="text/javascript">
         $(function(){
             for(issue in issues){
-                if(issues[issue]['status'] == 'fixed'){
+                if(issues[issue]['status'] == 'fixed' || issues[issue]['status'] == 'wont_fix' || issues[issue]['status'] == 'not_a_bug'){
                     if(users_review[issues[issue]['assigned_to']] == undefined){
                         users_review[issues[issue]['assigned_to']] = user_review_counter;
                         user_review_counter++;

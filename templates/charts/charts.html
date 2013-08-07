@@ -26,7 +26,7 @@ Charts
         $(function(){
             for(issue in issues){
 
-                if(issues[issue]['status'] == 'fixed'){
+                if(issues[issue]['status'] == 'fixed' || issues[issue]['status'] == 'wont_fix' || issues[issue]['status'] == 'not_a_bug'){
                     if(projects_review[issues[issue]['project']] == undefined){
                         projects_review[issues[issue]['project']] = project_review_counter;
                         project_review_counter++;
