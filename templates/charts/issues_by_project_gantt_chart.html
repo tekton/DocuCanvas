@@ -25,11 +25,14 @@ Charts
     <script language="javascript" type="text/javascript">
         $(function(){
             for(issue in issues){
-                gantt_item_dict = drawPlanningGanttObject(issue, false, issues[issue]['summary'], issues[issue]['assigned_to'] , projects[issues[issue]['project']]);
-                review_gantt_item_dict = drawReviewGanttObject(issue,false , issues[issue]['summary'], issues[issue]['assigned_to'], projects[issues[issue]['project']] );
-
-                source.push(gantt_item_dict);
-                review_source.push(review_gantt_item_dict)
+                if(issues[issue]['status'] == 'fixed'){
+                    review_gantt_item_dict = drawReviewGanttObject(issue,false , issues[issue]['summary'], issues[issue]['assigned_to'], projects[issues[issue]['project']] );
+                    review_source.push(review_gantt_item_dict)
+                }
+                else{
+                    gantt_item_dict = drawPlanningGanttObject(issue, false, issues[issue]['summary'], issues[issue]['assigned_to'] , projects[issues[issue]['project']]);
+                    source.push(gantt_item_dict);
+                } 
             }
 
             $("#gantt_planning").gantt({
