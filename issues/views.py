@@ -728,7 +728,7 @@ def testView(request):
         print 'Unable to grab all projects'
     return render_to_response("issues/test_form.html", {'form': form, "projects": projects}, context_instance=RequestContext(request))
 
-
+'''
 def set_issue_start_and_end_dates(request):
     success_or_fail = "Success!"
     try:
@@ -753,3 +753,4 @@ def set_issue_start_and_end_dates(request):
         success_or_fail = "Fail: " + str(e)
 
     return render_to_response("issues/set_issue_start_and_end_dates.html", {"success_or_fail": success_or_fail}, context_instance=RequestContext(request))
+'''
