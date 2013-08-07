@@ -5,6 +5,7 @@ from django.conf.urls import *
 '''
 
 urlpatterns = patterns('',
+    (r'set_issue_start_and_end_dates', 'issues.views.set_issue_start_and_end_dates'),
     (r'meta/new$', 'issues.views.meta_issue_form'),
     (r'meta/(\d+)/stats', 'issues.views.meta_issue_stats'),
     (r'meta/(\d+)/edit$', 'issues.views.meta_issue_form'),

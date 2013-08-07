@@ -12,6 +12,8 @@ from django.forms.models import model_to_dict
 from accounts.forms import PermissionForm
 from accounts.utils import get_permission_form_for_model, set_permissions_for_model
 
+from datetime import date
+
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot
 from accounts import utils as rputils
 from projects.models import Project
@@ -725,3 +727,29 @@ def testView(request):
     except:
         print 'Unable to grab all projects'
     return render_to_response("issues/test_form.html", {'form': form, "projects": projects}, context_instance=RequestContext(request))
+
+
+def set_issue_start_and_end_dates(request):
+    success_or_fail = "Success!"
+    try:
+        issues = Issue.objects.all()
+
+        for issue in issues:
+            if not issue.projected_start:
+                issue.projected_start = issue.created
+            if not issue.projected_end:
+                if issue.modified:
+                    issue.projected_end = issue.modified
+                else:
+                    issue.projected_end = datetime.date.today()
+            if not issue.actual_start:
+                issue.actual_start = issue.created
+            if not issue.actual_end:
+                if issue.modified:
+                    issue.actual_end = issue.modified
+            issue.save()
+    except Exception, e:
+        print e
+        success_or_fail = "Fail: " + str(e)
+
+    return render_to_response("issues/set_issue_start_and_end_dates.html", {"success_or_fail": success_or_fail}, context_instance=RequestContext(request))
