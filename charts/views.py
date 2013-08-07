@@ -32,7 +32,7 @@ def home(request):
         projects = []
 
     try:
-        issues = Issue.objects.all().order_by('project','-created')
+        issues = Issue.objects.all().order_by('project','assigned_to', '-created')
         to_json_issues = []
         for issue in issues:
             json_issue = model_to_dict(issue)
@@ -74,7 +74,7 @@ def users_chart(request):
         projects = []
 
     try:
-        issues = Issue.objects.all().order_by('-assigned_to', 'project')
+        issues = Issue.objects.all().order_by('-assigned_to', 'project', '-created')
         to_json_issues = []
         for issue in issues:
             json_issue = model_to_dict(issue)
