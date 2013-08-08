@@ -27,8 +27,8 @@ Extends /templates/projects/base.html
 		**NOTE: made available by baseContent - if baseContent is defined within the template, bodyContent will not be displayed unless contained within baseContent**
 {% endcomment %}
 
-{% block pageTitle %}
-Project
+{% block pageDescription %}
+{{project.name}}
 {% endblock %}
 
 {% block additionalHead%}

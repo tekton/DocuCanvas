@@ -1,11 +1,6 @@
 {% extends "charts/base.html" %}
 {% load staticfiles %}
 
-{% block pageTitle %}
-Charts
-{% endblock %}
-
-
 {% block bodyContent %}
 <div class="span12 well chart-container">
     <a id="switch_view_button">Switch View</a>
@@ -20,6 +15,7 @@ Charts
 </div>
 {% endblock %}
 
+{% block pageDescription %} All Issues{% endblock%}
 
 {% block endScripts%}
     <script language="javascript" type="text/javascript">

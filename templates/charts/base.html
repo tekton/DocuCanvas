@@ -40,12 +40,12 @@ Used for all templates in /templates/projects
     <li class="nav-header">All</li>
         <li><a href="{% url 'charts.views.projects_chart'%}">Projects</a></li>
         <li><a href="{% url 'charts.views.home'%}">Issues</a></li>
+        <li><a href="{% url 'charts.views.users_chart' %}">Users</a></li>
     <li class="nav-header">Issues by Project</li>
     {% for project in projects%}
         <li><a href="{% url 'charts.views.issues_by_project_chart' project.id %}">{{project.name}}</a></li>
     {% endfor %}
     <li class="nav-header">Issues by User</li>
-    <li><a href="{% url 'charts.views.users_chart' %}">All</a></li>
     {% for user in users%}
         <li><a href="{% url 'charts.views.issues_by_user_chart' user.id %}">{{user.username}}</a></li>
     {% endfor %}
@@ -57,7 +57,7 @@ Used for all templates in /templates/projects
 <div id="maincontent" class="container">
     <header id="pageheader">
         <h1 id="pagetitle" class="page-header">
-            {% block pageTitle %}Charts{% endblock %}
+            {% block pageTitle %}Charts{% endblock %}: {% block pageDescription %}{% endblock%}
         </h1>
     </header>
     <div id="pagemessage"></div>

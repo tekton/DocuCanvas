@@ -156,11 +156,18 @@ def unassigned_issues_chart(request):
 
 @login_required
 def issues_by_user_chart(request, user_id):
-    print 'user id is %s' % user_id
+
     try:
         users = User.objects.all()
     except:
         print "Can't get users"
+        users = []
+        
+
+    try:
+        assigned_to = User.objects.get(pk=user_id)
+    except:
+        assigned_to = "User does not exist!"
 
     try:
         projects = Project.objects.all()
@@ -187,7 +194,8 @@ def issues_by_user_chart(request, user_id):
             to_json_issues = []
     except:
         print "User doesn't exist!"
-    return render_to_response("charts/issues_by_user_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
+
+    return render_to_response("charts/issues_by_user_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users, "assigned_to": assigned_to}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -230,7 +238,8 @@ def issues_by_project_chart(request, project_id):
             to_json_issues = []
     except:
         print 'Unable to find project'
-    return render_to_response("charts/issues_by_project_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
+        project = Project()
+    return render_to_response("charts/issues_by_project_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users, "project": project}, context_instance=RequestContext(request))
 
 @login_required
 def meta_issues_by_project(request, project_id):
