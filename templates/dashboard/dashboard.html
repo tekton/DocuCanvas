@@ -104,7 +104,7 @@ Dashboard
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="New Issue">New</a></td>
                             <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td><a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description}}">{{newsfeed.issue.summary}}</a></td>
-                            <td>None</td>
+                            <td>Created New Issue</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
                         </tr>
                     {% endif %}
