@@ -91,11 +91,6 @@ def poll_overview(request, poll_id):
         except Exception, e:
             raise e
         try:
-            mypoll = Poll.objects.get(pk=poll_id)
-        except Exception, e:
-            print e
-
-        try:
             items = PollItem.objects.filter(poll=poll).order_by('-votes')
         except Exception, e:
             print e
@@ -104,19 +99,29 @@ def poll_overview(request, poll_id):
         except Exception, e:
             print e
 
-        votes_allowed = mypoll.max_votes - uservoteitems.count()
+        votes_allowed = poll.max_votes - uservoteitems.count()
         
 
         usernotvoteitems = []
 
         for item in items:
-            new_vote_item = UserVoteItem(user=request.user, item=item, voted=False, poll = poll)
-            usernotvoteitems.append(new_vote_item)
-          
+            try:
+                user_item = UserVoteItem.objects.filter(user=request.user).filter(item=item)
+            except Exception, e:
+                print e
+            if user_item.count() > 0:
+                for myitem in user_item:
+                    usernotvoteitems.append(item)
+            else:
+                new_vote_item = UserVoteItem(user=request.user, item=item, voted=False, poll=poll)
+                new_vote_item.save()
+                usernotvoteitems.append(new_vote_item)
+        for item in usernotvoteitems:
+            print item.item
     
         sup = True
     
-        if uservoteitems.count() >= mypoll.max_votes:
+        if uservoteitems.count() >= poll.max_votes:
             sup = False
 
         most_votes = 0
@@ -259,7 +264,7 @@ def undo_vote(request, poll_id):
 
 @login_required
 def vote(request, poll_id):
-
+    print request.POST
     if request.method == 'POST':
         item_id = request.POST['item']
         try:
@@ -276,17 +281,13 @@ def vote(request, poll_id):
                 for item in items:
 
                     if str(item.id) in request.POST:
-                        new_vote_item = UserVoteItem(user=request.user, item=item, voted=True, poll = mypoll)
-                     
-                        new_vote_item.save()
-
-                        #if item.item in usernotvoteitems:
-                         #   item.item.voted = True
-                        
-                        item.votes += 1
-                        item.save()
-                       
-
+                        new_vote_item = UserVoteItem.objects.filter(item=item).filter(user=request.user)
+                        for thing in new_vote_item:
+                            if not thing.voted:
+                                thing.voted=True
+                                thing.save()
+                                item.votes += 1
+                                item.save()
                 newuser.save()   
             except Exception, e:
                 print e

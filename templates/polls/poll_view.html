@@ -23,23 +23,18 @@
         <td></td>
         <td></td>
     </tr>
-    {% for item in usernotvoteitems %}
+    {% for deez in usernotvoteitems %}
     <tr>        
-            <td>                              
-                {% if sup %}
-                    {% if not item.voted %}
-                    
-                        <input type="checkbox" id="item" name="{{item.item.id}}" value="Submit" >  
-                    {% endif %}
-
-                {% else %}
+            <td>
+                {% if sup or not deez.voted %}
+                    <input type="checkbox" id="deez" name="{{deez.id}}" value="Submit" >  
                 {% endif %}
             </td>
-            <td>{{item.item.item}}</td>
-            <td>{{item.item.votes}}</td>
-            <td><input type='hidden' name='item' id='id_item' value='{{item.item.id}}'/></td>
+            <td>{{deez.item}}</td>
+            <td>{{deez.votes}}</td>
+            <td><input type='hidden' name='item' id='id_item' value='{{deez.id}}'/></td>
             
-            <td><meter style="width:200px;height:25px;" id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{item.item.votes}}">Value can be here too< meter></td>    
+            <td><meter style="width:200px;height:25px;" id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{deez.votes}}">Value can be here too</meter></td>
     </tr>
     {% endfor %}
 </table>
