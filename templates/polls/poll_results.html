@@ -8,11 +8,11 @@
 {% block baseContent %}
 <h2>{{poll.name}}</h2>
 <p>{{poll.context}}</p>
-<p>End Date: {{poll.end_date}}</p>
+
 
  <table>
     <tr>
-        <td></td>
+ 
         <td><b>Item</b></td>
         <td><b>Votes</b></td>
         <td></td>
@@ -29,7 +29,7 @@
 </table>
 
 {% if user == poll.creator %}
-<a href= "{% url 'polls.views.restart_poll' poll.id %}"> Click here to restart poll</a>
+<a href= "{% url 'polls.views.extend_poll' poll.id %}"> Click here to extend poll</a>
 {% endif %}
 
 {% endblock %}

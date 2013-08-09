@@ -8,10 +8,10 @@
 {% block baseContent %}
 
 {% if user == poll.creator %}
-<form action="{% url 'polls.views.restart_poll' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
+<form action="{% url 'polls.views.extend_poll' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="text" id="pollenddate" name="end_date"/>
-    <input type="submit" name="restart_poll" value="Restart Poll"/>
+    <input type="submit" name="extend_poll" value="Extend Poll"/>
 </form>
 {% endif %}
 

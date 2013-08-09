@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from projects.models import Project
-from polls.models import Poll, PollItem, PollUser
+from polls.models import Poll, PollItem, PollUser, UserVoteItem
 from polls.forms import PollForm, ItemForm
 from datetime import date, timedelta
 
@@ -45,6 +45,9 @@ def new_poll(request):
         formset = PollItemFormset(instance=poll)
 
     poll_form = PollForm(instance=poll, auto_id=False)
+
+    
+
     return render_to_response("polls/poll_form.html", {'poll': poll, 'formset': formset, "poll_form": poll_form, "projects": projects}, context_instance=RequestContext(request))
 
 
@@ -55,24 +58,31 @@ def poll_overview(request, poll_id):
         poll = Poll.objects.get(pk=poll_id)
     except Exception, e:
         print e
-    today = str(date.today()) #2013-07-15
-    end_date = str(poll.end_date) #07/18/2013
-
-    today_year = int(today[:4])
-    today_month = int(today[5:7])
-    today_day = int(today[8:])
-    end_year = int(end_date[:4])
-    end_month = int(end_date[5:7])
-    end_day = int(end_date[8:])
+    
     after = True
-    if today_year > end_year:
+    time_difference = date.today() - poll.end_date
+
+    if time_difference.total_seconds() > 0:
         after = False
-    elif today_year == end_year and today_month > end_month:
-        after = False
-    elif today_year == end_year and today_month == end_month and today_day > end_day:
-        after = False
-    else:
-        after = True
+
+    #today = date.today() #2013-07-15
+    #end_date = poll.end_date #07/18/2013
+    #today_year = int(today[:4])
+    #today_month = int(today[5:7])
+    #today_day = int(today[8:])
+    #end_year = int(end_date[:4])
+    #end_month = int(end_date[5:7])
+    #end_day = int(end_date[8:])
+    #after = True
+    #if today_year > end_year:
+    #    after = False
+    #elif today_year == end_year and today_month > end_month:
+    #    after = False
+    #elif today_year == end_year and today_month == end_month and today_day > end_day:
+    #    after = False
+    #else:
+    #    after = True
+    
 
     if after:
 
@@ -81,22 +91,41 @@ def poll_overview(request, poll_id):
         except Exception, e:
             raise e
         try:
+            mypoll = Poll.objects.get(pk=poll_id)
+        except Exception, e:
+            print e
+
+        try:
             items = PollItem.objects.filter(poll=poll).order_by('-votes')
         except Exception, e:
             print e
         try:
-            myuser = PollUser.objects.filter(poll=poll).filter(user=request.user)
+            uservoteitems = UserVoteItem.objects.filter(poll=poll).filter(user=request.user).filter(voted=True)
         except Exception, e:
             print e
+
+        votes_allowed = mypoll.max_votes - uservoteitems.count()
+        
+
+        usernotvoteitems = []
+
+        for item in items:
+            new_vote_item = UserVoteItem(user=request.user, item=item, voted=False, poll = poll)
+            usernotvoteitems.append(new_vote_item)
+          
+    
         sup = True
-        if myuser.count() != 0:
+    
+        if uservoteitems.count() >= mypoll.max_votes:
             sup = False
+
         most_votes = 0
         for item in items:
             if item.votes > most_votes:
                 most_votes = item.votes
+
         
-        return render_to_response("polls/poll_view.html", {'poll': poll, 'items': items, 'myuser': myuser, 'sup': sup, 'projects': projects, 'most_votes': most_votes}, context_instance=RequestContext(request))
+        return render_to_response("polls/poll_view.html", {'poll': poll, 'items': items, 'votes_allowed': votes_allowed, 'myuser': request.user, 'sup': sup, 'projects': projects, 'usernotvoteitems': usernotvoteitems, 'most_votes': most_votes, 'uservoteitems' : uservoteitems}, context_instance=RequestContext(request))
     return redirect("polls.views.poll_results", poll_id)
 
 @login_required
@@ -104,7 +133,6 @@ def end_poll(request, poll_id):
     if request.method == 'POST':
         try:
             mypoll = Poll.objects.get(pk=poll_id)
-            myuser = PollUser.objects.filter(poll=mypoll).filter(user=request.user)
         except Exception, e:
             print e
         try:
@@ -117,7 +145,7 @@ def end_poll(request, poll_id):
 
 
 @login_required
-def restart_poll(request, poll_id):
+def extend_poll(request, poll_id):
     try:
         mypoll = Poll.objects.get(pk=poll_id)
     except Exception, e:
@@ -130,7 +158,8 @@ def restart_poll(request, poll_id):
         except Exception, e:
             print e
         return redirect('polls.views.poll_overview', poll_id)
-    return render_to_response("polls/restart_poll.html", {'poll': mypoll}, context_instance=RequestContext(request))
+    return render_to_response("polls/extend_poll.html", {'poll': mypoll}, context_instance=RequestContext(request))
+
 
 
 def poll_results(request, poll_id):
@@ -151,7 +180,8 @@ def poll_results(request, poll_id):
     except Exception, e:
         print e
     sup = True
-    if myuser.count() != 0:
+    if uservoteitems.count() <= mypoll.max_votes:
+    #if myuser.count() != 0:
         sup = False
     most_votes = 0
     for item in items:
@@ -199,30 +229,70 @@ def add_items(request, poll_id):
 
     return render_to_response("polls/add_items.html", {'poll': poll, 'formset': formset, "projects": projects}, context_instance=RequestContext(request))
 
+@login_required
+def undo_vote(request, poll_id):
+    try:
+        mypoll = Poll.objects.get(pk=poll_id)
+    except Exception, e:
+        print e
+    try:
+        items = UserVoteItem.objects.filter(poll=mypoll).filter(user=request.user).filter(voted=True)
+    except Exception, e:
+        print e
+    print items.count()
+    if items.count() > 0:
+        try:
+            for item in items:
+                
+                if item.voted:
+
+                    item.item.votes -= 1
+                    item.voted = False
+                    item.save()
+                    item.item.save()
+        except Exception,e :
+            print e
+    return redirect('polls.views.poll_overview', poll_id)       
+    
 
 
 
 @login_required
 def vote(request, poll_id):
+
     if request.method == 'POST':
         item_id = request.POST['item']
         try:
-            mypoll = Poll.objects.get(pk=poll_id)
-            myuser = PollUser.objects.filter(poll=mypoll).filter(user=request.user)
+            mypoll = Poll.objects.get(pk=poll_id) 
+            uservoteitems = UserVoteItem.objects.filter(poll=mypoll).filter(user=request.user).filter(voted=True)       
         except Exception, e:
             print e
-        print myuser.count()
-        if myuser.count() == 0:
+        
+        if uservoteitems.count() <= mypoll.max_votes:
+
             try:
                 newuser = PollUser(user=request.user, poll=mypoll)
                 items = PollItem.objects.filter(poll=mypoll)
                 for item in items:
+
                     if str(item.id) in request.POST:
+                        new_vote_item = UserVoteItem(user=request.user, item=item, voted=True, poll = mypoll)
+                     
+                        new_vote_item.save()
+
+                        #if item.item in usernotvoteitems:
+                         #   item.item.voted = True
+                        
                         item.votes += 1
                         item.save()
-                newuser.save()
+                       
+
+                newuser.save()   
             except Exception, e:
                 print e
+
+    
+
     return redirect('polls.views.poll_overview', poll_id)
 
 

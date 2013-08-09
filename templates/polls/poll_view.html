@@ -23,19 +23,23 @@
         <td></td>
         <td></td>
     </tr>
-    {% for item in items %}
+    {% for item in usernotvoteitems %}
     <tr>        
-            <td>
+            <td>                              
                 {% if sup %}
-                    <input type="checkbox" id="item" name="{{item.id}}" value="Submit" >   
+                    {% if not item.voted %}
+                    
+                        <input type="checkbox" id="item" name="{{item.item.id}}" value="Submit" >  
+                    {% endif %}
+
                 {% else %}
                 {% endif %}
             </td>
-            <td>{{item.item}}</td>
-            <td>{{item.votes}}</td>
-            <td><input type='hidden' name='item' id='id_item' value='{{item.id}}'/></td>
+            <td>{{item.item.item}}</td>
+            <td>{{item.item.votes}}</td>
+            <td><input type='hidden' name='item' id='id_item' value='{{item.item.id}}'/></td>
             
-            <td><meter style="width:200px;height:25px;" id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{item.votes}}">Value can be here too< meter></td>    
+            <td><meter style="width:200px;height:25px;" id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{item.item.votes}}">Value can be here too< meter></td>    
     </tr>
     {% endfor %}
 </table>
@@ -54,13 +58,21 @@
 </form>
 {% endif %}
 
+
+<form action="{% url 'polls.views.undo_vote' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="submit" name="undo_vote" value="Undo Vote"/>
+</form>
+
+
+
 {% endblock %}
 
 {% block endScripts %}
 <script type="text/javascript">
 $("form").on("click", ":checkbox", function(event){
   $(":checkbox:not(:checked)", this.form).prop("disabled", function(){
-    return $(this.form).find(":checkbox:checked").length == {{poll.max_votes}};
+    return $(this.form).find(":checkbox:checked").length == {{votes_allowed}};
   });
 });
 </script>
