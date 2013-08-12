@@ -26,38 +26,40 @@
     {% for deez in usernotvoteitems %}
     <tr>        
             <td>
-                {% if sup or not deez.voted %}
-                    <input type="checkbox" id="deez" name="{{deez.id}}" value="Submit" >  
+                {% if sup and not deez.voted %}
+                    <input type="checkbox" id="deez" name="{{deez.item.id}}" value="Submit" >  
                 {% endif %}
             </td>
-            <td>{{deez.item}}</td>
-            <td>{{deez.votes}}</td>
-            <td><input type='hidden' name='item' id='id_item' value='{{deez.id}}'/></td>
+            <td>{{deez.item.item}}</td>
+            <td>{{deez.item.votes}}</td>
+            <td><input type='hidden' name='item' id='id_item' value='{{deez.item.id}}'/></td>
             
-            <td><meter style="width:200px;height:25px;" id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{deez.votes}}">Value can be here too</meter></td>
+            <td><meter style="width:200px;height:25px;" id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{deez.item.votes}}">Value can be here too</meter></td>
     </tr>
     {% endfor %}
 </table>
 {% if sup %}
+</br>
 <input type="submit" name="submit" value="Submit"/>
 {% endif %}
 
 </form>
 
-
+<form action="{% url 'polls.views.undo_vote' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="submit" name="undo_vote" value="Undo Vote"/>
+</form>
 
 {% if user == poll.creator %}
 <form action="{% url 'polls.views.end_poll' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    </br>
     <input type="submit" name="end_poll" value="End Poll"/>
 </form>
 {% endif %}
 
 
-<form action="{% url 'polls.views.undo_vote' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="submit" name="undo_vote" value="Undo Vote"/>
-</form>
+
 
 
 

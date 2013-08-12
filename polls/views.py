@@ -91,7 +91,7 @@ def poll_overview(request, poll_id):
         except Exception, e:
             raise e
         try:
-            items = PollItem.objects.filter(poll=poll).order_by('-votes')
+            items = PollItem.objects.filter(poll=poll).order_by('id')
         except Exception, e:
             print e
         try:
@@ -111,13 +111,12 @@ def poll_overview(request, poll_id):
                 print e
             if user_item.count() > 0:
                 for myitem in user_item:
-                    usernotvoteitems.append(item)
+                    usernotvoteitems.append(myitem)
             else:
                 new_vote_item = UserVoteItem(user=request.user, item=item, voted=False, poll=poll)
                 new_vote_item.save()
                 usernotvoteitems.append(new_vote_item)
-        for item in usernotvoteitems:
-            print item.item
+    
     
         sup = True
     
