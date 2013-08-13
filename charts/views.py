@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from projects.models import *
 from issues.models import Issue
@@ -74,7 +75,7 @@ def users_chart(request):
         projects = []
 
     try:
-        issues = Issue.objects.all().order_by('-assigned_to', 'project', '-created')
+        issues = Issue.objects.filter(Q(projected_start__isnull=False, projected_end__isnull=False) | (Q(actual_start__isnull=False, actual_end__isnull=False))).order_by('-assigned_to', 'project', '-created')
         to_json_issues = []
         for issue in issues:
             json_issue = model_to_dict(issue)
@@ -178,7 +179,8 @@ def issues_by_user_chart(request, user_id):
     try:
         user = User.objects.get(pk=user_id)
         try:
-            issues = Issue.objects.filter(assigned_to=user).order_by('project', '-created')
+            #issues = Issue.objects.filter(assigned_to=user ).order_by('project', '-created')
+            issues = Issue.objects.filter((Q(assigned_to=user) & Q(projected_start__isnull=False, projected_end__isnull=False)) | (Q(assigned_to=user) & Q(actual_start__isnull=False, actual_end__isnull=False)) ).order_by('project', '-created')
             to_json_issues = []
             for issue in issues:
                 json_issue = model_to_dict(issue)

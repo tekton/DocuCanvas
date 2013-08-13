@@ -24,26 +24,30 @@
         $(function(){
             for(issue in issues){
                 if(issues[issue]['status'] == 'fixed' || issues[issue]['status'] == 'wont_fix' || issues[issue]['status'] == 'not_a_bug'){
-                    if(projects_review[issues[issue]['project']] == undefined){
-                        projects_review[issues[issue]['project']] = project_review_counter;
-                        project_review_counter++;
-                        if(project_review_counter > 2){
-                            project_review_counter = 0;
+                    if( issues[issue]['actual_start'] != 'None' && issues[issue]['actual_end'] != 'None'){
+                        if(projects_review[issues[issue]['project']] == undefined){
+                            projects_review[issues[issue]['project']] = project_review_counter;
+                            project_review_counter++;
+                            if(project_review_counter > 2){
+                                project_review_counter = 0;
+                            }
                         }
+                        review_gantt_item_dict = drawReviewGanttObject(issue, false, issues[issue]['summary'], issues[issue]['project_name'], projects[issues[issue]['project']]); 
+                            review_source.push(review_gantt_item_dict)
                     }
-                    review_gantt_item_dict = drawReviewGanttObject(issue, false, issues[issue]['summary'], issues[issue]['project_name'], projects[issues[issue]['project']]); 
-                        review_source.push(review_gantt_item_dict)
                 }
                 else{
-                    if(projects[issues[issue]['project']] == undefined){
-                        projects[issues[issue]['project']] = project_counter;
-                        project_counter++;
-                        if(project_counter > 2){
-                            project_counter = 0;
+                    if( issues[issue]['projected_start'] != 'None' && issues[issue]['projected_end'] != 'None'){
+                        if(projects[issues[issue]['project']] == undefined){
+                            projects[issues[issue]['project']] = project_counter;
+                            project_counter++;
+                            if(project_counter > 2){
+                                project_counter = 0;
+                            }
                         }
+                        gantt_item_dict = drawPlanningGanttObject(issue, false, issues[issue]['summary'], issues[issue]['project_name'], projects[issues[issue]['project']]);
+                        source.push(gantt_item_dict);
                     }
-                    gantt_item_dict = drawPlanningGanttObject(issue, false, issues[issue]['summary'], issues[issue]['project_name'], projects[issues[issue]['project']]);
-                    source.push(gantt_item_dict);
                 }
             }
 
