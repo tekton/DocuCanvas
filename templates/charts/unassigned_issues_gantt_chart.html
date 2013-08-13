@@ -32,9 +32,9 @@
                         }
                     }
                     review_gantt_item_dict = drawReviewGanttObject(issue, false, " ", issues[issue]['assigned_to'] );
-                    if(first_of_project == true){
+                    if(first_of_project_review == true){
                         review_gantt_item_dict['name'] = issues[issue]['project_name']
-                        first_of_project = false;
+                        first_of_project_review = false;
                     }
                     review_source.push(review_gantt_item_dict);
                 }

@@ -153,7 +153,8 @@ Used for all templates in /templates/projects
                 dataObj: {'id': issues[issue]['id']},
             }; 
 
-            if(issues[issue]['projected_end'] == 'None' || end_earlier_than_start){
+            //if(issues[issue]['projected_end'] == 'None' || end_earlier_than_start){
+            if(label == 'Assign' || end_earlier_than_start){
                 values_dict['customClass'] = 'ganttRed';
                 //values_dict['desc'] = error_description;
             }
@@ -226,7 +227,8 @@ Used for all templates in /templates/projects
                 dataObj: {'id': issues[issue]['id']},
             };
 
-            if(issues[issue]['actual_end'] == 'None' || end_earlier_than_start){
+            //if(issues[issue]['actual_end'] == 'None' || end_earlier_than_start){
+            if(label == 'Assign' || end_earlier_than_start){
                 values_dict['customClass'] = 'ganttRed';
                 //values_dict['desc'] = error_description;
             }
