@@ -1,0 +1,78 @@
+{% extends "charts/base.html" %}
+{% load staticfiles %}
+
+{% block pageDescription %} Unscheduled{% endblock%}
+
+{% block bodyContent %}
+<div class="span12 well chart-container">
+    <a id="switch_view_button">Switch View</a>
+    <div id="gantt_planning_container">
+        <h3>Planning</h3>
+        <div id="gantt_planning"></div>
+    </div>
+    <div id="gantt_review_container">
+        <h3>Review</h3>
+        <div id="gantt_review"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block endScripts%}
+    <script src="{% static 'js/jquery.fn.gantt.min.js' %}"></script>
+    <script language="javascript" type="text/javascript">
+        $(function(){
+            for(issue in issues){ 
+                if(issues[issue]['status'] == 'fixed' || issues[issue]['status'] == 'wont_fix' || issues[issue]['status'] == 'not_a_bug'){
+                    if( issues[issue]['actual_start'] == 'None' || issues[issue]['actual_end'] == 'None'){
+                        if(projects_review[issues[issue]['project']] == undefined){
+                            projects_review[issues[issue]['project']] = project_review_counter;
+                            project_review_counter++;
+                            first_of_project_review = true;
+                            if(project_review_counter > 2){
+                                project_review_counter = 0;
+                            }
+                        }
+                        review_gantt_item_dict = drawReviewGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'] );
+                        if(first_of_project_review == true){
+                            review_gantt_item_dict['name'] = issues[issue]['project_name']
+                            first_of_project_review = false;
+                        }
+                        review_source.push(review_gantt_item_dict);
+                    }
+                }
+                else{
+                    if( issues[issue]['projected_start'] == 'None' || issues[issue]['projected_end'] == 'None'){
+                        if(projects[issues[issue]['project']] == undefined){
+                            projects[issues[issue]['project']] = project_counter;
+                            project_counter++;
+                            first_of_project = true;
+                            if(project_counter > 2){
+                                project_counter = 0;
+                            }
+                        }
+                        gantt_item_dict = drawPlanningGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'] );
+                        if(first_of_project == true){
+                            gantt_item_dict['name'] = issues[issue]['project_name']
+                            first_of_project = false;
+                        }
+                        source.push(gantt_item_dict);
+                    }
+                }        
+
+            }
+
+            $("#gantt_planning").gantt({
+                source:source,
+                scale: "weeks",
+                minScale: "days",
+                navigate: "scroll",
+                itemsPerPage: 50,
+                onItemClick: function(data){
+                    window.location = "/issue/" + data['id'];
+                }
+            });
+
+        });
+    </script>
+
+{% endblock %}

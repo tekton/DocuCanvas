@@ -156,6 +156,38 @@ def unassigned_issues_chart(request):
 
 
 @login_required
+def unscheduled_issues_chart(request):
+    try:
+        projects = Project.objects.all()
+    except:
+        print 'Unable to grab all projects'
+        projects = []
+
+    try:
+        users = User.objects.all()
+    except:
+        print "Can't get users"
+
+    try:
+        issues = Issue.objects.filter(Q(projected_start__isnull=True, projected_end__isnull=True) | (Q(actual_start__isnull=True, actual_end__isnull=True))).order_by('project', '-created')
+        to_json_issues = []
+        for issue in issues:
+            json_issue = model_to_dict(issue)
+            json_issue['created'] = issue.created
+            json_issue['project_name'] = issue.project.name
+            for k,v in json_issue.items():
+                json_issue[k] = str(v)
+
+            to_json_issues.append(json_issue)
+    except Exception, e:
+        print e
+        print 'Unable to grab all Isssues'
+        to_json_issues = []
+
+    return render_to_response("charts/unscheduled_issues_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
+
+
+@login_required
 def issues_by_user_chart(request, user_id):
 
     try:

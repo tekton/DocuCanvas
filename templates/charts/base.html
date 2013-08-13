@@ -41,6 +41,8 @@ Used for all templates in /templates/projects
         <li><a href="{% url 'charts.views.projects_chart'%}">Projects</a></li>
         <li><a href="{% url 'charts.views.home'%}">Issues</a></li>
         <li><a href="{% url 'charts.views.users_chart' %}">Users</a></li>
+        <li><a href="{% url 'charts.views.unassigned_issues_chart' %}">Not Assigned</a></li>
+        <li><a href="{% url 'charts.views.unscheduled_issues_chart' %}">Not Scheduled</a></li>
     <li class="nav-header">Issues by Project</li>
     {% for project in projects%}
         <li><a href="{% url 'charts.views.issues_by_project_chart' project.id %}">{{project.name}}</a></li>
@@ -49,7 +51,6 @@ Used for all templates in /templates/projects
     {% for user in users%}
         <li><a href="{% url 'charts.views.issues_by_user_chart' user.id %}">{{user.username}}</a></li>
     {% endfor %}
-    <li><a href="{% url 'charts.views.unassigned_issues_chart' %}">Not Assigned</a></li>
 {% endblock%}
 
 {% block bodyClass %}page-charts{% endblock %}
