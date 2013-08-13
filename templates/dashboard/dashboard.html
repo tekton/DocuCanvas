@@ -93,7 +93,31 @@ Dashboard
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="{{newsfeed.newsfeed_type}}">Update</a></td>
                             <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
                             <td><a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary}}</a></td>
+                            {% if newsfeed.field_change == "modified_by_id" or newsfeed.field_change == "assigned_to_id" or newsfeed.field_change == "created_by" or newsfeed.field_change == "point_of_contact"%}
+                            <td>{{newsfeed.field_change|truncatechars:80}} from 
+                                {% if newsfeed.old_value == None%}
+                                    {{newsfeed.old_value}}
+                                {% else %}
+                                {% for user in users%}
+                                    {% if user.id|stringformat:"d" == newsfeed.old_value%}
+                                        {{user.username}}
+                                    {% endif %}
+                                {% endfor %} 
+                                {% endif%}
+                                to 
+                                {% if newsfeed.new_value == None %}
+                                    {{newsfeed.new_value}}
+                                {% else %}
+                                {% for user in users%}
+                                    {% if user.id|stringformat:"d" == newsfeed.new_value%}
+                                        {{user.username}}
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                            </td>
+                            {% else%}
                             <td>{{newsfeed.field_change|truncatechars:80}} from {{newsfeed.old_value|striptags}} to {{newsfeed.new_value|striptags}}</td>
+                            {% endif %}
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
                         </tr>
                     {% endif %}
