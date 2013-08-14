@@ -1,4 +1,5 @@
 {% extends "projects/base.html" %}
+{% load markup %}
 {% load staticfiles %}
 {% comment %}
 Extends /templates/projects/base.html
@@ -68,7 +69,11 @@ Extends /templates/projects/base.html
 						<header>
 							<h3 class="media-header">Scope</h3>
 						</header>
-						{{project.scope}}
+						{% if project.scope%}
+							{{project.scope|markdown:"safe"}}
+						{% else %}
+							{{project.scope}}
+						{% endif %}
 					</div>
 				</section>
 				<section class="media">
@@ -76,7 +81,11 @@ Extends /templates/projects/base.html
 						<header>
 							<h3 class="media-header">Description</h3>
 						</header>
-						{{project.description}}
+						{% if project.description %}
+							{{project.description|markdown:"safe"}}
+						{% else %}
+							{{project.description}}
+						{% endif %}
 					</div>
 				</section>
 				<section class="media">
@@ -84,7 +93,11 @@ Extends /templates/projects/base.html
 						<header>
 							<h3 class="media-header">Business Case</h3>
 						</header>
-						{{project.business_case}}
+						{% if project.business_case %}
+							{{project.business_case|markdown:"safe"}}
+						{% else %}
+							{{project.business_case}}
+						{% endif %}
 					</div>
 				</section>
 			</div>
