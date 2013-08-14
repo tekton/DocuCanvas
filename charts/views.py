@@ -20,7 +20,7 @@ def test(request):
 def home(request):
     users_dict = {}
     try:
-        users = User.objects.all()
+        users = User.objects.filter(is_staff=True)
         for user in users:
             users_dict[user.id] = user.username
     except:
@@ -60,7 +60,7 @@ def users_chart(request):
     users_dict = {}
     project_dict = {}
     try:
-        users = User.objects.all()
+        users = User.objects.filter(is_staff=True)
         for user in users:
             users_dict[user.id] = user.username
     except:
@@ -101,7 +101,7 @@ def users_chart(request):
 @login_required
 def projects_chart(request):
     try:
-        users = User.objects.all()
+        users = User.objects.filter(is_staff=True)
     except:
         print "Can't get users"
 
@@ -132,7 +132,7 @@ def unassigned_issues_chart(request):
         projects = []
 
     try:
-        users = User.objects.all()
+        users = User.objects.filter(is_staff=True)
     except:
         print "Can't get users"
 
@@ -164,7 +164,7 @@ def unscheduled_issues_chart(request):
         projects = []
 
     try:
-        users = User.objects.all()
+        users = User.objects.filter(is_staff=True)
     except:
         print "Can't get users"
 
@@ -191,7 +191,7 @@ def unscheduled_issues_chart(request):
 def issues_by_user_chart(request, user_id):
 
     try:
-        users = User.objects.all()
+        users = User.objects.filter(is_staff=True)
     except:
         print "Can't get users"
         users = []
@@ -236,7 +236,7 @@ def issues_by_user_chart(request, user_id):
 def issues_by_project_chart(request, project_id):
     users_dict = {}
     try:
-        users = User.objects.all()
+        users = User.objects.filter(is_staff=True)
         for user in users:
             users_dict[user.id] = user.username
     except:
