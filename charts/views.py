@@ -157,6 +157,7 @@ def unassigned_issues_chart(request):
 
 @login_required
 def unscheduled_issues_chart(request):
+    users_dict = {}
     try:
         projects = Project.objects.all()
     except:
@@ -165,6 +166,8 @@ def unscheduled_issues_chart(request):
 
     try:
         users = User.objects.filter(is_staff=True)
+        for user in users:
+            users_dict[user.id] = user.username
     except:
         print "Can't get users"
 
@@ -175,6 +178,11 @@ def unscheduled_issues_chart(request):
             json_issue = model_to_dict(issue)
             json_issue['created'] = issue.created
             json_issue['project_name'] = issue.project.name
+            if issue.assigned_to:
+                try:
+                    json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
+                except Exception, e:
+                    print e
             for k,v in json_issue.items():
                 json_issue[k] = str(v)
 
