@@ -213,7 +213,7 @@ def add_items(request, poll_id):
             for a in request.POST.getlist('pollitem_set-TOTAL_FORMS'):
                 if(int(a) > b):
                     b=a
-            for i in range(0, (int(b) - poll.total_items + 1)):
+            for i in range(0, (int(b) - poll.total_items)):
                 text = 'pollitem_set-' + str(i) + '-item'
                 value = request.POST[text]
                 item = PollItem(added_by=request.user, item=value, poll=poll)

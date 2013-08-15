@@ -1,6 +1,7 @@
 {% extends "polls/base.html" %}
 
 {% block contextNav %}
+    <li><a href="{% url 'polls.views.add_items' poll.id %}">Add Item</a></li>
     <li><a href="{% url 'polls.views.new_poll' %}">Create New Poll</a></li>
     <li><a href="{% url 'polls.views.all_polls' %}">View All Polls</a></li>
 {% endblock%}
