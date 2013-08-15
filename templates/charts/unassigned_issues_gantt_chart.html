@@ -31,7 +31,7 @@
                             project_review_counter = 0;
                         }
                     }
-                    review_gantt_item_dict = drawReviewGanttObject(issue, false, " ", issues[issue]['assigned_to'] );
+                    review_gantt_item_dict = drawReviewGanttObject(issue, issues[issue]['summary'] , " ", issues[issue]['assigned_to'] );
                     if(first_of_project_review == true){
                         review_gantt_item_dict['name'] = issues[issue]['project_name']
                         first_of_project_review = false;
@@ -47,7 +47,7 @@
                             project_counter = 0;
                         }
                     }
-                    gantt_item_dict = drawPlanningGanttObject(issue, false, " ", issues[issue]['assigned_to'] );
+                    gantt_item_dict = drawPlanningGanttObject(issue, issues[issue]['summary'] , " ", issues[issue]['assigned_to'] );
                     if(first_of_project == true){
                         gantt_item_dict['name'] = issues[issue]['project_name']
                         first_of_project = false;
