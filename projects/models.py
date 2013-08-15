@@ -10,6 +10,8 @@ class Project(models.Model):
     scope = models.TextField(blank=True, null=True)
     business_case = models.TextField(blank=True, null=True)
     priority = models.IntegerField(default=0)
+    assumptions = models.TextField(blank=True, null=True)
+    internal_requests = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=255, blank=True, null=True)
     logo = models.CharField(max_length=255, blank=True, null=True)  # uri
     product_owner = models.ForeignKey(User, related_name='product_owner', blank=True, null=True)
