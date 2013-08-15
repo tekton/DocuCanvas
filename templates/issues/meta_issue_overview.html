@@ -1,4 +1,5 @@
 {% extends "issues/base.html" %}
+{% load markup %}
 
 {% block contextNav %}
     <li class="nav-header">New</li>
@@ -30,7 +31,7 @@
                 <div class="media">
                     <div class="media-body">
                         <h3 class="media-header">User Story</h3>
-                        {{metaissue.user_story|safe}}
+                        {{metaissue.user_story|markdown:"safe"}}
                     </div>
                 </div>
             </div>
