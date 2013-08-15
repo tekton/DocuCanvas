@@ -319,7 +319,7 @@ def meta_issue_form(request, issue_id=-1):
                 raise e
 
             if form.instance:
-                return redirect('issues.views.meta_issue_form', mi.id)
+                return redirect('issues.views.meta_issue_overview', mi.id)
             else:
                 return redirect('issues.views.meta_issue_form')
 
