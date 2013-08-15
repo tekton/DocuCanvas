@@ -1,8 +1,10 @@
 {% extends "issues/base.html" %}
 
 {% block contextNav %}
-    <li><a href="{% url 'dashboard.views.home' %}">Dashboard</a></li>
-    <li><a href="{% url 'auth.views.account_settings' %}">Account Settings</a></li>
+    <li class="nav-header">New</li>
+    <li><a href="{% url 'issues.views.meta_issue_form' %}">Meta Issue</a></li>
+    <li class="nav-header">Meta Issue Actions</li>
+    <li><a href="{% url 'issues.views.meta_issue_form' metaissue.id %}">Edit</a></li>
 {% endblock%}
 
 {% block pageTitle %}

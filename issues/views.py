@@ -170,7 +170,7 @@ def set_bug_state(request):
 def unlink_issues(request):
     to_json = {}
     status_code = 200
-    print 'unlinking'
+
     try:
         primary_issue = Issue.objects.get(pk=request.POST['primary_issue'])
         try:
@@ -324,17 +324,23 @@ def meta_issue_form(request, issue_id=-1):
                 return redirect('issues.views.meta_issue_form')
 
         else:
-
             return render_to_response('issues/meta_issue_form.html', {'form': form, 'new': True, 'pform': pform, "projects": projects}, context_instance=RequestContext(request))
 
 
 @login_required
 def meta_issue_overview(request, meta_issue_id):
+    try:
+        meta_issue = MetaIssue.objects.get(pk=meta_issue_id)
+    except:
+        meta_issue = MetaIssue()
 
-    meta_issue = MetaIssue.objects.get(pk=meta_issue_id)
+    try:
+        projects = Project.objects.all()
+    except:
+        projects = []
 
     return render_to_response('issues/meta_issue_overview.html', {
-        "metaissue": meta_issue
+        "metaissue": meta_issue, "projects": projects,
         }, context_instance=RequestContext(request))
 
 
@@ -345,7 +351,6 @@ def meta_issue_stats(request, meta_issue_id):
 
 
         issues = Issue.objects.filter(meta_issues=meta_issue)
-
 
         '''
         not_a_bug_issues = Issue.objects.filter(meta_issues=meta_issue, status='not_a_bug')
@@ -713,10 +718,6 @@ def submit_comment(request, issue_id):
 def unassigned_issues(request):
     projects = Project.objects.all()
     q = Issue.objects.filter(Q(assigned_to__isnull=True) & (Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True))).order_by('created')
-    print 'projects'
-    print projects
-    print 'issues'
-    print q
     return render_to_response('issues/issue_unassigned.html', {'issues': q, 'projects': projects}, context_instance=RequestContext(request))
 
 
