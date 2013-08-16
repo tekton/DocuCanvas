@@ -66,10 +66,10 @@ Extends /templates/projects/base.html
 			<div id="project-details" class="well">
 				<section class="media">
 					<div class="media-body">
-						<header>
-							<h3 class="media-header">Scope</h3>
-						</header>
 						{% if project.scope%}
+							<header>
+								<h3 class="media-header">Scope</h3>
+							</header>
 							{{project.scope|markdown:"safe"}}
 						{% else %}
 							{{project.scope}}
@@ -78,10 +78,10 @@ Extends /templates/projects/base.html
 				</section>
 				<section class="media">
 					<div class="media-body">
-						<header>
-							<h3 class="media-header">Description</h3>
-						</header>
 						{% if project.description %}
+							<header>
+								<h3 class="media-header">Description</h3>
+							</header>
 							{{project.description|markdown:"safe"}}
 						{% else %}
 							{{project.description}}
@@ -90,10 +90,34 @@ Extends /templates/projects/base.html
 				</section>
 				<section class="media">
 					<div class="media-body">
-						<header>
-							<h3 class="media-header">Business Case</h3>
-						</header>
+						{% if project.assumptions %}
+							<header>
+								<h3 class="media-header">Assumptions</h3>
+							</header>
+							{{project.assumptions|markdown:"safe"}}
+						{% else %}
+							{{project.assumptions}}
+						{% endif %}
+					</div>
+				</section>
+				<section class="media">
+					<div class="media-body">
+						{% if project.internal_requests %}
+							<header>
+								<h3 class="media-header">Internal Requests</h3>
+							</header>
+							{{project.internal_requests|markdown:"safe"}}
+						{% else %}
+							{{project.internal_requests}}
+						{% endif %}
+					</div>
+				</section>
+				<section class="media">
+					<div class="media-body">
 						{% if project.business_case %}
+							<header>
+								<h3 class="media-header">Business Case</h3>
+							</header>
 							{{project.business_case|markdown:"safe"}}
 						{% else %}
 							{{project.business_case}}
