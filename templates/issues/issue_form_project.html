@@ -41,16 +41,44 @@
         </div>
 
         <div class="control-group">
-            <div class="controls">
+            <div class="controls">  
             <input type="file" name="myfiles" multiple>
             </div>
         </div>
+        <a id="advanced_form_toggle">Advanced Inputs</a>
+        <div id="advanced_issue_form" style="display:none">
+            <div class="control-group">
+            <label class="control-label" for="id_meta_issues">MetaIssue</label>
+                <div class="controls">
+                    {{form.meta_issues}}
+                </div>
+            </div>
+            <div class="control-group">
+            <label class="control-label" for="id_meta_issues">Projected Start</label>
+                <div class="controls">
+                    {{form.projected_start}}
+                </div>
+            </div>
+            <div class="control-group">
+            <label class="control-label" for="id_meta_issues">Projected End</label>
+                <div class="controls">
+                    {{form.projected_end}}
+                </div>
+            </div>
+            <div class="control-group">
+            <label class="control-label" for="id_meta_issues">Assigned To</label>
+                <div class="controls">
+                    {{form.projected_end}}
+                </div>
+            </div>
+        </div>  
 
         <div class="control-group">
             <div class="controls">
                 <input type="submit" value="Submit" class="btn btn-primary">
             </div>
         </div>
+
     </form>
 
 {% endblock %}
@@ -59,6 +87,12 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $('[name="summary"]').keyup( $.debounce(350, getSimilarIssues));
+
+        $('input[name="projected_start"]').datepicker();
+        $('input[name="projected_end"]').datepicker();
+        $('#advanced_form_toggle').click(function(){
+            $('#advanced_issue_form').fadeToggle(function(){});
+        });
     });
 
     function returnModelLink(html_obj, model_dict, project_id){

@@ -56,10 +56,17 @@ New Issue
             <input type="file" name="myfiles" multiple>
             </div>
         </div>
-		
 		<div class="form-actions">
 			<input type="submit" value="Submit" class="btn btn-primary">
 		</div>
+        <div id="advanced_issue_form">
+            <div class="control-group">
+            <label class="control-label" for="id_meta_issues">MetaIssue</label>
+                <div class="controls">
+                    {{form.meta_issues}}
+                </div>
+            </div>
+        </div>  
 	</form>
 {% endblock %}
 

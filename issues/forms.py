@@ -17,7 +17,7 @@ class IssueForm(forms.ModelForm):
     description = forms.CharField(widget=TinyMCE(attrs={'cols': 100, 'rows': 20, 'id': 'something'}), required=False)
     class Meta:
         model = Issue
-        fields = ('project', 'summary', 'description')
+        fields = ('project', 'summary', 'description', 'meta_issues', 'projected_start','projected_end', 'assigned_to')
 
     def save(self, user=None, *args, **kwargs):
         super(IssueForm, self).save(*args, **kwargs)
