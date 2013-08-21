@@ -103,9 +103,11 @@ Extends /templates/issue/base.html
 					<div class="media-body">
 						<h3 class="media-header">Attached Images</h3>
 						<ul class="thumbnails">
-							{% for image in images %}
+							{% for image in images %}							
 							<li class="span2">
-								<a class="thumbnail"><img src="/static/{{image.screenshot}}"></a>
+								<a class="thumbnail" href="#{{image.screenshot|slugify}}" data-toggle="lightbox">
+									<img src="/static/{{image.screenshot}}">
+								</a>
 							</li>
 							{% endfor %}
 						</ul>
@@ -624,4 +626,12 @@ Extends /templates/issue/base.html
         	<button id="modal-comment-submit" class="btn btn-primary" type="button">Submit</button>
         </footer>
 	</div>
+	
+	{% for image in images %}
+		<div id="{{image.screenshot|slugify}}" class="lightbox hide fade">
+			<div class="lightbox-content">
+				<img src="/static/{{image.screenshot}}">
+			</div>
+		</div>
+	{% endfor %}
 {% endblock %}
