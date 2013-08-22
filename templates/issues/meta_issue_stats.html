@@ -162,7 +162,7 @@
                                             {{criticality_issue.criticality}}
                                         </td>
                                         <td title="issue">
-                                            <a href="{% url 'issues.views.issue_overview' active_issue.id %}">{{criticality_issue.summary}}</a>
+                                            <a href="{% url 'issues.views.issue_overview' criticality_issue.id %}">{{criticality_issue.summary}}</a>
                                         </td>
                                         <td title="status">
                                             {{criticality_issue.status}}
