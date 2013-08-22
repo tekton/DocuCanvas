@@ -1,14 +1,6 @@
 {% extends "issues/base.html" %}
 
-<!--{%block extra_head%}
-    <script type="text/javascript">
-        $(document).ready(function(){
-            if("{{project_id}}" != "None"){
-                $('#id_project').val("{{project_id}}")
-            }
-        });
-    </script>
-{% endblock%}-->
+{% block pageTitle %}Create New Issue{% endblock %}
 
 {% block contextNav %}
     <li><a href="{% url 'issues.views.unassigned_issues' %}" >Unassigned Issues</a></li>

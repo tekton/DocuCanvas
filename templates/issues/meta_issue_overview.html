@@ -3,6 +3,7 @@
 
 {% block contextNav %}
     <li class="nav-header">New</li>
+    <li><a href="{% url 'issues.views.issue_form_project_and_meta' metaissue.project.id metaissue.id %}">Issue</a></li>
     <li><a href="{% url 'issues.views.meta_issue_form' %}">Meta Issue</a></li>
     <li class="nav-header">Meta Issue Actions</li>
     <li><a href="{% url 'issues.views.meta_issue_form' metaissue.id %}">Edit</a></li>
@@ -104,6 +105,14 @@
                         <dt>Priority:</dt>
                             <dd>{{metaissue.priority}}</dd>
                     </dl>
+                </div>
+                <div id="metaissue-metainfo-content-stats" class="metainfo-content">
+                    <h4>Issue Count by Status</h4>
+                    <table>
+                        {% for item in issue_counts %}
+                            <tr><td>{{item.status}}</td><td>{{item.id__count}}</td></tr>
+                        {% endfor %}
+                    </table>
                 </div>
             </aside>
         </div>

@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.db.models import Q
+from django.db.models import Count
 from django.forms.models import model_to_dict
 from accounts.forms import PermissionForm
 from accounts.utils import get_permission_form_for_model, set_permissions_for_model
@@ -339,6 +340,9 @@ def meta_issue_overview(request, meta_issue_id):
     issues_active = issues.filter((Q(status='active') | Q(status='unverified') | Q(status=None) | Q(status="Retest")))
     issues_non_active = issues.filter((~Q(status='active') & ~Q(status='unverified') & ~Q(status=None) & ~Q(status="Retest")))
 
+    issue_counts = Issue.objects.filter(meta_issues=meta_issue).values("status").annotate(Count("id")).order_by("status")
+    print issue_counts
+
     print issues
     print issues_active
     print issues_non_active
@@ -352,6 +356,7 @@ def meta_issue_overview(request, meta_issue_id):
                                                                   "projects": projects,
                                                                   "issues": issues_active,
                                                                   "issues_non_active": issues_non_active,
+                                                                  "issue_counts": issue_counts,
         }, context_instance=RequestContext(request))
 
 
@@ -462,6 +467,19 @@ def issue_form_project(request, project_id):
         form = IssueForm(initial={"project": project}, auto_id=False)
     except:
         print "Unable to find associated project"
+        form = IssueForm()
+    return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': project.name, 'page_value': "Issue", 'projects': projects}, context_instance=RequestContext(request))
+
+@login_required
+@permission_required("issues.change_issue", raise_exception=True)
+def issue_form_project_and_meta(request, project_id, meta_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+        meta = MetaIssue.objects.get(pk=meta_id)
+        projects = Project.objects.all()
+        form = IssueForm(initial={"project": project, "meta_issues": meta}, auto_id=False)
+    except:
+        print "Unable to find associated project or meta issue"
         form = IssueForm()
     return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': project.name, 'page_value': "Issue", 'projects': projects}, context_instance=RequestContext(request))
 
