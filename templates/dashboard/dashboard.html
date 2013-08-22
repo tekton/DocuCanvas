@@ -160,7 +160,7 @@ Dashboard
                             <td class="hidden-phone"><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="{{newsfeed.newsfeed_type}}">Update</a></td>
                             <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
-                            <td><a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary}}</a></td>
+                            <td><a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}</a></td>
                             {% if newsfeed.field_change == "modified_by_id" or newsfeed.field_change == "assigned_to_id" or newsfeed.field_change == "created_by" or newsfeed.field_change == "point_of_contact"%}
                             <td>{{newsfeed.field_change|truncatechars:80}} from 
                                 {% if newsfeed.old_value == None%}
@@ -184,7 +184,7 @@ Dashboard
                                 {% endif %}
                             </td>
                             {% else%}
-                            <td>{{newsfeed.field_change|truncatechars:80}} from {{newsfeed.old_value|striptags}} to {{newsfeed.new_value|striptags}}</td>
+                            <td>{{newsfeed.field_change}} updated to {{newsfeed.new_value|striptags|truncatechars:40}}</td>
                             {% endif %}
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
                         </tr>
@@ -195,7 +195,7 @@ Dashboard
                             <td class="hidden-phone"><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="New Issue">New</a></td>
                             <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a></td>
-                            <td><a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary}}</a></td>
+                            <td><a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}</a></td>
                             <td>Created New Issue</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
                         </tr>
@@ -206,8 +206,8 @@ Dashboard
                             <td class="hidden-phone"><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="Issue Comment">Comment</a></td>
                             <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}">{{newsfeed.project.name}}</a></td>
-                            <td><a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary}}</a></td>
-                            <td>{{newsfeed.comment|truncatechars:80}}</td>
+                            <td><a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}</a></td>
+                            <td>{{newsfeed.comment|truncatechars:40}}</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
                         </tr>
                     {% endif %}
@@ -216,8 +216,8 @@ Dashboard
                             <td class="hidden-phone"><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="Project Edit">Update</a></td>
                             <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name}}</a></td>
-                            <td>None</td>
-                            <td>None</td>
+                            <td>Project information updated</td>
+                            <td>N/A</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
                         </tr>
                     {% endif %}
@@ -226,8 +226,8 @@ Dashboard
                             <td class="hidden-phone"><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="New Project">New</a></td>
                             <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name}}</a></td>
-                            <td>None</td>
-                            <td>None</td>
+                            <td>Project created</td>
+                            <td>N/A</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
                         </tr>
                     {% endif %}
@@ -236,7 +236,7 @@ Dashboard
                             <td class="hidden-phone"><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="New Checklist">New</a></td>
                             <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name}}</a></td>
-                            <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
+                            <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name|truncatechars:40}}</a></td>
                             <td>None</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
                         </tr>
@@ -245,7 +245,7 @@ Dashboard
                         <tr>
                             <td> class="hidden-phone"<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="Edit Checklist">Update</a></td>
-                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name}}</a></td>
+                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name|truncatechars:40}}</a></td>
                             <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
                             <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
@@ -255,7 +255,7 @@ Dashboard
                         <tr>
                             <td class="hidden-phone"><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="New Checklist Item">New</a></td>
-                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name}}</a></td>
+                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name|truncatechars:40}}</a></td>
                             <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
                             <td>{{newsfeed.comment}}</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
@@ -265,7 +265,7 @@ Dashboard
                         <tr>
                             <td class="hidden-phone"><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="Edit Checklist Item">Update</a></td>
-                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name}}</a></td>
+                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name|truncatechars:40}}</a></td>
                             <td><a href="{% url 'checklists.views.project_checklists' newsfeed.project.id %}">{{newsfeed.checklist.name}}</a></td>
                             <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
@@ -276,7 +276,7 @@ Dashboard
                         <tr>
                             <td class="hidden-phone"><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="New Checklist Instance">New</a></td>
-                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name}}</a></td>
+                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name|truncatechars:40}}</a></td>
                             <td><a href="{% url 'checklists.views.instance_edit' newsfeed.comment %}">{{newsfeed.checklist.name}}</a></td>
                             <td>None</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
@@ -286,7 +286,7 @@ Dashboard
                         <tr>
                             <td class="hidden-phone"><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="Edit Checklist Instance">Update</a></td>
-                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name}}</a></td>
+                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name|truncatechars:40}}</a></td>
                             <td><a href="{% url 'checklists.views.instance_edit' newsfeed.comment %}">{{newsfeed.checklist.name}}</a></td>
                             <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
@@ -296,7 +296,7 @@ Dashboard
                         <tr>
                             <td class="hidden-phone"><a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a></td>
                             <td><a href="{% url 'newsfeed.views.newsfeed_action' newsfeed.newsfeed_type %}" title="Edit Checklist Instance Tag">Update</a></td>
-                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name}}</a></td>
+                            <td class="hidden-phone"><a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description|striptags}}">{{newsfeed.project.name|truncatechars:40}}</a></td>
                             <td><a href="{% url 'checklists.views.instance_edit' newsfeed.description %}">{{newsfeed.checklist.name}}</a></td>
                             <td>Updated {{newsfeed.field_change}} from {{newsfeed.old_value}} to {{newsfeed.new_value}}</td>
                             <td class="hidden-phone">{{newsfeed.timestamp}}</td>
