@@ -185,7 +185,7 @@ Extends /templates/issue/base.html
 							</dd>
 
 						<dt>Meta Issue:</dt>
-							<dd><a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues.title}}</a></dd>
+                        <dd>{% if issue.meta_issues %}<a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues.title}}</a>{% else %}None{% endif %}</dd>
 
 						<!--
 						<dt>Project Name:</dt>
