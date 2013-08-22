@@ -150,6 +150,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
+                                        <th>Criticality</th>
                                         <th>Summary</th>
                                         <th>Status</th>
                                         <th>Assigned To</th>
@@ -168,7 +169,9 @@
                                             {{criticality_issue.status}}
                                         </td>
                                         <td title="assigned to">
+                                            {% if criticality_issue.assigned_to.id %}
                                             <a href="{% url 'auth.views.user_overview' criticality_issue.assigned_to.id %}">{{criticality_issue.assigned_to}}</a>
+                                            {% else %}Unassigned{% endif %}
                                         </td>
                                         
                                     </tr>
