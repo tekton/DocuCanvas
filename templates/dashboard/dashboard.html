@@ -68,7 +68,75 @@ Dashboard
         </table>
     </section>
     {% endif %}
-
+    {% if issues %}
+    <section class="well">
+        <header>
+            <h3>Assigned</h3>
+        </header>
+        <table class="table">
+            <tbody>
+            {% for issue in issues%}
+                {% if newest_assigned != issue.created %}
+                    {% set newest_assigned = issue.created %}
+                    <tr><td colspan="4">{{issue.created}}</td></tr>
+                {% endif %}
+                <tr>
+                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
+                    <td><a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a></td>
+                    <td><a href="{% url 'issues.views.assign' issue.id %}" class="assign_issue"></td>
+                </tr>
+            {% endfor%}
+            </tbody>
+        </table>
+    </section>
+    {% endif %}
+    {% if pins %}
+    <section class="well">
+        <header>
+            <h3>Pinned</h3>
+        </header>
+        <table class="table">
+            <tbody>
+            {% for issue in pins%}
+                {% if newest_pin != issue.created %}
+                    {% set newest_pin = issue.created%}
+                    <tr><td colspan="4">{{issue.created}}</td></tr>
+                {% endif %}
+                <tr>
+                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
+                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
+                    <td><a href="{% url 'issues.views.pin' issue.id %}" class="pin_issue"></a></td>
+                </tr>
+            {% endfor%}
+            </tbody>
+        </table>
+    </section>
+    {% endif %}
+    {% if subscribed %}
+    <section class="well">
+        <header>
+            <h3>Subscribed</h3>
+        </header>
+        <table class="table">
+            <tbody>
+            {% for issue in subscribed%}
+                {% if newest_subscribed != issue.created %}
+                    {% set newest_subscribed = issue.created%}
+                    <tr><td colspan="4">{{issue.created}}</td></tr>
+                {% endif %}
+                <tr>
+                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
+                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
+                    <td><a href="{% url 'issues.views.subscribe' issue.id %}" class="subscribe_to_issue"></a></td>
+                </tr>
+            {% endfor%}
+            </tbody>
+        </table>
+    </section>
+    {% endif %}
     <section class="well">
         <header>
             <h3><a href="{% url 'newsfeed.views.newsfeeds' %}">Newsfeed</a></h3>
@@ -239,90 +307,4 @@ Dashboard
         </table>
     </section>
 
-    <section class="well">
-        <header>
-            <h3>Assigned</h3>
-        </header>
-        <table class="table">
-            <!-- <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Summary</td>
-                    <td colspan="2">Assigned To</td>
-                </tr>
-            </thead> -->
-            <tbody>
-            {% for issue in issues%}
-                {% if newest_assigned != issue.created %}
-                    {% set newest_assigned = issue.created %}
-                    <tr><td colspan="4">{{issue.created}}</td></tr>
-                {% endif %}
-                <tr>
-                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
-                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
-                    <td><a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a></td>
-                    <td><a href="{% url 'issues.views.assign' issue.id %}" class="assign_issue"></td>
-                </tr>
-            {% endfor%}
-            </tbody>
-        </table>
-    </section>
-
-    <section class="well">
-        <header>
-            <h3>Pinned</h3>
-        </header>
-        <table class="table">
-            <!-- <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Summary</td>
-                    <td colspan="2">Assigned To</td>
-                </tr>
-            </thead> -->
-            <tbody>
-            {% for issue in pins%}
-                {% if newest_pin != issue.created %}
-                    {% set newest_pin = issue.created%}
-                    <tr><td colspan="4">{{issue.created}}</td></tr>
-                {% endif %}
-                <tr>
-                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
-                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
-                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
-                    <td><a href="{% url 'issues.views.pin' issue.id %}" class="pin_issue"></a></td>
-                </tr>
-            {% endfor%}
-            </tbody>
-        </table>
-    </section>
-    
-    <section class="well">
-        <header>
-            <h3>Subscribed</h3>
-        </header>
-        <table class="table">
-            <!-- <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Summary</td>
-                    <td colspan="2">Assigned To</td>
-                </tr>
-            </thead> -->
-            <tbody>
-            {% for issue in subscribed%}
-                {% if newest_subscribed != issue.created %}
-                    {% set newest_subscribed = issue.created%}
-                    <tr><td colspan="4">{{issue.created}}</td></tr>
-                {% endif %}
-                <tr>
-                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
-                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
-                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
-                    <td><a href="{% url 'issues.views.subscribe' issue.id %}" class="subscribe_to_issue"></a></td>
-                </tr>
-            {% endfor%}
-            </tbody>
-        </table>
-    </section>
 {% endblock%}
