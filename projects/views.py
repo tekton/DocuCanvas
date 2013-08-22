@@ -129,7 +129,28 @@ def project_stats(request, project_id):
     except Exception, e:
         print e
 
-    return render_to_response("projects/project_stats.html", {"project": project, "projects": projects, "criticality_issues": criticality_issues, "bugs_for_review": bugs_for_review, "blank_issues": blank_issues, "not_a_bug_issues": not_a_bug_issues, "wont_fix_issues": wont_fix_issues, "duplicate_issues": duplicate_issues, "active_issues": active_issues, "fixed_issues": fixed_issues, "retest_issues": retest_issues, "unverified_issues": unverified_issues, "blank_count": blank_count, "not_a_bug_count": not_a_bug_count, "wont_fix_count": wont_fix_count, "duplicate_count": duplicate_count, "active_count": active_count, "fixed_count": fixed_count, "retest_count": retest_count, "unverified_count": unverified_count, "page_type": project.name, "page_value":"Report"}, context_instance=RequestContext(request))
+    return render_to_response("projects/project_stats.html", {"project": project,
+                                                              "projects": projects,
+                                                              "criticality_issues": criticality_issues,
+                                                              "bugs_for_review": bugs_for_review,
+                                                              "blank_issues": blank_issues,
+                                                              "not_a_bug_issues": not_a_bug_issues,
+                                                              "wont_fix_issues": wont_fix_issues,
+                                                              "duplicate_issues": duplicate_issues,
+                                                              "active_issues": active_issues,
+                                                              "fixed_issues": fixed_issues,
+                                                              "retest_issues": retest_issues,
+                                                              "unverified_issues": unverified_issues,
+                                                              "blank_count": blank_count,
+                                                              "not_a_bug_count": not_a_bug_count,
+                                                              "wont_fix_count": wont_fix_count,
+                                                              "duplicate_count": duplicate_count,
+                                                              "active_count": active_count,
+                                                              "fixed_count": fixed_count,
+                                                              "retest_count": retest_count,
+                                                              "unverified_count": unverified_count,
+                                                              "page_type": project.name,
+                                                              "page_value":"Report"}, context_instance=RequestContext(request))
 
 
 @login_required

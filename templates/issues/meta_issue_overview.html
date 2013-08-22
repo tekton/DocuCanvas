@@ -36,6 +36,56 @@
                 </div>
             </div>
             
+            <div id="project-issues" class="well">
+                <div id="project-issues-text">
+                    <section class="media">
+                        <div class="media-body">
+                            <header>
+                                <h3 class="media-header">Active Issues</h3>
+                            </header>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Summary</th>
+                                        <th>Status</th>
+                                        <th>Assigned To</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for issue in issues %}
+                                    <tr>
+                                        <td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
+                                        <td>{{issue.status}}</td>
+                                        <td>{{issue.assigned_to}}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <header>
+                                <h3 class="media-header">Resolved and Inactive Issues</h3>
+                            </header>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Summary</th>
+                                        <th>Status</th>
+                                        <th>Assigned To</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for issue in issues_non_active%}
+                                    <tr>
+                                        <td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
+                                        <td>{{issue.status}}</td>
+                                        <td>{{issue.assigned_to}}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
         </div>
 
         <div id="metaissue-column-aside" class="span3 metainfo-asidecolumn">
