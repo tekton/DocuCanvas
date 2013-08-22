@@ -1,4 +1,3 @@
-
 import json
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -97,6 +96,7 @@ def assign(request, issue_id, user_id=-1):
         try:
             issue.save(request.user)
         except Exception as e:
+            print "Unable to save issue"
             to_json['success'] = False
             to_json['error'] = str(e)
             to_json['assigned_to'] = False

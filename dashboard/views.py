@@ -14,7 +14,7 @@ def home(request):
         need comments
     '''
     try:
-        users = User.objects.filter(is_staff=True)
+        users = User.objects.all()
     except Exception, e:
         print e
         users = []
