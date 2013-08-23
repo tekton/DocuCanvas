@@ -53,6 +53,7 @@
 						{{help.question}}
 					</div>
 				</div>
+				{% if images %}
 				<div class="media">
 					<div class="media-body">
 						<h3 class="media-header">Attached Images</h3>
@@ -72,6 +73,7 @@
 						</ul>
 					</div>
 				</div>
+				{% endif %}
 				{% for arrow in answer %}
 					<div class="media">
 						<div class="media-body">
