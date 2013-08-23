@@ -176,6 +176,32 @@ textarea {
 
 
 
+/* --- Notification Styles
+-------------------------------------------------------*/
+
+#notification_section {
+	
+}
+
+	#notification_section ul {
+		list-style: none;
+		margin: 0;
+	}
+		
+		#notification_section ul li {
+			margin-bottom: .5em;
+			padding-top: .5em;
+			border-top: 1px solid #c4d7bc;
+		}
+			
+			#notification_section ul li:first-child { border: 0; }
+	
+	#notification_section .meta {
+		font-size: 12px;
+		margin: 0;
+	}
+
+
 /* --- Daily Reports
 -------------------------------------------------------*/
 

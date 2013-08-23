@@ -42,30 +42,18 @@ Dashboard
 {% endblock %}
 
 {% block bodyContent %}
+
     {% if notifications %}
-    <section class="well" id="notification_section">
-        <header>
-            <h3>Notifications</h3>
-        </header>
-        <table class="table table-sortable">
-            <thead>
-                <tr>
-                    <th>Sender</th>
-                    <th>Message</th>
-                    <th colspan="2">Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for notification in notifications %}
-                    <tr id="notification_{{notification.id}}">
-                        <td><a href="{% url 'auth.views.user_overview' notification.notification.creator.id %}">{{notification.notification.creator}}</a></td>
-                        <td>{{notification.notification.message}}</td>
-                        <td>{{notification.created}}</td>
-                        <td class="mark_notification_as_read" onClick="mark_notification_as_read({{notification.id}})">X</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <section class="alert alert-block alert-success" id="notification_section">
+	    <ul>
+            {% for notification in notifications %}
+            <li>
+	           <button type="button" class="close" data-dismiss="alert" onClick="mark_notification_as_read({{notification.id}})">&times;</button>
+               <p>{{notification.notification.message}}</p>
+               <p class="meta text-right">From <a href="{% url 'auth.views.user_overview' notification.notification.creator.id %}">{{notification.notification.creator}}</a> on {{notification.created}}</p>
+	       </li>
+	       {% endfor %}
+	    </ul>
     </section>
     {% endif %}
     {% if issues %}
