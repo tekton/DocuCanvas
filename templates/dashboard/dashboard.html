@@ -11,34 +11,27 @@ Dashboard
 
 {% block endScripts %}
 <script>
-    var num_notifications = '{{num_notifications}}';
+	var num_notifications = '{{num_notifications}}';
 
-    function mark_notification_as_read(notification_id){
-        $.ajax({
-            type:"POST",
-                    url:"/notification/mark_as_read",
-                    data:{
-                        notification_id:notification_id,
-                    },
-            success: function(data){
-                        var notification_row = '#notification_' + notification_id;
-                        $(notification_row).fadeOut(function(){
-                            $(this).remove();
-                            num_notifications--;
-                            if(num_notifications == 0){
-                                $('#notification_section').fadeOut(function(){
-                                    $(this).remove();
-                                });
-                            }
-                        });
-
-                    },
-            error: function(data){
-                alert("Server side error");
-            }
-        });
-    }
-    </script>
+	function mark_notification_as_read(notification_id) {
+		$.ajax({
+			type: "POST",
+			url: "/notification/mark_as_read",
+			data: {
+				notification_id: notification_id,
+			},
+			success: function(data) {
+				num_notifications--;
+				if (num_notifications == 0) {
+					$('#notification_section').hide();
+				}
+			},
+			error: function(data) {
+				alert("Server side error");
+			}
+		});
+	}
+</script>
 {% endblock %}
 
 {% block bodyContent %}
