@@ -33,7 +33,8 @@ def home(request):
         projects = []
 
     try:
-        issues = Issue.objects.all().order_by('project','assigned_to', '-created')
+
+        issues = Issue.objects.all().order_by('project', 'assigned_to', '-created')
         to_json_issues = []
         for issue in issues:
             json_issue = model_to_dict(issue)
@@ -44,8 +45,8 @@ def home(request):
                     json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
                 except Exception, e:
                     print e
-            for k,v in json_issue.items():
-                json_issue[k] = str(v)
+            for k, v in json_issue.items():
+                json_issue[k] = unicode(v)
             to_json_issues.append(json_issue)
     except Exception, e:
         print e
@@ -87,7 +88,7 @@ def users_chart(request):
                 except Exception, e:
                     print e   
             for k,v in json_issue.items():
-                json_issue[k] = str(v)
+                json_issue[k] = unicode(v)
 
             to_json_issues.append(json_issue)
     except Exception, e:
@@ -112,7 +113,7 @@ def projects_chart(request):
             json_project = model_to_dict(project)
             json_project['created'] = project.created
             for k,v in json_project.items():
-                json_project[k] = str(v)
+                json_project[k] = unicode(v)
             to_json_projects.append(json_project)
     except:
         print 'Unable to grab all projects'
@@ -144,7 +145,7 @@ def unassigned_issues_chart(request):
             json_issue['created'] = issue.created
             json_issue['project_name'] = issue.project.name
             for k,v in json_issue.items():
-                json_issue[k] = str(v)
+                json_issue[k] = unicode(v)
 
             to_json_issues.append(json_issue)
     except Exception, e:
@@ -184,7 +185,7 @@ def unscheduled_issues_chart(request):
                 except Exception, e:
                     print e
             for k,v in json_issue.items():
-                json_issue[k] = str(v)
+                json_issue[k] = unicode(v)
 
             to_json_issues.append(json_issue)
     except Exception, e:
@@ -227,7 +228,7 @@ def issues_by_user_chart(request, user_id):
                 json_issue['created'] = issue.created
                 json_issue['project_name'] = issue.project.name
                 for k,v in json_issue.items():
-                    json_issue[k] = str(v)
+                    json_issue[k] = unicode(v)
 
                 to_json_issues.append(json_issue)
         except Exception, e:
@@ -271,7 +272,7 @@ def issues_by_project_chart(request, project_id):
                         json_issue['assigned_to'] = None
 
                 for k,v in json_issue.items():
-                    json_issue[k] = str(v)
+                    json_issue[k] = unicode(v)
 
                 to_json_issues.append(json_issue)
         except Exception, e:
