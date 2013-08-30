@@ -563,6 +563,13 @@ def edit(request, issue_id):
     if request.method == 'POST':
         issue = Issue.objects.get(pk=issue_id)
         form = IssueFullForm(request.POST, instance=issue)
+        for afile in request.FILES.getlist('myfiles'):
+            image = IssueScreenshot(issue=issue, screenshot=afile)
+            try:
+                image.save()
+            except Exception as e:
+                print e
+
         if form.is_valid():
             try:
                 issue.modified_by = request.user
