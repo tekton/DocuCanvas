@@ -16,6 +16,9 @@ def test(request):
     return render_to_response("charts/index.html", {}, context_instance=RequestContext(request))
 
 
+'''
+    Gantt chart of issues separated by project
+'''
 @login_required
 def home(request):
     users_dict = {}
@@ -56,6 +59,9 @@ def home(request):
     return render_to_response("charts/charts.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
 
 
+'''
+    Gantt chart of issues separated by user
+'''
 @login_required
 def users_chart(request):
     users_dict = {}
@@ -99,6 +105,9 @@ def users_chart(request):
     return render_to_response("charts/users_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
 
 
+'''
+    Gantt chart of all projects
+'''
 @login_required
 def projects_chart(request):
     try:
@@ -124,6 +133,9 @@ def projects_chart(request):
     return render_to_response("charts/projects_gantt_chart.html", {"projects": projects, "projects_dict": json.dumps(to_json_projects), "issues": json.dumps(issues), "users": users}, context_instance=RequestContext(request))
 
 
+'''
+    Gantt chart of issues that have not been assigned yet
+'''
 @login_required
 def unassigned_issues_chart(request):
     try:
@@ -156,6 +168,9 @@ def unassigned_issues_chart(request):
     return render_to_response("charts/unassigned_issues_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
 
 
+'''
+    Gantt chart of issues that do not have a projected start, projected end, actual start, or actual end
+'''
 @login_required
 def unscheduled_issues_chart(request):
     users_dict = {}
@@ -196,6 +211,9 @@ def unscheduled_issues_chart(request):
     return render_to_response("charts/unscheduled_issues_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
 
 
+'''
+    Gantt chart for all issues assigned to user with id "user_id"
+'''
 @login_required
 def issues_by_user_chart(request, user_id):
 
@@ -241,6 +259,9 @@ def issues_by_user_chart(request, user_id):
     return render_to_response("charts/issues_by_user_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users, "assigned_to": assigned_to}, context_instance=RequestContext(request))
 
 
+'''
+    Gantt chart for all issues associated with project with id "project_id"
+'''
 @login_required
 def issues_by_project_chart(request, project_id):
     users_dict = {}
@@ -283,6 +304,7 @@ def issues_by_project_chart(request, project_id):
         print 'Unable to find project'
         project = Project()
     return render_to_response("charts/issues_by_project_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users, "project": project}, context_instance=RequestContext(request))
+
 
 @login_required
 def meta_issues_by_project(request, project_id):
