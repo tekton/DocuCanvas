@@ -8,6 +8,8 @@ from projects.models import Project
 from newsfeed.models import NewsFeedItem
 from models import *
 
+import datetime
+
 
 @login_required
 def edit_report(request, month=0, day=0, year=0):
@@ -145,11 +147,24 @@ def mail_report():
     except:
         return False
 
+
 @login_required
 def index(request):
     projects = Project.objects.all()
     reports = UserDailyReport.objects.filter(user=request.user).order_by('-date')[:5]
-    return render_to_response("daily_reports/report_index.html", {"reports": reports, "projects": projects, "page_type": "Report"}, context_instance=RequestContext(request))
+    # check if there's a report for today...
+    now = datetime.datetime.now()
+    try:
+        today_report = UserDailyReport.objects.get(user=request.user, date=now.strftime("%Y-%m-%d"))
+        today = False
+    except Exception as e:
+        print "Unable to get todays report"
+        print e
+        today = True
+    return render_to_response("daily_reports/report_index.html", {"reports": reports,
+                                                                  "projects": projects,
+                                                                  "today": today,
+                                                                  "page_type": "Report"}, context_instance=RequestContext(request))
 
 
 @user_passes_test(lambda u: u.is_superuser)

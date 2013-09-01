@@ -5,6 +5,9 @@
 {% endblock%}
 
 {% block bodyContent %}
+	{% if today %}
+		<center><b><a href="{%url 'daily_reports.views.edit_report' %}">You haven't created your report for today, do so now please!</a></b></center>
+	{% endif %}
 	{% for report in reports %}
 	<div class="user_report_container row-fluid">
 		<div class="user_report_meta span2 text-right">

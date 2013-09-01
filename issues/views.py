@@ -418,6 +418,11 @@ def meta_issue_stats(request, meta_issue_id):
 @login_required
 @permission_required("issues.add_issue", raise_exception=True)
 def issue_form(request):
+    try:
+        projects = Project.objects.all()
+    except Exception as e:
+        print 'Unable to grab all projects'
+        print str(e)
     if request.method == 'POST':
         issue = Issue()
         form = IssueForm(request.POST, instance=issue)
@@ -451,10 +456,6 @@ def issue_form(request):
             print form.errors
     else:
         form = IssueForm()
-        try:
-            projects = Project.objects.all()
-        except:
-            print 'Unable to grab all projects'
     return render_to_response("issues/issue_form.html", {'form': form, "projects": projects, "page_type": "Issue", "page_value": "New"}, context_instance=RequestContext(request))
 
 
