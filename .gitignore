@@ -11,3 +11,4 @@ celerybeat-schedule
 *celery.log
 *.orig
 static/upload
+*local_settings.py
