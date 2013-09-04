@@ -2,40 +2,49 @@
 
 {% block contextNav %}
     <li><a href="{% url 'food.views.food_form' %}">New Food Request</a></li>
+	<li class="divider"></li>
+	<li><a href="{% url 'food.views.all_food' %}">All Requests</a></li>
     <li><a href="{% url 'food.views.food_overview_complete' %}">Completed Requests</a></li>
     <li><a href="{% url 'food.views.food_overview' %}">Pending Requests</a></li>
 {% endblock %}
 
+{% block pageTitle %}Food Request{% endblock %}
+
 {% block bodyContent %}
-    <form action="{% url 'food.views.food_received' food.id %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <table>
-            <tr>
-                <td><b>Item: </b></td>
-                <td>{{food.item}}</td>
-            </tr>
-            <tr>
-                <td><b>Quantity: </b></td>
-                <td>{{food.quantity}} {{food.quantity_type}}</td>
-            </tr>
-            <tr>
-                <td><b>Total Cost:</b></td>
-                <td>{{food.total_cost}}</td>
-            </tr>
-            <tr>
-                <td><b>Requested By:</b></td>
-                <td><a href="{% url 'food.views.user_food_overview' food.id %}">{{food.user}}</a></td>
-            </tr>
-        </table>
-        <table>
-            <tr>
-                <td><b>Has the request been completed? </b></td>
-                <td>{{form.request_completed_bool}}</td></tr>
-            <!--<tr>
-                <td><b>When was the request completed? </b></td>
-                <td>{{form.request_completed_date}}</td>
-            </tr>-->
-        </table>
-        <input type="submit" value="Submit"/>
-    </form>
+	<table class="table table-striped">
+		<thead>
+	    <tr>
+			<th>Item:</th>
+	        <th>Quantity:</th>
+	        <th>Total Cost:</th>
+			<th>Requested By:</th>
+	    </tr>
+		</thead>
+		<tbody>
+	    <tr>
+			<td>{{food.item}}</td>
+	        <td>{{food.quantity}} {{food.quantity_type}}</td>
+	        <td>${{food.total_cost}}</td>
+			<td><a href="{% url 'food.views.user_food_overview' food.id %}">{{food.user}}</a></td>
+	    </tr>
+		</tbody>
+	</table>
+
+<form action="{% url 'food.views.food_received' food.id %}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	
+	<div class="control-group">
+		<label class="control-label">Has the request been completed?</label>
+		<div class="controls">
+			{{form.request_completed_bool}}
+		</div>
+	</div>
+        <!--<tr>
+            <td><b>When was the request completed? </b></td>
+            <td>{{form.request_completed_date}}</td>
+        </tr>-->
+	<div class="form-actions">
+		<input type="submit" value="Submit" class="btn btn-primary" />
+	</div>
+</form>
 {% endblock %}

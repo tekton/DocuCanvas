@@ -2,27 +2,33 @@
 
 {% block contextNav %}
     <li><a href="{% url 'food.views.food_form' %}">New Food Request</a></li>
+	<li class="divider"></li>
+	<li><a href="{% url 'food.views.all_food' %}">All Requests</a></li>
     <li><a href="{% url 'food.views.food_overview_complete' %}">Completed Requests</a></li>
     <li><a href="{% url 'food.views.food_overview' %}">Pending Requests</a></li>
 {% endblock %}
 
-{% block bodyContent %}
+{% block pageTitle %}Food Requests by {{user_name}}{% endblock %}
 
-<h2><a href="{% url 'food.views.food_overview' %}">Food Requests by {{user_name}}: </a></h2>
-<table>
+{% block bodyContent %}
+<table class="table table-striped">
+	<thead>
     <tr>
-        <td><b>Item:  </b></td>
-        <td><b>Quantity:  </b></td>
-        <td><b>Total Cost:  </b></td>
-        <td><b>Expected By:  </b></td>
+		<th>Item:</th>
+        <th>Quantity:</th>
+        <th>Total Cost:</th>
+        <th>Expected By:</th>
     </tr>
-    {% for food in user_food%}
+	</thead>
+	<tbody>
+	{% for food in user_food%}
     <tr>
-        <td><a href="{% url 'food.views.food_received' food.id %}">{{food.item}}</a></td>
-        <td>{{food.quantity}}</td><td>{{food.total_cost}}</td>
+		<td><a href="{% url 'food.views.food_received' food.id %}">{{food.item}}</a></td>
+        <td>{{food.quantity}}</td>
+		<td>{{food.total_cost}}</td>
         <td>{{food.desired_completion}}</td>
     </tr>
-    {% endfor%}
+	{% endfor%}
+	</tbody>
 </table>
-
 {% endblock %}

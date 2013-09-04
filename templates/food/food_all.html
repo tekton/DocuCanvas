@@ -2,29 +2,39 @@
 
 {% block contextNav %}
     <li><a href="{% url 'food.views.food_form' %}">New Food Request</a></li>
+	<li class="divider"></li>
+	<li><a href="{% url 'food.views.all_food' %}">All Requests</a></li>
     <li><a href="{% url 'food.views.food_overview_complete' %}">Completed Requests</a></li>
     <li><a href="{% url 'food.views.food_overview' %}">Pending Requests</a></li>
 {% endblock %}  
 
+{% block pageTitle %}All Registered Food Requests{% endblock %}
 
 {% block bodyContent%}
-<h2>All Registered Food Requests</h2>
-<table>
+<table class="table table-striped">
+	<thead>
     <tr>
-        <td><b>Requested By:</b></td>
-        <td><b>Item:</b></td>
-        <td><b>Quantity:</b></td>
-        <td><b>Total Cost:</b></td>
-        <td><b>Requested Completed:</b></td>
+        <th>Requested By:</th>
+        <th>Item:</th>
+        <th>Quantity:</th>
+        <th>Total Cost:</th>
+        <th>Request Completed:</th>
     </tr>
+	</thead>
+	<tbody>
     {% for food in food_all%}
     <tr>
         <td><a href="{% url 'food.views.user_food_overview' food.id %}">{{food.user}}</a></td>
-        <td><a href="{% url 'food.views.get_food' food.id %}">{{food.item}}</td>
+        <td><a href="{% url 'food.views.food_received' food.id %}">{{food.item}}</td>
         <td>{{food.quantity}}</td>
-        <td>{{food.total_cost}}</td>
-        <td>{{food.request_completed_bool}}</td>
+        <td>${{food.total_cost}}</td>
+        <td>{% if food.request_completed_bool %}
+		<span class="label label-success">{{food.request_completed_bool}}</span>
+		{% else %}
+		<span class="label">{{food.request_completed_bool}}</span>
+		{% endif %}</td>
     </tr>
     {% endfor%}
+	</tbody>
 </table>
 {% endblock%}

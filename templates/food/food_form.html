@@ -2,45 +2,69 @@
 
 {% block contextNav %}
     <li><a href="{% url 'food.views.food_form' %}">New Food Request</a></li>
+	<li class="divider"></li>
+	<li><a href="{% url 'food.views.all_food' %}">All Requests</a></li>
     <li><a href="{% url 'food.views.food_overview_complete' %}">Completed Requests</a></li>
     <li><a href="{% url 'food.views.food_overview' %}">Pending Requests</a></li>
 {% endblock %}
 
+{% block pageTitle %}New Food Request{% endblock %}
+
 {% block additionalHead %}
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
-<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
-<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-
-<script>
-    $(function() {
-        $( "#id_desired_completion" ).datepicker({dateFormat: 'yy-mm-dd'});
-    });
-</script>
 {% endblock %}
 
 {% block bodyContent %}
-    <form action="{% url 'food.views.food_form' %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <table>
-            <b>Requested By:</b></br>
-            {{form.user}}</br>
-            <b>Item & Quantity:</b></br>
-            {{form.item}}
-            {{form.quantity}}
-            {{form.quantity_type}}</br>
-            <b>Per Unit Cost:</b></br>
-            {{form.cost_per_quantity}}</br>
-            <b>Desired Date of Completion:</b></br>
-            {{form.desired_completion}}
-        </table>
-        <input type='hidden' name="user" id="id_user" value='{{user.id}}'/><br>
-    <input type="submit" value="Submit"/>
-    </form>
+<form action="{% url 'food.views.food_form' %}" method="post" class="form-horizontal span8 offset2" enctype="multipart/form-data">
+	{% csrf_token %}
 
+	<div class="control-group">
+		<label class="control-label">Requested By:</label>
+		<div class="controls">
+			{{form.user}}
+        </div>
+    </div>
+
+	<div class="control-group">
+		<label class="control-label">Item:</label>
+		<div class="controls">
+			{{form.item}}
+        </div>
+    </div>
+
+	<div class="control-group">
+		<label class="control-label">Quantity:</label>
+		<div class="controls">
+			{{form.quantity}}
+			{{form.quantity_type}}
+        </div>
+    </div>
+
+	<div class="control-group">
+		<label class="control-label">Per Unit Cost:</label>
+		<div class="controls">
+			{{form.cost_per_quantity}}
+        </div>
+    </div>
+
+	<div class="control-group">
+		<label class="control-label">Desired Date of Completion:</label>
+		<div class="controls">
+			{{form.desired_completion}}
+        </div>
+    </div>
+
+	<div class="form-actions">
+		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
+		<input type="submit" value="Submit" class="btn btn-primary" />
+	</div>
+</form>
 {% endblock %}
+
 {% block endScripts %}
-//<script>
-$(function(){
-    $('#id_desired_completion').datepicker();
-})
+<script>
+	$(function(){
+	    $('#id_desired_completion').datepicker();
+	})
+</script>
 {% endblock %}
