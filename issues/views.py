@@ -9,6 +9,11 @@ from django.http import HttpResponse, Http404
 from django.db.models import Q
 from django.db.models import Count
 from django.forms.models import model_to_dict
+# mail
+from django.core.mail import send_mail, EmailMessage
+from django.template import Context
+from django.template.loader import get_template
+# /mail
 from accounts.forms import PermissionForm
 from accounts.utils import get_permission_form_for_model, set_permissions_for_model
 
@@ -437,6 +442,18 @@ def issue_form(request):
             try:
                 issue.created_by = request.user
                 issue.save(request.user)
+                subject = 'New Issue Creted :: {0}'.format(issue.id)
+                html_content = get_template('email/index.html').render(
+                            Context({
+                                'username': request.user,
+                                'issue': issue,
+                            })
+                          )
+                mmail = 'tyler.agee@channelfactory.com'
+                
+                msg = EmailMessage(subject, html_content, mmail, [mmail])
+                msg.content_subtype = "html"  # Main content is now text/html
+                # msg.send()  # commented out to avoid spamy spam spam
             except Exception, e:
                 print e
 
