@@ -5,88 +5,122 @@
     <li><a href="{% url 'notifications.views.notification_form' %}">New Notification</a></li>
 {% endblock%}
 
+{% block pageTitle %}
+    New Notification
+{% endblock %}
+
 {% block bodyContent %}
 <div id="formContainer">
-    <form action="{% url 'notifications.views.notification_form' %}" id = "checkListForm" method="post" enctype="multipart/form-data">
+    <form action="{% url 'notifications.views.notification_form' %}" id="checkListForm" class="form-horizontal" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input maxlength="255" name="creator" type="hidden" value="{{user.id}}"  />
-        Message: <input maxlength="255" name="message" type="text" /><br />
-        <input type="checkbox" name="facebook" value="Facebook">Notify with Facebook</br>
-        <input type="checkbox" name="twitter" value="Twitter">Notify with Twitter</br></br>
-        Send To: <br/>
-        <div id="notificationContainer" style = 'border: solid 1px'>
-            <div>
-                <input id="id_notificationrecipient_set-TOTAL_FORMS" name="notificationrecipient_set-TOTAL_FORMS" type="hidden" value="0" /><input id="id_notificationrecipient_set-INITIAL_FORMS" name="notificationrecipient_set-INITIAL_FORMS" type="hidden" value="0" /><input id="id_notificationrecipient_set-MAX_NUM_FORMS" name="notificationrecipient_set-MAX_NUM_FORMS" type="hidden" value="{{num_users}}" />
-            </div>
-        </div>
-        <input title='Add a new notification recipient' type='button' name='add_notification_recipient' value='Add Item' onclick ='addNotificationRecipient()'/>
-        <input title='Send notification to all users' type='button' name='send_to_all' value='All' onclick='selectAllRecipients(false, "")'/><br/>
-        <input type="submit" name="submit" value="Submit"/>
+		
+		<div class="control-group">
+			<label class="control-label">Message</label>
+			<div class="controls">
+				<textarea name="message" rows="3" class="input-xxlarge"></textarea>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label">Notifications</label>
+			<div class="controls">
+				<label class="checkbox">
+					<input type="checkbox" name="facebook" value="Facebook">
+					Facebook
+				</label>
+
+				<label class="checkbox">
+					<input type="checkbox" name="twitter" value="Twitter">
+					Twitter
+				</label>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label">Send To</label>
+			<div class="controls">
+				<div id="notificationContainer">
+					<input id="id_notificationrecipient_set-TOTAL_FORMS" name="notificationrecipient_set-TOTAL_FORMS" type="hidden" value="0" />
+					<input id="id_notificationrecipient_set-INITIAL_FORMS" name="notificationrecipient_set-INITIAL_FORMS" type="hidden" value="0" /><input id="id_notificationrecipient_set-MAX_NUM_FORMS" name="notificationrecipient_set-MAX_NUM_FORMS" type="hidden" value="{{num_users}}" />
+				</div>
+				
+				<input title='Add a new notification recipient' type='button' name='add_notification_recipient' value='Add User' class="btn" onclick ='addNotificationRecipient()'/>
+		        <input title='Send notification to all users' type='button' name='send_to_all' value='All Users' class="btn" onclick='selectAllRecipients(false, "")'/><br/>
+			</div>
+		</div>
+        
+		<div class="form-actions">
+			<input type="submit" name="submit" class="btn btn-primary" value="Submit"/>
+		</div>
     </form>
 </div>
+{% endblock %}
+
+{% block endScripts %}
 <script>
-var notificationNumber = 0, notification_recipients = JSON.parse('{{users|safe}}'), recipients = [];
-function addNotificationRecipient(set_user, user_id){
-    var new_notification_recipient = "<div><tr><th><label for='id_notificationrecipient_set-" + notificationNumber+ "-user'>User:</label></th><td>";
+	var notificationNumber = 0,
+		notification_recipients = JSON.parse('{{users|safe}}'),
+		recipients = [];
 
-    if(parseInt($('#id_notificationrecipient_set-TOTAL_FORMS').val()) < parseInt('{{num_users}}')){
+	function addNotificationRecipient(set_user, user_id) {
+		var new_notification_recipient = "<label>";
 
-        if( !set_user){
-            new_notification_recipient += "<select id='id_notificationrecipient_set-" + notificationNumber + "-user' name='notificationrecipient_set-" + notificationNumber + "-user' onChange='selectUser($(this))'><option value='' selected='selected'>---------</option>"
+		if (parseInt($('#id_notificationrecipient_set-TOTAL_FORMS').val()) < parseInt('{{num_users}}')) {
 
-            for(key in notification_recipients){
-                if( notification_recipients.hasOwnProperty(key)){
-                    if(recipients.indexOf(key) <= -1){
-                    new_notification_recipient += "<option value=" + key + ">" + notification_recipients[key] + "</option>"
-                    }
-                }
-            }
-        }
+			if (!set_user) {
+				new_notification_recipient += "<select id='id_notificationrecipient_set-" + notificationNumber + "-user' name='notificationrecipient_set-" + notificationNumber + "-user' onChange='selectUser($(this))'><option value='' selected='selected'>---------</option>"
 
-        else if(set_user){
-            new_notification_recipient += "<input id='id_notificationrecipient_set-" + notificationNumber + "-user' name='notificationrecipient_set-" + notificationNumber + "-user' value=" + user_id + " type='hidden' />"+ notification_recipients[user_id]+ "</br>";
-        }
+				for (key in notification_recipients) {
+					if (notification_recipients.hasOwnProperty(key)) {
+						if (recipients.indexOf(key) <= -1) {
+							new_notification_recipient += "<option value=" + key + ">" + notification_recipients[key] + "</option>"
+						}
+					}
+				}
+			} else if (set_user) {
+				new_notification_recipient += "<input id='id_notificationrecipient_set-" + notificationNumber + "-user' name='notificationrecipient_set-" + notificationNumber + "-user' value=" + user_id + " type='hidden' />" + notification_recipients[user_id];
+			}
 
-        new_notification_recipient += "<input id='id_notificationrecipient_set-" + notificationNumber + "-read' name='notificationrecipient_set-" + notificationNumber + "-read' value='3' type='hidden' /><input id='id_notificationrecipient_set-" + notificationNumber + "-notification' name='notificationrecipient_set-" + notificationNumber + "-notification' type='hidden'/><input id='id_notificationrecipient_set-" + notificationNumber + "-id' name='notificationrecipient_set-" + notificationNumber + "-id'type='hidden' /></td></tr></div>";
+			new_notification_recipient += "<input id='id_notificationrecipient_set-" + notificationNumber + "-read' name='notificationrecipient_set-" + notificationNumber + "-read' value='3' type='hidden' /><input id='id_notificationrecipient_set-" + notificationNumber + "-notification' name='notificationrecipient_set-" + notificationNumber + "-notification' type='hidden'/><input id='id_notificationrecipient_set-" + notificationNumber + "-id' name='notificationrecipient_set-" + notificationNumber + "-id'type='hidden' /></label>";
 
-        $('#notificationContainer').append(new_notification_recipient);
-        notificationNumber ++;
-        $('#id_notificationrecipient_set-TOTAL_FORMS').val(function(i, oldval){
-            return ++oldval;
-        });
-        console.log($('#id_notificationrecipient_set-TOTAL_FORMS').val());
-        //$('#checkListTable').append('<input type="submit" name="submit" value="Submit">');
-    }
-}
+			$('#notificationContainer').append(new_notification_recipient);
+			notificationNumber++;
+			$('#id_notificationrecipient_set-TOTAL_FORMS').val(function(i, oldval) {
+				return ++oldval;
+			});
+			console.log($('#id_notificationrecipient_set-TOTAL_FORMS').val());
+			//$('#checkListTable').append('<input type="submit" name="submit" value="Submit">');
+		}
+	}
 
-function selectUser(user_select){
-    var index;
-    if (recipients.indexOf(user_select.val()) <= -1){
-        recipients.push(user_select.val()); 
-    }
-    else{
-        user_select.val('');
-    }
-}
+	function selectUser(user_select) {
+		var index;
+		if (recipients.indexOf(user_select.val()) <= -1) {
+			recipients.push(user_select.val());
+		} else {
+			user_select.val('');
+		}
+	}
 
-function selectAllRecipients(){
-    for( key in notification_recipients){
-        if( key != '{{user.id}}' && recipients.indexOf(key) <= -1){
-            recipients.push(key); 
-            addNotificationRecipient(true, key);
-        }   
-    }
-}
+	function selectAllRecipients() {
+		for (key in notification_recipients) {
+			if (key != '{{user.id}}' && recipients.indexOf(key) <= -1) {
+				recipients.push(key);
+				addNotificationRecipient(true, key);
+			}
+		}
+	}
 
-$(function() {
-    $("#notificationContainer").sortable({
-      stop: function(e, ui){
-         $('#notificationContainer input[type="hidden"][id="sort"]').each(function(i){
-          this.value = i
-        })
-      }
-    });
-    $("#notificationContainer").disableSelection();
-  });
+	$(function() {
+		$("#notificationContainer").sortable({
+			stop: function(e, ui) {
+				$('#notificationContainer input[type="hidden"][id="sort"]').each(function(i) {
+					this.value = i
+				})
+			}
+		});
+		$("#notificationContainer").disableSelection();
+	});
 </script>
 {% endblock %}
