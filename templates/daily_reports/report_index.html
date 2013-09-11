@@ -13,8 +13,7 @@
 	{% for report in reports %}
 	<div class="user_report_container row-fluid">
 		<div class="user_report_meta span2 text-right">
-			<h4>{{report.user.username}}</h4>
-			<h5>{{report.date}}<!--({{report.user.first_name}} {{report.user.last_name}})--></h5>
+			<h4>{{report.date|date:"D"}}<br />{{report.date|date:"M j, Y"}}</h4>
 		</div>
 		<div class="user_report span10">{{report.description|safe}}</div>
 	</div>
