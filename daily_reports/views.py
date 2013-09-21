@@ -167,6 +167,27 @@ def index(request):
                                                                   "page_type": "Report"}, context_instance=RequestContext(request))
 
 
+@login_required
+def report_summary(request, year_start, month_start, day_start, year_end,  month_end, day_end, group_id):
+    projects = Project.objects.all()
+
+    date_range_start = str(year_start) + '-' + str(month_start) + '-' + str(day_start)
+    date_range_end = str(year_end) + '-' + str(month_end) + '-' + str(day_end)
+
+    group = ReportGroup.objects.get(pk=group_id)
+    users = GroupMember.objects.filter(group=group)
+
+    reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end]).order_by('date')
+
+    count = 0
+    for user in users:
+        user_reports = reports.filter(user=user.user)
+        if user_reports.count() > count:
+            benchmark = user_reports
+
+    return render_to_response('daily_reports/report_summary.html', {'users': users, 'reports': reports, 'projects': projects, 'benchmark': benchmark}, context_instance=RequestContext(request))
+
+
 @user_passes_test(lambda u: u.is_superuser)
 def view_reports_wip(request, year_start, month_start, day_start, year_end,  month_end, day_end):
     projects = Project.objects.all()
