@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from forms import ReportForm
+from forms import ReportForm, GroupForm
 from projects.models import Project
 from newsfeed.models import NewsFeedItem
 from models import *
@@ -165,6 +165,38 @@ def index(request):
                                                                   "projects": projects,
                                                                   "today": today,
                                                                   "page_type": "Report"}, context_instance=RequestContext(request))
+
+
+@login_required
+def setup_report_group(request):
+    projects = Project.objects.all()
+    users = User.objects.all()
+    if request.method == 'POST':
+        try:
+            group = ReportGroup()
+            form = GroupForm(request.POST, instance=group)
+            members = request.POST.getlist('users')
+            print request.POST
+            if form.is_valid():
+                group = form.save()
+                for member in members:
+                    temp = User.objects.get(username=member)
+                    print temp.username
+                    new_member = GroupMember(group=group, user=temp)
+                    new_member.save()
+                return redirect('daily_reports.views.report_selection')
+        except Exception as e:
+            print e
+    else:
+        form = GroupForm()
+    return render_to_response('daily_reports/report_group_form.html', {'users': users, 'projects': projects, 'form': form}, context_instance=RequestContext(request))
+
+
+@login_required
+def request_report_summary(request):
+    projects = Project.objects.all()
+    groups = ReportGroup.objects.all()
+    return render_to_response('daily_reports/group_report.html', {'projects': projects, 'groups': groups}, context_instance=RequestContext(request))
 
 
 @login_required
