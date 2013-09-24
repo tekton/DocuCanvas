@@ -184,12 +184,61 @@ def setup_report_group(request):
                     print temp.username
                     new_member = GroupMember(group=group, user=temp)
                     new_member.save()
-                return redirect('daily_reports.views.report_selection')
+                return redirect('daily_reports.views.request_report_summary')
         except Exception as e:
             print e
     else:
         form = GroupForm()
     return render_to_response('daily_reports/report_group_form.html', {'users': users, 'projects': projects, 'form': form}, context_instance=RequestContext(request))
+
+
+@login_required
+def edit_group(request, group_id):
+    projects = Project.objects.all()
+    print request.POST
+    try:
+        group = ReportGroup.objects.get(pk=group_id)
+    except Exception, e:
+        print e
+    try:
+        members = GroupMember.objects.filter(group=group)
+    except Exception, e:
+        print e
+    try:
+        users = User.objects.all()
+        user_list = []
+        for user in users:
+            keep = True
+            for member in members:
+                if member.user == user:
+                    keep = False
+            if keep:
+                user_list.append(user)
+
+    except Exception, e:
+        print e
+    if request.method == 'POST':
+        try:
+            form = GroupForm(request.POST, instance=group)
+            added_members = request.POST.getlist('new_members')
+            removed_members = request.POST.getlist('del_members')
+            print removed_members
+            if form.is_valid():
+                group = form.save()
+                for member in added_members:
+                    temp = User.objects.get(pk=member)
+                    new_member = GroupMember(group=group, user=temp)
+                    new_member.save()
+                for member in removed_members:
+                    temp = User.objects.get(pk=member)
+                    old_member = GroupMember.objects.get(user=temp, group=group)
+                    old_member.delete()
+                return redirect('daily_reports.views.request_report_summary')
+        except Exception, e:
+            print e
+    else:
+        form = GroupForm(instance=group)
+    return render_to_response('daily_reports/edit_report_group.html', {'members': members, 'users': user_list, 'form': form, 'projects': projects, 'group': group}, context_instance=RequestContext(request))
 
 
 @login_required

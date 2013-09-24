@@ -17,5 +17,6 @@ urlpatterns = patterns('',
                        url(r'view_all/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/$', 'daily_reports.views.view_reports_wip'),
                        url(r'summary/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/([A-Za-z0-9_\.-]+)/$', 'daily_reports.views.report_summary'),
                        url(r'^report_group$', 'daily_reports.views.setup_report_group'),
+                       url(r'^edit_group/([A-Za-z0-9_\.-]+)/$', 'daily_reports.views.edit_group'),
                        url(r'^request_summary$', 'daily_reports.views.request_report_summary'),
                        )

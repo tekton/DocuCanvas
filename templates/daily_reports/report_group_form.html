@@ -9,8 +9,11 @@
 {% block bodyContent %}
 <form id="reportForm" action="{% url 'daily_reports.views.setup_report_group' %}" method="post">
     {% csrf_token %}
+    <h4>Group Name</h4>
     {{form.name}}</br>
+    <h4>Description</h4>
     {{form.description}}</br>
+    <h5>Select Members</h5>
     <select name="users" multiple>
         {% for user in users %}
         <option id="{{user.id}}" name="{{user.id}}">{{user}}</option>

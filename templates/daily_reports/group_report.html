@@ -17,7 +17,8 @@
             {% for group in groups %}
             <option value="{{group.id}}">{{group.name}}</option>
             {% endfor %}
-        </select>
+        </select><br />
+        <a href="{% url 'daily_reports.views.setup_report_group' %}">Create New Report Group</a>
         <input type="button" value="Submit" style='display:block' onClick='goToForm()'/>
     </form>
 </div>
