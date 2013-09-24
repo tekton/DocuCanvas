@@ -44,6 +44,7 @@ img.pending-image-help{
 {% endblock %}
 
 {% block bodyContent %}
+{% if form %}
 <table class="tbl-generic tbl-overview table table-striped">
     <thead>
         <tr class="tbl-rowheader">
@@ -96,4 +97,7 @@ img.pending-image-help{
         </tr>
     {% endfor %}
 </table>
+{% else %}
+<p>There are no unresolved questions</p>
+{% endif %}
 {% endblock %}
