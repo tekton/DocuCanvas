@@ -9,12 +9,15 @@
 {% endblock %} 
 
 {% block pageTitle %}
-Anonymous Feedback
+Feedback Form
 {% endblock %}
 
 {% block bodyContent%}
-<b>Submited On:</b><br/>
-{{anonymous.timestamp}}<br/><br/>
-<b>Feedback:</b><br/>
-{{anonymous.feedback}}
+<form action="{% url 'feedback.views.submit_feedback' %}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<p>Feedback</p>
+	<textarea cols="50" rows="5" name='feedback-description'></textarea>
+	<input type="checkbox" id="anonymous_toggle" name="anonymous_toggle" value="anonymous_toggle">Submit form anonymously (no identifying details will be attached)<br />
+	<input type='submit' value='Submit'>
+</form>
 {% endblock%}

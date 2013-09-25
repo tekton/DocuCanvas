@@ -1,8 +1,7 @@
 {% extends "feedback/base.html" %}
 
 {% block contextNav %}
-    <li><a href="{% url 'feedback.views.anonymous_feedback' %}">Submit Anonymous Feedback</a></li>
-    <li><a href="{% url 'feedback.views.signed_feedback' %}">Submit Signed Feedback</a></li>
+	<li><a href="{% url 'feedback.views.feedback' %}">Feedback</a></li>
     {% if user.is_staff %}
     <li><a href="{% url 'feedback.views.all_anonymous' %}">All Anonymous Feedback</a></li>
     {% endif %}
@@ -17,13 +16,10 @@ Signed Feedback
 <table>
 	<tr>
 		<td>Date Submitted</td>
-		<td>Summary</td>
 	</tr>
 	{% for feedback in signed %}
 	<tr>
 			<td><a href="{% url 'feedback.views.signed_view' feedback.id %}">{{feedback.timestamp}}</a></td>
-			<td><a href="{% url 'feedback.views.signed_view' feedback.id %}">{{feedback.summary}}</a></td>
-		</a>
 	</tr>
 	{% endfor %}
 </table>

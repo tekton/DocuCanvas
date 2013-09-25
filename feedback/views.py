@@ -9,43 +9,36 @@ from feedback.forms import AnonymousForm, SignedForm
 
 
 @login_required
-def anonymous_feedback(request):
+def feedback(request):
 	try:
 		projects = Project.objects.all()
 	except Exception, e:
-		print e
-	feedback = AnonymousFeedback()
-	if request.method == 'POST':
-		form = AnonymousForm(request.POST, instance=feedback)
-		if form.is_valid():
-			try:
-				feedback = form.save()
-			except Exception, e:
-				print "feedback form did not save"
-			return redirect('feedback.views.anonymous_view', feedback.id)
-	else:
-		form = AnonymousForm()
-	return render_to_response('feedback/anonymous_form.html', {'form': form, 'feedback': feedback, 'projects': projects}, context_instance=RequestContext(request))
+		raise e
+	return render_to_response('feedback/feedback_form.html', {'projects': projects}, context_instance=RequestContext(request))
 
 
 @login_required
-def signed_feedback(request):
-	try:
-		projects = Project.objects.all()
-	except Exception, e:
-		print e
-	feedback = SignedFeedback()
+def submit_feedback(request):
 	if request.method == 'POST':
-		form = SignedForm(request.POST, instance=feedback)
-		if form.is_valid():
+		print request.POST
+		if request.POST.has_key('anonymous_toggle'):
 			try:
-				feedback = form.save()
+				feedback = AnonymousFeedback()
+				feedback.feedback = request.POST['feedback-description']
+				feedback.save()
+				return redirect('feedback.views.anonymous_view', feedback.id)
 			except Exception, e:
-				print "feedback form did not save"
-			return redirect('feedback.views.signed_view', feedback.id)
-	else:
-		form = SignedForm()
-	return render_to_response('feedback/signed_form.html', {'form': form, 'feedback': feedback, 'projects': projects}, context_instance=RequestContext(request))
+				raise e
+		else:
+			try:
+				feedback = SignedFeedback()
+				feedback.feedback = request.POST['feedback-description']
+				feedback.user = request.user
+				feedback.save()
+				return redirect('feedback.views.signed_view', feedback.id)
+			except Exception, e:
+				raise e
+	return redirect('feedback.views.feedback')
 
 
 @login_required
