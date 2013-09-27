@@ -12,19 +12,19 @@
         <tr>
             <td>
             </td>
-            {% for base in benchmark %}
+            {% for date in dates %}
             <td>
-                {{base.date}}
+                {{date}}
             </td>
             {% endfor %}
         </tr>
         {% for user in users %}
         <tr>
             <td>{{user.user}}</td>
-            {% for base in benchmark %}
+            {% for date in dates %}
             <td>
                 {% for report in reports %}
-                    {% if base.date == report.date and report.user = user.user %}
+                    {% if date == report.date and report.user = user.user %}
                     {{report.description|safe}}
                     {% endif %}
                 {% endfor %}

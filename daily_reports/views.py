@@ -255,6 +255,13 @@ def report_summary(request, year_start, month_start, day_start, year_end,  month
     date_range_start = str(year_start) + '-' + str(month_start) + '-' + str(day_start)
     date_range_end = str(year_end) + '-' + str(month_end) + '-' + str(day_end)
 
+    start = datetime.date(year=int(year_start), month=int(month_start), day=int(day_start))
+    end = datetime.date(year=int(year_end), month=int(month_end), day=int(day_end))
+
+    dates = []
+    for date in daterange(start, end):
+        dates.append(date)
+
     group = ReportGroup.objects.get(pk=group_id)
     users = GroupMember.objects.filter(group=group)
 
@@ -266,7 +273,16 @@ def report_summary(request, year_start, month_start, day_start, year_end,  month
         if user_reports.count() > count:
             benchmark = user_reports
 
-    return render_to_response('daily_reports/report_summary.html', {'users': users, 'reports': reports, 'projects': projects, 'benchmark': benchmark}, context_instance=RequestContext(request))
+    return render_to_response('daily_reports/report_summary.html', {'users': users, 'reports': reports, 'projects': projects, 'benchmark': benchmark, 'dates': dates}, context_instance=RequestContext(request))
+
+
+def daterange(start_date, end_date):
+    if start_date <= end_date:
+        for n in range((end_date - start_date).days + 1):
+            yield start_date + datetime.timedelta(n)
+    else:
+        for n in range((start_date - end_date).days + 1):
+            yield start_date - datetime.timedelta(n)
 
 
 @user_passes_test(lambda u: u.is_superuser)
