@@ -360,7 +360,7 @@ def autoSchedule(request):
             total_time = 432000
         if issue.criticality:
             criticality = issue.criticality
-        else:Is 
+        else:
             criticality = 0
 
         json_issue = model_to_dict(issue)
