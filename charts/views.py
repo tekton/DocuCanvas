@@ -336,3 +336,51 @@ def meta_issues_by_project(request, project_id):
         print 'Unable to find project'
     return render_to_response("charts/charts.html", {"projects": projects, "issues": json.dumps(to_json_meta_issues).replace("'", r"\'")}, context_instance=RequestContext(request))
     '''
+
+
+@login_required
+def autoSchedule(request):
+    projects = Project.objects.all()
+    try:
+        issues = Issue.objects.filter(assigned_to=request.user).exclude(status='fixed').exclude(status='not_a_bug').exclude(status='wont_fix')
+    except Exception, e:
+        raise
+
+    critical_to_json = []
+    past_due_to_json = []
+    due_soon_to_json = []
+    regular_to_json = []
+
+    # Sort assigned issues into appropriate subgroup... based on urgency of issue completion
+    for issue in issues:
+        # if/else protects later code in the instance that issue due date is not an active field
+        if issue.due_date:
+            total_time = (date.today() - issue.due_date).total_seconds()
+        else:
+            total_time = 432000
+        if issue.criticality:
+            criticality = issue.criticality
+        else:Is 
+            criticality = 0
+
+        json_issue = model_to_dict(issue)
+        json_issue['created'] = issue.created
+
+        for k,v in json_issue.items():
+            json_issue[k] = unicode(v)
+
+        if criticality > 7:
+            critical_to_json.append(json_issue)
+        elif total_time <= 0:
+            past_due_to_json.append(json_issue)
+        elif total_time < 432000:
+            due_soon_to_json.append(json_issue)
+        else:
+            regular_to_json.append(json_issue)
+
+    return render_to_response('charts/scheduler.html', {'projects': projects, 
+                                                        'critical_issues': json.dumps(critical_to_json),
+                                                        'past_due_issues': json.dumps(past_due_to_json),
+                                                        'due_soon_issues': json.dumps(due_soon_to_json),
+                                                        'regular_issues': json.dumps(regular_to_json)}, context_instance=RequestContext(request))
+    
