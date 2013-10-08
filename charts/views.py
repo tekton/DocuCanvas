@@ -9,6 +9,8 @@ from django.db.models import Q
 from projects.models import *
 from issues.models import Issue
 
+from datetime import date
+
 import json
 
 @login_required
@@ -343,8 +345,8 @@ def autoSchedule(request):
     projects = Project.objects.all()
     try:
         issues = Issue.objects.filter(assigned_to=request.user).exclude(status='fixed').exclude(status='not_a_bug').exclude(status='wont_fix')
-    except Exception, e:
-        raise
+    except Exception as e:
+        print e
 
     critical_to_json = []
     past_due_to_json = []
@@ -354,33 +356,43 @@ def autoSchedule(request):
     # Sort assigned issues into appropriate subgroup... based on urgency of issue completion
     for issue in issues:
         # if/else protects later code in the instance that issue due date is not an active field
-        if issue.due_date:
-            total_time = (date.today() - issue.due_date).total_seconds()
-        else:
-            total_time = 432000
-        if issue.criticality:
-            criticality = issue.criticality
-        else:
-            criticality = 0
+        try:
+            if issue.due_date:
+                total_time = (date.today() - issue.due_date).total_seconds()
+            else:
+                total_time = 432000
+            if issue.criticality:
+                criticality = issue.criticality
+            else:
+                criticality = 0
 
-        json_issue = model_to_dict(issue)
-        json_issue['created'] = issue.created
+            json_issue = model_to_dict(issue)
+            json_issue['created'] = issue.created
+            if issue.actual_start:
+                json_issue['actual_start'] = issue.actual_start
+            else:
+                json_issue['actual_start'] = date.today()
 
-        for k,v in json_issue.items():
-            json_issue[k] = unicode(v)
+            for k,v in json_issue.items():
+                json_issue[k] = unicode(v)
 
-        if criticality > 7:
-            critical_to_json.append(json_issue)
-        elif total_time <= 0:
-            past_due_to_json.append(json_issue)
-        elif total_time < 432000:
-            due_soon_to_json.append(json_issue)
-        else:
-            regular_to_json.append(json_issue)
+            if criticality > 7:
+                critical_to_json.append(json_issue)
+            elif total_time <= 0:
+                past_due_to_json.append(json_issue)
+            elif total_time < 432000:
+                due_soon_to_json.append(json_issue)
+            else:
+                regular_to_json.append(json_issue)
+        except Exception as e:
+            print e
 
-    return render_to_response('charts/scheduler.html', {'projects': projects, 
-                                                        'critical_issues': json.dumps(critical_to_json),
-                                                        'past_due_issues': json.dumps(past_due_to_json),
-                                                        'due_soon_issues': json.dumps(due_soon_to_json),
-                                                        'regular_issues': json.dumps(regular_to_json)}, context_instance=RequestContext(request))
+    issues = []
+    issues.extend(critical_to_json)
+    issues.extend(past_due_to_json)
+    issues.extend(due_soon_to_json)
+    issues.extend(regular_to_json)
+
+    return render_to_response('charts/auto_schedule.html', {'projects': projects, 
+                                                        'issues': json.dumps(issues)}, context_instance=RequestContext(request))
     

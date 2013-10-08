@@ -1,0 +1,55 @@
+{% extends "charts/base.html" %}
+{% load staticfiles %}
+
+{% block bodyContent %}
+<div class="span12 well chart-container">
+    <a id="switch_view_button">Switch View</a>
+    <div id="gantt_planning_container">
+        <h3>Planning</h3>
+        <div id="gantt_planning"></div>
+    </div>
+    <div id="gantt_review_container">
+        <h3>Review</h3>
+        <div id="gantt_review"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block pageDescription %} All Issues{% endblock%}
+
+{% block endScripts%}
+    <script language="javascript" type="text/javascript">
+        $(function(){
+            for(issue in issues){
+                if(projects[issues[issue]['project']] == undefined){
+                    projects[issues[issue]['project']] = project_counter;
+                    project_counter++;
+                    first_of_project = true;
+                    if(project_counter > 2){
+                        project_counter = 0;
+                    }
+                }
+                gantt_item_dict = drawPlanningGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'], projects[issues[issue]['project']]);
+                if(first_of_project == true){
+                    gantt_item_dict['name'] = issues[issue]['project_name']
+                    first_of_project = false;
+                }
+                source.push(gantt_item_dict);
+
+            }
+
+            $("#gantt_planning").gantt({
+                source:source,
+                scale: "weeks",
+                minScale: "days",
+                navigate: "scroll",
+                itemsPerPage: 50,
+                onItemClick: function(data){
+                    window.location = "/issue/" + data['id'];
+                }
+            });
+
+        });
+    </script>
+
+{% endblock %}
