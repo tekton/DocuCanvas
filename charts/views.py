@@ -344,7 +344,7 @@ def meta_issues_by_project(request, project_id):
 def autoSchedule(request):
     projects = Project.objects.all()
     try:
-        issues = Issue.objects.filter(assigned_to=request.user).exclude(status='fixed').exclude(status='not_a_bug').exclude(status='wont_fix')
+        issues = Issue.objects.filter(assigned_to=request.user).exclude(status='fixed').exclude(status='not_a_bug').exclude(status='wont_fix').exclude(status='duplicate').order_by('created')
     except Exception as e:
         print e
 
@@ -387,12 +387,13 @@ def autoSchedule(request):
         except Exception as e:
             print e
 
-    issues = []
-    issues.extend(critical_to_json)
-    issues.extend(past_due_to_json)
-    issues.extend(due_soon_to_json)
-    issues.extend(regular_to_json)
+    assigned_issues = []
+    assigned_issues.extend(critical_to_json)
+    assigned_issues.extend(past_due_to_json)
+    assigned_issues.extend(due_soon_to_json)
+    assigned_issues.extend(regular_to_json)
+    print assigned_issues
 
     return render_to_response('charts/auto_schedule.html', {'projects': projects, 
-                                                        'issues': json.dumps(issues)}, context_instance=RequestContext(request))
+                                                        'issues': json.dumps(assigned_issues)}, context_instance=RequestContext(request))
     

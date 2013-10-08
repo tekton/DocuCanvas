@@ -29,7 +29,7 @@
                         project_counter = 0;
                     }
                 }
-                gantt_item_dict = drawPlanningGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'], projects[issues[issue]['project']]);
+                gantt_item_dict = drawGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'], projects[issues[issue]['project']]);
                 if(first_of_project == true){
                     gantt_item_dict['name'] = issues[issue]['project_name']
                     first_of_project = false;
@@ -50,6 +50,81 @@
             });
 
         });
+        
+        function drawGanttObject(issue, gantt_desc, gantt_name, gantt_label, customClass){
+            var start_time, end_time, label, end_earlier_than_start = false, error_description = "";
+
+            if(gantt_label == 'None'){
+                label = 'Assign';
+            }
+            else{
+                label = gantt_label;
+            }
+
+            if(issues[issue]['actual_start'] == 'None'){
+                start_time = new Date();
+               // error_description = 'No Projected Start Date';
+            }
+            else{
+                start_time = new Date(issues[issue]['actual_start']);
+            }
+
+            if(issues[issue]['actual_end'] == 'None'){
+                end_time = new Date();
+                //error_description = 'No Projected End Date';
+            }
+            else{
+                end_time = new Date(issues[issue]['actual_end']);
+            }
+
+            if(issues[issue]['projected_end'] == 'None' && issues[issue]['projected_start'] == 'None'){
+                //error_description = "No Projected Start and Projected End Date";
+            }
+
+            if(end_time < start_time){
+                var temp_time;
+                end_earlier_than_start = true;
+                //error_description = "End time earlier than Start time";
+                temp_time = end_time;
+                end_time = start_time;
+                start_time = temp_time;
+            }
+
+            var start_friendly = "/Date(" + start_time.getTime() + ")/",
+                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
+
+            var values_dict = {
+                from:start_friendly,
+                to: end_friendly,
+                label:label,
+                desc:issues[issue]['summary'],
+                customClass:gantt_labels[customClass],
+                dataObj: {'id': issues[issue]['id']},
+            }; 
+
+            //if(issues[issue]['projected_end'] == 'None' || end_earlier_than_start){
+            if(label == 'Assign' || end_earlier_than_start){
+                values_dict['customClass'] = 'ganttRed';
+                //values_dict['desc'] = error_description;
+            }
+
+            values.push(values_dict);
+
+            var gantt_item_dict = {
+                values: values,
+            };
+
+            if(gantt_desc){
+                gantt_item_dict['desc'] = gantt_desc;  
+            }
+            if(gantt_name){
+
+                gantt_item_dict['name'] = gantt_name;
+            }
+
+            return gantt_item_dict;
+        }
+
     </script>
 
 {% endblock %}
