@@ -372,6 +372,14 @@ def autoSchedule(request):
                 json_issue['actual_start'] = issue.actual_start
             else:
                 json_issue['actual_start'] = date.today()
+            if issue.projected_end:
+                json_issue['projected_end'] = issue.projected_end
+            else:
+                json_issue['projected_end'] = date.today()
+            if issue.actual_end:
+                json_issue['actual_end'] = issue.actual_end
+            else:
+                json_issue['actual_end'] = date.today()
 
             for k,v in json_issue.items():
                 json_issue[k] = unicode(v)
