@@ -57,7 +57,12 @@
             }
 
             if(issues[issue]['actual_start'] == 'None'){
-                start_time = new Date();
+                if(issues[issue]['projected_start'] == 'None'){
+                    start_time = new Date();
+                }
+                else{
+                    start_time = new Date(issues[issue]['projected_start']);
+                }
                // error_description = 'No Projected Start Date';
             }
             else{
@@ -65,7 +70,12 @@
             }
 
             if(issues[issue]['actual_end'] == 'None'){
-                end_time = new Date();
+                if(issues[issue]['projected_end'] == 'None'){
+                    end_time = new Date();
+                }
+                else{
+                    end_time = new Date(issues[issue]['projected_end']);
+                }
                 //error_description = 'No Projected End Date';
             }
             else{
