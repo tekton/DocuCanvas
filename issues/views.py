@@ -162,10 +162,6 @@ def set_bug_state(request):
         issue = Issue.objects.get(pk=request.POST['issue'])
         old_status = issue.status
         issue.status = request.POST['status']
-        if request.POST['status'] == 'active':
-            issue.actual_start = date.today()
-        elif request.POST['status'] == 'fixed':
-            issue.actual_end = date.today()
         issue.save(request.user)
         to_json["status"] = "Bug status set"
         if request.POST['status'] == 'fixed':

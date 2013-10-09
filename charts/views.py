@@ -355,12 +355,12 @@ def autoSchedule(request):
 
     # Sort assigned issues into appropriate subgroup... based on urgency of issue completion
     for issue in issues:
-        # if/else protects later code in the instance that issue due date is not an active field
         try:
+            # if/else protects later code in the instance that issue due date is not an active field
             if issue.due_date:
                 total_time = (date.today() - issue.due_date).total_seconds()
             else:
-                total_time = 432000
+                total_time = 450000
             if issue.criticality:
                 criticality = issue.criticality
             else:
@@ -369,7 +369,7 @@ def autoSchedule(request):
             json_issue = model_to_dict(issue)
             json_issue['created'] = issue.created
 
-            # Adding various
+            # Adding various parameters to be passed to front end
             if issue.actual_start:
                 json_issue['actual_start'] = issue.actual_start
             if issue.projected_end:
