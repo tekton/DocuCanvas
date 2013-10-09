@@ -392,7 +392,6 @@ def autoSchedule(request):
     assigned_issues.extend(past_due_to_json)
     assigned_issues.extend(due_soon_to_json)
     assigned_issues.extend(regular_to_json)
-    print assigned_issues
 
     return render_to_response('charts/auto_schedule.html', {'projects': projects, 
                                                         'issues': json.dumps(assigned_issues)}, context_instance=RequestContext(request))
