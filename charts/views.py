@@ -386,7 +386,9 @@ def autoSchedule(request):
                 regular_to_json.append(json_issue)
         except Exception as e:
             print e
+            print "Error adding issue '" + issue.summary + "' to auto scheduler"
 
+    # Merging each list into a single list to pass to the front end.
     assigned_issues = []
     assigned_issues.extend(critical_to_json)
     assigned_issues.extend(past_due_to_json)

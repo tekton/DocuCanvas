@@ -3,19 +3,14 @@
 
 {% block bodyContent %}
 <div class="span12 well chart-container">
-    <a id="switch_view_button">Switch View</a>
     <div id="gantt_planning_container">
         <h3>Planning</h3>
         <div id="gantt_planning"></div>
     </div>
-    <div id="gantt_review_container">
-        <h3>Review</h3>
-        <div id="gantt_review"></div>
-    </div>
 </div>
 {% endblock %}
 
-{% block pageDescription %} All Issues{% endblock%}
+{% block pageDescription %} Time Blocking{% endblock%}
 
 {% block endScripts%}
     <script language="javascript" type="text/javascript">
@@ -40,7 +35,7 @@
 
             $("#gantt_planning").gantt({
                 source:source,
-                scale: "weeks",
+                scale: "days",
                 minScale: "days",
                 navigate: "scroll",
                 itemsPerPage: 50,
