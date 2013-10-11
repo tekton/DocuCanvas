@@ -413,10 +413,10 @@ def autoSchedule(request):
     except Exception as e:
         print e
 
-    critical_to_json = []
-    past_due_to_json = []
-    due_soon_to_json = []
-    regular_to_json = []
+    critical_issues = []
+    past_due_issues = []
+    due_soon_issues = []
+    regular_issues = []
 
     for issue in issues:
         try:
@@ -431,23 +431,23 @@ def autoSchedule(request):
                 criticality = 0
 
             if criticality > 7:
-                critical_to_json.append(issue)
+                critical_issues.append(issue)
             elif total_time <= 0:
-                past_due_to_json.append(issue)
+                past_due_issues.append(issue)
             elif total_time < 432000:
-                due_soon_to_json.append(issue)
+                due_soon_issues.append(issue)
             else:
-                regular_to_json.append(issue)
+                regular_issues.append(issue)
         except Exception as e:
             print e
             print "Error adding issue '" + issue.summary + "' to auto scheduler"
 
     # Merging each list into a single list to pass to the front end.
     assigned_issues = []
-    assigned_issues.extend(critical_to_json)
-    assigned_issues.extend(past_due_to_json)
-    assigned_issues.extend(due_soon_to_json)
-    assigned_issues.extend(regular_to_json)
+    assigned_issues.extend(critical_issues)
+    assigned_issues.extend(past_due_issues)
+    assigned_issues.extend(due_soon_issues)
+    assigned_issues.extend(regular_issues)
 
     to_json_issues = []
 
