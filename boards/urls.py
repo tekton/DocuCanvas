@@ -5,7 +5,7 @@ from django.conf.urls import *
 '''
 
 urlpatterns = patterns('',
-    (r'test',  'boards.views.TestIndex'),
+    (r'test',  'boards.views.boards'),
     (r'^$', 'boards.views.index'),
     (r'new_board', 'boards.views.boards_form'),
     (r'new_note', 'boards.views.boards_note_form'),
