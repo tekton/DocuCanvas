@@ -341,73 +341,10 @@ def meta_issues_by_project(request, project_id):
     return render_to_response("charts/charts.html", {"projects": projects, "issues": json.dumps(to_json_meta_issues).replace("'", r"\'")}, context_instance=RequestContext(request))
     '''
 
-'''
 @login_required
 def autoSchedule(request):
     projects = Project.objects.all()
-    try:
-        issues = Issue.objects.filter(assigned_to=request.user).exclude(status='fixed').exclude(status='not_a_bug').exclude(status='wont_fix').exclude(status='duplicate').order_by('created')
-    except Exception as e:
-        print e
 
-    critical_to_json = []
-    past_due_to_json = []
-    due_soon_to_json = []
-    regular_to_json = []
-
-    # Sort assigned issues into appropriate subgroup... based on urgency of issue completion
-    for issue in issues:
-        try:
-            # if/else protects later code in the instance that issue due date is not an active field
-            if issue.due_date:
-                total_time = (date.today() - issue.due_date).total_seconds()
-            else:
-                total_time = 450000
-            if issue.criticality:
-                criticality = issue.criticality
-            else:
-                criticality = 0
-
-            json_issue = model_to_dict(issue)
-            json_issue['created'] = issue.created
-
-            # Adding various parameters to be passed to front end
-            if issue.actual_start:
-                json_issue['actual_start'] = issue.actual_start
-            if issue.projected_end:
-                json_issue['projected_end'] = issue.projected_end
-            if issue.actual_end:
-                json_issue['actual_end'] = issue.actual_end
-
-            for k,v in json_issue.items():
-                json_issue[k] = unicode(v)
-
-            if criticality > 7:
-                critical_to_json.append(json_issue)
-            elif total_time <= 0:
-                past_due_to_json.append(json_issue)
-            elif total_time < 432000:
-                due_soon_to_json.append(json_issue)
-            else:
-                regular_to_json.append(json_issue)
-        except Exception as e:
-            print e
-            print "Error adding issue '" + issue.summary + "' to auto scheduler"
-
-    # Merging each list into a single list to pass to the front end.
-    assigned_issues = []
-    assigned_issues.extend(critical_to_json)
-    assigned_issues.extend(past_due_to_json)
-    assigned_issues.extend(due_soon_to_json)
-    assigned_issues.extend(regular_to_json)
-
-    return render_to_response('charts/auto_schedule.html', {'projects': projects, 
-                                                        'issues': json.dumps(assigned_issues)}, context_instance=RequestContext(request))
-'''
-
-@login_required
-def autoSchedule(request):
-    projects = Project.objects.all()
     try:
         issues = Issue.objects.filter(assigned_to=request.user).exclude(status='fixed').exclude(status='not_a_bug').exclude(status='wont_fix').exclude(status='duplicate').order_by('created')
     except Exception as e:
@@ -457,17 +394,113 @@ def autoSchedule(request):
         json_issue = model_to_dict(issue)
         json_issue['created'] = issue.created
 
+        time_required = datetime.timedelta(days=1)
+
+        if issue.estimated_time:
+            hours_required = issue.estimated_time/60
+            time_required = datetime.timedelta(hours=hours_required)
+        elif issue.projected_start and issue.projected_end:
+            hours_required = (issue.projected_end - issue.projected_start).total_seconds()
+            hours_required = (hours_required/60)/60
+            time_required = datetime.timedelta(hours=hours_required)
+        print time_required
+
+        if time_required >= datetime.timedelta(days=1):
+            delta = time_required - datetime.timedelta(days=1)
+        else:
+            delta = time_required
+
+
         # Adding various parameters to be passed to front end
         json_issue['actual_start'] = current
-        json_issue['actual_end'] = current
+        json_issue['actual_end'] = current + delta
 
         for k,v in json_issue.items():
             json_issue[k] = unicode(v)
 
         to_json_issues.append(json_issue)
 
-        current += datetime.timedelta(days=1)
+        current += time_required
 
 
     return render_to_response('charts/auto_schedule.html', {'projects': projects, 
                                                         'issues': json.dumps(to_json_issues)}, context_instance=RequestContext(request))
+
+
+@login_required
+def updateIssueSchedule(request):
+    try:
+        issues = Issue.objects.filter(assigned_to=request.user).exclude(status='fixed').exclude(status='not_a_bug').exclude(status='wont_fix').exclude(status='duplicate').order_by('created')
+    except Exception as e:
+        return False
+
+    critical_issues = []
+    past_due_issues = []
+    due_soon_issues = []
+    regular_issues = []
+
+    for issue in issues:
+        try:
+            # if/else protects later code in the instance that issue due date is not an active field
+            if issue.due_date:
+                total_time = (date.today() - issue.due_date).total_seconds()
+            else:
+                total_time = 450000
+            if issue.criticality:
+                criticality = issue.criticality
+            else:
+                criticality = 0
+
+            if criticality > 7:
+                critical_issues.append(issue)
+            elif total_time <= 0:
+                past_due_issues.append(issue)
+            elif total_time < 432000:
+                due_soon_issues.append(issue)
+            else:
+                regular_issues.append(issue)
+        except Exception as e:
+            print e
+            print "Error adding issue '" + issue.summary + "' to auto scheduler"
+
+    # Merging each list into a single list to pass to the front end.
+    assigned_issues = []
+    assigned_issues.extend(critical_issues)
+    assigned_issues.extend(past_due_issues)
+    assigned_issues.extend(due_soon_issues)
+    assigned_issues.extend(regular_issues)
+
+    to_json_issues = []
+
+    current = date.today()
+
+    try:
+        for issue in assigned_issues:
+            json_issue = model_to_dict(issue)
+            json_issue['created'] = issue.created
+
+            time_required = datetime.timedelta(days=1)
+
+            if issue.estimated_time:
+                hours_required = issue.estimated_time/60
+                time_required = datetime.timedelta(hours=hours_required)
+            elif issue.projected_start and issue.projected_end:
+                hours_required = (issue.projected_end - issue.projected_start).total_seconds()
+                hours_required = (hours_required/60)/60
+                time_required = datetime.timedelta(hours=hours_required)
+            print time_required
+
+            if time_required >= datetime.timedelta(days=1):
+                delta = time_required - datetime.timedelta(days=1)
+            else:
+                delta = time_required
+
+            issue.actual_start = current
+            issue.actual_end = current + delta
+            issue.save()
+
+            current += time_required
+    except Exception as e:
+        print e
+        return False
+    return True

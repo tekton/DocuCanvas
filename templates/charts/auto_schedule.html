@@ -3,10 +3,14 @@
 
 {% block bodyContent %}
 <div class="span12 well chart-container">
-    <div id="gantt_planning_container">
-        <h3>Planning</h3>
-        <div id="gantt_planning"></div>
-    </div>
+    <form action="" method="post" class="form-horizontal span11" enctype="multipart/form-data" autocomplete="off">
+        {% csrf_token %}
+        <div id="gantt_planning_container">
+            <h3>Planning</h3>
+            <div id="gantt_planning"></div>
+        </div>
+        <input type='submit' onClick="{% url 'charts.views.updateIssueSchedule' %}"/>
+    </form>
 </div>
 {% endblock %}
 
@@ -36,7 +40,7 @@
             $("#gantt_planning").gantt({
                 source:source,
                 scale: "days",
-                minScale: "days",
+                minScale: "hours",
                 navigate: "scroll",
                 itemsPerPage: 50,
                 onItemClick: function(data){
