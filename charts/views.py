@@ -420,6 +420,7 @@ def autoSchedule(request):
 
         to_json_issues.append(json_issue)
 
+        # Adjusting the time to accomodate length of time it takes to complete issue just added to the queue
         current += time_required
 
 
@@ -461,7 +462,6 @@ def updateIssueSchedule(request):
                 regular_issues.append(issue)
         except Exception as e:
             print e
-            print "Error adding issue '" + issue.summary + "' to auto scheduler"
 
     # Merging each list into a single list to pass to the front end.
     assigned_issues = []
@@ -470,15 +470,10 @@ def updateIssueSchedule(request):
     assigned_issues.extend(due_soon_issues)
     assigned_issues.extend(regular_issues)
 
-    to_json_issues = []
-
     current = date.today()
 
     try:
         for issue in assigned_issues:
-            json_issue = model_to_dict(issue)
-            json_issue['created'] = issue.created
-
             time_required = datetime.timedelta(days=1)
 
             if issue.estimated_time:
