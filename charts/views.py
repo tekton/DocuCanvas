@@ -388,7 +388,7 @@ def autoSchedule(request):
 
     to_json_issues = []
 
-    current = date.today()
+    current = date.today() - datetime.timedelta(days=1)
 
     for issue in assigned_issues:
         json_issue = model_to_dict(issue)
