@@ -400,9 +400,10 @@ def autoSchedule(request):
             hours_required = issue.estimated_time/60
             time_required = datetime.timedelta(hours=hours_required)
         elif issue.projected_start and issue.projected_end:
-            hours_required = (issue.projected_end - issue.projected_start).total_seconds()
-            hours_required = (hours_required/60)/60
-            time_required = datetime.timedelta(hours=hours_required)
+            if((issue.projected_end - issue.projected_start).total_seconds() >= 0):
+                hours_required = (issue.projected_end - issue.projected_start).total_seconds()
+                hours_required = (hours_required/60)/60
+                time_required = datetime.timedelta(hours=hours_required)
         print time_required
 
         if time_required >= datetime.timedelta(days=1):
@@ -480,9 +481,10 @@ def updateIssueSchedule(request):
                 hours_required = issue.estimated_time/60
                 time_required = datetime.timedelta(hours=hours_required)
             elif issue.projected_start and issue.projected_end:
-                hours_required = (issue.projected_end - issue.projected_start).total_seconds()
-                hours_required = (hours_required/60)/60
-                time_required = datetime.timedelta(hours=hours_required)
+                if ((issue.projected_end - issue.projected_start).total_seconds() >= 0):
+                    hours_required = (issue.projected_end - issue.projected_start).total_seconds()
+                    hours_required = (hours_required/60)/60
+                    time_required = datetime.timedelta(hours=hours_required)
             print time_required
 
             if time_required >= datetime.timedelta(days=1):
