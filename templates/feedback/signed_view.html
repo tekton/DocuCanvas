@@ -9,12 +9,13 @@
 {% endblock %} 
 
 {% block pageTitle %}
-Signed Feedback from {{signed.user}}
+Feedback from {{signed.user}}
 {% endblock %}
 
 {% block bodyContent%}
 <b>Submited On:</b><br/>
 {{signed.timestamp}}<br/><br/>
 <b>Feedback:</b><br/>
-{{signed.feedback}}
+{{signed.feedback}}<br/><br/>
+<i>{{signed.user}}</i>
 {% endblock%}
