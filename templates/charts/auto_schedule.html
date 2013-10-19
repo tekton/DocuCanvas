@@ -3,10 +3,14 @@
 
 {% block bodyContent %}
 <div class="span12 well chart-container">
-    <div id="gantt_planning_container">
-        <h3>Planning</h3>
-        <div id="gantt_planning"></div>
-    </div>
+    <form action="" method="post" class="form-horizontal span11" enctype="multipart/form-data" autocomplete="off">
+        {% csrf_token %}
+        <div id="gantt_planning_container">
+            <h3>Planning</h3>
+            <div id="gantt_planning"></div>
+        </div>
+        <input type='submit' value='Save Schedule' onClick="{% url 'charts.views.updateIssueSchedule' %}"/>
+    </form>
 </div>
 {% endblock %}
 
@@ -16,6 +20,7 @@
     <script language="javascript" type="text/javascript">
         $(function(){
             for(issue in issues){
+                var label = issues[issue]['assigned_to'];
                 if(projects[issues[issue]['project']] == undefined){
                     projects[issues[issue]['project']] = project_counter;
                     project_counter++;
@@ -24,7 +29,10 @@
                         project_counter = 0;
                     }
                 }
-                gantt_item_dict = drawGanttObject(issue, issues[issue]['summary'], " ", issues[issue]['assigned_to'], projects[issues[issue]['project']]);
+                if(issues[issue]['criticality'] > 7){
+                    label = 'Critical';
+                }
+                gantt_item_dict = drawGanttObject(issue, issues[issue]['summary'], " ", label, projects[issues[issue]['project']]);
                 if(first_of_project == true){
                     gantt_item_dict['name'] = issues[issue]['project_name']
                     first_of_project = false;
@@ -36,7 +44,7 @@
             $("#gantt_planning").gantt({
                 source:source,
                 scale: "days",
-                minScale: "days",
+                minScale: "hours",
                 navigate: "scroll",
                 itemsPerPage: 50,
                 onItemClick: function(data){
@@ -108,8 +116,11 @@
             }; 
 
             //if(issues[issue]['projected_end'] == 'None' || end_earlier_than_start){
-            if(label == 'Assign' || end_earlier_than_start){
-                values_dict['customClass'] = 'ganttRed';
+            if(label == 'Critical'){
+                values_dict['customClass'] = 'ganttRed'
+            }
+            else if(label == 'Assign' || end_earlier_than_start){
+                values_dict['customClass'] = 'ganttGreen';
                 //values_dict['desc'] = error_description;
             }
 

@@ -42,6 +42,7 @@ class Issue(models.Model):
     actual_start = models.DateField(null=True, blank=True)
     actual_end = models.DateField(null=True, blank=True)
     due_date = models.DateField(null=True, blank=True)
+    estimated_time = models.IntegerField(null=True, blank=True)
     #
     date_reported = models.DateField(null=True, blank=True)
     #
