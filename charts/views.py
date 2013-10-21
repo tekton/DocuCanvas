@@ -50,12 +50,12 @@ def home(request):
             if issue.assigned_to:
                 try:
                     json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
-                except Exception, e:
+                except Exception as e:
                     print e
             for k, v in json_issue.items():
                 json_issue[k] = unicode(v)
             to_json_issues.append(json_issue)
-    except Exception, e:
+    except Exception as e:
         print e
         print 'Unable to grab all Issues'
         to_json_issues = []
@@ -95,13 +95,13 @@ def users_chart(request):
             if issue.assigned_to:
                 try:
                     json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
-                except Exception, e:
+                except Exception as e:
                     print e   
             for k,v in json_issue.items():
                 json_issue[k] = unicode(v)
 
             to_json_issues.append(json_issue)
-    except Exception, e:
+    except Exception as e:
         print e
         print 'Unable to grab all Issues'
         to_json_issues = []
@@ -164,7 +164,7 @@ def unassigned_issues_chart(request):
                 json_issue[k] = unicode(v)
 
             to_json_issues.append(json_issue)
-    except Exception, e:
+    except Exception as e:
         print e
         print 'Unable to grab all Isssues'
         to_json_issues = []
@@ -201,13 +201,13 @@ def unscheduled_issues_chart(request):
             if issue.assigned_to:
                 try:
                     json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
-                except Exception, e:
+                except Exception as e:
                     print e
             for k,v in json_issue.items():
                 json_issue[k] = unicode(v)
 
             to_json_issues.append(json_issue)
-    except Exception, e:
+    except Exception as e:
         print e
         print 'Unable to grab all Isssues'
         to_json_issues = []
@@ -253,7 +253,7 @@ def issues_by_user_chart(request, user_id):
                     json_issue[k] = unicode(v)
 
                 to_json_issues.append(json_issue)
-        except Exception, e:
+        except Exception as e:
             print e
             print 'Unable to grab all Isssues'
             to_json_issues = []
@@ -300,7 +300,7 @@ def issues_by_project_chart(request, project_id):
                     json_issue[k] = unicode(v)
 
                 to_json_issues.append(json_issue)
-        except Exception, e:
+        except Exception as e:
             print e
             print 'Unable to grab all Isssues'
             to_json_issues = []
@@ -332,7 +332,7 @@ def meta_issues_by_project(request, project_id):
                     json_meta_issue[k] = str(v)
 
                 to_json_meta_issues.append(json_meta_issue)
-        except Exception, e:
+        except Exception as e:
             print e
             print 'Unable to grab all Isssues'
             to_json_meta_issues = []
