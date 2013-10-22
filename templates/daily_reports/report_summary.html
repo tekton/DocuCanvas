@@ -7,25 +7,47 @@
 {% endblock %}
 
 {% block bodyContent %}
-<table class="table table-swimline dailyreports-all">
+<style type="text/css">
+    .report_summary_table{
+    }
+    .date_header_report_summary{
+        font-style: oblique;
+/*
+        -moz-transform: rotate(-70.0deg);
+        -o-transform: rotate(-70.0deg);
+        -webkit-transform: rotate(-70.0deg);
+        filter:  progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083);
+        -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)";
+*/
+        width: 80px;
+    }
+    .user_header_report_summary{
+    }
+    .report_summary_table_data{
+        text-align: center;
+        border: 1px solid black;
+        width: 30 px;
+    }
+</style>
+<table class="report_summary_table">
 	<tbody>
         <tr>
-            <td>
+            <td class="date_header_report_summary">
             </td>
             {% for date in dates %}
-            <td>
+            <td class="date_header_report_summary">
                 {{date}}
             </td>
             {% endfor %}
         </tr>
         {% for user in users %}
         <tr>
-            <td>{{user.user}}</td>
+            <td class="user_header_report_summary">{{user.user}}</td>
             {% for date in dates %}
-            <td>
+            <td class="report_summary_table_data">
                 {% for report in reports %}
-                    {% if date == report.date and report.user = user.user %}
-                    {{report.description|safe}}
+                    {% if date == report.date and report.user == user.user %}
+                        <a href='{% url "daily_reports.views.view_reports" %}'>{{report.id}}</a>
                     {% endif %}
                 {% endfor %}
             </td>
