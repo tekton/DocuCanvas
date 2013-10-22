@@ -14,7 +14,7 @@ def prepMailingList(issue, update_type="update"):
 	# get people that are subscribed to the issue
 	# get people assigned to the issue
 	# get people that have mail settings set to all updates
-	if update_type === "created":
+	if update_type == "created":
 		'''
 			this is a special situation where we need to mail the creator of the item
 		'''
@@ -57,7 +57,7 @@ def prepSubjectOfMail(issue, update_type="update", item="Issue"):
 		msg = "Created"
 	elif update_type == "assigned":
 		msg = "Assigned To You"
-	elif:
+	else:
 		msg = "Had Something Happen That You Should Know About ... also SYNTAX ERROR"
 	# if update...
 	## [<install name>] Issue <id> Updated
