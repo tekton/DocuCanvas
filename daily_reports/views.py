@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from datetime import date
+from datetime import datetime as timedate
 
 from forms import ReportForm, GroupForm
 from projects.models import Project
@@ -284,6 +285,25 @@ def daterange(start_date, end_date):
     else:
         for n in range((start_date - end_date).days + 1):
             yield start_date - datetime.timedelta(n)
+
+
+@login_required
+def reportRedirect(request):
+    date = str(request.GET.get('date',False))
+    temp = ''
+    for char in date:
+        if char == "." or char == ",":
+            pass
+        else:
+            temp += char
+    print temp
+    date_object = timedate.strptime(temp, '%b %d %Y')
+    day = date_object.strftime('%d')
+    print day
+    month = date_object.strftime('%m')
+    year = date_object.strftime('%Y')
+    print day + '/' + month + '/' + year
+    return redirect('daily_reports.views.view_reports', month, day, year)
 
 
 @user_passes_test(lambda u: u.is_superuser)
