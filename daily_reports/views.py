@@ -25,7 +25,7 @@ def edit_report(request, month=0, day=0, year=0):
                 report.description = form.cleaned_data['personalReport']
                 report.save()
                 return redirect('daily_reports.views.edit_report')
-            except Exception, e:
+            except Exception as e:
                 print e
                 return render_to_response('daily_reports/daily_report_form.html', {'form': form}, context_instance=RequestContext(request))
         else:
@@ -45,7 +45,7 @@ def edit_report(request, month=0, day=0, year=0):
         q = None
         try:
             q = UserDailyReport.objects.filter(user=request.user, date=d)
-        except Exception, e:
+        except Exception as e:
             print "Exception: " + str(e)
             raise e
         dir(q)
@@ -68,7 +68,7 @@ def edit_global_report(request, month=0, day=0, year=0):
                 report.description = form.cleaned_data['personalReport']
                 report.save()
                 return redirect('daily_reports.views.edit_global_report')
-            except Exception, e:
+            except Exception as e:
                 print e
                 return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': True, "projects": projects}, context_instance=RequestContext(request))
         else:
@@ -88,7 +88,7 @@ def edit_global_report(request, month=0, day=0, year=0):
         q = None
         try:
             q = DailyReport.objects.filter(date=d)
-        except Exception, e:
+        except Exception as e:
             print "Exception: " + str(e)
             raise e
         if q:
@@ -111,7 +111,7 @@ def view_reports(request, month=0, day=0, year=0):
     try:
         q = UserDailyReport.objects.filter(date=d)
         qg = DailyReport.objects.filter(date=d)
-    except Exception, e:
+    except Exception as e:
         print "Exception: " + str(e)
         raise e
 
@@ -127,7 +127,7 @@ def mail_report():
     try:
         q = UserDailyReport.objects.filter(date=d)
         qg = DailyReport.objects.filter(date=d)
-    except Exception, e:
+    except Exception as e:
         print "Exception: " + str(e)
         raise e
     return render_to_response("daily_reports/daily_report_overview.html", {'globalReport': qg[0], 'reports': q, 'date': d, "projects": projects}, context_instance=RequestContext(request))
@@ -169,7 +169,7 @@ def index(request):
                                                                   "page_type": "Report"}, context_instance=RequestContext(request))
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def setup_report_group(request):
     projects = Project.objects.all()
     users = User.objects.all()
@@ -178,34 +178,32 @@ def setup_report_group(request):
             group = ReportGroup()
             form = GroupForm(request.POST, instance=group)
             members = request.POST.getlist('users')
-            print request.POST
             if form.is_valid():
                 group = form.save()
                 for member in members:
                     temp = User.objects.get(username=member)
-                    print temp.username
                     new_member = GroupMember(group=group, user=temp)
                     new_member.save()
                 return redirect('daily_reports.views.request_report_summary')
         except Exception as e:
-            print e
+            print "Exception: " + str(e)
     else:
         form = GroupForm()
     return render_to_response('daily_reports/report_group_form.html', {'users': users, 'projects': projects, 'form': form}, context_instance=RequestContext(request))
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def edit_group(request, group_id):
     projects = Project.objects.all()
     print request.POST
     try:
         group = ReportGroup.objects.get(pk=group_id)
-    except Exception, e:
-        print e
+    except Exception as e:
+        print "Exception: " + str(e)
     try:
         members = GroupMember.objects.filter(group=group)
-    except Exception, e:
-        print e
+    except Exception as e:
+        print "Exception: " + str(e)
     try:
         users = User.objects.all()
         user_list = []
@@ -217,8 +215,8 @@ def edit_group(request, group_id):
             if keep:
                 user_list.append(user)
 
-    except Exception, e:
-        print e
+    except Exception as e:
+        print "Exception: " + str(e)
     if request.method == 'POST':
         try:
             form = GroupForm(request.POST, instance=group)
@@ -236,21 +234,21 @@ def edit_group(request, group_id):
                     old_member = GroupMember.objects.get(user=temp, group=group)
                     old_member.delete()
                 return redirect('daily_reports.views.request_report_summary')
-        except Exception, e:
+        except Exception as e:
             print e
     else:
         form = GroupForm(instance=group)
     return render_to_response('daily_reports/edit_report_group.html', {'members': members, 'users': user_list, 'form': form, 'projects': projects, 'group': group}, context_instance=RequestContext(request))
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def request_report_summary(request):
     projects = Project.objects.all()
     groups = ReportGroup.objects.all()
     return render_to_response('daily_reports/group_report.html', {'projects': projects, 'groups': groups}, context_instance=RequestContext(request))
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def report_summary(request, year_start, month_start, day_start, year_end,  month_end, day_end, group_id):
     projects = Project.objects.all()
 
