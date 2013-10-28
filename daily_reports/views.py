@@ -296,13 +296,10 @@ def reportRedirect(request):
             pass
         else:
             temp += char
-    print temp
     date_object = timedate.strptime(temp, '%b %d %Y')
     day = date_object.strftime('%d')
-    print day
     month = date_object.strftime('%m')
     year = date_object.strftime('%Y')
-    print day + '/' + month + '/' + year
     return redirect('daily_reports.views.view_reports', month, day, year)
 
 
