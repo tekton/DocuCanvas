@@ -222,7 +222,6 @@ def edit_group(request, group_id):
             form = GroupForm(request.POST, instance=group)
             added_members = request.POST.getlist('new_members')
             removed_members = request.POST.getlist('del_members')
-            print removed_members
             if form.is_valid():
                 group = form.save()
                 for member in added_members:
