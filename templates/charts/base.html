@@ -37,6 +37,7 @@ Used for all templates in /templates/projects
 {% endblock%}
 
 {% block contextNav %}
+    <li><a href="{% url 'charts.views.autoSchedule' %}">Issue Schedule</a></li>
     <li class="nav-header">All</li>
         <li><a href="{% url 'charts.views.projects_chart'%}">Projects</a></li>
         <li><a href="{% url 'charts.views.home'%}">Issues</a></li>
