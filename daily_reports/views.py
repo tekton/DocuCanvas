@@ -266,13 +266,7 @@ def report_summary(request, year_start, month_start, day_start, year_end,  month
 
     reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end]).order_by('date')
 
-    count = 0
-    for user in users:
-        user_reports = reports.filter(user=user.user)
-        if user_reports.count() > count:
-            benchmark = user_reports
-
-    return render_to_response('daily_reports/report_summary.html', {'users': users, 'reports': reports, 'projects': projects, 'benchmark': benchmark, 'dates': dates}, context_instance=RequestContext(request))
+    return render_to_response('daily_reports/report_summary.html', {'users': users, 'reports': reports, 'projects': projects, 'dates': dates}, context_instance=RequestContext(request))
 
 
 def daterange(start_date, end_date):
