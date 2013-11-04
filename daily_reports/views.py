@@ -283,9 +283,7 @@ def reportRedirect(request):
     date = str(request.GET.get('date',False))
     temp = ''
     for char in date:
-        if char == "." or char == ",":
-            pass
-        else:
+        if char != "." and char != ",":
             temp += char
     date_object = timedate.strptime(temp, '%b %d %Y')
     day = date_object.strftime('%d')
