@@ -280,15 +280,21 @@ def daterange(start_date, end_date):
 
 @login_required
 def reportRedirect(request):
-    date = str(request.GET.get('date',False))
-    temp = ''
-    for char in date:
-        if char != "." and char != ",":
-            temp += char
-    date_object = timedate.strptime(temp, '%b %d %Y')
-    day = date_object.strftime('%d')
-    month = date_object.strftime('%m')
-    year = date_object.strftime('%Y')
+    try:
+        d = str(request.GET.get('date',False))
+        temp = ''
+        for char in d:
+            if char != "." and char != ",":
+                temp += char
+        date_object = timedate.strptime(temp, '%b %d %Y')
+        day = date_object.strftime('%d')
+        month = date_object.strftime('%m')
+        year = date_object.strftime('%Y')
+    except:
+        d = date.today()
+        day = d.strftime('%d')
+        month = d.strftime('%m')
+        year = d.strftime('%Y')
     return redirect('daily_reports.views.view_reports', month, day, year)
 
 
