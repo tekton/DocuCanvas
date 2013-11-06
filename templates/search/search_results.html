@@ -9,24 +9,57 @@ Search Results for "{{search}}"
 {% endblock %}
 
 {% block bodyContent %}
+{% if issues or helps or reports %}
+{% if issues %}
 <h2 id='issue_header'>Issues</h2>
-<div id="issue_results_container">
+<table id="issue_results_container" width='100%'>
+    <tr>
+        <td width='80%'><b>Summary</b></td>
+        <td width='20%'><b>Status</b></td>
+    </tr>
     {% for issue in issues %}
-    <a href="/issue/{{issue.id}}">{{issue.summary|truncatechars:80}}</a>
+    <tr>
+        <td width='80%'><a href="/issue/{{issue.id}}">{{issue.summary|truncatechars:80}}</a></td>
+        <td width='20%'>{{issue.status}}</td>
+    </tr>
     {% endfor %}
-</div>
+</table>
+</br>
+{% endif %}
+{% if helps %}
 <h2 id='help_header'>Help Desk</h2>
-<div id="help_results_container">
+<table id="help_results_container" width='100%'>
+    <tr>
+        <td width='80%'><b>Question</b></td>
+        <td width='20%'><b>Status</b></td>
+    </tr>
     {% for help in helps %}
-    <a href="/help/{{help.id}}">{{help.name|truncatechars:80}}</a>
+    <tr>
+        <td width='80%'><a href="/help/{{help.id}}">{{help.name|truncatechars:80}}</a></td>
+        <td width='20%'>{{help.status}}</td>
+    </tr>
     {% endfor %}
-</div>
+</table>
+</br>
+{% endif %}
+{% if reports %}
 <h2 id='report_header'>Daily Reports</h2>
-<div id="report_results_container">
+<table id="report_results_container" width='100%'>
+    <tr>
+        <td width='80%'><b>Report</b></td>
+        <td width='20%'><b>Date</b></td>
+    </tr>
     {% for report in reports %}
-    <a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80}}</a>
+    <tr>
+        <td width='80%'><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80}}</a></td>
+        <td width='20%'>{{report.date}}</td>
+    </tr>
     {% endfor %}
-</div>
+</table>
+{% endif %}
+{% else %}
+<p>Query returned no results</p>
+{% endif %}
 {% endblock %}
 
 {% block endScripts %}
