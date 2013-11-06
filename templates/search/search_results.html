@@ -11,7 +11,7 @@ Search Results for "{{search}}"
 {% block bodyContent %}
 {% if issues or helps or reports %}
 {% if issues %}
-<h2 id='issue_header'>Issues</h2>
+<h2 id='issue_header'>Issues ({{issue_count}} results)</h2>
 <table id="issue_results_container" width='100%'>
     <tr>
         <td width='80%'><b>Summary</b></td>
@@ -27,7 +27,7 @@ Search Results for "{{search}}"
 </br>
 {% endif %}
 {% if helps %}
-<h2 id='help_header'>Help Desk</h2>
+<h2 id='help_header'>Help Desk ({{help_count}} results)</h2>
 <table id="help_results_container" width='100%'>
     <tr>
         <td width='80%'><b>Question</b></td>
@@ -43,7 +43,7 @@ Search Results for "{{search}}"
 </br>
 {% endif %}
 {% if reports %}
-<h2 id='report_header'>Daily Reports</h2>
+<h2 id='report_header'>Daily Reports ({{report_count}} results)</h2>
 <table id="report_results_container" width='100%'>
     <tr>
         <td width='80%'><b>Report</b></td>

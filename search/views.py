@@ -88,4 +88,11 @@ def searchGlobal(request):
     q_helprequest = HelpRequest.objects.filter(Q(question__contains=search) | Q(name__contains=search))
     q_dailyreports = UserDailyReport.objects.filter(Q(description__contains=search))
 
-    return render_to_response("search/search_results.html", {"issues": q_issues, "helps": q_helprequest, "reports": q_dailyreports, "projects": projects, "search": search}, context_instance=RequestContext(request))
+    return render_to_response("search/search_results.html", {"issues": q_issues, 
+                                                             "issue_count": q_issues.count(), 
+                                                             "helps": q_helprequest, 
+                                                             "help_count": q_helprequest.count(), 
+                                                             "reports": q_dailyreports, 
+                                                             "report_count": q_dailyreports.count(), 
+                                                             "projects": projects, 
+                                                             "search": search}, context_instance=RequestContext(request))
