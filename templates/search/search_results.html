@@ -24,7 +24,7 @@ Search Results for "{{search}}"
 <h2 id='report_header'>Daily Reports</h2>
 <div id="report_results_container">
     {% for report in reports %}
-    <a href="/reports/report_redirect?{{report.date}}">{{report.description|truncatechars:80}}</a>
+    <a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80}}</a>
     {% endfor %}
 </div>
 {% endblock %}
