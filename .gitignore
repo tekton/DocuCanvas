@@ -12,3 +12,4 @@ celerybeat-schedule
 *.orig
 static/upload
 *local_settings.py
+DocuCanvas/woosh_index/
