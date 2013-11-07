@@ -101,6 +101,7 @@ def assign(request, issue_id, user_id=-1):
     if issue:
         try:
             issue.save(request.user)
+            # TODO - send mail to the newly assigned! and all the other people...
         except Exception as e:
             print "Unable to save issue"
             to_json['success'] = False
@@ -734,7 +735,7 @@ def submit_comment(request, issue_id):
         raise e
 
     try:
-        comments = IssueComment.objects.filter(issue=issue).order_by('-created')
+        comments = IssueComment.objects.filter(issue=issue).order_by('-created')  # this isn't used; why are we making an extra call?
     except Exception, e:
         print "Error getting comments"
         raise e
@@ -752,6 +753,7 @@ def submit_comment(request, issue_id):
             if form.is_valid():
                 try:
                     comment = form.save(request.user)  # save the modelform's model!
+                    prepMail(issue, "comment", comment.description)
                 except Exception, e:
                     print "Error saving form"
                     print e

@@ -50,7 +50,7 @@ def prepFacebookList():
     pass
 
 
-def prepBodyOfMail(issue, update_type="update"):
+def prepBodyOfMail(issue, update_type="update", comment=False):
     '''
         Depending on the nature of the communication the body will change very slightly
 
@@ -66,6 +66,8 @@ def prepBodyOfMail(issue, update_type="update"):
     rtn_dict["url_base"] = settings.URL_BASE
     rtn_dict["project_name"] = issue.project.name
     rtn_dict["site_title"] = settings.INSTALL_NAME
+    if comment:
+        rtn_dict["comment"] = comment
     return rtn_dict
 
 
@@ -86,6 +88,8 @@ def prepSubjectOfMail(issue, update_type="update", item="Issue"):
         msg = "Created"
     elif update_type == "assigned":
         msg = "Assigned To You"
+    elif update_type == "comment":
+        msg = "Has A New Comment"
     else:
         msg = "Had Something Happen That You Should Know About ... also SYNTAX ERROR"
     # if update...
@@ -99,7 +103,7 @@ def prepSubjectOfMail(issue, update_type="update", item="Issue"):
     return rtn_str
 
 #TODO - convert to celery task
-def prepMail(issue, update_type='update'):
+def prepMail(issue, update_type='update', comment=False):
     '''
         Called from the issue save function
 
@@ -110,10 +114,11 @@ def prepMail(issue, update_type='update'):
             created
             assigned ## should really be re-evaled later?
             help  ## should move to own section...
+            comment - type of update
     '''
     # get mail ID
     subject = prepSubjectOfMail(issue, update_type)
-    body = prepBodyOfMail(issue, update_type)
+    body = prepBodyOfMail(issue, update_type, comment)
     mail_to = prepMailingList(issue, update_type)
     html_content = get_template('email/index.html').render(Context(body))
     mail_from = settings.EMAIL_SENDER
