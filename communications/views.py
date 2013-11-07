@@ -138,22 +138,3 @@ def prepMail(issue, update_type='update', comment=False):
         print "Unable to send mail"
         print e
         print mail_to, mail_from, subject
-
-
-# depricated - for historical purposes only now
-def sendMail(mail_id):
-    # get all the things from redis....
-    mailing_list = True  ## get from redis based on mail_id
-    # old code...
-    subject = 'New Issue Creted :: {0}'.format(issue.id)
-    html_content = get_template('email/index.html').render(
-                Context({
-                    'username': request.user,
-                    'issue': issue,
-                })
-              )
-    mmail = settings.EMAIL_SENDER
-    
-    msg = EmailMessage(subject, html_content, mmail, [mmail])
-    msg.content_subtype = "html"  # Main content is now text/html
-    msg.send()
