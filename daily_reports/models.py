@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib import admin
 
 
 class UserDailyReport(models.Model):
@@ -17,3 +18,16 @@ class DailyReport(models.Model):
     created = models.DateField(auto_now_add=True, null=True, blank=True)  # NOW
     modified = models.DateField(auto_now=True)  # auto update time
 
+
+class ReportGroup(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+
+
+class GroupMember(models.Model):
+    group = models.ForeignKey(ReportGroup)
+    user = models.ForeignKey(User)
+
+
+admin.site.register(ReportGroup)
+admin.site.register(GroupMember)

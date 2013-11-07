@@ -1,8 +1,7 @@
 {% extends "feedback/base.html" %}
 
 {% block contextNav %}
-    <li><a href="{% url 'feedback.views.anonymous_feedback' %}">Submit Anonymous Feedback</a></li>
-    <li><a href="{% url 'feedback.views.signed_feedback' %}">Submit Signed Feedback</a></li>
+	<li><a href="{% url 'feedback.views.feedback' %}">Feedback</a></li>
     {% if user.is_staff %}
     <li><a href="{% url 'feedback.views.all_anonymous' %}">All Anonymous Feedback</a></li>
     {% endif %}
@@ -10,14 +9,13 @@
 {% endblock %} 
 
 {% block pageTitle %}
-Signed Feedback from {{signed.user}}
+Feedback from {{signed.user}}
 {% endblock %}
 
 {% block bodyContent%}
 <b>Submited On:</b><br/>
 {{signed.timestamp}}<br/><br/>
-<b>Summary:</b><br/>
-{{signed.summary}}<br/><br/>
-<b>Details:</b><br/>
-{{signed.feedback}}
+<b>Feedback:</b><br/>
+{{signed.feedback}}<br/><br/>
+<i>{{signed.user}}</i>
 {% endblock%}

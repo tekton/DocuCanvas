@@ -1,0 +1,79 @@
+{% extends 'daily_reports/base.html' %}
+{% load set_var %}
+{% load humanize %}
+
+{% block contextNav %}
+{% include '_includes/contextnav-daily_reports.html' %}
+{% endblock %}
+
+{% block bodyContent %}
+<style type="text/css">
+    .date_header_report_summary{
+        font-style: oblique;
+        width: 80px;
+    }
+    td#report_summary_table_data{
+        text-align: center;
+        border: 1px solid black;
+        width: 30 px;
+    }
+    td#report_summary_table_data{
+        position:relative;
+        z-index:24;
+        text-decoration:none;
+    }
+    td#report_summary_table_data:hover{
+        z-index:25;
+    }
+    td#report_summary_table_data span{
+        display:none;
+    }
+    td#report_summary_table_data:hover span{
+        display:block;
+        position:absolute;
+        top:35px;
+        left:15px;
+        width:200px;
+        padding:3px;
+        border:1px solid #000000;
+        background-color:#FFFFFF;
+        word-break: break-all;
+        font-size:small;
+    }
+    img.pending-image-help{
+        width:200px;
+        height:200px;
+    }
+</style>
+<table class="report_summary_table">
+	<tbody>
+        <tr>
+            <td class="date_header_report_summary">
+            </td>
+            {% for date in dates %}
+            <td class="date_header_report_summary">
+                {{date}}
+            </td>
+            {% endfor %}
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td class="user_header_report_summary">{{user.user}}</td>
+            {% for date in dates %}
+            <td id="report_summary_table_data">
+                    {% for report in reports %}
+                        {% if date == report.date and report.user == user.user %}
+                            <a href='/reports/report_redirect?date={{date}}'>&#10004</a>
+                            <span>{{report.description|truncatechars:80}}</span>
+                        {% endif %}
+                    {% endfor %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block endScripts %}
+{% endblock %}

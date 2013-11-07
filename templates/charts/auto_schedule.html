@@ -1,0 +1,146 @@
+{% extends "charts/base.html" %}
+{% load staticfiles %}
+
+{% block bodyContent %}
+<div class="span12 well chart-container">
+    <form action="" method="post" class="form-horizontal span11" enctype="multipart/form-data" autocomplete="off">
+        {% csrf_token %}
+        <div id="gantt_planning_container">
+            <h3>Planning</h3>
+            <div id="gantt_planning"></div>
+        </div>
+        <input type='submit' value='Save Schedule' onClick="{% url 'charts.views.updateIssueSchedule' %}"/>
+    </form>
+</div>
+{% endblock %}
+
+{% block pageDescription %} Time Blocking{% endblock%}
+
+{% block endScripts%}
+    <script language="javascript" type="text/javascript">
+        $(function(){
+            for(issue in issues){
+                var label = issues[issue]['assigned_to'];
+                if(projects[issues[issue]['project']] == undefined){
+                    projects[issues[issue]['project']] = project_counter;
+                    project_counter++;
+                    first_of_project = true;
+                    if(project_counter > 2){
+                        project_counter = 0;
+                    }
+                }
+                if(issues[issue]['criticality'] > 7){
+                    label = 'Critical';
+                }
+                gantt_item_dict = drawGanttObject(issue, issues[issue]['summary'], " ", label, projects[issues[issue]['project']]);
+                if(first_of_project == true){
+                    gantt_item_dict['name'] = issues[issue]['project_name']
+                    first_of_project = false;
+                }
+                source.push(gantt_item_dict);
+
+            }
+
+            $("#gantt_planning").gantt({
+                source:source,
+                scale: "days",
+                minScale: "hours",
+                navigate: "scroll",
+                itemsPerPage: 50,
+                onItemClick: function(data){
+                    window.location = "/issue/" + data['id'];
+                }
+            });
+
+        });
+        
+        function drawGanttObject(issue, gantt_desc, gantt_name, gantt_label, customClass){
+            var start_time, end_time, label, end_earlier_than_start = false, error_description = "";
+
+            if(gantt_label == 'None'){
+                label = 'Assign';
+            }
+            else{
+                label = gantt_label;
+            }
+
+            if(issues[issue]['actual_start'] == 'None'){
+                if(issues[issue]['projected_start'] == 'None'){
+                    start_time = new Date();
+                }
+                else{
+                    start_time = new Date(issues[issue]['projected_start']);
+                }
+               // error_description = 'No Projected Start Date';
+            }
+            else{
+                start_time = new Date(issues[issue]['actual_start']);
+            }
+
+            if(issues[issue]['actual_end'] == 'None'){
+                if(issues[issue]['projected_end'] == 'None'){
+                    end_time = new Date();
+                }
+                else{
+                    end_time = new Date(issues[issue]['projected_end']);
+                }
+                //error_description = 'No Projected End Date';
+            }
+            else{
+                end_time = new Date(issues[issue]['actual_end']);
+            }
+
+            if(issues[issue]['projected_end'] == 'None' && issues[issue]['projected_start'] == 'None'){
+                //error_description = "No Projected Start and Projected End Date";
+            }
+
+            if(end_time < start_time){
+                var temp_time;
+                end_earlier_than_start = true;
+                //error_description = "End time earlier than Start time";
+                temp_time = end_time;
+                end_time = start_time;
+                start_time = temp_time;
+            }
+
+            var start_friendly = "/Date(" + start_time.getTime() + ")/",
+                end_friendly = "/Date(" + end_time.getTime() + ")/", values = [];
+
+            var values_dict = {
+                from:start_friendly,
+                to: end_friendly,
+                label:label,
+                desc:issues[issue]['summary'],
+                customClass:gantt_labels[customClass],
+                dataObj: {'id': issues[issue]['id']},
+            }; 
+
+            //if(issues[issue]['projected_end'] == 'None' || end_earlier_than_start){
+            if(label == 'Critical'){
+                values_dict['customClass'] = 'ganttRed'
+            }
+            else if(label == 'Assign' || end_earlier_than_start){
+                values_dict['customClass'] = 'ganttGreen';
+                //values_dict['desc'] = error_description;
+            }
+
+            values.push(values_dict);
+
+            var gantt_item_dict = {
+                values: values,
+            };
+
+            if(gantt_desc){
+                gantt_item_dict['desc'] = gantt_desc;  
+            }
+            if(gantt_name){
+
+                gantt_item_dict['name'] = gantt_name;
+            }
+
+            return gantt_item_dict;
+        }
+
+    </script>
+
+{% endblock %}

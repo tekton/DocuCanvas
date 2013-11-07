@@ -23,7 +23,7 @@ from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, Me
 from accounts import utils as rputils
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
-
+from communications.views import prepMail
 
 @login_required
 def pin(request, issue_id):
@@ -442,6 +442,8 @@ def issue_form(request):
             try:
                 issue.created_by = request.user
                 issue.save(request.user)
+                prepMail(issue, update_type='created')
+                # msg.send()  # commented out to avoid spamy spam spam
             except Exception, e:
                 print e
 

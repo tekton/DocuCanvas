@@ -2,6 +2,8 @@
 # Part of tekton/tools!
 import os
 
+INSTALL_NAME = "DocuCanvas"
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

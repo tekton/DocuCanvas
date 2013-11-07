@@ -1,12 +1,14 @@
-from datetime import date
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from forms import ReportForm
+from datetime import date
+from datetime import datetime as timedate
+
+from forms import ReportForm, GroupForm
 from projects.models import Project
 from newsfeed.models import NewsFeedItem
-from models import *
+from models import UserDailyReport, DailyReport, ReportGroup, GroupMember
 
 import datetime
 
@@ -23,7 +25,7 @@ def edit_report(request, month=0, day=0, year=0):
                 report.description = form.cleaned_data['personalReport']
                 report.save()
                 return redirect('daily_reports.views.edit_report')
-            except Exception, e:
+            except Exception as e:
                 print e
                 return render_to_response('daily_reports/daily_report_form.html', {'form': form}, context_instance=RequestContext(request))
         else:
@@ -43,7 +45,7 @@ def edit_report(request, month=0, day=0, year=0):
         q = None
         try:
             q = UserDailyReport.objects.filter(user=request.user, date=d)
-        except Exception, e:
+        except Exception as e:
             print "Exception: " + str(e)
             raise e
         dir(q)
@@ -66,7 +68,7 @@ def edit_global_report(request, month=0, day=0, year=0):
                 report.description = form.cleaned_data['personalReport']
                 report.save()
                 return redirect('daily_reports.views.edit_global_report')
-            except Exception, e:
+            except Exception as e:
                 print e
                 return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': True, "projects": projects}, context_instance=RequestContext(request))
         else:
@@ -86,7 +88,7 @@ def edit_global_report(request, month=0, day=0, year=0):
         q = None
         try:
             q = DailyReport.objects.filter(date=d)
-        except Exception, e:
+        except Exception as e:
             print "Exception: " + str(e)
             raise e
         if q:
@@ -109,7 +111,7 @@ def view_reports(request, month=0, day=0, year=0):
     try:
         q = UserDailyReport.objects.filter(date=d)
         qg = DailyReport.objects.filter(date=d)
-    except Exception, e:
+    except Exception as e:
         print "Exception: " + str(e)
         raise e
 
@@ -125,7 +127,7 @@ def mail_report():
     try:
         q = UserDailyReport.objects.filter(date=d)
         qg = DailyReport.objects.filter(date=d)
-    except Exception, e:
+    except Exception as e:
         print "Exception: " + str(e)
         raise e
     return render_to_response("daily_reports/daily_report_overview.html", {'globalReport': qg[0], 'reports': q, 'date': d, "projects": projects}, context_instance=RequestContext(request))
@@ -165,6 +167,135 @@ def index(request):
                                                                   "projects": projects,
                                                                   "today": today,
                                                                   "page_type": "Report"}, context_instance=RequestContext(request))
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def setup_report_group(request):
+    projects = Project.objects.all()
+    users = User.objects.all()
+    if request.method == 'POST':
+        try:
+            group = ReportGroup()
+            form = GroupForm(request.POST, instance=group)
+            members = request.POST.getlist('users')
+            if form.is_valid():
+                group = form.save()
+                for member in members:
+                    temp = User.objects.get(username=member)
+                    new_member = GroupMember(group=group, user=temp)
+                    new_member.save()
+                return redirect('daily_reports.views.request_report_summary')
+        except Exception as e:
+            print "Exception: " + str(e)
+    else:
+        form = GroupForm()
+    return render_to_response('daily_reports/report_group_form.html', {'users': users, 'projects': projects, 'form': form}, context_instance=RequestContext(request))
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def edit_group(request, group_id):
+    projects = Project.objects.all()
+    print request.POST
+    try:
+        group = ReportGroup.objects.get(pk=group_id)
+    except Exception as e:
+        print "Exception: " + str(e)
+    try:
+        members = GroupMember.objects.filter(group=group)
+    except Exception as e:
+        print "Exception: " + str(e)
+    try:
+        users = User.objects.all()
+        user_list = []
+        for user in users:
+            keep = True
+            for member in members:
+                if member.user == user:
+                    keep = False
+            if keep:
+                user_list.append(user)
+
+    except Exception as e:
+        print "Exception: " + str(e)
+    if request.method == 'POST':
+        try:
+            form = GroupForm(request.POST, instance=group)
+            added_members = request.POST.getlist('new_members')
+            removed_members = request.POST.getlist('del_members')
+            if form.is_valid():
+                group = form.save()
+                for member in added_members:
+                    temp = User.objects.get(pk=member)
+                    new_member = GroupMember(group=group, user=temp)
+                    new_member.save()
+                for member in removed_members:
+                    temp = User.objects.get(pk=member)
+                    old_member = GroupMember.objects.get(user=temp, group=group)
+                    old_member.delete()
+                return redirect('daily_reports.views.request_report_summary')
+        except Exception as e:
+            print e
+    else:
+        form = GroupForm(instance=group)
+    return render_to_response('daily_reports/edit_report_group.html', {'members': members, 'users': user_list, 'form': form, 'projects': projects, 'group': group}, context_instance=RequestContext(request))
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def request_report_summary(request):
+    projects = Project.objects.all()
+    groups = ReportGroup.objects.all()
+    return render_to_response('daily_reports/group_report.html', {'projects': projects, 'groups': groups}, context_instance=RequestContext(request))
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def report_summary(request, year_start, month_start, day_start, year_end,  month_end, day_end, group_id):
+    projects = Project.objects.all()
+
+    date_range_start = str(year_start) + '-' + str(month_start) + '-' + str(day_start)
+    date_range_end = str(year_end) + '-' + str(month_end) + '-' + str(day_end)
+
+    start = datetime.date(year=int(year_start), month=int(month_start), day=int(day_start))
+    end = datetime.date(year=int(year_end), month=int(month_end), day=int(day_end))
+
+    dates = []
+    for date in daterange(start, end):
+        dates.append(date)
+
+    group = ReportGroup.objects.get(pk=group_id)
+    users = GroupMember.objects.filter(group=group)
+
+    reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end]).order_by('date')
+
+    return render_to_response('daily_reports/report_summary.html', {'users': users, 'reports': reports, 'projects': projects, 'dates': dates}, context_instance=RequestContext(request))
+
+
+def daterange(start_date, end_date):
+    if start_date <= end_date:
+        for n in range((end_date - start_date).days + 1):
+            yield start_date + datetime.timedelta(n)
+    else:
+        for n in range((start_date - end_date).days + 1):
+            yield start_date - datetime.timedelta(n)
+
+
+@login_required
+def reportRedirect(request):
+    try:
+        d = str(request.GET.get('date',False))
+        temp = ''
+        for char in d:
+            if char != "." and char != ",":
+                temp += char
+        date_object = timedate.strptime(temp, '%b %d %Y')
+        day = date_object.strftime('%d')
+        month = date_object.strftime('%m')
+        year = date_object.strftime('%Y')
+    except:
+        d = date.today()
+        day = d.strftime('%d')
+        month = d.strftime('%m')
+        year = d.strftime('%Y')
+    return redirect('daily_reports.views.view_reports', month, day, year)
 
 
 @user_passes_test(lambda u: u.is_superuser)

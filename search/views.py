@@ -15,6 +15,7 @@ from accounts.utils import get_permission_form_for_model, set_permissions_for_mo
 from projects.models import Project
 from issues.models import Issue, IssueComment
 from helpdesknew.models import HelpRequest, HelpResponse
+from daily_reports.models import UserDailyReport, DailyReport
 
 
 @login_required
@@ -72,3 +73,26 @@ def search(request):
         question_count = question_count + 1
     print json_name
     return render_to_response("search/search_results.html", {"search": search, "projects": projects, "comment_count": comment_count, "issue_comment": json.dumps(json_comment), "summary_count": summary_count, "issue_summary": json.dumps(json_summary), "description_count": description_count, "issue_description": json.dumps(json_description), "response_count": response_count, "help_response": json.dumps(json_response), "name_count": name_count, "help_name": json.dumps(json_name), "question_count": question_count, "help_question": json.dumps(json_question)}, context_instance=RequestContext(request))
+
+
+@login_required
+def searchGlobal(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+
+    search = request.POST["searchText"]
+    
+    q_issues = Issue.objects.filter(Q(summary__contains=search) | Q(description__contains=search))
+    q_helprequest = HelpRequest.objects.filter(Q(question__contains=search) | Q(name__contains=search))
+    q_dailyreports = UserDailyReport.objects.filter(Q(description__contains=search))
+
+    return render_to_response("search/search_results.html", {"issues": q_issues, 
+                                                             "issue_count": q_issues.count(), 
+                                                             "helps": q_helprequest, 
+                                                             "help_count": q_helprequest.count(), 
+                                                             "reports": q_dailyreports, 
+                                                             "report_count": q_dailyreports.count(), 
+                                                             "projects": projects, 
+                                                             "search": search}, context_instance=RequestContext(request))
