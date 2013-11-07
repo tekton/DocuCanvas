@@ -12,7 +12,7 @@
 	td.sitetitle h1 {
 		font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
 		font-size: 24px;
-		color: #ffffff !important;
+		color: #ffffff;
 		margin-top: 0;
 		margin-bottom: 0;
 		padding: 5px 0;
@@ -101,26 +101,24 @@
 	"@type": "EmailMessage",
 	"action": {
 		"@type": "ViewAction",
-		"url": "http://gadget.channelfactory.com:81/issue/440",
+		"url": "{{url_base}}{% url 'issues.views.issue_overview' issue.id %}",
 		"name": "View in Gadget"
 	},
-	"description": "Description of Gadget Issue 440"
+	"description": "{{issue.description|safe}}"
 }
 </script>
-Dear {{username}},
 <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#e4e4e4">
 	<tr>
 		<td bgcolor="#e4e4e4" width="100%">
-
 		<table width="600" cellpadding="0" cellspacing="0" border="0" align="center" class="table">
 			<tr>
 				<td width="600" class="cell">
 		
 			   	<table width="600" cellpadding="0" cellspacing="0" border="0" class="table">
 					<tr><td height="20"></td></tr>
-					<tr bgcolor="#000000">
+					<tr bgcolor="#587C91">
 						<td width="25"></td>
-						<td class="sitetitle"><h1>GADGET</h1></td>
+						<td class="sitetitle"><h1>{{site_title}}</h1></td>
 					</tr>
 				</table>
 
@@ -132,11 +130,11 @@ Dear {{username}},
 								<tr>
 									<td bgcolor="#ffffff" class="contentblock">
 										
-										<h4 class="secondary"><strong><a href="#">Issue {{issue.id}}: {{issue.summary}}</a></h4>
+										<h4 class="secondary"><strong><a href="{{url_base}}{% url 'issues.views.issue_overview' issue.id %}">Issue {{issue.id}}: {{issue.summary}}</a></h4>
 										<div class="description">
 											{{issue.description|safe}}
 										</div>
-										<p class="meta"><em>{{timestamp}}</em> in <a href="{{project_url}}"><strong>{{project_name}}</strong></a></p>
+										<p class="meta"><em>{{timestamp}}</em> in <a href="{{url_base}}{% url 'projects.views.project_overview' issue.project.id %}"><strong>{{project_name}}</strong></a></p>
 									</td>
 								</tr>
 							</table>

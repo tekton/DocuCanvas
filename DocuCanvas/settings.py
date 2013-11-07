@@ -171,6 +171,7 @@ INSTALLED_APPS = (
     'polls',
     'feedback',
     'search',
+    'communications',
  )
 
 # A sample logging configuration. The only tangible logging
@@ -229,4 +230,4 @@ TINYMCE_DEFAULT_CONFIG ={
 try:
     from local_settings import *
 except ImportError:
-    pass
+    print "Can't import local settings for some reason..."

@@ -442,7 +442,8 @@ def issue_form(request):
             try:
                 issue.created_by = request.user
                 issue.save(request.user)
-                prepMail(issue, update_type='created')
+                print "item saved; now try to mail on it"
+                prepMail(issue, update_type='created')  # communications/views.py
                 # msg.send()  # commented out to avoid spamy spam spam
             except Exception, e:
                 print e
@@ -582,6 +583,8 @@ def edit(request, issue_id):
             try:
                 issue.modified_by = request.user
                 issue = form.save(request.user)
+                print "item saved; now try to mail on it!"
+                prepMail(issue)  # communications/views.py
             except Exception, e:
                 print e
                 print form.errors
