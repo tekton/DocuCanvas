@@ -133,8 +133,9 @@
 										<h4 class="secondary"><strong><a href="{{url_base}}{% url 'issues.views.issue_overview' issue.id %}">Issue {{issue.id}}: {{issue.summary}}</a></strong></h4>
 										{% if comment %}
 										<div class="description">
-											{{comment|safe}}
+											Comment : {{comment|safe}}
 										</div>
+										<hr />
 										{% endif %}
 										<div class="description">
 											{{issue.description|safe}}

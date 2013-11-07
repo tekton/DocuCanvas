@@ -8,6 +8,13 @@ from issues.models import SubscriptionToIssue, Issue  #, IssueComment
 
 import datetime
 
+"""
+    Goals: use a mail queue that each mail is created in
+
+    Using a queue system with every mail seperate allows for far more custimization to cater to everyones needs.
+    This also allows for things like message headers to be different, and priority queues on communication- send to assigned when critial is changed, but everyone elses update just gets to when its gotten to.
+"""
+
 def prepMailingList(issue, update_type="update"):
     '''
         Create new redis set(?) for e-mail list
@@ -133,6 +140,7 @@ def prepMail(issue, update_type='update', comment=False):
         print mail_to, mail_from, subject
 
 
+# depricated - for historical purposes only now
 def sendMail(mail_id):
     # get all the things from redis....
     mailing_list = True  ## get from redis based on mail_id
