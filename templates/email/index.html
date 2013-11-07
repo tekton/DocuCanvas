@@ -104,7 +104,7 @@
 		"url": "{{url_base}}{% url 'issues.views.issue_overview' issue.id %}",
 		"name": "View in Gadget"
 	},
-	"description": "{{issue.summary|safe|escape}}"
+	"description": "{{issue.summary|safe|escapejs}}"
 }
 </script>
 
