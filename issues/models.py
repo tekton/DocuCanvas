@@ -153,6 +153,7 @@ class Issue(models.Model):
             #except Exception, e:
             #    print 'unable to update index'
             #    print e
+        # go through list of assign/subscribed and put in a dictionary, loop through dictionary and queue an e-mail in celery
         super(Issue, self).save()
 
 

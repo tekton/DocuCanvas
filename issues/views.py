@@ -442,18 +442,6 @@ def issue_form(request):
             try:
                 issue.created_by = request.user
                 issue.save(request.user)
-                subject = 'New Issue Creted :: {0}'.format(issue.id)
-                html_content = get_template('email/index.html').render(
-                            Context({
-                                'username': request.user,
-                                'issue': issue,
-                            })
-                          )
-                mmail = 'tyler.agee@channelfactory.com'
-                
-                msg = EmailMessage(subject, html_content, mmail, [mmail])
-                msg.content_subtype = "html"  # Main content is now text/html
-                # msg.send()  # commented out to avoid spamy spam spam
             except Exception, e:
                 print e
 

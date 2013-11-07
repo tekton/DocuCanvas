@@ -107,7 +107,7 @@
 	"description": "Description of Gadget Issue 440"
 }
 </script>
-
+Dear {{username}},
 <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#e4e4e4">
 	<tr>
 		<td bgcolor="#e4e4e4" width="100%">
@@ -134,7 +134,7 @@
 										
 										<h4 class="secondary"><strong><a href="#">Issue {{issue.id}}: {{issue.summary}}</a></h4>
 										<div class="description">
-											{{issue.description}}
+											{{issue.description|safe}}
 										</div>
 										<p class="meta"><em>Friday, Aug 8, 2013 at 11:53am</em> in <a href="#"><strong>Enterprise Tool</strong></a></p>
 									</td>
