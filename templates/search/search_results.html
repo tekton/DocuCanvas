@@ -36,7 +36,21 @@ Search Results for "{{search}}"
     {% for help in helps %}
     <tr>
         <td width='80%'><a href="/help/{{help.id}}">{{help.name|truncatechars:80}}</a></td>
-        <td width='20%'>{{help.status}}</td>
+        <td width='20%'>
+            {% if help.status == '(1, 1)' %}
+                No Responses
+            {% elif help.status == "('active', 'Active Responses')" %}
+                Active
+            {% elif help.status == "('reopened', 'Re-Opened')" %}
+                Re-Opened
+            {% elif help.status == "('resolved', 'Resolved')" %}
+                Resolved
+            {% elif help.status == "('closed', 'Closed')" %}
+                Solved &amp; Sealed
+            {% else %}
+                >{{help.status}}
+            {% endif %}
+        </td>
     </tr>
     {% endfor %}
 </table>

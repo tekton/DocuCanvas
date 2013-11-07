@@ -83,7 +83,7 @@ def searchGlobal(request):
         print e
 
     search = request.POST["searchText"]
-    print search
+    
     q_issues = Issue.objects.filter(Q(summary__contains=search) | Q(description__contains=search))
     q_helprequest = HelpRequest.objects.filter(Q(question__contains=search) | Q(name__contains=search))
     q_dailyreports = UserDailyReport.objects.filter(Q(description__contains=search))
