@@ -13,3 +13,6 @@ celerybeat-schedule
 static/upload
 *local_settings.py
 DocuCanvas/woosh_index/
+access.log
+error.log
+g.pid
