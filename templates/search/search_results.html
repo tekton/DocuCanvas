@@ -9,71 +9,82 @@ Search Results for "{{search}}"
 {% endblock %}
 
 {% block bodyContent %}
-{% if issues or helps or reports %}
-{% if issues %}
-<h2 id='issue_header'>Issues ({{issue_count}} results)</h2>
-<table id="issue_results_container" width='100%'>
-    <tr>
-        <td width='80%'><b>Summary</b></td>
-        <td width='20%'><b>Status</b></td>
-    </tr>
-    {% for issue in issues %}
-    <tr>
-        <td width='80%'><a href="/issue/{{issue.id}}">{{issue.summary|truncatechars:80}}</a></td>
-        <td width='20%'>{{issue.status}}</td>
-    </tr>
-    {% endfor %}
-</table>
-</br>
-{% endif %}
-{% if helps %}
-<h2 id='help_header'>Help Desk ({{help_count}} results)</h2>
-<table id="help_results_container" width='100%'>
-    <tr>
-        <td width='80%'><b>Question</b></td>
-        <td width='20%'><b>Status</b></td>
-    </tr>
-    {% for help in helps %}
-    <tr>
-        <td width='80%'><a href="/help/{{help.id}}">{{help.name|truncatechars:80}}</a></td>
-        <td width='20%'>
-            {% if help.status == '(1, 1)' %}
-                No Responses
-            {% elif help.status == "('active', 'Active Responses')" %}
-                Active
-            {% elif help.status == "('reopened', 'Re-Opened')" %}
-                Re-Opened
-            {% elif help.status == "('resolved', 'Resolved')" %}
-                Resolved
-            {% elif help.status == "('closed', 'Closed')" %}
-                Solved &amp; Sealed
-            {% else %}
-                >{{help.status}}
-            {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-</br>
-{% endif %}
-{% if reports %}
-<h2 id='report_header'>Daily Reports ({{report_count}} results)</h2>
-<table id="report_results_container" width='100%'>
-    <tr>
-        <td width='80%'><b>Report</b></td>
-        <td width='20%'><b>Date</b></td>
-    </tr>
-    {% for report in reports %}
-    <tr>
-        <td width='80%'><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80}}</a></td>
-        <td width='20%'>{{report.date}}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% endif %}
-{% else %}
-<p>Query returned no results</p>
-{% endif %}
+<!-- Begin search-results -->
+<div class="search-results">
+	
+	{% if issues or helps or reports %}
+	{% if issues %}
+	<!-- Begin category -->
+	<div class="category">
+		<h2 id='issue_header'>{{issue_count}} results in Issues</h2>
+
+		<ul>
+			{% for issue in issues %}
+			<li>
+				<h3><a href="/issue/{{issue.id}}">{{issue.summary|truncatechars:80}}</a></h3>
+				<p class="description">{{issue.description|truncatechars:140|removetags:"p"}}</p>
+				<p class="attribs">Status: {{issue.status}} | Project: {{issue.project}}</p>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+	<!-- End category -->
+	{% endif %}
+	
+	{% if helps %}
+	<!-- Begin category -->
+	<div class="category">
+		<h2 id='help_header'>{{help_count}} results in Help Desk</h2>
+	
+		<ul>
+			{% for help in helps %}
+			<li>
+				<h3><a href="/help/{{help.id}}">{{help.name|truncatechars:80}}</a></h3>
+				<p class="description">{{issue.description|truncatechars:140|removetags:"p"}}</p>
+				<p class="attribs">Status: {% if help.status == '(1, 1)' %}
+		                No Responses
+		            {% elif help.status == "('active', 'Active Responses')" %}
+		                Active
+		            {% elif help.status == "('reopened', 'Re-Opened')" %}
+		                Re-Opened
+		            {% elif help.status == "('resolved', 'Resolved')" %}
+		                Resolved
+		            {% elif help.status == "('closed', 'Closed')" %}
+		                Solved &amp; Sealed
+		            {% else %}
+		                >{{help.status}}
+		            {% endif %}</p>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+	<!-- End category -->
+	{% endif %}
+	
+	{% if reports %}
+	<!-- Begin category -->
+	<div class="category">
+		<h2 id='report_header'>{{report_count}} results in Daily Reports</h2>
+	
+		<ul>
+			{% for report in reports %}
+			<li>
+				<h3><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80|removetags:"p"}}</a></h3>
+				<p class="description">{{issue.description|truncatechars:140|removetags:"p"}}</p>
+				<p class="attribs">{{report.date}}</p>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+	<!-- End category -->
+	{% endif %}
+	
+	{% else %}
+	<p>Your search for <strong>{{search}}</strong> returned no results</p>
+	{% endif %}
+	
+</div>
+<!-- End search-results -->
 {% endblock %}
 
 {% block endScripts %}
