@@ -20,6 +20,7 @@ class IssueForm(forms.ModelForm):
         fields = ('project', 'summary', 'description', 'meta_issues', 'projected_start','projected_end', 'assigned_to')
 
     def save(self, user=None, *args, **kwargs):
+        print "form save"
         super(IssueForm, self).save(*args, **kwargs)
         if user:
             try:
@@ -32,6 +33,12 @@ class IssueForm(forms.ModelForm):
             except Exception, e:
                 print e
         return self.instance
+    def __init__(self, *args, **kwargs):
+        super(IssueForm, self).__init__(*args, **kwargs)
+        if self.initial is not None:
+            # print "there were initial values"
+            if "project" in self.initial:
+                self.fields['meta_issues'] = forms.ModelChoiceField(queryset=MetaIssue.objects.filter(project=self.initial["project"]))
 
 
 class IssueFullForm(forms.ModelForm):
@@ -137,8 +144,11 @@ class MetaIssueForm(forms.ModelForm):
 
 
 class AdvSearchForm(forms.Form):
-    project = forms.ModelMultipleChoiceField(required=False, queryset=Project.objects.all())
-    meta_issues = forms.ModelMultipleChoiceField(required=False, queryset=MetaIssue.objects.all())
+    """
+        TODO: move fields to init so they are actually dynamic
+    """
+    project = forms.ModelChoiceField(required=False, queryset=Project.objects.all())
+    meta_issues = forms.ModelChoiceField(required=False, queryset=MetaIssue.objects.all())
     # state = forms.MultipleChoiceField(required=False, choices=models.BUGSTATE)
     # dates
     # projected_start = forms.DateField(required=False)
@@ -157,7 +167,8 @@ class AdvSearchForm(forms.Form):
     # wireframe = forms.CharField(required=False)
     # uri_to_test = forms.CharField(required=False)
 
-    assigned_to = forms.ModelMultipleChoiceField(required=False, queryset=User.objects.all())
+    assigned_to = forms.ModelChoiceField(required=False, queryset=User.objects.all())
+    created_by = forms.ModelChoiceField(required=False, queryset=User.objects.all())
     issue_type = forms.MultipleChoiceField(required=False, choices=ISSUETYPE)
 
     title = MultipleTextField(required=False)
@@ -170,8 +181,8 @@ class AdvSearchForm(forms.Form):
     priority = forms.MultipleChoiceField(required=False, choices=[(1, 'One'), (2, "Two"), (3, "Three")])
     fixability = forms.MultipleChoiceField(required=False, choices=[(1, 'One'), (2, "Two"), (3, "Three")])
 
-    r_and_d = MultipleTextField(required=False)
-    feature = MultipleTextField(required=False)
+    # r_and_d = MultipleTextField(required=False)
+    # feature = MultipleTextField(required=False)
     os = MultipleTextField(label="Operating System", required=False)
     os_version = MultipleTextField(label="OS Version", required=False)
     browser = MultipleTextField(required=False)
