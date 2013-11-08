@@ -38,7 +38,7 @@ class IssueForm(forms.ModelForm):
         if self.initial is not None:
             # print "there were initial values"
             if "project" in self.initial:
-                self.fields['meta_issues'] = forms.ModelChoiceField(queryset=MetaIssue.objects.filter(project=self.initial["project"]))
+                self.fields['meta_issues'] = forms.ModelChoiceField(required=False, queryset=MetaIssue.objects.filter(project=self.initial["project"]))
 
 
 class IssueFullForm(forms.ModelForm):
