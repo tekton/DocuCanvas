@@ -209,13 +209,21 @@ textarea {
 .search-results {
 	
 }
-
+	
+	/* --- | Category | --- */
+	
+	.search-results .category {
+		margin-bottom: 2em;
+	}
+	
 	.search-results h2 {
 		font-size: 16px;
 		font-weight: normal;
 		color: #999;
 		border-bottom: 1px solid #ccc;
 	}
+		
+	.search-results h2 strong { color: #000; }
 	
 	.search-results ul {
 		list-style: none;
@@ -242,7 +250,7 @@ textarea {
 			
 			.search-results ul li .attribs {
 				font-size: 12px;
-				color: #666;
+				color: #179400;
 			}
 
 /* --- Daily Reports

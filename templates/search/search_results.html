@@ -16,7 +16,7 @@ Search Results for "{{search}}"
 	{% if issues %}
 	<!-- Begin category -->
 	<div class="category">
-		<h2 id='issue_header'>{{issue_count}} results in Issues</h2>
+		<h2 id='issue_header'><strong>{{issue_count}}</strong> results in <em>Issues</em></h2>
 
 		<ul>
 			{% for issue in issues %}
@@ -34,7 +34,7 @@ Search Results for "{{search}}"
 	{% if helps %}
 	<!-- Begin category -->
 	<div class="category">
-		<h2 id='help_header'>{{help_count}} results in Help Desk</h2>
+		<h2 id='help_header'><strong>{{help_count}}</strong> results in <em>Help Desk</em></h2>
 	
 		<ul>
 			{% for help in helps %}
@@ -64,14 +64,13 @@ Search Results for "{{search}}"
 	{% if reports %}
 	<!-- Begin category -->
 	<div class="category">
-		<h2 id='report_header'>{{report_count}} results in Daily Reports</h2>
+		<h2 id='report_header'><strong>{{report_count}}</strong> results in <em>Daily Reports</em></h2>
 	
 		<ul>
 			{% for report in reports %}
 			<li>
 				<h3><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80|removetags:"p"}}</a></h3>
-				<p class="description">{{issue.description|truncatechars:140|removetags:"p"}}</p>
-				<p class="attribs">{{report.date}}</p>
+				<p class="attribs">By {{report.user}} | {{report.date}}</p>
 			</li>
 			{% endfor %}
 		</ul>
