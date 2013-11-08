@@ -480,6 +480,7 @@ def issue_form_project(request, project_id):
         form = IssueForm()
     return render_to_response("issues/issue_form_project.html", {'form': form, 'project': project, 'page_type': project.name, 'page_value': "Issue", 'projects': projects}, context_instance=RequestContext(request))
 
+
 @login_required
 @permission_required("issues.change_issue", raise_exception=True)
 def issue_form_project_and_meta(request, project_id, meta_id):

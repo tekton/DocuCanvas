@@ -127,7 +127,7 @@ def prepMail(issue, update_type='update', comment=False):
     subject = prepSubjectOfMail(issue, update_type)
     body = prepBodyOfMail(issue, update_type, comment)
     mail_to = prepMailingList(issue, update_type)
-    html_content = get_template('email/index.html').render(Context(body))
+    html_content = get_template('email/index-inline.html').render(Context(body))
     mail_from = settings.EMAIL_SENDER
     msg = EmailMessage(subject, html_content, mail_from, mail_to)
     msg.content_subtype = "html"  # Main content is now text/html; needs to be called after context is set
