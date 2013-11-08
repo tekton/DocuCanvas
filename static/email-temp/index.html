@@ -12,6 +12,7 @@
 	td.sitetitle h1 {
 		font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
 		font-size: 24px;
+		text-transform: uppercase;
 		color: #ffffff !important;
 		margin-top: 0;
 		margin-bottom: 0;
@@ -44,7 +45,6 @@
 	}
 	td.contentblock p a { 
 	  	color:#3ca7dd;
-/*		text-decoration:none;*/
 	}
 	
 	td.contentblock .description {
@@ -93,8 +93,21 @@
 	}
 	</style>
 </head>
-<body bgcolor="#e4e4e4" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" style="-webkit-font-smoothing: antialiased;width:100% !important;background:#e4e4e4;-webkit-text-size-adjust:none;">
-	
+<body bgcolor="#e4e4e4" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" style="width:100% !important;background:#e4e4e4;-webkit-text-size-adjust:none;">
+
+<script type="application/ld+json">
+{
+	"@context": "http://schema.org",
+	"@type": "EmailMessage",
+	"action": {
+		"@type": "ViewAction",
+		"url": "{{url_base}}{% url 'issues.views.issue_overview' issue.id %}",
+		"name": "View in Gadget"
+	},
+	"description": "{{issue.summary|safe|escapejs}}"
+}
+</script>
+
 <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#e4e4e4">
 	<tr>
 		<td bgcolor="#e4e4e4" width="100%">
@@ -155,8 +168,8 @@
 									<tr>
 										<td width="380" valign="top" class="footershow">
 						
-											<p style="color:#999999;font-size:12px;font-family:Helvetica,Arial,sans-serif;margin-top:0;margin-bottom:5px;padding-top:0;padding-bottom:0;line-height:18px;" class="reminder">You're receiving this because you're subscribed via <a href="#" style="color:#a6a6a6;text-decoration:underline;">our site</a>.</p>
-											<p style="color:#999999;font-size:12px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;margin-top:0;"><a href="#" style="text-decoration: none;color:#3ca7dd;"><strong>Edit your subscription</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#" style="text-decoration: none;color:#3ca7dd;"><strong>Unsubscribe instantly</strong></a></p>
+											<p style="color:#999999;font-size:12px;font-family:Helvetica,Arial,sans-serif;margin-top:0;margin-bottom:5px;padding-top:0;padding-bottom:0;line-height:18px;" class="reminder">You're receiving this because you're subscribed via <a href="{{url_base}}" style="color:#a6a6a6;text-decoration:underline;">our site</a>.</p>
+											<p style="color:#999999;font-size:12px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;margin-top:0;"><a href="{{url_base}}" style="text-decoration: none;color:#3ca7dd;"><strong>Unsubscribe instantly</strong></a></p>
 						
 										</td>
 									</tr>

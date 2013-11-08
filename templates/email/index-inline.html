@@ -5,93 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Gadget Notification</title>
-	<style>
-	a:hover {
-		text-decoration: underline !important;
-	}
-	td.sitetitle h1 {
-		font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
-		font-size: 24px;
-		text-transform: uppercase;
-		color: #ffffff !important;
-		margin-top: 0;
-		margin-bottom: 0;
-		padding: 5px 0;
-	}
-	td.contentblock h2 {
-		color:#333333 !important;
-		font-size:16px;
-		line-height:24px;
-		font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
-		margin-top:0;
-		margin-bottom:10px;
-		padding-top:0;
-		padding-bottom:0;
-		font-weight:normal;
-	}
-	td.contentblock h2 a {
-		color:#3ca7dd;
-	}
-	td.contentblock p { 
-	  	color:#333333;
-		font-size:13px;
-		line-height:19px;
-		font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
-		margin-top:0;
-		margin-bottom:12px;
-		padding-top:0;
-		padding-bottom:0;
-		font-weight:normal;
-	}
-	td.contentblock p a { 
-	  	color:#3ca7dd;
-	}
 	
-	td.contentblock .description {
-		margin-bottom: 12px;
-		padding: 12px 25px 0;
-		border-top: 1px solid #dddddd;
-		border-bottom: 1px solid #dddddd;
-	}
-	@media only screen and (max-device-width: 480px) {
-	     div[class="header"] {
-	          font-size: 16px !important;
-	     }
-	     table[class="table"], td[class="cell"] {
-	          width: 300px !important;
-	     }
-		td[class="footershow"] {
-	          width: 300px !important;
-	     }
-		table[class="hide"], img[class="hide"], td[class="hide"] {
-	          display: none !important;
-	     }
-	     img[class="divider"] {
-		      height: 1px !important;
-		 }
-		 td[class="logocell"] {
-			padding-top: 15px !important; 
-			padding-left: 15px !important;
-			width: 300px !important;
-		 }
-	     img[id="screenshot"] {
-	          width: 325px !important;
-	          height: 127px !important;
-	     }
-		img[class="galleryimage"] {
-			  width: 53px !important;
-	          height: 53px !important;
-		}
-		p[class="reminder"] {
-			font-size: 11px !important;
-		}
-		h4[class="secondary"] {
-			line-height: 22px !important;
-			margin-bottom: 15px !important;
-			font-size: 18px !important;
-		}
-	}
-	</style>
 </head>
 <body bgcolor="#e4e4e4" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" style="width:100% !important;background:#e4e4e4;-webkit-text-size-adjust:none;">
 
@@ -120,7 +34,7 @@
 					<tr><td height="20"></td></tr>
 					<tr bgcolor="#000000">
 						<td width="25"></td>
-						<td class="sitetitle"><h1>{{site_title}}</h1></td>
+						<td class="sitetitle"><h1 style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;font-size: 24px;text-transform: uppercase;margin-top: 0;margin-bottom: 0;padding: 5px 0;color: #ffffff;">{{site_title}}</h1></td>
 					</tr>
 				</table>
 
@@ -132,18 +46,18 @@
 								<tr>
 									<td bgcolor="#ffffff" class="contentblock">
 
-										<h2 class="secondary"><strong><a href="{{url_base}}{% url 'issues.views.issue_overview' issue.id %}">Issue {{issue.id}}: {{issue.summary}}</a></strong>{% if comment %}<br />has a new comment{% endif %}</h2>
+										<h2 class="secondary" style="font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;margin-top: 0;margin-bottom: 10px;padding-top: 0;padding-bottom: 0;font-weight: normal;color: #333333;"><strong><a href="{{url_base}}{% url 'issues.views.issue_overview' issue.id %}" style="color: #3ca7dd;">Issue {{issue.id}}: {{issue.summary}}</a></strong>{% if comment %}<br>has a new comment{% endif %}</h2>
 										{% if comment %}
-										<div class="description">
+										<div class="description" style="margin-bottom: 12px;padding: 12px 25px 0;border-top: 1px solid #dddddd;border-bottom: 1px solid #dddddd;">
 											Comment : {{comment|safe}}
 										</div>
 										
-										<h2 class="secondary">Issue Description:</h2>
+										<h2 class="secondary" style="font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;margin-top: 0;margin-bottom: 10px;padding-top: 0;padding-bottom: 0;font-weight: normal;color: #333333;">Issue Description:</h2>
 										{% endif %}
-										<div class="description">
+										<div class="description" style="margin-bottom: 12px;padding: 12px 25px 0;border-top: 1px solid #dddddd;border-bottom: 1px solid #dddddd;">
 											{{issue.description|safe}}
 										</div>
-										<p class="meta"><em>{{timestamp}}</em> in <a href="{{url_base}}{% url 'projects.views.project_overview' issue.project.id %}"><strong>{{project_name}}</strong></a></p>
+										<p class="meta" style="color: #333333;font-size: 13px;line-height: 19px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;margin-top: 0;margin-bottom: 12px;padding-top: 0;padding-bottom: 0;font-weight: normal;"><em>{{timestamp}}</em> in <a href="{{url_base}}{% url 'projects.views.project_overview' issue.project.id %}" style="color: #3ca7dd;"><strong>{{project_name}}</strong></a></p>
 									</td>
 								</tr>
 							</table>

@@ -60,12 +60,14 @@ Search Results for "{{search}}"
 <h2 id='report_header'>Daily Reports ({{report_count}} results)</h2>
 <table id="report_results_container" width='100%'>
     <tr>
-        <td width='80%'><b>Report</b></td>
+        <td width='60%'><b>Report</b></td>
+        <td width='20%'><b>Submitting User</b></td>
         <td width='20%'><b>Date</b></td>
     </tr>
     {% for report in reports %}
     <tr>
-        <td width='80%'><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80}}</a></td>
+        <td width='60%'><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80}}</a></td>
+        <td width='20%'>{{report.user}}
         <td width='20%'>{{report.date}}</td>
     </tr>
     {% endfor %}
