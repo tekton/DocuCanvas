@@ -21,6 +21,7 @@ from datetime import date
 
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot
 from accounts import utils as rputils
+from accounts.models import Account
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
 from communications.views import prepMail
@@ -548,19 +549,27 @@ def issue_overview(request, issue_id):
 
     form = IssueFullForm(instance=issue)
 
+    try:
+        accounts = Account.objects.all()
+    except Exception as e:
+        print "No accounts for you...or me..."
+        print e
+
     return render_to_response("issues/issue_overview.html", {'issue': issue,
-                                                                           'related_issues': related_issues,
-                                                                           'project_issues': project_issues,
-                                                                           'pin': pin,
-                                                                           'subscribe': subscribe,
-                                                                           'form': form,
-                                                                           'comment_form': comment_form,
-                                                                           'comments': comments,
-                                                                           "users": users,
-                                                                           "projects": projects,
-                                                                           "page_type": issue.project.name,
-                                                                           "page_value": "Issue",
-                                                                           "images": images}, context_instance=RequestContext(request))
+                                                             'related_issues': related_issues,
+                                                             'project_issues': project_issues,
+                                                             'pin': pin,
+                                                             'subscribe': subscribe,
+                                                             'form': form,
+                                                             'comment_form': comment_form,
+                                                             'comments': comments,
+                                                             "users": users,
+                                                             "projects": projects,
+                                                             "page_type": issue.project.name,
+                                                             "page_value": "Issue",
+                                                             "images": images,
+                                                             'accounts': accounts,
+                                                            }, context_instance=RequestContext(request))
 
 
 @login_required

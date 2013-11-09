@@ -53,8 +53,10 @@ Extends /templates/issue/base.html
 				Assign To:&nbsp;
 				<div class="input-append">
 					<select name="assigned_user">
-						{% for user in users %}
-							<option value="{{user.id}}">{{user.username}}</option>
+						{% for account in accounts %}
+							{% if account.assignable %}
+								<option value="{{account.user.id}}">{{account.user.username}}</option>
+							{% endif %}
 						{% endfor%}
 					</select>
 					<button class="btn" type="button" data-url="{% url 'issues.views.assign' issue.id %}/">Assign</button>
