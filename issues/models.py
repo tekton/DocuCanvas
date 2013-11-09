@@ -80,7 +80,7 @@ class Issue(models.Model):
     uri_to_test = models.CharField(max_length=255, blank=True, null=True)  # where they're having the issue
 
     def __unicode__(self):
-        return self.id
+        return str(self.id)
 
     def save(self, user=None, *args, **kwargs):
         if self.pk:
