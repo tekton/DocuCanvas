@@ -8,7 +8,6 @@ from boards.models import *
 
 admin.site.register(Node)
 admin.site.register(Project)
-admin.site.register(Account)
 admin.site.register(Section)
 admin.site.register(Issue)
 admin.site.register(MetaIssue)

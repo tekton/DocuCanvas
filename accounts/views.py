@@ -12,10 +12,12 @@ from django.db.models import Q
 from django.utils import timezone
 import datetime
 
+import celery
+
 from oauth2client.client import OAuth2WebServerFlow, TokenRevokeError
 from apiclient.discovery import build
 
-from models import GoogleAccount
+from models import GoogleAccount, Account
 
 
 def _get_flow():
@@ -90,3 +92,18 @@ def oauth_callback(request):
 #     acct.save()
 #
 #     return HttpResponse(output, mimetype="text/plain")
+
+
+@celery.task
+def setAssignable(account_q):
+    try:
+        account = Account.objects.get(pk=account_q)
+    except Exception as e:
+        print "Unable to get account"
+        print e
+    account.assignable = True
+    try:
+        account.save()
+    except Exception as e:
+        print "Unable to save account update"
+        print e
