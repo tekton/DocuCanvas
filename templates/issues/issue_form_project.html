@@ -21,49 +21,61 @@
         <label class="control-label" for="id_summary">Summary (required):</label>
             <div class="controls">
                 {{form.summary}}
-                <ul class="media-list" id="similar_issues_results">
-                </ul>
+                <ul class="media-list" id="similar_issues_results"></ul>
             </div>
+            <a id="advanced_form_toggle">Advanced Inputs</a>
         </div>
+        <div id="advanced_issue_form" style="display:none">
+            <table>
+                <tr>
+                    <td>
+                        <div class="control-group">
+                        <label class="control-label" for="id_meta_issues">MetaIssue</label>
+                            <div class="controls">
+                                {{form.meta_issues}}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="control-group">
+                        <label class="control-label" for="id_projects_start">Projected Start</label>
+                            <div class="controls">
+                                {{form.projected_start}}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="control-group">
+                        <label class="control-label" for="id_projected_end">Projected End</label>
+                            <div class="controls">
+                                {{form.projected_end}}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="control-group">
+                        <label class="control-label" for="id_assigned_to">Assigned To</label>
+                            <div class="controls">
+                                {{form.assigned_to}}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="control-group">
+                            <div class="controls">  
+                                <input type="file" name="myfiles" multiple>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div> 
         <div class="control-group">
         <label class="control-label" for="id_description">Description</label>
             <div class="controls">
                 {{form.description}}
             </div>
-        </div>
-
-        <div class="control-group">
-            <div class="controls">  
-            <input type="file" name="myfiles" multiple>
-            </div>
-        </div>
-        <a id="advanced_form_toggle">Advanced Inputs</a>
-        <div id="advanced_issue_form" style="display:none">
-            <div class="control-group">
-            <label class="control-label" for="id_meta_issues">MetaIssue</label>
-                <div class="controls">
-                    {{form.meta_issues}}
-                </div>
-            </div>
-            <div class="control-group">
-            <label class="control-label" for="id_meta_issues">Projected Start</label>
-                <div class="controls">
-                    {{form.projected_start}}
-                </div>
-            </div>
-            <div class="control-group">
-            <label class="control-label" for="id_meta_issues">Projected End</label>
-                <div class="controls">
-                    {{form.projected_end}}
-                </div>
-            </div>
-            <div class="control-group">
-            <label class="control-label" for="id_meta_issues">Assigned To</label>
-                <div class="controls">
-                    {{form.projected_end}}
-                </div>
-            </div>
-        </div>  
+        </div> 
 
         <div class="control-group">
             <div class="controls">
