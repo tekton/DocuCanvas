@@ -53,6 +53,7 @@ Extends /templates/issue/base.html
 				Assign To:&nbsp;
 				<div class="input-append">
 					<select name="assigned_user">
+						<option value="">---------</option>
 						{% for account in accounts %}
 							{% if account.assignable %}
 								<option value="{{account.user.id}}">{{account.user.username}}</option>
