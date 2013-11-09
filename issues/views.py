@@ -550,7 +550,7 @@ def issue_overview(request, issue_id):
     form = IssueFullForm(instance=issue)
 
     try:
-        accounts = Account.objects.all()
+        accounts = Account.objects.all().order_by('user__username')
     except Exception as e:
         print "No accounts for you...or me..."
         print e
