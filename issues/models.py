@@ -79,6 +79,9 @@ class Issue(models.Model):
     wireframe = models.CharField(max_length=255, blank=True, null=True)  # for suggestions, tasks, features, etc
     uri_to_test = models.CharField(max_length=255, blank=True, null=True)  # where they're having the issue
 
+    def __unicode__(self):
+        return self.id
+
     def save(self, user=None, *args, **kwargs):
         if self.pk:
             if user:
@@ -259,6 +262,8 @@ class SubscriptionToIssue(models.Model):
     # if not e-mail, what?!
     communication_channel = models.CharField(max_length=255, blank=True, null=True)  # phone number, or? -- facebook, twitter, etc
 
+    def __unicode__(self):
+        return "{0} :: {1}".format(self.issue.id, self.user.username)
 
 class PinIssue(models.Model):
     issue = models.ForeignKey(Issue)
