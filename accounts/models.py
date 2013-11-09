@@ -86,6 +86,9 @@ class Account(models.Model):
     twitter = models.CharField(max_length=255, null=True, blank=True)  #
     organization = models.CharField(max_length=255, null=True, blank=True)  #
 
+    def __unicode__(self):
+        return self.user.username
+
 
 class GoogleAccount(models.Model):
     """
