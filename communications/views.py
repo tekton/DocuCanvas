@@ -7,6 +7,7 @@ from django.template.loader import get_template
 from issues.models import SubscriptionToIssue, Issue  #, IssueComment
 
 import datetime
+import celery
 
 """
     Goals: use a mail queue that each mail is created in
@@ -110,6 +111,7 @@ def prepSubjectOfMail(issue, update_type="update", item="Issue"):
     return rtn_str
 
 #TODO - convert to celery task
+@celery.task
 def prepMail(issue, update_type='update', comment=False):
     '''
         Called from the issue save function

@@ -445,7 +445,7 @@ def issue_form(request):
                 issue.created_by = request.user
                 issue.save(request.user)
                 print "item saved; now try to mail on it"
-                prepMail(issue, update_type='created')  # communications/views.py
+                prepMail.delay(issue, update_type='created')  # communications/views.py
                 # msg.send()  # commented out to avoid spamy spam spam
             except Exception, e:
                 print e
@@ -595,7 +595,7 @@ def edit(request, issue_id):
                 issue.modified_by = request.user
                 issue = form.save(request.user)
                 print "item saved; now try to mail on it!"
-                prepMail(issue)  # communications/views.py
+                prepMail.delay(issue)  # communications/views.py
             except Exception, e:
                 print e
                 print form.errors
@@ -763,7 +763,7 @@ def submit_comment(request, issue_id):
             if form.is_valid():
                 try:
                     comment = form.save(request.user)  # save the modelform's model!
-                    prepMail(issue, "comment", comment.description)
+                    prepMail.delay(issue, "comment", comment.description)
                 except Exception, e:
                     print "Error saving form"
                     print e
