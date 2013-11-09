@@ -85,6 +85,7 @@ class Account(models.Model):
     facebook = models.CharField(max_length=255, null=True, blank=True)  #
     twitter = models.CharField(max_length=255, null=True, blank=True)  #
     organization = models.CharField(max_length=255, null=True, blank=True)  #
+    assignable = models.NullBooleanField(null=True, blank=True)
 
     def __unicode__(self):
         return self.user.username
