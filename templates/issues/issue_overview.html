@@ -598,13 +598,8 @@ Extends /templates/issue/base.html
 						<option value="child">Child</option>
 						<option value="parent">Parent</option>
 					</select>
-					of Issue
+					of Issue <input type="text" id="modal-issue-related-id" size="6" />
 				</p>
-				<select id="modal-issue-related-id">
-			    {% for project_issue in project_issues%}
-			        <option value="{{project_issue.id}}">{{project_issue.summary}}</option>
-			    {% endfor %}
-				</select>
 			</form>
 		</div>
 		<footer class="modal-footer">
