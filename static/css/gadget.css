@@ -38,6 +38,9 @@ textarea {
 #sitenav #mainnav .dropdown-menu li {
     text-transform: none;
 }
+
+#sitenav #userbar .btn { margin-top: 0; }
+
 #sitenav form {
     margin-bottom: 0;
 }
