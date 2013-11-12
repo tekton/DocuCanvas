@@ -71,6 +71,10 @@
                                         <li class="nav-header">Account</li>
                                         <li><a href="{% url 'auth.views.account_settings' %}">Settings</a></li>
                                         <li><a href="/accounts/logout/?next=/">Logout</a></li>
+                                        {% if user.username == 'wilsonhays' %}
+                                        <li class="nav-header">Just for you, bro</li>
+                                        <li><a href="/issue/track">Issue Tracker</a></li>
+                                        {% endif %}
                                     </ul>
                                 </li>
                             </ul>
