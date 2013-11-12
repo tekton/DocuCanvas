@@ -50,18 +50,16 @@ Extends /templates/issue/base.html
 	<li>
 		<a id="context-issue-assignto">
 			<form class="form-inline">
-				Assign To:&nbsp;
-				<div class="input-append">
-					<select name="assigned_user">
-						<option value="">---------</option>
-						{% for account in accounts %}
-							{% if account.assignable %}
-								<option value="{{account.user.id}}">{{account.user.username}}</option>
-							{% endif %}
-						{% endfor%}
-					</select>
-					<button class="btn" type="button" data-url="{% url 'issues.views.assign' issue.id %}/">Assign</button>
-				</div>
+				<label>Assign To:&nbsp;</label>
+				<select name="assigned_user" class="input-small">
+					<option value="">---------</option>
+					{% for account in accounts %}
+						{% if account.assignable %}
+							<option value="{{account.user.id}}">{{account.user.username}}</option>
+						{% endif %}
+					{% endfor%}
+				</select>
+				<button class="btn" type="button" data-url="{% url 'issues.views.assign' issue.id %}/">Assign</button>
 			</form>
 		</a>
 	</li>
@@ -69,10 +67,8 @@ Extends /templates/issue/base.html
 		<a id="context-issue-status">
 			<form class="form-inline">
 				Status:&nbsp;
-				<div class="input-append">
-					{{form.status}}
-					<button class="btn" type="button">Set</button>
-				</div>
+				{{form.status}}
+				<button class="btn" type="button">Set</button>
 			</form>
 		</a>
 	</li>
@@ -583,23 +579,33 @@ Extends /templates/issue/base.html
 	<div id="modal-issue-related" class="modal fade hide">
 		<header class="modal-header">
 			<button class="close" data-dismiss="modal">×</button>
-			<h3>Select Related Issue</h3>
+			<h3 class="text-center">Select Related Issue</h3>
 		</header>
 		<div class="modal-body">
 			<div id="modal-comment-alert" class="alert alert-error hide">
 				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
 			</div>
 			<form class="form-horizontal">
-				<p>
-					Current issue {{issue.id}} is a
-					<select id="modal-issue-related-type">
-						<option value="duplicate">Duplicate</option>
-						<option value="related">Related</option>
-						<option value="child">Child</option>
-						<option value="parent">Parent</option>
-					</select>
-					of Issue <input type="text" id="modal-issue-related-id" size="6" />
-				</p>
+				<div class="control-group">
+					<label class="control-label">Current issue {{issue.id}} is a</label>
+					<div class="controls">
+						<select id="modal-issue-related-type">
+							<option value="duplicate">Duplicate</option>
+							<option value="related">Related</option>
+							<option value="child">Child</option>
+							<option value="parent">Parent</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">of Issue</label>
+					<div class="controls">
+						<span class="input-prepend">
+							<span class="add-on">#</span>
+							<input type="text" id="modal-issue-related-id" size="6" />
+						</span>
+					</div>
+				</div>
 			</form>
 		</div>
 		<footer class="modal-footer">

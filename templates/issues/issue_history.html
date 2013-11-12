@@ -26,50 +26,59 @@
 
         <div class="dashboard_container_section">
             <h3>Status Updates</h3>
-            <table class="dashboard_table tbl-generic tbl-generic tbl-issue-history">
-                <tr>
-                    <td class="tbl-issue-history-header">Old Status</td>
-                    <td class="tbl-issue-history-header">New Status</td>
-                </tr>
-            {% for status_update in issue_status_updates%}
+            <table class="table table-bordered table-striped table-condensed">
+				<thead>
+	                <tr>
+	                    <th class="tbl-issue-history-header">Old Status</th>
+	                    <th class="tbl-issue-history-header">New Status</th>
+	                </tr>
+				</thead>
+				<tbody>
+					{% for status_update in issue_status_updates%}
 
                 {% if newest_status_update != status_update.timestamp %}
                     {% set newest_status_update = status_update.timestamp%}
                     <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{status_update.timestamp}}</td></tr>
-                {% endif %}
+					{% endif %}
 
-                <tr>
-                    <td class="tbl-project">{{status_update.old_status}}</td>
-                    <td class="tbl-project">{{status_update.new_status}}</td>
-                </tr>
-            {% endfor%}
+	                <tr>
+	                    <td class="tbl-project">{{status_update.old_status}}</td>
+	                    <td class="tbl-project">{{status_update.new_status}}</td>
+	                </tr>
+					{% endfor%}
+				</tbody>
             </table>
         </div>
         <div class="dashboard_container_section">
             <h3>Field Updates</h3>
-            <table class="dashboard_table tbl-generic tbl-issue-history">
-                <tr>
-                    <td class="tbl-issue-history-third tbl-issue-history-header">Field</td>
-                    <td class="tbl-issue-history-third tbl-issue-history-header">Old Value</td>
-                    <td class="tbl-issue-history-third tbl-issue-history-header">New Value</td>
-                </tr>
+            <table class="table table-bordered table-striped table-condensed">
+				<thead>
+	                <tr>
+						<th>Date</th>
+	                    <th class="tbl-issue-history-third tbl-issue-history-header">Field</th>
+	                    <th class="tbl-issue-history-third tbl-issue-history-header">Old Value</th>
+	                    <th class="tbl-issue-history-third tbl-issue-history-header">New Value</th>
+	                </tr>
+				</thead>
+				<tbody>
             {% for field_update in issue_field_updates%}
                 {% if newest_field_update != field_update.created %}
                     {% set newest_field_update = field_update.created %}
-                    <tr class="date_header tbl-rowheader"><td class="tbl-fauxth" colspan="4">{{field_update.created}}</td></tr>
+                    <tr class="info"><td class="tbl-fauxth" colspan="4">{{field_update.created}}</td></tr>
                 {% endif %}
-
                 <tr>
+					<td></td>
                     <td class="tbl-issue-history-third">{{field_update.field}}</td>
                     <td class="tbl-issue-history-third">{{field_update.old_value}}</td>
                     <td class="tbl-issue-history-third">{{field_update.new_value}}</td>
                 </tr>
             {% endfor%}
+				</tbody>
             </table>
         </div>
         <div class="dashboard_container_section">
             <h3>Historical Issues</h3>
-            <table class="dashboard_table tbl-generic tbl-issue-history">
+            <table class="table table-bordered table-striped table-condensed">
             {% for historical_issue in historical_issues%}
 
                 {% if newest_historical_issue != historical_issue.created %}
@@ -78,9 +87,12 @@
                 {% endif %}
 
                 <tr>
-                    <td class="tbl-project tbl-issue-historical-object" data-historical-id="{{historical_issue.id}}"><a href="#">Version:{{historical_issue.id}}:{{historical_issue.modified}}</a></td>
+                    <td class="tbl-project tbl-issue-historical-object" data-historical-id="{{historical_issue.id}}" colspan="2"><a href="#">Version {{historical_issue.id}}: {{historical_issue.modified}}</a></td>
                 </tr>
-
+				<tr class="historical_issue_{{historical_issue.id}}" style="display:none">
+					<th>Field</th>
+					<th>Value</th>
+				</tr>
                 {% for key, value in historical_issue.items%}
                 <tr class="historical_issue_{{historical_issue.id}}" style="display:none">
                     <td class="tbl-issue-history-header">{{key}}</td>
