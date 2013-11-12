@@ -63,22 +63,28 @@ Issue Tracker
     </div>
     <div id="issue-column-aside" class="span3 metainfo-asidecolumn">
         <aside id="issue-metainfo" class="well metainfo metainfo-show">
-            {% if filter_assigned or filter_project %}
-            <h3>Applied Filters:</h3>
-            {% if filter_assigned %}
-            <b>Users:</b>
-            {% for user in filter_assigned %}
-            </br>{{user}} 
-            {% endfor %}
-            </br>
-            {% endif %}
-            {% if filter_project %}
-            <b>Projects:</b>
-            {% for project in filter_project %}
-            </br>{{project}}
-            {% endfor %}
-            {% endif %}
-        </br></br>
+            {% if filter_assigned or filter_project or filter_status %}
+                <h3>Applied Filters:</h3>
+                {% if filter_assigned %}
+                <b>Users:</b>
+                    {% for user in filter_assigned %}
+                    </br>{{user}} 
+                    {% endfor %}
+                </br>
+                {% endif %}
+                {% if filter_project %}
+                <b>Projects:</b>
+                    {% for project in filter_project %}
+                    </br>{{project}}
+                    {% endfor %}
+                {% endif %}
+                {% if filter_status %}
+                <b>Status:</b>
+                    {% for status in filter_status %}
+                    </br>{{status}}
+                    {% endfor %}
+                {% endif %}
+                </br></br>
             {% endif %}
             <h3>Filter Options</h3>
             <form id="modal-issue-fixed-form" class="form-inline" action="{% url 'issues.views.trackIssues' %}" method="POST">
@@ -109,6 +115,23 @@ Issue Tracker
                         </td>
                     </tr>
                 </table>
+                <table id='status-filter-table'>
+                    <tr><td>Status <a onclick='addStatus()'>(+)</a></td></tr>
+                    <tr>
+                        <td>
+                            <select name='status'>
+                                <option value='none'></option>
+                                <option value='active'>Active</option>
+                                <option value='duplicate'>Duplicate</option>
+                                <option value='fixed'>Fixed</option>
+                                <option value='not_a_bug'>Not A Bug</option>
+                                <option value='retest'>Retest</option>
+                                <option value='unverified'>Unverified</option>
+                                <option value='wont_fix'>Won't Fix</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
                 <input type='submit' value='Apply Filters'></tr>
             </form>
         </aside>
@@ -126,6 +149,11 @@ Issue Tracker
     function addProject(){
         var content = "<tr><td><select name='project'><option value='none'></option>{% for project in projects %}<option value='{{project}}'>{{project.name}}</option>{% endfor %}</select></td></tr>";
         $('#project-filter-table').append(content);
+    }
+
+    function addStatus(){
+        var content= "<tr><td><select name='status'><option value='none'></option><option value='active'>Active</option><option value='duplicate'>Duplicate</option><option value='fixed'>Fixed</option><option value='not_a_bug'>Not A Bug</option><option value='retest'>Retest</option><option value='unverified'>Unverified</option><option value='wont_fix'>Won't Fix</option></select></td></tr>";
+        $('#status-filter-table').append(content);
     }
 </script>
 {% endblock %}

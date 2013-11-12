@@ -847,27 +847,63 @@ def trackIssues(request):
         print e
     filter_projects = []
     filter_assigned = []
+    filter_status = []
+    project_list = []
+    user_list = []
+    status_list = []
+    q = []
     if request.method == 'POST':
-        q = []
         for project in request.POST.getlist('project'):
             if project == 'none':
                 pass
             else:
                 filter_projects.append(project)
                 my_project = Project.objects.get(name=project)
-                q.extend(Issue.objects.filter((Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True)) & Q(project=my_project)).order_by('created'))
+                project_list.extend(Issue.objects.filter(Q(project=my_project)).order_by('created'))
         for user in request.POST.getlist('assigned_to'):
             if user == 'none':
                 pass
             else:
                 filter_assigned.append(user)
                 my_user = User.objects.get(username=user)
-                q.extend(Issue.objects.filter((Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True)) & Q(assigned_to=my_user)).order_by('created'))
+                user_list.extend(Issue.objects.filter(Q(assigned_to=my_user)).order_by('created'))
+        for status in request.POST.getlist('status'):
+            if status == 'none':
+                pass
+            else:
+                filter_status.append(status)
+                status_list.extend(Issue.objects.filter(Q(status=status)).order_by('created'))
+        if project_list and not user_list and not status_list:
+            q.extend(project_list)
+        elif user_list and not project_list and not status_list:
+            q.extend(user_list)
+        elif status_list and not project_list and not user_list:
+            q.extend(status_list)
+        elif project_list and user_list and status_list:
+            for item in project_list:
+                if item in user_list and status_list:
+                    q.append(item)
+        elif project_list and user_list and not status_list:
+            for item in project_list:
+                if item in user_list:
+                    q.append(item)
+        elif project_list and not user_list and status_list:
+            for item in project_list:
+                if item in status_list:
+                    q.append(item)
+        elif not project_list and user_list and status_list:
+            for item in user_list:
+                if item in status_list:
+                    q.append(item)
     else:
-        q = Issue.objects.filter(Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True)).order_by('assigned_to')
+        q.extend(Issue.objects.all().order_by('status'))
+
+    q.sort(key=lambda x: x.created, reverse=True)
+
     return render_to_response("issues/issue_tracker.html", {'projects': projects, 
                                                             'users': users, 
                                                             'user': request.user, 
                                                             'issues': q, 
                                                             'filter_project': filter_projects, 
-                                                            'filter_assigned': filter_assigned}, context_instance=RequestContext(request))
+                                                            'filter_assigned': filter_assigned,
+                                                            'filter_status': filter_status}, context_instance=RequestContext(request))
