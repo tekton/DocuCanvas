@@ -84,7 +84,7 @@ Issue Tracker
                     </br>{{status}}
                     {% endfor %}
                 {% endif %}
-                </br></br>
+                </br><input type='button' value='Remove Filters' onclick='reload()'></br>
             {% endif %}
             <h3>Filter Options</h3>
             <form id="modal-issue-fixed-form" class="form-inline" action="{% url 'issues.views.trackIssues' %}" method="POST">
@@ -132,7 +132,7 @@ Issue Tracker
                         </td>
                     </tr>
                 </table>
-                <input type='submit' value='Apply Filters'></tr>
+                <input type='submit' value='Apply Filters'>
             </form>
         </aside>
     </div>
@@ -154,6 +154,9 @@ Issue Tracker
     function addStatus(){
         var content= "<tr><td><select name='status'><option value='none'></option><option value='active'>Active</option><option value='duplicate'>Duplicate</option><option value='fixed'>Fixed</option><option value='not_a_bug'>Not A Bug</option><option value='retest'>Retest</option><option value='unverified'>Unverified</option><option value='wont_fix'>Won't Fix</option></select></td></tr>";
         $('#status-filter-table').append(content);
+    }
+    function reload(){
+        window.open('/issue/track');
     }
 </script>
 {% endblock %}
