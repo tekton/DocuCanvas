@@ -834,3 +834,40 @@ def set_issue_start_and_end_dates(request):
 
     return render_to_response("issues/set_issue_start_and_end_dates.html", {"success_or_fail": success_or_fail}, context_instance=RequestContext(request))
 '''
+
+@login_required
+def trackIssues(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    try:
+        users = User.objects.all()
+    except Exception, e:
+        print e
+    filter_projects = []
+    filter_assigned = []
+    if request.method == 'POST':
+        q = []
+        for project in request.POST.getlist('project'):
+            if project == 'none':
+                pass
+            else:
+                filter_projects.append(project)
+                my_project = Project.objects.get(name=project)
+                q.extend(Issue.objects.filter((Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True)) & Q(project=my_project)).order_by('created'))
+        for user in request.POST.getlist('assigned_to'):
+            if user == 'none':
+                pass
+            else:
+                filter_assigned.append(user)
+                my_user = User.objects.get(username=user)
+                q.extend(Issue.objects.filter((Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True)) & Q(assigned_to=my_user)).order_by('created'))
+    else:
+        q = Issue.objects.filter(Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True)).order_by('assigned_to')
+    return render_to_response("issues/issue_tracker.html", {'projects': projects, 
+                                                            'users': users, 
+                                                            'user': request.user, 
+                                                            'issues': q, 
+                                                            'filter_project': filter_projects, 
+                                                            'filter_assigned': filter_assigned}, context_instance=RequestContext(request))
