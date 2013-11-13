@@ -144,19 +144,20 @@ Issue Tracker
     function addAssignedTo(){
         var content = "<tr><td><select name='assigned_to'><option value='none'></option>{% for user in users %}<option value='{{user.username}}'>{{user.username}}</option>{% endfor %}</select></td></tr>";
         $('#assigned-filter-table').append(content);
-    }
+    };
 
     function addProject(){
         var content = "<tr><td><select name='project'><option value='none'></option>{% for project in projects %}<option value='{{project}}'>{{project.name}}</option>{% endfor %}</select></td></tr>";
         $('#project-filter-table').append(content);
-    }
+    };
 
     function addStatus(){
         var content= "<tr><td><select name='status'><option value='none'></option><option value='active'>Active</option><option value='duplicate'>Duplicate</option><option value='fixed'>Fixed</option><option value='not_a_bug'>Not A Bug</option><option value='retest'>Retest</option><option value='unverified'>Unverified</option><option value='wont_fix'>Won't Fix</option></select></td></tr>";
         $('#status-filter-table').append(content);
-    }
+    };
+
     function reload(){
-        window.open('/issue/track');
-    }
+        window.location.replace('/issue/track');
+    };
 </script>
 {% endblock %}
