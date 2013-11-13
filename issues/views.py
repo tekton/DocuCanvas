@@ -845,6 +845,7 @@ def trackIssues(request):
         users = User.objects.all()
     except Exception, e:
         print e
+
     filter_projects = []
     filter_assigned = []
     filter_status = []
@@ -852,6 +853,8 @@ def trackIssues(request):
     user_list = []
     status_list = []
     q = []
+
+    # If request.POST, apply appropriate filters based on POST data
     if request.method == 'POST':
         for project in request.POST.getlist('project'):
             if project == 'none':
@@ -859,20 +862,24 @@ def trackIssues(request):
             else:
                 filter_projects.append(project)
                 my_project = Project.objects.get(name=project)
-                project_list.extend(Issue.objects.filter(Q(project=my_project)).order_by('created'))
+                project_list.extend(Issue.objects.filter(Q(project=my_project)))
         for user in request.POST.getlist('assigned_to'):
             if user == 'none':
                 pass
             else:
                 filter_assigned.append(user)
                 my_user = User.objects.get(username=user)
-                user_list.extend(Issue.objects.filter(Q(assigned_to=my_user)).order_by('created'))
+                user_list.extend(Issue.objects.filter(Q(assigned_to=my_user)))
         for status in request.POST.getlist('status'):
             if status == 'none':
                 pass
+            elif status == 'no_status':
+                filter_status.append("None")
+                status_list.extend(Issue.objects.filter(Q(status__isnull=True)))
             else:
                 filter_status.append(status)
-                status_list.extend(Issue.objects.filter(Q(status=status)).order_by('created'))
+                status_list.extend(Issue.objects.filter(status=status))
+        # Merging lists so only results that match all filters show up
         if project_list and not user_list and not status_list:
             q.extend(project_list)
         elif user_list and not project_list and not status_list:
@@ -895,9 +902,12 @@ def trackIssues(request):
             for item in user_list:
                 if item in status_list:
                     q.append(item)
+        else:
+            q.extend(Issue.objects.all())
     else:
-        q.extend(Issue.objects.all().order_by('status'))
+        q.extend(Issue.objects.all())
 
+    # Sort list of issues by date of creation
     q.sort(key=lambda x: x.created, reverse=True)
 
     return render_to_response("issues/issue_tracker.html", {'projects': projects, 

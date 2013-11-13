@@ -66,22 +66,22 @@ Issue Tracker
             {% if filter_assigned or filter_project or filter_status %}
                 <h3>Applied Filters:</h3>
                 {% if filter_assigned %}
-                <b>Users:</b>
+                    <b>Users:</b>
                     {% for user in filter_assigned %}
-                    </br>{{user}} 
+                        </br>{{user}} 
                     {% endfor %}
-                </br>
+                    </br>
                 {% endif %}
                 {% if filter_project %}
-                <b>Projects:</b>
+                    <b>Projects:</b>
                     {% for project in filter_project %}
-                    </br>{{project}}
+                        </br>{{project}}
                     {% endfor %}
                 {% endif %}
                 {% if filter_status %}
-                <b>Status:</b>
+                    <b>Status:</b>
                     {% for status in filter_status %}
-                    </br>{{status}}
+                        </br>{{status}}
                     {% endfor %}
                 {% endif %}
                 </br><input type='button' value='Remove Filters' onclick='reload()'></br>
@@ -127,7 +127,8 @@ Issue Tracker
                                 <option value='not_a_bug'>Not A Bug</option>
                                 <option value='retest'>Retest</option>
                                 <option value='unverified'>Unverified</option>
-                                <option value='wont_fix'>Won't Fix</option>
+                                <option value="wont_fix">Won't Fix</option>
+                                <option value='no_status'>No Status (None)</option>
                             </select>
                         </td>
                     </tr>
