@@ -1,5 +1,7 @@
 {% extends "search/base.html" %}
 
+{% block bodyClass %}search-results{% endblock %}
+
 {% block pageTitle %}
 Search Results for "{{search}}"
 {% endblock %}
@@ -10,82 +12,126 @@ Search Results for "{{search}}"
 
 {% block bodyContent %}
 <!-- Begin search-results -->
-<div class="search-results">
+<div class="row search-results">
 	
-	{% if issues or helps or reports %}
-	{% if issues %}
-	<!-- Begin category -->
-	<div class="category">
-		<h2 id='issue_header'><strong>{{issue_count}}</strong> results in <em>Issues</em></h2>
+	<div class="span9">
+	
+		{% if issues or helps or reports %}
+		{% if issues %}
+		<!-- Begin category -->
+		<div class="category issues">
+			<h2 id='issue_header'><strong>{{issue_count}}</strong> results in <em>Issues</em></h2>
 
-		<ul>
-			{% for issue in issues %}
-			<li>
-				<h3><a href="/issue/{{issue.id}}">{{issue.summary|truncatechars:80}}</a></h3>
-				<p class="description">{{issue.description|truncatechars:140|removetags:"p"}}</p>
-				<p class="attribs">Status: {{issue.status}} | Project: {{issue.project}}</p>
-			</li>
-			{% endfor %}
-		</ul>
+			<ul>
+				{% for issue in issues %}
+				<li>
+					<h3><a href="/issue/{{issue.id}}">{{issue.summary|truncatechars:80}}</a></h3>
+					<p class="description">{{issue.description|truncatechars:140|striptags}}</p>
+					<p class="attribs">Status: {{issue.status}} | Project: {{issue.project}}</p>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<!-- End category -->
+		{% endif %}
+	
+		{% if helps %}
+		<!-- Begin category -->
+		<div class="category help-desk">
+			<h2 id='help_header'><strong>{{help_count}}</strong> results in <em>Help Desk</em></h2>
+	
+			<ul>
+				{% for help in helps %}
+				<li>
+					<h3><a href="/help/{{help.id}}">{{help.name|truncatechars:80}}</a></h3>
+					<p class="description">{{issue.description|truncatechars:140|striptags}}</p>
+					<p class="attribs">Status: {% if help.status == '(1, 1)' %}
+			                No Responses
+			            {% elif help.status == "('active', 'Active Responses')" %}
+			                Active
+			            {% elif help.status == "('reopened', 'Re-Opened')" %}
+			                Re-Opened
+			            {% elif help.status == "('resolved', 'Resolved')" %}
+			                Resolved
+			            {% elif help.status == "('closed', 'Closed')" %}
+			                Solved &amp; Sealed
+			            {% else %}
+			                >{{help.status}}
+			            {% endif %}</p>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<!-- End category -->
+		{% endif %}
+	
+		{% if reports %}
+		<!-- Begin category -->
+		<div class="category reports">
+			<h2 id='report_header'><strong>{{report_count}}</strong> results in <em>Daily Reports</em></h2>
+	
+			<ul>
+				{% for report in reports %}
+				<li>
+					<h3><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80|striptags}}</a></h3>
+					<p class="attribs">By {{report.user}} | {{report.date}}</p>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<!-- End category -->
+		{% endif %}
+	
+		{% else %}
+		<p>Your search for <strong>{{search}}</strong> returned no results</p>
+		{% endif %}
+	
 	</div>
-	<!-- End category -->
-	{% endif %}
 	
-	{% if helps %}
-	<!-- Begin category -->
-	<div class="category">
-		<h2 id='help_header'><strong>{{help_count}}</strong> results in <em>Help Desk</em></h2>
-	
-		<ul>
-			{% for help in helps %}
+	<div class="span3">
+		
+		<h2>Filter results</h2>
+		<ul class="nav sidenav nav-list">
+			{% if issues %}
 			<li>
-				<h3><a href="/help/{{help.id}}">{{help.name|truncatechars:80}}</a></h3>
-				<p class="description">{{issue.description|truncatechars:140|removetags:"p"}}</p>
-				<p class="attribs">Status: {% if help.status == '(1, 1)' %}
-		                No Responses
-		            {% elif help.status == "('active', 'Active Responses')" %}
-		                Active
-		            {% elif help.status == "('reopened', 'Re-Opened')" %}
-		                Re-Opened
-		            {% elif help.status == "('resolved', 'Resolved')" %}
-		                Resolved
-		            {% elif help.status == "('closed', 'Closed')" %}
-		                Solved &amp; Sealed
-		            {% else %}
-		                >{{help.status}}
-		            {% endif %}</p>
+				<label class="checkbox">
+					<input type="checkbox" checked data-toggle="issues"> Issues (<strong>{{issue_count}}</strong>)
+				</label>
 			</li>
-			{% endfor %}
-		</ul>
-	</div>
-	<!-- End category -->
-	{% endif %}
-	
-	{% if reports %}
-	<!-- Begin category -->
-	<div class="category">
-		<h2 id='report_header'><strong>{{report_count}}</strong> results in <em>Daily Reports</em></h2>
-	
-		<ul>
-			{% for report in reports %}
+			{% endif %}
+			{% if helps %}
 			<li>
-				<h3><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80|removetags:"p"}}</a></h3>
-				<p class="attribs">By {{report.user}} | {{report.date}}</p>
+				<label class="checkbox">
+					<input type="checkbox" checked data-toggle="help-desk"> Help Desk (<strong>{{help_count}}</strong>)
+				</label>
 			</li>
-			{% endfor %}
+			{% endif %}
+			{% if reports %}
+			<li>
+				<label class="checkbox">
+					<input type="checkbox" checked data-toggle="reports"> Daily Reports (<strong>{{report_count}}</strong>)
+				</label>
+			</li>
+			{% endif %}
 		</ul>
+		
 	</div>
-	<!-- End category -->
-	{% endif %}
-	
-	{% else %}
-	<p>Your search for <strong>{{search}}</strong> returned no results</p>
-	{% endif %}
 	
 </div>
 <!-- End search-results -->
 {% endblock %}
 
 {% block endScripts %}
-
+<script>
+$(function(){
+	$('.sidenav input[type="checkbox"]').on('change', function(e){
+		if($(this).is(':checked')){
+			$('.category.' + $(this).attr('data-toggle')).fadeIn();
+		}
+		else {
+			$('.category.' + $(this).attr('data-toggle')).fadeOut();
+		}
+	});
+})
+</script>
 {% endblock %}

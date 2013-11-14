@@ -57,12 +57,13 @@ Used for all templates in /templates/issues
 {% endif %}
 
 <div id="maincontent" class="container">
+	<div id="pagemessage"></div>
 	<header id="pageheader">
+		{% block issueSubtitle %}{% endblock %}
 		<h1 id="pagetitle" class="page-header">
 			{% block pageTitle %}Issues{% endblock %}
 		</h1>
 	</header>
-	<div id="pagemessage"></div>
 	{% block bodyContent %}{% endblock %}
 </div>
 
