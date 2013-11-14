@@ -564,7 +564,7 @@ def issue_overview(request, issue_id):
     except Exception as e:
         print "No accounts for you...or me..."
         print e
-
+    template = request.GET.get("template", "issues/issue_overview.html")
     return render_to_response("issues/issue_overview.html", {'issue': issue,
                                                              'related_issues': related_issues,
                                                              'project_issues': project_issues,
@@ -708,10 +708,10 @@ def issue_search_advanced(request):
     query = None
 
     for field in form.cleaned_data.keys():
+        # print field
+        # print form.cleaned_data[field]
         qr = None
-        if field is not None:
-            continue
-        if len(form.cleaned_data[field]) == 0:
+        if not form.cleaned_data[field]:
             continue
         for item in form.cleaned_data[field]:
             q = Q(**{"%s__contains" % field: item}) if type(item) == unicode else Q(**{"%s" % field: item})
@@ -723,8 +723,12 @@ def issue_search_advanced(request):
             query = query & qr
         else:
             query = qr
-
-    results = Issue.objects.filter(query)
+    if query:
+        print query
+        results = Issue.objects.filter(query)
+    else:
+        print query
+        return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm(), "projects": projects}, context_instance=RequestContext(request))
     return render_to_response("issues/issue_search_results.html", {'results': results, "projects": projects}, context_instance=RequestContext(request))
 
 

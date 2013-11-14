@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
+from django.http import QueryDict
 from django.contrib.auth.decorators import login_required
 from projects.models import *
 from projects.forms import *
@@ -58,9 +59,12 @@ def home(request):
         print e
         notification_recipients = None
 
-    print users
+    # print users
     #subscribed = SubscriptionToIssue.objects.select_related().filter(user=request.user)
-    return render_to_response("dashboard/dashboard.html", {"issues": issues, "subscribed": subscribed,
+    
+    template = request.GET.get("template", "dashboard/dashboard.html")
+
+    return render_to_response(template, {"issues": issues, "subscribed": subscribed,
             "projects": projects, "pins": pins, "newsfeeds": newsfeeds, "notifications": notification_recipients,
             "num_notifications": num_notifications, "users": users, "page_type": "Dashboard", "page_value": "Overview",
             "navIndicator": 'dashboard'}, context_instance=RequestContext(request))
