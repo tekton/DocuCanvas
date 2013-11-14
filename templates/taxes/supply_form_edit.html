@@ -1,0 +1,73 @@
+{% extends "taxes/base.html" %}
+
+{% block contextNav %}
+{% endblock %} 
+
+{% block pageTitle %}
+Research Tax Credit Study:</br>
+R&D Supplies Consumed
+{% endblock %}
+
+{% block bodyContent%}
+<div id="formContainer">
+    <form action="{% url 'taxes.views.editSupplyForm' supply_analysis.id %}" id = "supplyForm" method="post" enctype="multipart/form-data">        
+        {% csrf_token %}
+        {{ supply_formset.management_form }}
+        <input id="id_supplycostanalysis_set-TOTAL_FORMS" name="supplycostanalysis_set-TOTAL_FORMS" type="hidden" value="1" />
+        <input id="id_supplycostanalysis_set-INITIAL_FORMS" name="supplycostanalysis_set-INITIAL_FORMS" type="hidden" value="0" />
+        <input id="id_supplycostanalysis_set-MAX_NUM_FORMS" name="supplycostanalysis_set-MAX_NUM_FORMS" type="hidden" value="1000" />
+        <table width='100%'>
+            <tr>
+                <td width='50%'>Company Name: <input type='text' name='company_name' id='id_company_name' value='{{supply_analysis.company_name}}'/></td>
+                <td width='50%'>Tax Year End: <input type='text' name='tax_year_end' id='id_tax_year_end' value='{{supply_analysis.tax_year_end}}'/></td>
+            </tr>
+        </table>
+    </br>
+        <table id="projectFormContainer" width='100%'>
+            <tr>
+                <th style='text-align: left;'>Supplier Name</th>
+                <th style='text-align: left;'>G/L Account #</th>
+                <th style='text-align: left;'>Dollar Amount</th>
+            </tr>
+            {% for supply in supply_list %}
+            <tr>
+                <td>{{supply.supplier_name}}</td>
+                <td>{{supply.account_id}}</td>
+                <td>{{supply.cost}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>
+                    <input type='text' maxlength='255' name='supplycostanalysis_set-0-supplier_name' id='id_supplycostanalysis_set-0-supplier_name'>
+                </td>
+                <td>
+                    <input type='text' maxlength='255' name='supplycostanalysis_set-0-account_id' id='id_supplycostanalysis_set-0-account_id'>
+                </td>
+                <td>
+                    <input type='text' maxlength='255' name='supplycostanalysis_set-0-cost' id='id_supplycostanalysis_set-0-cost'>
+                </td>
+            </tr>
+        </table>
+        <input title='Add a new poll item' type='button' name='add_poll_item' value='Add Item' onclick = 'addsupplycostanalysis()'/>
+        <input type="submit" name="submit" value="Submit"/>
+    </form>
+</div>
+{% endblock%}
+
+{% block endScripts %}
+<script type="text/javascript">
+var itemNumber = 1;
+function addsupplycostanalysis(){
+    $('#projectFormContainer').append("<tr><td><input type='text' maxlength='255' name='supplycostanalysis_set-"+itemNumber+"-supplier_name' id='id_supplycostanalysis_set-"+itemNumber+"-supplier_name'></td><td><input type='text' maxlength='255' name='supplycostanalysis_set-"+itemNumber+"-account_id' id='id_supplycostanalysis_set-"+itemNumber+"-account_id'></td><td><input type='text' maxlength='255' name='supplycostanalysis_set-"+itemNumber+"-cost' id='id_supplycostanalysis_set-"+itemNumber+"-cost'></td></tr>");
+    itemNumber ++;
+    $('#id_supplycostanalysis_set-TOTAL_FORMS').val(function(i, oldval){
+        return ++oldval;
+    });
+    console.log($('#id_supplycostanalysis_set-TOTAL_FORMS').val());
+}
+
+$(function(){
+    $('#id_tax_year_end').datepicker({dateFormat: 'mm/dd/yy'});
+});
+</script>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "taxes/base.html" %}
+
+{% block contextNav %}
+{% endblock %} 
+
+{% block pageTitle %}
+Research Tax Credit Study:</br>
+Project List
+{% endblock %}
+
+{% block bodyContent%}
+<div id="formContainer">
+    <form action="{% url 'taxes.views.editProjectForm' project_analysis.id %}" id = "projectForm" method="post" enctype="multipart/form-data">        
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <input id="id_projectlistanalysis_set-TOTAL_FORMS" name="projectlistanalysis_set-TOTAL_FORMS" type="hidden" value="1" />
+        <input id="id_projectlistanalysis_set-INITIAL_FORMS" name="projectlistanalysis_set-INITIAL_FORMS" type="hidden" value="0" />
+        <input id="id_projectlistanalysis_set-MAX_NUM_FORMS" name="projectlistanalysis_set-MAX_NUM_FORMS" type="hidden" value="1000" />
+        <table width='100%'>
+            <tr>
+                <td width='50%'>Client: <input type='text' name='client' id='id_client' value='{{project_analysis.client}}'></td>
+                <td width='50%'>Tax Year End: <input type='text' name='tax_year_end' id='id_tax_year_end' value='{{project_analysis.tax_year_end}}'/></td>
+            </tr>
+        </table>
+    </br>
+        <table id="projectFormContainer" width='100%'>
+            <tr>
+                <th style='text-align: left;'>Project</th>
+                <th style='text-align: left;'>Contact Name</th>
+                <th style='text-align: left;'>Contact Phone Number</th>
+            </tr>
+            {% for project in project_list %}
+            <tr>
+                <td>{{project.project}}</td>
+                <td>{{project.contact}}</td>
+                <td>{{project.contact_number}}</td>
+                <td><input type='button' id='id_delete_instance-{{project.id}}' name='delete_instance-{{project.id}}' value='X' onclick='deleteInstance({{project.id}})'/ >
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>
+                    <select id='id_projectlistanalysis_set-0-project' name='projectlistanalysis_set-0-project'>
+                        {% for project in projects %}
+                        <option value='{{project.id}}'>{{project}}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <input type='text' maxlength='255' name='projectlistanalysis_set-0-contact' id='id_projectlistanalysis_set-0-contact'>
+                </td>
+                <td>
+                    <input type='text' maxlength='255' name='projectlistanalysis_set-0-contact_number' id='id_projectlistanalysis_set-0-contact_number'>
+                </td>
+            </tr>
+        </table>
+        <input title='Add a new poll item' type='button' name='add_poll_item' value='Add Item' onclick = 'addProjectListAnalysis()'/>
+        <input type="submit" name="submit" value="Submit"/>
+    </form>
+</div>
+{% endblock%}
+
+{% block endScripts %}
+<script type="text/javascript">
+var itemNumber = 1;
+function addProjectListAnalysis(){
+    $('#projectFormContainer').append("<tr><td><select id='id_projectlistanalysis_set-"+itemNumber+"-project' name='projectlistanalysis_set-"+itemNumber+"-project'>{% for project in projects %}<option value='{{project.id}}'>{{project}}</option>{% endfor %}</select></td><td><input type='text' maxlength='255' name='projectlistanalysis_set-"+itemNumber+"-contact' id='id_projectlistanalysis_set-"+itemNumber+"-contact'></td><td><input type='text' maxlength='255' name='projectlistanalysis_set-"+itemNumber+"-contact_number' id='id_projectlistanalysis_set-"+itemNumber+"-contact_number'></td></tr>");
+    itemNumber ++;
+    $('#id_projectlistanalysis_set-TOTAL_FORMS').val(function(i, oldval){
+        return ++oldval;
+    });
+    console.log($('#id_projectlistanalysis_set-TOTAL_FORMS').val());
+}
+
+function deleteInstance(project_list_id){
+    window.location.replace('/research/deleteInstance/' + project_list_id);
+}
+
+$(function(){
+    $('#id_tax_year_end').datepicker({dateFormat: 'mm/dd/yy'});
+});
+</script>
+{% endblock %}

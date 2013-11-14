@@ -131,3 +131,108 @@ def submitContractForm(request):
                                                                'contract_form': contract_form,
                                                                'contract_analysis': contract_analysis,
                                                                'contract_formset': contract_formset}, context_instance=RequestContext(request))
+
+
+def editProjectForm(request, project_analysis_id):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    try:
+        project_analysis = ProjectAnalysis.objects.get(pk=project_analysis_id)
+    except Exception, e:
+        print e
+    try:
+        project_list = ProjectListAnalysis.objects.filter(report=project_analysis)
+    except Exception, e:
+        print e
+
+    if request.method == 'POST':
+        print request.POST
+        project_item_formset = inlineformset_factory(ProjectAnalysis, ProjectListAnalysis, can_delete=False, extra=1)
+        project_formset = project_item_formset(request.POST, instance=project_analysis)
+        if request.POST.getlist('client')[0] != project_analysis.client:
+            try:
+                project_analysis.client = request.POST.getlist('client')[0]
+                project_analysis.save()
+            except Exception, e:
+                raise e
+        if project_formset.is_valid():
+            try:
+                project_formset.save()
+                return redirect('taxes.views.editProjectForm', project_analysis.id)
+            except Exception, e:
+                raise e
+        else:
+            print project_formset.errors
+    return render_to_response("taxes/project_form_edit.html", {'projects': projects,
+                                                               'project_analysis': project_analysis,
+                                                               'project_list': project_list}, context_instance=RequestContext(request))
+
+
+def deleteProjectListInstance(request, project_list_id):
+    try:
+        project_list = ProjectListAnalysis.objects.get(pk=project_list_id)
+        project_analysis = project_list.report
+        project_list.delete()
+    except Exception, e:
+        print e
+    return redirect('taxes.views.editProjectForm', project_analysis.id)
+
+
+def editSupplyForm(request, supply_analysis_id):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        raise e
+    try:
+        supply_analysis = SupplyAnalysis.objects.get(pk=supply_analysis_id)
+    except Exception, e:
+        raise e
+    try:
+        supply_list = SupplyCostAnalysis.objects.filter(report=supply_analysis)
+    except Exception, e:
+        raise e
+    if request.method == 'POST':
+        supply_item_formset = inlineformset_factory(SupplyAnalysis, SupplyCostAnalysis, can_delete=False, extra=1)
+        supply_formset = supply_item_formset(request.POST, instance=supply_analysis)
+        if supply_formset.is_valid():
+            try:
+                supply_formset.save()
+                return redirect('taxes.views.editSupplyForm', supply_analysis.id)
+            except Exception, e:
+                raise e
+        else:
+            print supply_formset.errors
+    return render_to_response('taxes/supply_form_edit.html', {'projects': projects,
+                                                              'supply_analysis': supply_analysis,
+                                                              'supply_list': supply_list}, context_instance=RequestContext(request))
+
+
+def editContractForm(request, contract_analysis_id):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        raise e
+    try:
+        contract_analysis = ContractAnalysis.objects.get(pk=contract_analysis_id)
+    except Exception, e:
+        raise e
+    try:
+        contract_list = ContractResearchCostAnalysis.objects.filter(report=contract_analysis)
+    except Exception, e:
+        raise e
+    if request.method == 'POST':
+        contract_item_formset = inlineformset_factory(ContractAnalysis, ContractResearchCostAnalysis, can_delete=False, extra=1)
+        contract_formset = contract_item_formset(request.POST, instance=contract_analysis)
+        if contract_formset.is_valid():
+            try:
+                contract_formset.save()
+                return redirect('taxes.views.editContractForm', contract_analysis.id)
+            except Exception, e:
+                raise e
+        else:
+            print contract_formset.errors
+    return render_to_response('taxes/contract_form_edit.html', {'projects': projects,
+                                                                'contract_analysis': contract_analysis,
+                                                                'contract_list': contract_list}, context_instance=RequestContext(request))
