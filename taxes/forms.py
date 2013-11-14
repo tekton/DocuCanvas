@@ -1,6 +1,6 @@
 from django import forms
 
-from taxes.models import InformationRequestChecklist, ProjectAnalysis, ProjectListAnalysis, SupplyAnalysis, SupplyCostAnalysis, ContractAnalysis, ContractResearchCostAnalysis
+from taxes.models import InformationChecklist, ProjectAnalysis, ProjectListAnalysis, SupplyAnalysis, SupplyCostAnalysis, ContractAnalysis, ContractResearchCostAnalysis
 
 class ProjectAnalysisForm(forms.ModelForm):
 	class Meta:
