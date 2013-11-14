@@ -274,7 +274,7 @@ body.issue-overview {}
 	
 	/* --- | Issue Metainfo | --- */
 
-	#issue-metainfo {
+/*	#issue-metainfo {
 		font-size: 14px;
 	}
 		
@@ -288,7 +288,7 @@ body.issue-overview {}
 			
 			#issue-metainfo dl dd {
 				margin: 0 0 .5em;
-			}
+			}*/
 
 /* --- Search Results
 -------------------------------------------------------*/
