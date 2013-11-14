@@ -709,6 +709,8 @@ def issue_search_advanced(request):
 
     for field in form.cleaned_data.keys():
         qr = None
+        if field is not None:
+            continue
         if len(form.cleaned_data[field]) == 0:
             continue
         for item in form.cleaned_data[field]:

@@ -1,5 +1,7 @@
 # Generic Django settings
 # Part of tekton/tools!
+from datetime import timedelta
+
 import os
 
 INSTALL_NAME = "DocuCanvas"
@@ -212,8 +214,8 @@ djcelery.setup_loader()
 ### given the prevelance of heroku usage, this is just an easy way to use that and fall back to localhost for dev
 BROKER_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 CELERY_RESULT_BACKEND = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
-CELERY_IMPORTS = ("communications.views", "accounts.views")  # Uncomment line to add where the tasks are! A suggest default is in there
-#CELERYBEAT_SCHEDULE = {'update_index': {'task': 'haystack.update_index.update_index', 'schedule': timedelta(days=1), },}
+CELERY_IMPORTS = ("communications.views", "accounts.views", "search.views")  # Uncomment line to add where the tasks are! A suggest default is in there
+CELERYBEAT_SCHEDULE = {'update_index': {'task': 'search.views.updateHaystackIndex', 'schedule': timedelta(seconds=300), },}
 ### /CELERY ###
 
 TINYMCE_DEFAULT_CONFIG ={
