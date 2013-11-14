@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
 from projects.models import Project
-from taxes.models import InformationRequestChecklist, ProjectAnalysis, ProjectListAnalysis, SupplyAnalysis, SupplyCostAnalysis, ContractAnalysis, ContractResearchCostAnalysis
+from taxes.models import InformationChecklist, ProjectAnalysis, ProjectListAnalysis, SupplyAnalysis, SupplyCostAnalysis, ContractAnalysis, ContractResearchCostAnalysis
 from taxes.forms import ProjectAnalysisForm, ProjectListAnalysisForm, SupplyAnalysisForm, SupplyCostAnalysisForm, ContractAnalysisForm, ContractResearchCostAnalysisForm
 from datetime import date, timedelta
 
