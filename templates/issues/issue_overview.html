@@ -244,7 +244,7 @@ Extends /templates/issue/base.html
 							<dd>{{issue.modified}}</dd>
 
 						<dt>Modified By</dt>
-							<dd><a href="{% url 'auth.views.user_overview' issue.modified_by.id %}">{{issue.modified_by}}</a></dd>
+							<dd>{% if issues.modified_by %}<a href="{% url 'auth.views.user_overview' issue.modified_by.id %}">{{issue.modified_by}}</a>{% else %}None{% endif %}</dd>
 
 						{% if issue.point_of_contact %}
 						<dt>Point of Contact</dt>
