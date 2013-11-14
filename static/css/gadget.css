@@ -206,54 +206,153 @@ textarea {
 
 
 
+/* --- Issue
+-------------------------------------------------------*/
+
+body.issue-overview {}
+	
+	/* --- | Well | --- */
+	
+	body.issue-overview .well {
+		border: 1px solid #e3e3e3;
+		box-shadow: none;
+		border-radius: 0;
+	}
+		
+		body.issue-overview .well h3 {
+			font-size: 18px;
+			line-height: 1em;
+			margin-top: 0;
+		}
+	
+	/* --- | Pageheader | --- */
+	
+	body.issue-overview #pageheader {
+		margin: 1em 0;
+	}
+		
+		body.issue-overview #pageheader ul.issue-subtitle {
+			font-size: 14px;
+			color: #999;
+			list-style: none;
+			margin: 0 0 .5em;
+		}
+		
+			body.issue-overview #pageheader ul.issue-subtitle li {
+				display: inline;
+				margin-left: 15px;
+				padding-left: 15px;
+				border-left: 1px solid #999;
+			}
+			body.issue-overview #pageheader ul.issue-subtitle li:first-child {
+				margin-left: 0;
+				padding-left: 0;
+				border: 0;
+			}
+			
+		body.issue-overview #pageheader h1 {
+			font-size: 28px;
+			line-height: 1.25em;
+			text-align: left;
+			margin: 0;
+			padding: 0;
+			border: 0;
+		}
+	
+	/* --- | Comments | --- */
+	
+	body.issue-overview #issue-comments-list {}
+		
+		body.issue-overview #issue-comments-list li {
+			padding-top: 15px;
+			border-top: 1px solid #eee;
+		}
+			
+			body.issue-overview #issue-comments-list li time {
+				font-size: 12px;
+			}
+	
+	/* --- | Issue Metainfo | --- */
+
+	#issue-metainfo {
+		font-size: 14px;
+	}
+		
+		#issue-metainfo dl {
+			margin: 0;
+		}
+			
+			#issue-metainfo dl dt {
+
+			}
+			
+			#issue-metainfo dl dd {
+				margin: 0 0 .5em;
+			}
+
 /* --- Search Results
 -------------------------------------------------------*/
 
-.search-results {
+div.search-results {
 	
 }
 	
 	/* --- | Category | --- */
 	
-	.search-results .category {
+	div.search-results .category {
 		margin-bottom: 2em;
 	}
 	
-	.search-results h2 {
+	div.search-results h2 {
 		font-size: 16px;
 		font-weight: normal;
 		color: #999;
 		border-bottom: 1px solid #ccc;
 	}
 		
-	.search-results h2 strong { color: #000; }
+	div.search-results h2 strong { color: #000; }
 	
-	.search-results ul {
+	div.search-results ul {
 		list-style: none;
 		margin: 0;
 		padding: 0;
 	}
 		
-		.search-results ul li {
+		div.search-results ul li {
 			font-size: 16px;
-			margin-bottom: 1em;
+			margin-bottom: 1.5em;
 		}
 		
-			.search-results ul li h3 {
+			div.search-results ul li h3 {
 				font-size: 18px;
 				font-weight: normal;
 				line-height: 1em;
 				margin: 0 0 5px;
 			}
 			
-			.search-results ul li p {
+			div.search-results ul li p {
 				line-height: 1em;
 				margin: 0 0 5px;
 			}
 			
-			.search-results ul li .attribs {
+			div.search-results ul li .attribs {
 				font-size: 12px;
 				color: #179400;
+			}
+	
+	/* --- | Comment | --- */
+	
+	div.search-results .sidenav {}
+		
+		div.search-results .sidenav li {
+			display: block;
+			margin: 0 0 -1px;
+			padding: 8px 14px;
+			border: 1px solid #eee;
+		}
+		
+			div.search-results .sidenav li label {
+				margin-bottom: 0;
 			}
 
 /* --- Daily Reports

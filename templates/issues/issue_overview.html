@@ -28,15 +28,22 @@ Extends /templates/issue/base.html
 		**NOTE: made available by baseContent - if baseContent is defined within the template,bodyContent will not be displayed unless contained within baseContent**
 {% endcomment %}
 
+{% block bodyClass %}issue-overview{% endblock %}
+
+{% block issueSubtitle %}
+<ul class="issue-subtitle">
+	<li>Project: <a href="{% url 'projects.views.project_overview' issue.project.id %}">{{page_type}}</a></li>
+	<li>Issue ID: {{issue.id}}</li>
+	<li><span class="title-issuestatus label {{issueLabelClass}}">{{issue.get_status_display}}</span></li>
+</ul>
+{% endblock %}
+
 {% block pageTitle %}
-<span class="title-pagetype">{{page_type}}</span>
 {% if page_value %}
-<span class="title-separator title-seperator-pagevalue">::</span>
-<span class="title-pagevalue">{{page_value}}</span>
+
 {% endif %}
 {% if issue %}
-<span class="title-separator title-seperator-issuestatus">::</span>
-<span class="title-issuestatus label {{issueLabelClass}}">{{issue.get_status_display}}</span>
+	{{issue.summary}}
 {% endif %}
 {% endblock %}
 
@@ -85,12 +92,12 @@ Extends /templates/issue/base.html
 	<article class="row">
 		<div id="issue-column-main" class="span9 metainfo-maincolumn">
 			<div id="issue-details" class="well">
-				<div class="media">
+				<!-- <div class="media">
 					<div class="media-body">
 						<h3 class="media-header">Summary</h3>
 						{{issue.summary}}
 					</div>
-				</div>
+				</div> -->
 				<div class="media">
 					<div class="media-body">
 						<h3 class="media-header">Description</h3>
@@ -130,7 +137,7 @@ Extends /templates/issue/base.html
 						</div>
 						{% endif %}
 						<div class="control-group">
-							<label class="control-label" for="id_description">Comment</label>
+							<label class="control-label" for="id_description">Add a Comment</label>
 							<div class="control-group">
 								{{comment_form.description}}
 							</div>
@@ -146,7 +153,7 @@ Extends /templates/issue/base.html
 							<div class="media-body">
 								<aside class="clearfix">
 									<p class="muted">
-										<span class="pull-left">{{comment.user}}</span>
+										<span class="pull-left"><a href="{% url 'auth.views.user_overview' comment.user.id %}">{{comment.user}}</a></span>
 										<span class="pull-right">
 											<time datetime="{{comment.created|date:"c"}}">{{comment.created|naturaltime}}</time>
 										</span>
@@ -171,10 +178,10 @@ Extends /templates/issue/base.html
 				</div>
 				<div id="issue-metainfo-content" class="metainfo-content">
 					<dl>
-						<dt>Issue Id:</dt>
-							<dd>{{issue.id}}</dd>
+						<!-- <dt>Issue Id</dt>
+						<dd>{{issue.id}}</dd> -->
 
-						<dt>Assigned To:</dt>
+						<dt>Assigned To</dt>
 							<dd>
 								{% if issue.assigned_to.id %}
 								<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>
@@ -182,10 +189,27 @@ Extends /templates/issue/base.html
 								{{issue.assigned_to}}
 								{% endif %}
 							</dd>
+						
+						<dt>Issue Type</dt>
+						<dd>{{issue.issue_type}}</dd>
+						
+						<!-- <dt>Status</dt>
+						<dd>
+							<span class="label {{issueLabelClass}}">{{issue.get_status_display}}</span>
+						</dd> -->
+						
+						<dt>Criticality</dt>
+						<dd>{{issue.criticality}}</dd>
+						
+						<hr />
 
-						<dt>Meta Issue:</dt>
-                        <dd>{% if issue.meta_issues %}<a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues.title}}</a>{% else %}None{% endif %}</dd>
-
+						{% if issue.meta_issues %}
+						<dt>Meta Issue</dt>
+                        <dd><a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues.title}}</a></dd>
+						
+						<hr />
+						{% endif %}
+						
 						<!--
 						<dt>Project Name:</dt>
 							<dd><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></dd>
@@ -205,56 +229,73 @@ Extends /templates/issue/base.html
 						<dt>Actual End:</dt>
 							<dd>{{issue.actual_end}}</dd>-->
 
-						<dt>Date Reported:</dt>
-							<dd>{{issue.date_reported}}</dd>
+						{% if issue.date_reported %}
+						<dt>Date Reported</dt>
+						<dd>{{issue.date_reported}}</dd>
+						{% endif %}
 
-						<dt>Created:</dt>
+						<dt>Created On</dt>
 							<dd>{{issue.created}}</dd>
-
-						<dt>Modified:</dt>
+						
+						<dt>Created By</dt>
+							<dd><a href="{% url 'auth.views.user_overview' issue.created_by.id %}">{{issue.created_by}}</a></dd>
+						
+						<dt>Last Modified</dt>
 							<dd>{{issue.modified}}</dd>
 
-						<dt>View Type:</dt>
-							<dd>{{issue.view_type}}</dd>
+						<dt>Modified By</dt>
+							<dd><a href="{% url 'auth.views.user_overview' issue.modified_by.id %}">{{issue.modified_by}}</a></dd>
 
-						<dt>Issue Type:</dt>
-							<dd>{{issue.issue_type}}</dd>
+						{% if issue.point_of_contact %}
+						<dt>Point of Contact</dt>
+						<dd>{{issue.point_of_contact}}</dd>
+						{% endif %}
+						
 
 						<!--<dt>Title:</dt>
 							<dd>{{issue.title}}</dd>
 
 						<dt>Link Slug:</dt>
 							<dd>{{issue.link_slug}}</dd>-->
-
-						<dt>Status:</dt>
-							<dd>
-								<span class="label {{issueLabelClass}}">{{issue.get_status_display}}</span>
-							</dd>
-
-						<dt>Criticality:</dt>
-							<dd>{{issue.criticality}}</dd>
-
-						<dt>Fixability:</dt>
+						
+						{% if issue.view_type or issue.fixability %}
+						<hr />
+						{% if issue.view_type %}
+						<dt>View Type</dt>
+							<dd>{{issue.view_type}}</dd>
+						{% endif %}
+						
+						{% if issue.fixability %}
+						<dt>Fixability</dt>
 							<dd>{{issue.fixability}}</dd>
+						{% endif %}
+						{% endif %}
 
 						<!--<dt>R &amp; D:</dt>
 							<dd>{{issue.r_and_d}}</dd>
 
 						<dt>Feature:</dt>
 							<dd>{{issue.feature}}</dd>-->
-
-						<dt>OS:</dt>
+						
+						{% if issue.os or issue.os_version or issue.browser or issue.browser_version %}
+						<hr />
+						{% if issue.os %}
+						<dt>OS</dt>
 							<dd>{{issue.os}}</dd>
-
-						<dt>OS Version:</dt>
+						{% endif %}
+						{% if issue.os_version %}
+						<dt>OS Version</dt>
 							<dd>{{issue.os_version}}</dd>
-
-						<dt>Browser:</dt>
+						{% endif %}
+						{% if issue.browser %}
+						<dt>Browser</dt>
 							<dd>{{issue.browser}}</dd>
-
-						<dt>Browser Version:</dt>
+						{% endif %}
+						{% if issue.browser_version %}
+						<dt>Browser Version</dt>
 							<dd>{{issue.browser_version}}</dd>
-
+						{% endif %}
+						{% endif %}
 						<!--<dt>Screen Shot:</dt>
 							<dd>{{issue.screen_shot}}</dd>
 
@@ -263,18 +304,10 @@ Extends /templates/issue/base.html
 
 						<dt>URI to Test:</dt>
 							<dd>{{issue.uri_to_test}}</dd>-->
-
-						<dt>Created By:</dt>
-							<dd>{{issue.created_by}}</dd>
-
-						<dt>Modified By:</dt>
-							<dd>{{issue.modified_by}}</dd>
-
-						<dt>Point of Contact:</dt>
-							<dd>{{issue.point_of_contact}}</dd>
 					</dl>
 
 					{% if related_issues %}
+					<hr />
 					<table class="table table-condensed">
 						<caption>
 							Related Issues
