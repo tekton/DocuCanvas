@@ -1,0 +1,70 @@
+{% extends "taxes/base.html" %}
+
+{% block contextNav %}
+{% endblock %} 
+
+{% block pageTitle %}
+Research Tax Credit Study:</br>
+Contract Research Analysis
+{% endblock %}
+
+{% block bodyContent%}
+<div id="formContainer">
+    <form action="{% url 'taxes.views.submitContractForm' %}" id = "projectForm" method="post" enctype="multipart/form-data">        
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <input id="id_contractresearchcostanalysis_set-TOTAL_FORMS" name="contractresearchcostanalysis_set-TOTAL_FORMS" type="hidden" value="1" />
+        <input id="id_contractresearchcostanalysis_set-INITIAL_FORMS" name="contractresearchcostanalysis_set-INITIAL_FORMS" type="hidden" value="0" />
+        <input id="id_contractresearchcostanalysis_set-MAX_NUM_FORMS" name="contractresearchcostanalysis_set-MAX_NUM_FORMS" type="hidden" value="1000" />
+        <table width='100%'>
+            <tr>
+                <td width='50%'>Company Name: {{contract_form.company_name}}</td>
+                <td width='50%'>Tax Year End: <input type='text' name='tax_year_end' id='id_tax_year_end'/></td>
+            </tr>
+        </table>
+    </br>
+        <table id="projectFormContainer" width='100%'>
+            <tr>
+                <th>Contractor Name</th>
+                <th>Project</th>
+                <th>Dollar Amount</th>
+            </tr>
+            <tr>
+                <td>
+                    <input type='text' maxlength='255' name='contractresearchcostanalysis_set-0-contractor_name' id='id_contractresearchcostanalysis_set-0-contractor_name'>
+                </td>
+                <td>
+                    <select id='id_contractresearchcostanalysis_set-0-project' name='contractresearchcostanalysis_set-0-project'>
+                        {% for project in projects %}
+                        <option value='{{project.id}}'>{{project}}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <input type='text' maxlength='255' name='contractresearchcostanalysis_set-0-cost' id='id_contractresearchcostanalysis_set-0-cost'>
+                </td>
+            </tr>
+        </table>
+        <input title='Add a new poll item' type='button' name='add_poll_item' value='Add Item' onclick = 'addcontractresearchcostanalysis()'/>
+        <input type="submit" name="submit" value="Submit"/>
+    </form>
+</div>
+{% endblock%}
+
+{% block endScripts %}
+<script type="text/javascript">
+var itemNumber = 1;
+function addcontractresearchcostanalysis(){
+    $('#projectFormContainer').append("<tr><td><select id='id_contractresearchcostanalysis_set-"+itemNumber+"-project' name='contractresearchcostanalysis_set-"+itemNumber+"-project'>{% for project in projects %}<option value='{{project.id}}'>{{project}}</option>{% endfor %}</select></td><td><input type='text' maxlength='255' name='contractresearchcostanalysis_set-"+itemNumber+"-contractor_name' id='id_contractresearchcostanalysis_set-"+itemNumber+"-contractor_name'></td><td><input type='text' maxlength='255' name='contractresearchcostanalysis_set-"+itemNumber+"-cost' id='id_contractresearchcostanalysis_set-"+itemNumber+"-cost'></td></tr>");
+    itemNumber ++;
+    $('#id_contractresearchcostanalysis_set-TOTAL_FORMS').val(function(i, oldval){
+        return ++oldval;
+    });
+    console.log($('#id_contractresearchcostanalysis_set-TOTAL_FORMS').val());
+}
+
+$(function(){
+    $('#id_tax_year_end').datepicker({dateFormat: 'mm/dd/yy'});
+});
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "taxes/base.html" %}
+
+{% block contextNav %}
+{% endblock %} 
+
+{% block pageTitle %}
+R&D Tax Accounting
+{% endblock %}
+
+{% block bodyContent%}
+<ul class="tabs">
+	<li><a href="javascript:activateTab('page1')">Project List Analysis</a></li>
+	<li><a href="javascript:activateTab('page2')">Supply Cost Analysis</a></li>
+	<li><a href="javascript:activateTab('page3')">Contract Research Cost Analysis</a></li>
+</ul>
+
+<div class="tabCtrl">
+	<div id="page1" style="display: block;">hello</div>
+	<div id="page2" style="display: none;">whats</div>
+	<div id="page3" style="display: none;">up</div>
+</div>
+{% endblock%}
+
+{% block endScripts %}
+<script type="text/javascript">
+    function activateTab(pageId) {
+        var tabCtrl = document.getElementById('tabCtrl');
+        var pageToActivate = document.getElementById(pageId);
+        for (var i = 0; i < tabCtrl.childNodes.length; i++) {
+            var node = tabCtrl.childNodes[i];
+            if (node.nodeType == 1) { /* Element */
+                node.style.display = (node == pageToActivate) ? 'block' : 'none';
+            }
+        }
+    }
+</script>
+{% endblock %}
