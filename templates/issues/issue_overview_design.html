@@ -237,8 +237,10 @@ Extends /templates/issue/base.html
 						<dt>Created On</dt>
 							<dd>{{issue.created}}</dd>
 						
+						{% if issue.created_by %}
 						<dt>Created By</dt>
 							<dd><a href="{% url 'auth.views.user_overview' issue.created_by.id %}">{{issue.created_by}}</a></dd>
+						{% endif %}
 						
 						{% if issue.modified_by %}
 						<dt>Last Modified</dt>
