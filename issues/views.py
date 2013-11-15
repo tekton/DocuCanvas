@@ -565,7 +565,7 @@ def issue_overview(request, issue_id):
         print "No accounts for you...or me..."
         print e
     template = request.GET.get("template", "issues/issue_overview.html")
-    return render_to_response("issues/issue_overview.html", {'issue': issue,
+    return render_to_response(template, {'issue': issue,
                                                              'related_issues': related_issues,
                                                              'project_issues': project_issues,
                                                              'pin': pin,

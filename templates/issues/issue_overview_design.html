@@ -1,0 +1,678 @@
+{% extends "issues/base.html" %}
+{% load markup %}
+{% load humanize %}
+{% comment %}
+Extends /templates/issue/base.html
+
+==Blocks Available==
+	additionalHead (from /templates/base.html)
+		Used to add additional <link/>, <style/>, and/or <script/> tags to the <head/>
+		SHOULD BE USED SPARINGLY - if CSS or JS needs to be added, refer to Gadget.css and Gadget.js, respectively
+	contextNav (from /templates/base.html)
+		Used to add/modify the context menu items
+	baseContent (from /templates/base.html)
+		Content that appears in the <body/> of the document. Is wrapped within <div#globalwrap/> and appears after <div#sitenav/>
+		**NOTE: using baseContent will OVERRIDE bodyContent unless a bodyContent block is contained within**
+	modalsIncluded (from /templates/base.html)
+		Used specifically to contain the HTML for modals used by Bootstrap
+		This content is hidden by default, is wrapped within a <div/> after <div#globalwrap/> and appears before any end scripts
+	endScripts (from /templates/base.html)
+		Used to include additional <script/> for the page
+		Appears outside of <div#globalwrap/>, after any global <script/> and before the closing <body/> tag
+	pageTitle (from /templates/issue/base.html)
+		Supplies text to be displayed at the top of the page below the global nav bar
+		Appears in <h1#pagetitle/> within <header#pageheader>
+	bodyContent (from /templates/issue/base.html)
+		Used to display any and all of the pages content
+		Appears within <div#maincontent>
+		**NOTE: made available by baseContent - if baseContent is defined within the template,bodyContent will not be displayed unless contained within baseContent**
+{% endcomment %}
+
+{% block bodyClass %}issue-overview{% endblock %}
+
+{% block issueSubtitle %}
+<ul class="issue-subtitle">
+	<li>Project: <a href="{% url 'projects.views.project_overview' issue.project.id %}">{{page_type}}</a></li>
+	<li>Issue ID: {{issue.id}}</li>
+	<li><span class="title-issuestatus label {{issueLabelClass}}">{{issue.get_status_display}}</span></li>
+</ul>
+{% endblock %}
+
+{% block pageTitle %}
+{% if page_value %}
+
+{% endif %}
+{% if issue %}
+	{{issue.summary}}
+{% endif %}
+{% endblock %}
+
+{% block contextNav %}
+	<li class="nav-header">New</li>
+	<li><a id="context-issue-new" href="{% url 'issues.views.issue_form_project' issue.project.id %}">Issue : {{issue.project.name}}</a></li>
+	<li class="nav-header">Issue Actions</li>
+	<li><a id="context-issue-subscribe" href="{% url 'issues.views.subscribe' issue.id %}">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
+	<li><a id="context-issue-pin" href="{% url 'issues.views.pin' issue.id %}">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
+	<li><a id="context-issue-assign" href="{% url 'issues.views.assign' issue.id %}">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
+	<li>
+		<a id="context-issue-assignto">
+			<form class="form-inline">
+				<label>Assign To:&nbsp;</label>
+				<select name="assigned_user" class="input-small">
+					<option value="">---------</option>
+					{% for account in accounts %}
+						{% if account.assignable %}
+							<option value="{{account.user.id}}">{{account.user.username}}</option>
+						{% endif %}
+					{% endfor%}
+				</select>
+				<button class="btn" type="button" data-url="{% url 'issues.views.assign' issue.id %}/">Assign</button>
+			</form>
+		</a>
+	</li>
+	<li>
+		<a id="context-issue-status">
+			<form class="form-inline">
+				Status:&nbsp;
+				{{form.status}}
+				<button class="btn" type="button">Set</button>
+			</form>
+		</a>
+	</li>
+	<li><a href="#" data-target="#modal-issue-related" data-toggle="modal">Set Related To...</a></li>
+    <li><a href="{% url 'issues.views.history' issue.id %}">History</a></li>
+	<li><a href="{% url 'issues.views.edit' issue.id %}">Edit</a></li>
+{% endblock%}
+
+{% block additionalHead %}
+    {{ form.media }}
+{% endblock %}
+
+{% block bodyContent %}
+	<article class="row">
+		<div id="issue-column-main" class="span9 metainfo-maincolumn">
+			<div id="issue-details" class="well">
+				<!-- <div class="media">
+					<div class="media-body">
+						<h3 class="media-header">Summary</h3>
+						{{issue.summary}}
+					</div>
+				</div> -->
+				<div class="media">
+					<div class="media-body">
+						<h3 class="media-header">Description</h3>
+						{{issue.description|safe}}
+					</div>
+				</div>
+				{% if images %}
+				<div class="media">
+					<div class="media-body">
+						<h3 class="media-header">Attached Images</h3>
+						<ul class="thumbnails">
+							{% for image in images %}							
+							<li class="span2">
+								<a class="thumbnail" href="#{{image.screenshot|slugify}}" data-toggle="lightbox">
+									<img src="/static/{{image.screenshot}}">
+								</a>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+
+			<aside id="issue-comments" class="well">
+				<header>
+					<h3>Comments</h3>
+				</header>
+				<div id="issue-comments-add">
+					<form class="form-inline" action="{% url 'issues.views.submit_comment' issue.id %}" method="POST" enctype="multipart/form-data">
+						{% csrf_token %}
+						<input type="hidden" name="issue" id="id_issue" value="{{issue.id}}">
+						<input type="hidden" name="user" id="id_user" value="{{user.id}}">
+						{% if comment_form.errors %}
+						<div class="alert alert-block alert-error">
+							{{comment_form.errors}}
+						</div>
+						{% endif %}
+						<div class="control-group">
+							<label class="control-label" for="id_description">Add a Comment</label>
+							<div class="control-group">
+								{{comment_form.description}}
+							</div>
+						</div>
+						
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</form>
+				</div>
+				<ul id="issue-comments-list" class="media-list">
+					{% for comment in comments%}
+					<li class="media">
+						<article id="issue-comment-{{comment.id}}" class="issue-comment" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}">
+							<div class="media-body">
+								<aside class="clearfix">
+									<p class="muted">
+										<span class="pull-left"><a href="{% url 'auth.views.user_overview' comment.user.id %}">{{comment.user}}</a></span>
+										<span class="pull-right">
+											<time datetime="{{comment.created|date:"c"}}">{{comment.created|naturaltime}}</time>
+										</span>
+									</p>
+								</aside>
+								<button class="btn btn-mini pull-right comment-editbutton" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}" data-commentcontent="{{comment.description}}"><i class="icon-edit"></i></button>
+								<div class="comment-content">
+									{{comment.description|markdown:"safe"}}
+								</div>
+							</div>
+						</article>
+					</li>
+					{% endfor %}
+				</ul>
+			</aside>
+		</div>
+
+		<div id="issue-column-aside" class="span3 metainfo-asidecolumn">
+			<aside id="issue-metainfo" class="well metainfo metainfo-show">
+				<div class="pull-right">
+					<button id="metainfo-toggle" class="btn btn-mini" type="button"><i class="icon-resize-small"></i></button>
+				</div>
+				<div id="issue-metainfo-content" class="metainfo-content">
+					<dl>
+						<!-- <dt>Issue Id</dt>
+						<dd>{{issue.id}}</dd> -->
+
+						<dt>Assigned To</dt>
+							<dd>
+								{% if issue.assigned_to.id %}
+								<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>
+								{% else %}
+								{{issue.assigned_to}}
+								{% endif %}
+							</dd>
+						
+						<dt>Issue Type</dt>
+						<dd>{{issue.issue_type}}</dd>
+						
+						<!-- <dt>Status</dt>
+						<dd>
+							<span class="label {{issueLabelClass}}">{{issue.get_status_display}}</span>
+						</dd> -->
+						
+						<dt>Criticality</dt>
+						<dd>{{issue.criticality}}</dd>
+						
+						<hr />
+
+						{% if issue.meta_issues %}
+						<dt>Meta Issue</dt>
+                        <dd><a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues.title}}</a></dd>
+						
+						<hr />
+						{% endif %}
+						
+						<!--
+						<dt>Project Name:</dt>
+							<dd><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></dd>
+
+						<dt>State:</dt>
+							<dd>{{issue.state}}</dd>
+
+						<dt>Projected Start:</dt>
+							<dd>{{issue.projected_start}}</dd>
+
+						<dt>Projected End:</dt>
+							<dd>{{issue.projected_end}}</dd>
+
+						<dt>Actual Start:</dt>
+							<dd>{{issue.actual_start}}</dd>
+
+						<dt>Actual End:</dt>
+							<dd>{{issue.actual_end}}</dd>-->
+
+						{% if issue.date_reported %}
+						<dt>Date Reported</dt>
+						<dd>{{issue.date_reported}}</dd>
+						{% endif %}
+
+						<dt>Created On</dt>
+							<dd>{{issue.created}}</dd>
+						
+						<dt>Created By</dt>
+							<dd><a href="{% url 'auth.views.user_overview' issue.created_by.id %}">{{issue.created_by}}</a></dd>
+						
+						{% if issue.modified_by %}
+						<dt>Last Modified</dt>
+							<dd>{{issue.modified}}</dd>
+						{% endif %}
+						
+						{% if issue.modified_by %}
+						<dt>Modified By</dt>
+							<dd><a href="{% url 'auth.views.user_overview' issue.modified_by.id %}">{{issue.modified_by}}</a></dd>
+						{% endif %}
+
+						{% if issue.point_of_contact %}
+						<dt>Point of Contact</dt>
+						<dd>{{issue.point_of_contact}}</dd>
+						{% endif %}
+						
+
+						<!--<dt>Title:</dt>
+							<dd>{{issue.title}}</dd>
+
+						<dt>Link Slug:</dt>
+							<dd>{{issue.link_slug}}</dd>-->
+						
+						{% if issue.view_type or issue.fixability %}
+						<hr />
+						{% if issue.view_type %}
+						<dt>View Type</dt>
+							<dd>{{issue.view_type}}</dd>
+						{% endif %}
+						
+						{% if issue.fixability %}
+						<dt>Fixability</dt>
+							<dd>{{issue.fixability}}</dd>
+						{% endif %}
+						{% endif %}
+
+						<!--<dt>R &amp; D:</dt>
+							<dd>{{issue.r_and_d}}</dd>
+
+						<dt>Feature:</dt>
+							<dd>{{issue.feature}}</dd>-->
+						
+						{% if issue.os or issue.os_version or issue.browser or issue.browser_version %}
+						<hr />
+						{% if issue.os %}
+						<dt>OS</dt>
+							<dd>{{issue.os}}</dd>
+						{% endif %}
+						{% if issue.os_version %}
+						<dt>OS Version</dt>
+							<dd>{{issue.os_version}}</dd>
+						{% endif %}
+						{% if issue.browser %}
+						<dt>Browser</dt>
+							<dd>{{issue.browser}}</dd>
+						{% endif %}
+						{% if issue.browser_version %}
+						<dt>Browser Version</dt>
+							<dd>{{issue.browser_version}}</dd>
+						{% endif %}
+						{% endif %}
+						<!--<dt>Screen Shot:</dt>
+							<dd>{{issue.screen_shot}}</dd>
+
+						<dt>Wireframe:</dt>
+							<dd>{{issue.wireframe}}<br/></dd>
+
+						<dt>URI to Test:</dt>
+							<dd>{{issue.uri_to_test}}</dd>-->
+					</dl>
+
+					{% if related_issues %}
+					<hr />
+					<table class="table table-condensed">
+						<caption>
+							Related Issues
+						</caption>
+						<thead>
+							<tr>
+								<th>
+									Issue
+								</th>
+								<th>
+									Relation
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for issue_to_issue in related_issues %}
+							<tr>
+								<td>
+									{% if issue_to_issue.primary_issue == issue %}
+									<a href="{% url 'issues.views.issue_overview' issue_to_issue.secondary_issue.id %}">{{issue_to_issue.secondary_issue.summary}}</a>
+									{% elif issue_to_issue.secondary_issue == issue %}
+									<a href="{% url 'issues.views.issue_overview' issue_to_issue.primary_issue.id %}">{{issue_to_issue.primary_issue.summary}}</a>
+									{% endif %}
+								</td>
+								<td>
+									<a class="btn btn-mini pull-right unlink" data-unlink-primary="{{issue_to_issue.primary_issue.id}}" data-unlink-secondary="{{issue_to_issue.secondary_issue.id}}"><i class="icon-remove-circle"></i></a>
+									{{issue_to_issue.link_type}}
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					{% endif %}
+				</div>
+			</aside>
+		</div>
+	</article>
+{% endblock %}
+
+{% block endScripts %}
+	<script>
+		$('.unlink').click(function(evt){
+			var el = $(this);
+
+			$.ajax({
+			    type: 'POST',
+			    url: '/issue/unlink',
+			    data:{
+			    	primary_issue: el.attr('data-unlink-primary'),
+					secondary_issue: el.attr('data-unlink-secondary')
+			    },
+			    success: function(data){
+					AlertMessage.success(data.response);
+				},
+				error: function(data){
+					AlertMessage.error(data.responseJSON.response);
+				}
+			});
+		});
+		// Context menu - Status
+		$('#context-issue-status .btn').click(function(){
+			var btn = $(this),
+				statusField = btn.siblings('select');
+
+			switch (statusField.val()) {
+				case 'fixed':
+					$('#modal-issue-fixed').modal();
+					break;
+
+				case 'duplicate':
+					$('#modal-issue-duplicate').modal();
+					break;
+
+				default:
+					$.ajax({
+					    type: 'POST',
+					    url: '/issue/set_bug_state',
+					    data:{
+					    	issue: '{{issue.id}}',
+					    	status: statusField.val(),
+							csrfmiddlewaretoken: '{{csrf_token}}'
+					    },
+					    success: function(data){
+					    	AlertMessage.success(data.status);
+					    },
+					    error: AlertMessage.genericUnknownError
+					});
+					break;
+			}
+		});
+
+		// Context menu - Status - Duplicate handler
+		$('#modal-issue-duplicate .btn-primary').on({
+			click: function(){
+				$.ajax({
+					type: 'POST',
+					url: '/issue/link',
+					data:{
+						primary_issue: '{{issue.id}}',
+						secondary_issue: $('#duplicate_issue_id').val(),
+						link_type: 'duplicate'
+					},
+					success: function(data){
+						$('#modal-issue-duplicate').modal('hide');
+						AlertMessage.success(data.response);
+					},
+					error: function(data){
+						$('#modal-issue-duplicate-alert').show();
+					}
+				});
+			}
+		});
+
+		// Context menu - Related - Related handler
+		$('#modal-issue-related .btn-primary').on({
+			click: function(){
+				$.ajax({
+					type: 'POST',
+					url: '/issue/link',
+					data:{
+						primary_issue: '{{issue.id}}',
+						secondary_issue: $('#modal-issue-related-id').val(),
+						link_type: $('#modal-issue-related-type').val()
+					},
+					success: function(data){
+						$('#modal-issue-related').modal('hide');
+						AlertMessage.success(data.response);
+					},
+					error: function(data){
+						$('#modal-issue-related-alert').show();
+					}
+				});
+			}
+		});
+
+		// Context menu - Subscribe
+		$('#context-issue-subscribe').asAjax( function(data, status) {
+	        if ( data.success ) {
+	            if ( data.is_subscribed ) {
+	                $(this).text('Unsubscribe');
+	                AlertMessage.success('Issue subscribed');
+	            }
+	            else {
+	                $(this).text('Subscribe');
+	                AlertMessage.success( 'Issue unsubscribed');
+	            }
+	        }
+	        else {
+	            AlertMessage.error('<strong>Subscribe error!</strong>' + data.error);
+	        }
+	    },AlertMessage.genericUnknownError);
+
+	    // Context menu - Pin
+	    $('#context-issue-pin').asAjax(function(data, status) {
+	        if ( data.success ) {
+	            if ( data.is_pinned ) {
+	                $(this).text('Unpin');
+	                AlertMessage.success('Issue pinned');
+	            }
+	            else {
+	                $(this).text('Pin');
+	                AlertMessage.success('Issue unpinned');
+	            }
+	        }
+	        else {
+	            AlertMessage.error('Pinning error: ' + data.error)
+	        }
+	    },AlertMessage.genericUnknownError);
+
+		// Context menu - Assign (self)
+		$('#context-issue-assign').asAjax(function(data){
+			if ( data.success ) {
+	            if ( data.assigned_to == "self" ) {
+	                $(this).text( "Unassign" );
+					AlertMessage.success('Issue now assigned to you.');
+	            }
+	            else if ( data.assigned_to == "none" ) {
+	                $(this).text( "Take" );
+					AlertMessage.success('Issue unassigned.');
+	            }
+	            else if ( data.assigned_to == "user" ) {
+	                $(this).text( "Take" );
+					AlertMessage.success('Issue successfully assigned.');
+	            }
+	        }
+	        else {
+	        	AlertMessage.error('<strong>Server Error!</strong> ' + data.error);
+	        }
+		},AlertMessage.genericUnknownError);
+
+		// Context menu - Assign (other)
+		$('#context-issue-assignto .btn').click(function(){
+			var btn = $(this),
+				statusField = btn.siblings('select');
+
+			$.ajax({
+			    type: 'POST',
+			    url: '/issue/assign/{{ issue.id }}/' + statusField.val(),
+			    data:{
+					csrfmiddlewaretoken: '{{csrf_token}}'
+			    },
+			    success: function(data){
+			    	AlertMessage.success('Issue has been successfully assigned');
+			    },
+			    error: AlertMessage.genericUnknownError
+			});
+		});
+
+		// Edit Comment - hide/show edit button
+		$('.issue-comment').on({
+			mouseover: function(){
+				var me = $(this);
+				if (me.attr('data-commentuser') == '{{user}}') {
+					me.addClass('show-editbutton');
+				}
+			},
+			mouseout: function(){
+				$(this).removeClass('show-editbutton');
+			}
+		});
+
+		// Edit Comment - show edit form
+		$('.comment-editbutton').click(function(){
+			var btn = $(this),
+				currentUser = '{{user}}',
+				modalForm = $('#modal-comment-edit'),
+				textArea = $('#modal-comment-textarea'),
+				submitBtn = $('#modal-comment-submit'),
+				alertMsg = $('#modal-comment-alert');
+
+			alertMsg.hide();
+			submitBtn.unbind('click');
+
+			if (btn.attr('data-commentuser') == currentUser) {
+				textArea.val(btn.attr('data-commentcontent'));
+				submitBtn.click(function(){
+					$.ajax({
+						type:"POST",
+						url:"/issue/edit_comment",
+						data:{
+							comment_id: btn.attr('data-commentid'),
+							comment: textArea.val()
+						},
+						success: function(data){
+							alertMsg.hide();
+							AlertMessage.success('Comment successfully updated.',btn.siblings('.comment-content'));
+							submitBtn.unbind('click');
+							modalForm.modal('hide');
+						},
+						error: function(data){
+							$('#modal-comment-alert').show();
+						}
+					});
+				});
+				modalForm.modal();
+			}
+		});
+	</script>
+{% endblock %}
+
+{% block modalsIncluded %}
+	<div id="modal-issue-fixed" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Fixed Issue</h3>
+		</header>
+		<div class="modal-body">
+			<form id="modal-issue-fixed-form" class="form-inline" action="{% url 'issues.views.set_bug_state' %}" method="POST">
+				{% csrf_token %}
+				<input type="hidden" name="issue" id="id_issue" value="{{issue.id}}">
+				<input type="hidden" name="user" id="id_user" value="{{user.id}}">
+				<input type="hidden" name="status" value="fixed">
+				{{comment_form.description}}
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button class="btn btn-primary" type="submit" form="modal-issue-fixed-form">Fix</button>
+		</footer>
+	</div>
+
+	<div id="modal-issue-duplicate" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Duplicate Issue</h3>
+		</header>
+		<div class="modal-body">
+			<div id="modal-issue-duplicate-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
+			<form class="form-inline">
+				<label for="duplicate_issue_id">Duplicate Issue ID</label>
+				<input type="text" id="duplicate_issue_id">
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button class="btn btn-primary">Duplicate</button>
+		</footer>
+	</div>
+
+	<div id="modal-issue-related" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3 class="text-center">Select Related Issue</h3>
+		</header>
+		<div class="modal-body">
+			<div id="modal-comment-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
+			<form class="form-horizontal">
+				<div class="control-group">
+					<label class="control-label">Current issue {{issue.id}} is a</label>
+					<div class="controls">
+						<select id="modal-issue-related-type">
+							<option value="duplicate">Duplicate</option>
+							<option value="related">Related</option>
+							<option value="child">Child</option>
+							<option value="parent">Parent</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">of Issue</label>
+					<div class="controls">
+						<span class="input-prepend">
+							<span class="add-on">#</span>
+							<input type="text" id="modal-issue-related-id" size="6" />
+						</span>
+					</div>
+				</div>
+			</form>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button class="btn btn-primary">Link</button>
+		</footer>
+	</div>
+
+	<div id="modal-comment-edit" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>Edit Comment</h3>
+		</header>
+		<div class="modal-body">
+			<div id="modal-comment-alert" class="alert alert-error hide">
+				<strong>Uh-oh!!</strong> Well, there seems to have been a server-side error... Perhaps you should try again later?
+			</div>
+			<textarea id="modal-comment-textarea" rows="4" cols="250" style="width:95%">{{comment.description}}</textarea>
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+        	<button id="modal-comment-submit" class="btn btn-primary" type="button">Submit</button>
+        </footer>
+	</div>
+	
+	{% for image in images %}
+		<div id="{{image.screenshot|slugify}}" class="lightbox hide fade">
+			<div class="lightbox-content">
+				<img src="/static/{{image.screenshot}}">
+			</div>
+		</div>
+	{% endfor %}
+{% endblock %}

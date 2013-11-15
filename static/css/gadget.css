@@ -274,21 +274,21 @@ body.issue-overview {}
 	
 	/* --- | Issue Metainfo | --- */
 
-/*	#issue-metainfo {
+	body.issue-overview #issue-metainfo {
 		font-size: 14px;
 	}
 		
-		#issue-metainfo dl {
+		body.issue-overview #issue-metainfo dl {
 			margin: 0;
 		}
 			
-			#issue-metainfo dl dt {
+			body.issue-overview #issue-metainfo dl dt {
 
 			}
 			
-			#issue-metainfo dl dd {
+			body.issue-overview #issue-metainfo dl dd {
 				margin: 0 0 .5em;
-			}*/
+			}
 
 /* --- Search Results
 -------------------------------------------------------*/
