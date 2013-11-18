@@ -3,9 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
+from django.contrib.auth.models import User
 from projects.models import Project
 from taxes.models import InformationChecklist, ProjectAnalysis, ProjectListAnalysis, SupplyAnalysis, SupplyCostAnalysis, ContractAnalysis, ContractResearchCostAnalysis
-from taxes.forms import ProjectAnalysisForm, ProjectListAnalysisForm, SupplyAnalysisForm, SupplyCostAnalysisForm, ContractAnalysisForm, ContractResearchCostAnalysisForm
+from taxes.forms import ProjectAnalysisForm, ProjectListAnalysisForm, SupplyAnalysisForm, SupplyCostAnalysisForm, ContractAnalysisForm, ContractResearchCostAnalysisForm, InformationChecklistForm
 from datetime import date, timedelta
 
 # Create your views here.
@@ -236,3 +237,44 @@ def editContractForm(request, contract_analysis_id):
     return render_to_response('taxes/contract_form_edit.html', {'projects': projects,
                                                                 'contract_analysis': contract_analysis,
                                                                 'contract_list': contract_list}, context_instance=RequestContext(request))
+
+
+def createChecklist(request, info_checklist_id=0):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    try:
+        users = User.objects.all()
+    except Exception, e:
+        raise e
+    if info_checklist_id != 0:
+        try:
+            info_checklist = InformationChecklist.objects.get(pk=info_checklist_id)
+            if request.method == 'POST':
+                info_checklist_form = InformationChecklistForm(request.POST, instance=info_checklist)
+                if info_checklist_form.is_valid():
+                    info_checklist = info_checklist_form.save()
+                    return redirect('taxes.views.createChecklist', info_checklist.id)
+                else:
+                    print info_checklist_form.errors
+            else:
+                info_checklist_form = InformationChecklistForm(instance=info_checklist)
+        except Exception, e:
+            print e
+            return redirect('taxes.views.createChecklist')
+    else:
+        info_checklist = InformationChecklist()
+        if request.method == 'POST':
+            info_checklist_form = InformationChecklistForm(request.POST, instance=info_checklist)
+            if info_checklist_form.is_valid():
+                info_checklist = info_checklist_form.save()
+                return redirect('taxes.views.createChecklist', info_checklist.id)
+            else:
+                print info_checklist_form.errors
+        else:
+            info_checklist_form = InformationChecklistForm(instance=info_checklist)
+    return render_to_response('taxes/information_checklist_form.html', {'projects': projects,
+                                                                        'users': users,
+                                                                        'info_checklist_form': info_checklist_form,
+                                                                        'info_checklist': info_checklist}, context_instance=RequestContext(request))

@@ -30,3 +30,8 @@ class ContractAnalysisForm(forms.ModelForm):
 class ContractResearchCostAnalysisForm(forms.ModelForm):
 	class Meta:
 		model = ContractResearchCostAnalysis
+
+
+class InformationChecklistForm(forms.ModelForm):
+	class Meta:
+		model = InformationChecklist

@@ -75,3 +75,4 @@ class ContractResearchCostAnalysis(models.Model):
 
 admin.site.register(ProjectAnalysis)
 admin.site.register(ProjectListAnalysis)
+admin.site.register(InformationChecklist)
