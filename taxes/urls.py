@@ -14,4 +14,5 @@ urlpatterns = patterns('',
     (r'deleteInstance/([A-Za-z0-9_\.-]+)', 'taxes.views.deleteProjectListInstance'),
     (r'information$', 'taxes.views.createChecklist'),
     (r'information/([A-Za-z0-9_\.-]+)$', 'taxes.views.createChecklist'),
+    (r'viewinfo/([A-Za-z0-9_\.-]+)$', 'taxes.views.viewInfoChecklist'),
 )

@@ -281,3 +281,15 @@ def createChecklist(request, info_checklist_id=-1):
                                                                         'editing': editing,
                                                                         'info_checklist_form': info_checklist_form,
                                                                         'info_checklist': info_checklist}, context_instance=RequestContext(request))
+
+
+def viewInfoChecklist(request, info_checklist_id):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    try:
+        info_checklist = InformationChecklist.objects.get(pk=info_checklist_id)
+    except Exception, e:
+        raise e
+    return render_to_response('taxes/view_info_checklist.html', {'projects': projects, 'info_checklist': info_checklist}, context_instance=RequestContext(request))
