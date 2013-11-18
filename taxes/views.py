@@ -239,7 +239,7 @@ def editContractForm(request, contract_analysis_id):
                                                                 'contract_list': contract_list}, context_instance=RequestContext(request))
 
 
-def createChecklist(request, info_checklist_id=0):
+def createChecklist(request, info_checklist_id=-1):
     try:
         projects = Project.objects.all()
     except Exception, e:
@@ -248,8 +248,9 @@ def createChecklist(request, info_checklist_id=0):
         users = User.objects.all()
     except Exception, e:
         raise e
-    if info_checklist_id != 0:
+    if info_checklist_id != -1:
         try:
+            editing = True
             info_checklist = InformationChecklist.objects.get(pk=info_checklist_id)
             if request.method == 'POST':
                 info_checklist_form = InformationChecklistForm(request.POST, instance=info_checklist)
@@ -264,6 +265,7 @@ def createChecklist(request, info_checklist_id=0):
             print e
             return redirect('taxes.views.createChecklist')
     else:
+        editing = False
         info_checklist = InformationChecklist()
         if request.method == 'POST':
             info_checklist_form = InformationChecklistForm(request.POST, instance=info_checklist)
@@ -276,5 +278,6 @@ def createChecklist(request, info_checklist_id=0):
             info_checklist_form = InformationChecklistForm(instance=info_checklist)
     return render_to_response('taxes/information_checklist_form.html', {'projects': projects,
                                                                         'users': users,
+                                                                        'editing': editing,
                                                                         'info_checklist_form': info_checklist_form,
                                                                         'info_checklist': info_checklist}, context_instance=RequestContext(request))
