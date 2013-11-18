@@ -851,13 +851,19 @@ def trackIssues(request):
         users = User.objects.all()
     except Exception, e:
         print e
+    try:
+        meta_issues = MetaIssue.objects.all()
+    except Exception, e:
+        print e
 
     filter_projects = []
     filter_assigned = []
     filter_status = []
+    filter_meta = []
     project_list = []
     user_list = []
     status_list = []
+    meta_list = []
     q = []
 
     # If request.POST, apply appropriate filters based on POST data
@@ -878,6 +884,12 @@ def trackIssues(request):
         for status in request.POST.getlist('status'):
             if status not in status_filters:
                 status_filters.append(status)
+        meta_filters = []
+        meta_filters.extend(request.POST.getlist('meta_filter'))
+        for meta in request.POST.getlist('meta-issue'):
+            if meta not in meta_filters:
+                meta_filters.append(meta)
+
         for project in project_filters:
             if project == 'none':
                 pass
@@ -907,32 +919,68 @@ def trackIssues(request):
             else:
                 filter_status.append(status)
                 status_list.extend(Issue.objects.filter(status=status))
+        for meta in meta_filters:
+            if meta == 'none':
+                pass
+            elif meta is None:
+                pass
+            else:
+                filter_meta.append(meta)
+                my_meta = MetaIssue.objects.get(title=meta)
+                meta_list.extend(Issue.objects.filter(Q(meta_issues=my_meta)))
         # Merging lists so only results that match all filters show up
-        if project_list and not user_list and not status_list:
+        if project_list and not user_list and not status_list and not meta_list:
             q.extend(project_list)
-        elif user_list and not project_list and not status_list:
+        elif user_list and not project_list and not status_list and not meta_list:
             q.extend(user_list)
-        elif status_list and not project_list and not user_list:
+        elif status_list and not project_list and not user_list and not meta_list:
             q.extend(status_list)
-        elif project_list and user_list and status_list:
+        elif project_list and user_list and status_list and not meta_list:
             for item in project_list:
                 if item in user_list and status_list:
                     q.append(item)
-        elif project_list and user_list and not status_list:
+        elif project_list and user_list and not status_list and not meta_list:
             for item in project_list:
                 if item in user_list:
                     q.append(item)
-        elif project_list and not user_list and status_list:
+        elif project_list and not user_list and status_list and not meta_list:
             for item in project_list:
                 if item in status_list:
                     q.append(item)
-        elif not project_list and user_list and status_list:
+        elif not project_list and user_list and status_list and not meta_list:
             for item in user_list:
                 if item in status_list:
                     q.append(item)
-        else:
-            print "hi"
-            q.extend(Issue.objects.all())
+        elif project_list and user_list and status_list and meta_list:
+            for item in project_list:
+                if item in user_list and status_list and meta_list:
+                    q.append(item)
+        elif meta_list and project_list and user_list and not status_list:
+            for item in meta_list:
+                if item in project_list and user_list:
+                    q.append(item)
+        elif meta_list and project_list and status_list and not user_list:
+            for item in meta_list:
+                if item in project_list and status_list:
+                    q.append(item)
+        elif meta_list and user_list and status_list and not project_list:
+            for item in meta_list:
+                if item in user_list and status_list:
+                    q.append(item)
+        elif meta_list and user_list and not status_list and not project_list:
+            for item in meta_list:
+                if item in user_list:
+                    q.append(item)
+        elif meta_list and status_list and not user_list and not project_list:
+            for item in meta_list:
+                if item in status_list:
+                    q.append(item)
+        elif meta_list and not status_list and not user_list and project_list:
+            for item in meta_list:
+                if item in project_list:
+                    q.append(item)
+        elif meta_list and not status_list and not user_list and not project_list:
+            q.extend(meta_list)
     else:
         q.extend(Issue.objects.all())
 
@@ -941,8 +989,10 @@ def trackIssues(request):
 
     return render_to_response("issues/issue_tracker.html", {'projects': projects, 
                                                             'users': users, 
+                                                            'meta_issues': meta_issues,
                                                             'user': request.user, 
                                                             'issues': q, 
                                                             'filter_project': filter_projects, 
                                                             'filter_assigned': filter_assigned,
-                                                            'filter_status': filter_status}, context_instance=RequestContext(request))
+                                                            'filter_status': filter_status,
+                                                            'filter_meta': filter_meta}, context_instance=RequestContext(request))

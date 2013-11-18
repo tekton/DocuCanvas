@@ -43,19 +43,25 @@ Issue Tracker
         <div id="issue-details" class="well">
             <table width='100%'>
                 <tr>
-                    <td><b>Assigned To User</b></td>
-                    <td><b>Project</b></td>
-                    <td><b>Meta Issue</b></td>
-                    <td><b>Status</b></td>
-                    <td><b>Description</b></td>
+                    <th style="text-align: left;">Assigned To User</th>
+                    <th style="text-align: left;">Project</th>
+                    <th style="text-align: left;">Meta Issue</th>
+                    <th style="text-align: left;">Status</th>
+                    <th style="text-align: left;">Description</th>
+                    <th style="text-align: left;">Last Modified</th>
                 </tr>
                 {% for issue in issues %}
                 <tr>
                     <td>{{issue.assigned_to}}</td>
-                    <td>{{issue.project}}</td>
+                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
+                    {% if issue.meta_issues %}
+                    <td><a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues}}</td>
+                    {% else %}
                     <td>{{issue.meta_issues}}</td>
+                    {% endif %}
                     <td>{{issue.status}}</td>
                     <td><a href="{{issue.id}}">{{issue.summary|truncatechars:80}}</a></td>
+                    <td>{{issue.modified}}</td>
                 </tr>
                 {% endfor %}
             </table>
@@ -63,7 +69,7 @@ Issue Tracker
     </div>
     <div id="issue-column-aside" class="span3 metainfo-asidecolumn">
         <aside id="issue-metainfo" class="well metainfo metainfo-show">
-            {% if filter_assigned or filter_project or filter_status %}
+            {% if filter_assigned or filter_project or filter_status or filter_meta %}
                 <h3>Applied Filters:</h3>
                 {% if filter_assigned %}
                     <b>Users:</b>
@@ -76,6 +82,13 @@ Issue Tracker
                     <b>Projects:</b>
                     {% for project in filter_project %}
                         </br>{{project}}
+                    {% endfor %}
+                    </br>
+                {% endif %}
+                {% if filter_meta %}
+                    <b>Meta Issues:</b>
+                    {% for meta in filter_meta %}
+                        </br>{{meta}}
                     {% endfor %}
                     </br>
                 {% endif %}
@@ -116,6 +129,19 @@ Issue Tracker
                         </td>
                     </tr>
                 </table>
+                <table id="meta-filter-table">
+                    <tr><td>Meta Issue <a onclick='addMetaIssue()'>(+)</a></td></tr>
+                    <tr>
+                        <td>
+                            <select name='meta-issue'>
+                                <option value='none'></option>
+                                {% for meta in meta_issues %}
+                                <option value='{{meta}}'>{{meta.title}}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                </table>
                 <table id='status-filter-table'>
                     <tr><td>Status <a onclick='addStatus()'>(+)</a></td></tr>
                     <tr>
@@ -144,6 +170,9 @@ Issue Tracker
                 {% for user in filter_assigned %}
                 <input type='hidden' name='assigned_filter' value='{{user}}'>
                 {% endfor %}
+                {% for meta in filter_meta %}
+                <input type='hidden' name='meta_filter' value='{{meta}}'>
+                {% endfor %}
             </form>
         </aside>
     </div>
@@ -166,6 +195,11 @@ Issue Tracker
         var content= "<tr><td><select name='status'><option value='none'></option><option value='active'>Active</option><option value='duplicate'>Duplicate</option><option value='fixed'>Fixed</option><option value='not_a_bug'>Not A Bug</option><option value='retest'>Retest</option><option value='unverified'>Unverified</option><option value='wont_fix'>Won't Fix</option></select></td></tr>";
         $('#status-filter-table').append(content);
     };
+
+    function addMetaIssue(){
+        var content = "<tr><td><select name='meta-issue'><option value='none'></option>{% for meta in meta_issues %}<option value='{{meta}}'>{{meta.title}}</option>{% endfor %}</select></td></tr>";
+        $('#meta-filter-table').append(content);
+    }
 
     function reload(){
         window.location.replace('/issue/track');
