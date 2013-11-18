@@ -10,7 +10,7 @@ Information Checklist Form
 
 {% block bodyContent%}
 {% if editing %}
-<form action="{% url 'taxes.views.createChecklist' info_checklist.id %}" id = "infochecklistform" method="post" enctype="multipart/form-data">
+<form action="{% url 'taxes.views.createChecklist' info_checklist.id  %}" id = "infochecklistform" method="post" enctype="multipart/form-data">
 {% else %}
 <form action="{% url 'taxes.views.createChecklist' %}" id = "infochecklistform" method="post" enctype="multipart/form-data">
 {% endif %}
