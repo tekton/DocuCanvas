@@ -862,22 +862,44 @@ def trackIssues(request):
 
     # If request.POST, apply appropriate filters based on POST data
     if request.method == 'POST':
+        print request.POST
+        project_filters = []
+        project_filters.extend(request.POST.getlist('project_filter'))
         for project in request.POST.getlist('project'):
+            if project not in project_filters:
+                project_filters.append(project)
+        user_filters = []
+        user_filters.extend(request.POST.getlist('assigned_filter'))
+        for user in request.POST.getlist('assigned_to'):
+            if user not in user_filters:
+                user_filters.append(user)
+        status_filters = []
+        status_filters.extend(request.POST.getlist('status_filter'))
+        for status in request.POST.getlist('status'):
+            if status not in status_filters:
+                status_filters.append(status)
+        for project in project_filters:
             if project == 'none':
+                pass
+            elif project is None:
                 pass
             else:
                 filter_projects.append(project)
                 my_project = Project.objects.get(name=project)
                 project_list.extend(Issue.objects.filter(Q(project=my_project)))
-        for user in request.POST.getlist('assigned_to'):
+        for user in user_filters:
             if user == 'none':
+                pass
+            elif user is None:
                 pass
             else:
                 filter_assigned.append(user)
                 my_user = User.objects.get(username=user)
                 user_list.extend(Issue.objects.filter(Q(assigned_to=my_user)))
-        for status in request.POST.getlist('status'):
+        for status in status_filters:
             if status == 'none':
+                pass
+            elif status is None:
                 pass
             elif status == 'no_status':
                 filter_status.append("None")
@@ -909,6 +931,7 @@ def trackIssues(request):
                 if item in status_list:
                     q.append(item)
         else:
+            print "hi"
             q.extend(Issue.objects.all())
     else:
         q.extend(Issue.objects.all())
