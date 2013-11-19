@@ -1,0 +1,49 @@
+{% extends "taxes/base.html" %}
+{% load staticfiles %}
+
+{% block contextNav %}
+{% endblock %} 
+
+{% block pageTitle %}
+Current Research Tax Credit Studies</br>
+{% endblock %}
+
+{% block bodyContent%}
+<table id='tax-year-table' style='width:100%;'>
+</table>
+{% endblock%}
+
+{% block endScripts %}
+<script language="javascript" type="text/javascript">
+var my_count = JSON.parse('{{item_count|escapejs|safe}}');
+var tax_years = JSON.parse('{{tax_years|escapejs|safe}}');
+$(function(){
+    var content = "";
+    var count = parseInt(my_count[0]['count']);
+    for(var i=0; i < count; i++){
+        var key = i + "";
+        var detail = tax_years[key].hi.tax_year.tax_year_end;
+        content += "<tr><td id='tax-detail-data-" + key + "'><a onclick='loadInfo(" + key + ")'>" + detail + "</a></td></tr>";
+    }
+    $('#tax-year-table').append(content);
+});
+function loadInfo(key){
+    var content = "<table 'tax-year-details-table-" + key + "'>";
+    content += "<tr><th style='text-align:left;'><a href='/research/information/" + tax_years[key].hi.info.id + "'>*Information Checklist*</a></th></tr>";
+    content += "<tr><th style='text-align:left;'>Project Lists (Client Names)</th></tr>";
+    for(project in tax_years[key].hi.projects){
+        content += "<tr><td><a href='/research/editprojectlist/" + tax_years[key].hi.projects[project].id + "'>" + tax_years[key].hi.projects[project].client + "</a></td></tr>";
+    }
+    content += "<tr><th style='text-align:left;'>Supply Cost Analysis (Company Names)</th></tr>";
+    for(supply in tax_years[key].hi.supplies){
+        content += "<tr><td><a href='/research/editsupplylist/" + tax_years[key].hi.supplies[supply].id + "'>" + tax_years[key].hi.supplies[supply].company_name + "</td></tr>";
+    }
+    content += "<tr><th style='text-align:left;'>Contract Research Cost Analysis</th></tr>";
+    for(contract in tax_years[key].hi.contracts){
+        content += "<tr><td><a href='/research/editcontractlist/" + tax_years[key].hi.contracts[contract].id + "'>" + tax_years[key].hi.contracts[contract].company_name + "</td></tr>";
+    }
+    content += "</table>"
+    $('#tax-detail-data-' + key).append(content);
+}
+</script>
+{% endblock %}

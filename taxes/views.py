@@ -1,46 +1,99 @@
-from django.forms.models import inlineformset_factory
+from django.forms.models import inlineformset_factory, model_to_dict
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
 from django.contrib.auth.models import User
 from projects.models import Project
-from taxes.models import InformationChecklist, ProjectAnalysis, ProjectListAnalysis, SupplyAnalysis, SupplyCostAnalysis, ContractAnalysis, ContractResearchCostAnalysis
-from taxes.forms import ProjectAnalysisForm, ProjectListAnalysisForm, SupplyAnalysisForm, SupplyCostAnalysisForm, ContractAnalysisForm, ContractResearchCostAnalysisForm, InformationChecklistForm
+from taxes.models import InformationChecklist, ProjectAnalysis, ProjectListAnalysis, SupplyAnalysis, SupplyCostAnalysis, ContractAnalysis, ContractResearchCostAnalysis, TaxYearForms
+from taxes.forms import ProjectAnalysisForm, ProjectListAnalysisForm, SupplyAnalysisForm, SupplyCostAnalysisForm, ContractAnalysisForm, ContractResearchCostAnalysisForm, InformationChecklistForm, TaxForm
 from datetime import date, timedelta
 
-# Create your views here.
-def createBaseForm(request):
+import json
+
+def viewAllForms(request):
     try:
         projects = Project.objects.all()
     except Exception, e:
         print e
+    try:
+        tax_years = TaxYearForms.objects.all()
+    except Exception, e:
+        print e
+    count = 0
+    json_files = []
+    for year in tax_years:
+        try:
+            project_analysis = ProjectAnalysis.objects.filter(tax_year=year)
+            temp_proj = []
+            for project in project_analysis:
+                temp = model_to_dict(project)
+                for k, v in temp.items():
+                    temp[k] = unicode(v)
+                temp_proj.append(temp)
+        except Exception, e:
+            print e
+        try:
+            supply_analysis = SupplyAnalysis.objects.filter(tax_year=year)
+            temp_supp = []
+            for supply in supply_analysis:
+                temp = model_to_dict(supply)
+                for k, v in temp.items():
+                    temp[k] = unicode(v)
+                temp_supp.append(temp)
+        except Exception, e:
+            print e
+        try:
+            contract_analysis = ContractAnalysis.objects.filter(tax_year=year)
+            temp_cont = []
+            for contract in contract_analysis:
+                temp = model_to_dict(contract)
+                for k, v in temp.items():
+                    temp[k] = unicode(v)
+                temp_cont.append(temp)
+        except Exception, e:
+            print e
+        try:
+            info_checklist = InformationChecklist.objects.get(tax_year=year)
+            temp_info = model_to_dict(info_checklist)
+            for k, v in temp_info.items():
+                temp_info[k] = unicode(v)
+        except Exception, e:
+            print e
+        temp_year = model_to_dict(year)
+        for k,v in temp_year.items():
+            temp_year[k] = unicode(v)
+        index = str(count)
+        json_temp = {'hi':{'tax_year': temp_year, 'projects': temp_proj, 'contracts': temp_cont, 'supplies': temp_supp, 'info': temp_info}}
+        json_files.append(json_temp)
+        count += 1
+    json_count = []
+    my_count = {'count': count}
+    json_count.append(my_count)
+    print json_files
+    print json_count
+    return render_to_response('taxes/display_all_forms.html', {'projects': projects,
+                                                               'tax_years': json.dumps(json_files),
+                                                               'item_count': json.dumps(json_count)}, context_instance=RequestContext(request))
 
-    project_analysis = ProjectAnalysis()
-    project_item_formset = inlineformset_factory(ProjectAnalysis, ProjectListAnalysis, can_delete=False, extra=1)
-    supply_analysis = SupplyAnalysis()
-    supply_item_formset = inlineformset_factory(SupplyAnalysis, SupplyCostAnalysis, can_delete=False, extra=1)
-    contract_analysis = ContractAnalysis()
-    contract_item_formset = inlineformset_factory(ContractAnalysis, ContractResearchCostAnalysis, can_delete=False, extra=1)
 
+def createTaxForm(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        raise e
+    tax_year = TaxYearForms()
     if request.method == 'POST':
-        print request.POST
+        tax_form = TaxForm(request.POST, instance=tax_year)
+        if tax_form.is_valid():
+            tax_year = tax_form.save()
+            return redirect('taxes.views.viewAllForms')
+        else:
+            print tax_form.errors
     else:
-        project_formset = project_item_formset(instance=project_analysis)
-        supply_formset = supply_item_formset(instance=supply_analysis)
-        contract_formset = contract_item_formset(instance=contract_analysis)
+        tax_form = TaxForm(instance=tax_year)
 
-    project_form = ProjectAnalysisForm(instance=project_analysis)
-    supply_form = SupplyAnalysisForm(instance=supply_analysis)
-    contract_form = ContractResearchCostAnalysisForm(instance=contract_analysis)
-
-    return render_to_response("taxes/tax_form.html", {'projects': projects,
-                                                      'project_analysis': project_analysis,
-                                                      'supply_analysis': supply_analysis,
-                                                      'contract_analysis': contract_analysis,
-                                                      'project_formset': project_formset,
-                                                      'supply_formset': supply_formset,
-                                                      'contract_formset': contract_formset}, context_instance=RequestContext(request))
+    return render_to_response('taxes/tax_form.html', {'projects': projects}, context_instance=RequestContext(request))
 
 
 def submitProjectForm(request):
@@ -48,6 +101,10 @@ def submitProjectForm(request):
         projects = Project.objects.all()
     except Exception, e:
         print e
+    try:
+        tax_forms = TaxYearForms.objects.all()
+    except Exception, e:
+        raise e
 
     project_analysis = ProjectAnalysis()
     project_item_formset = inlineformset_factory(ProjectAnalysis, ProjectListAnalysis, can_delete=False, extra=1)
@@ -72,9 +129,10 @@ def submitProjectForm(request):
     project_form = ProjectAnalysisForm(instance=project_analysis)
 
     return render_to_response("taxes/project_tax_form.html", {'projects': projects,
-                                                      'project_form': project_form,
-                                                      'project_analysis': project_analysis,
-                                                      'project_formset': project_formset,}, context_instance=RequestContext(request))
+                                                              'tax_forms': tax_forms,
+                                                              'project_form': project_form,
+                                                              'project_analysis': project_analysis,
+                                                              'project_formset': project_formset,}, context_instance=RequestContext(request))
 
 
 def submitSupplyForm(request):
@@ -82,6 +140,10 @@ def submitSupplyForm(request):
         projects = Project.objects.all()
     except Exception, e:
         print e
+    try:
+        tax_forms = TaxYearForms.objects.all()
+    except Exception, e:
+        raise e
     supply_analysis = SupplyAnalysis()
     supply_item_formset = inlineformset_factory(SupplyAnalysis, SupplyCostAnalysis, can_delete=False, extra=1)
     if request.method == 'POST':
@@ -101,14 +163,19 @@ def submitSupplyForm(request):
     supply_form = SupplyAnalysisForm(instance=supply_analysis)
 
     return render_to_response("taxes/supply_tax_form.html", {'projects': projects,
-                                                            'supply_form': supply_form,
-                                                            'supply_analysis': supply_analysis,
-                                                            'supply_formset': supply_formset}, context_instance=RequestContext(request))
+                                                             'supply_form': supply_form,
+                                                             'supply_analysis': supply_analysis,
+                                                             'supply_formset': supply_formset,
+                                                             'tax_forms': tax_forms,}, context_instance=RequestContext(request))
 
 
 def submitContractForm(request):
     try:
         projects = Project.objects.all()
+    except Exception, e:
+        raise e
+    try:
+        tax_forms = TaxYearForms.objects.all()
     except Exception, e:
         raise e
     contract_analysis = ContractAnalysis()
@@ -131,7 +198,8 @@ def submitContractForm(request):
     return render_to_response("taxes/contract_tax_form.html", {'projects': projects,
                                                                'contract_form': contract_form,
                                                                'contract_analysis': contract_analysis,
-                                                               'contract_formset': contract_formset}, context_instance=RequestContext(request))
+                                                               'contract_formset': contract_formset,
+                                                               'tax_forms': tax_forms,}, context_instance=RequestContext(request))
 
 
 def editProjectForm(request, project_analysis_id):
@@ -147,6 +215,10 @@ def editProjectForm(request, project_analysis_id):
         project_list = ProjectListAnalysis.objects.filter(report=project_analysis)
     except Exception, e:
         print e
+    try:
+        tax_forms = TaxYearForms.objects.all()
+    except Exception, e:
+        raise e
 
     if request.method == 'POST':
         print request.POST
@@ -168,7 +240,8 @@ def editProjectForm(request, project_analysis_id):
             print project_formset.errors
     return render_to_response("taxes/project_form_edit.html", {'projects': projects,
                                                                'project_analysis': project_analysis,
-                                                               'project_list': project_list}, context_instance=RequestContext(request))
+                                                               'project_list': project_list,
+                                                               'tax_forms': tax_forms,}, context_instance=RequestContext(request))
 
 
 def deleteProjectListInstance(request, project_list_id):
@@ -194,6 +267,10 @@ def editSupplyForm(request, supply_analysis_id):
         supply_list = SupplyCostAnalysis.objects.filter(report=supply_analysis)
     except Exception, e:
         raise e
+    try:
+        tax_forms = TaxYearForms.objects.all()
+    except Exception, e:
+        raise e
     if request.method == 'POST':
         supply_item_formset = inlineformset_factory(SupplyAnalysis, SupplyCostAnalysis, can_delete=False, extra=1)
         supply_formset = supply_item_formset(request.POST, instance=supply_analysis)
@@ -207,7 +284,8 @@ def editSupplyForm(request, supply_analysis_id):
             print supply_formset.errors
     return render_to_response('taxes/supply_form_edit.html', {'projects': projects,
                                                               'supply_analysis': supply_analysis,
-                                                              'supply_list': supply_list}, context_instance=RequestContext(request))
+                                                              'supply_list': supply_list,
+                                                              'tax_forms': tax_forms,}, context_instance=RequestContext(request))
 
 
 def editContractForm(request, contract_analysis_id):
@@ -223,6 +301,10 @@ def editContractForm(request, contract_analysis_id):
         contract_list = ContractResearchCostAnalysis.objects.filter(report=contract_analysis)
     except Exception, e:
         raise e
+    try:
+        tax_forms = TaxYearForms.objects.all()
+    except Exception, e:
+        raise e
     if request.method == 'POST':
         contract_item_formset = inlineformset_factory(ContractAnalysis, ContractResearchCostAnalysis, can_delete=False, extra=1)
         contract_formset = contract_item_formset(request.POST, instance=contract_analysis)
@@ -236,7 +318,8 @@ def editContractForm(request, contract_analysis_id):
             print contract_formset.errors
     return render_to_response('taxes/contract_form_edit.html', {'projects': projects,
                                                                 'contract_analysis': contract_analysis,
-                                                                'contract_list': contract_list}, context_instance=RequestContext(request))
+                                                                'contract_list': contract_list,
+                                                                'tax_forms': tax_forms,}, context_instance=RequestContext(request))
 
 
 def createChecklist(request, info_checklist_id=-1):
@@ -246,6 +329,10 @@ def createChecklist(request, info_checklist_id=-1):
         print e
     try:
         users = User.objects.all()
+    except Exception, e:
+        raise e
+    try:
+        tax_forms = TaxYearForms.objects.all()
     except Exception, e:
         raise e
     if info_checklist_id != -1:
@@ -280,7 +367,8 @@ def createChecklist(request, info_checklist_id=-1):
                                                                         'users': users,
                                                                         'editing': editing,
                                                                         'info_checklist_form': info_checklist_form,
-                                                                        'info_checklist': info_checklist}, context_instance=RequestContext(request))
+                                                                        'info_checklist': info_checklist,
+                                                                        'tax_forms': tax_forms,}, context_instance=RequestContext(request))
 
 
 def viewInfoChecklist(request, info_checklist_id):

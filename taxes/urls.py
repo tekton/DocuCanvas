@@ -5,6 +5,7 @@ from django.conf.urls import *
 '''
 
 urlpatterns = patterns('',
+    (r'new$', 'taxes.views.createTaxForm'),
     (r'projects$', 'taxes.views.submitProjectForm'),
     (r'supplies$', 'taxes.views.submitSupplyForm'),
     (r'contract$', 'taxes.views.submitContractForm'),
@@ -15,4 +16,5 @@ urlpatterns = patterns('',
     (r'information$', 'taxes.views.createChecklist'),
     (r'information/([A-Za-z0-9_\.-]+)$', 'taxes.views.createChecklist'),
     (r'viewinfo/([A-Za-z0-9_\.-]+)$', 'taxes.views.viewInfoChecklist'),
+    (r'^$', 'taxes.views.viewAllForms'),
 )

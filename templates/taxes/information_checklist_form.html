@@ -15,6 +15,22 @@ Information Checklist Form
 <form action="{% url 'taxes.views.createChecklist' %}" id = "infochecklistform" method="post" enctype="multipart/form-data">
 {% endif %}
     {% csrf_token %}
+    Tax Year:
+    <select id="id_tax_year" name="tax_year">
+        {% if editing %}
+        <option value="{{info_checklist.tax_year.id}}">{{info_checklist.tax_year.tax_year_end}}</option>
+        {% for year in tax_forms %}
+        {% if year == info_checklist.tax_year %}
+        {% else %}
+            <option value="{{year.id}}">{{year.tax_year_end}}</option>
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        {% for year in tax_forms %}
+            <option value="{{year.id}}">{{year.tax_year_end}}</option>
+        {% endfor %}
+        {% endif %}
+    </select>
     <table>
         <tr>
             <th>Information Requested For R&D Tax Credit Study</th>

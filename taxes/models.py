@@ -5,7 +5,12 @@ from django.contrib import admin
 from projects.models import Project
 
 # Create your models here.
+class TaxYearForms(models.Model):
+	tax_year_end = models.DateField()
+
+
 class InformationChecklist(models.Model):
+	tax_year = models.ForeignKey(TaxYearForms, unique=True)
 	recent_company_chart_assigned_to = models.ForeignKey(User, null=True, blank=True, related_name='recent_company_chart')
 	recent_company_chart_boolean = models.NullBooleanField(default=False)
 	other_owned_companies_assigned_to = models.ForeignKey(User, null=True, blank=True, related_name='other_owned_companies')
@@ -40,7 +45,7 @@ class InformationChecklist(models.Model):
 
 class ProjectAnalysis(models.Model):
 	client = models.CharField(max_length=255)
-	tax_year_end = models.DateField(blank=True, null=True)
+	tax_year = models.ForeignKey(TaxYearForms)
 
 
 class ProjectListAnalysis(models.Model):
@@ -52,7 +57,7 @@ class ProjectListAnalysis(models.Model):
 
 class SupplyAnalysis(models.Model):
 	company_name = models.CharField(max_length=255, default='Channel Factory')
-	tax_year_end = models.DateField(blank=True, null=True)
+	tax_year = models.ForeignKey(TaxYearForms)
 
 
 class SupplyCostAnalysis(models.Model):
@@ -64,7 +69,7 @@ class SupplyCostAnalysis(models.Model):
 
 class ContractAnalysis(models.Model):
 	company_name = models.CharField(max_length=255, default='Channel Factory')
-	tax_year_end = models.DateField(blank=True, null=True)
+	tax_year = models.ForeignKey(TaxYearForms)
 
 
 class ContractResearchCostAnalysis(models.Model):
@@ -76,3 +81,4 @@ class ContractResearchCostAnalysis(models.Model):
 admin.site.register(ProjectAnalysis)
 admin.site.register(ProjectListAnalysis)
 admin.site.register(InformationChecklist)
+admin.site.register(ContractAnalysis)

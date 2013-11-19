@@ -19,7 +19,18 @@ Contract Research Analysis
         <table width='100%'>
             <tr>
                 <td width='50%'>Company Name: <input type='text' name='company_name' id='id_company_name' value='{{contract_analysis.company_name}}'></td>
-                <td width='50%'>Tax Year End: <input type='text' name='tax_year_end' id='id_tax_year_end' value='{{contract_analysis.tax_year_end}}'/></td>
+                <td width='50%'>
+                    Tax Year End:
+                    <select id='id_tax_year' name='tax_year'>
+                        <option value="{{contract_analysis.tax_year.id}}">{{contract_analysis.tax_year.tax_year_end}}</option>
+                        {% for year in tax_forms %}
+                        {% if year == contract_analysis.tax_year %}
+                        {% else %}
+                            <option value="{{year.id}}">{{year.tax_year_end}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
             </tr>
         </table>
     </br>
