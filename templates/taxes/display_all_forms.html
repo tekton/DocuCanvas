@@ -23,11 +23,13 @@ $(function(){
     for(var i=0; i < count; i++){
         var key = i + "";
         var detail = tax_years[key].hi.tax_year.tax_year_end;
-        content += "<tr><td id='tax-detail-data-" + key + "'><a onclick='loadInfo(" + key + ")'>" + detail + "</a></td></tr>";
+        content += "<tr><td id='tax-detail-data-" + key + "'>" + detail + " <a onclick='loadInfo(" + key + ")'>[+]</a></td></tr>";
     }
     $('#tax-year-table').append(content);
 });
 function loadInfo(key){
+    $('#tax-detail-data-' + key).empty();
+    $('#tax-detail-data-' + key).append(tax_years[key].hi.tax_year.tax_year_end + " <a onclick='emptyInfo(" + key + ")'>[-]</a>");
     var content = "<table 'tax-year-details-table-" + key + "'>";
     content += "<tr><th style='text-align:left;'><a href='/research/information/" + tax_years[key].hi.info.id + "'>*Information Checklist*</a></th></tr>";
     content += "<tr><th style='text-align:left;'>Project Lists (Client Names)</th></tr>";
@@ -44,6 +46,10 @@ function loadInfo(key){
     }
     content += "</table>"
     $('#tax-detail-data-' + key).append(content);
+}
+function emptyInfo(key){
+    $('#tax-detail-data-' + key).empty();
+    $('#tax-detail-data-' + key).append(tax_years[key].hi.tax_year.tax_year_end + " <a onclick='loadInfo(" + key + ")'>[+]</a>")
 }
 </script>
 {% endblock %}
