@@ -1,5 +1,56 @@
-<table>
-	{% for issue in issues %}
-	<tr><td>{{issue}}</td></tr>
-	{% endfor %}
-</table>
+{% extends "issues/base.html" %}
+
+{% block contextNav %}
+	<li><a href="{% url 'issues.views.issue_form' %}">New Issue : {{issue.project.name}}</a></li>
+{% endblock%}
+
+{% block pageTitle %}Advanced Search :: {{block.super}}{% endblock %}
+
+{% block bodyContent %}
+<article class="row">
+    <div id="issue-column-main" class="span9 metainfo-maincolumn">
+        <div id="issue-details" class="well">
+			<table width='100%'>
+                <tr>
+                    <th style="text-align: left;">User</th>
+                    <th style="text-align: left;">Project</th>
+                    <th style="text-align: left;">Meta Issue</th>
+                    <th style="text-align: left;">Status</th>
+                    <th style="text-align: left;">Description</th>
+                    <th style="text-align: left;">Last Modified</th>
+                </tr>
+                {% for issue in issues %}
+                <tr>
+                    <td>{{issue.assigned_to}}</td>
+                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
+                    {% if issue.meta_issues %}
+                    <td><a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues}}</td>
+                    {% else %}
+                    <td>{{issue.meta_issues}}</td>
+                    {% endif %}
+                    <td>{{issue.status}}</td>
+                    <td><a href="{{issue.id}}">{{issue.summary|truncatechars:80}}</a></td>
+                    <td>{{issue.modified}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+		</div>
+	</div>
+	<div id="issue-column-aside" class="span3 metainfo-asidecolumn">
+        <aside id="issue-metainfo" class="well metainfo metainfo-show">
+			<form action="{% url 'issues.views.issue_search_advanced' %}" method="POST">
+				{% csrf_token %}
+				<p id="addField">Add Field: <select id="fieldList"></select> <a href="#">Add</a></p>
+		        <input type="submit" value="Submit"/>
+			</form>
+			<div id="formFields">
+				{{ form.as_p }}
+		    </div>
+		</aside>
+	</div>
+</article>
+{% endblock %}
+
+{% block endScripts %}
+<script src="/static/js/advsearch.js"></script>
+{% endblock %}

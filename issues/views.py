@@ -879,7 +879,8 @@ def loadSearchResults(request, search_hash_id):
         print e
     print q
     return render_to_response("issues/adv_search_results.html", {'projects': projects,
-                                                                 'issues': q}, context_instance=RequestContext(request))
+                                                                 'issues': q,
+                                                                 'form': AdvSearchForm(),}, context_instance=RequestContext(request))
 
 '''
 @login_required
