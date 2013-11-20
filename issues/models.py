@@ -223,8 +223,8 @@ class IssueFieldUpdate(models.Model):
     issue = models.ForeignKey(Issue)  # fk
     user = models.ForeignKey(User)  # fk
     field = models.CharField(max_length=255, blank=True, null=True)
-    old_value = models.CharField(max_length=255, blank=True, null=True)
-    new_value = models.CharField(max_length=255, blank=True, null=True)
+    old_value = models.TextField(blank=True, null=True)
+    new_value = models.TextField(blank=True, null=True)
     created = models.DateField(auto_now_add=True)
 
 
