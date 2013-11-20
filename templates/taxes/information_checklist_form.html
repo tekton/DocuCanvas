@@ -1,0 +1,332 @@
+{% extends "taxes/base.html" %}
+
+{% block contextNav %}
+{% include "taxes/contextnav-taxes.html" %}
+{% endblock %} 
+
+{% block pageTitle %}
+R&D Tax Accounting:</br>
+Information Checklist Form
+{% endblock %}
+
+{% block bodyContent%}
+{% if editing %}
+<form action="{% url 'taxes.views.createChecklist' info_checklist.id  %}" id = "infochecklistform" method="post" enctype="multipart/form-data">
+{% else %}
+<form action="{% url 'taxes.views.createChecklist' %}" id = "infochecklistform" method="post" enctype="multipart/form-data">
+{% endif %}
+    {% csrf_token %}
+    Tax Year:
+    <select id="id_tax_year" name="tax_year">
+        {% if editing %}
+        <option value="{{info_checklist.tax_year.id}}">{{info_checklist.tax_year.tax_year_end}}</option>
+        {% for year in tax_forms %}
+        {% if year == info_checklist.tax_year %}
+        {% else %}
+            <option value="{{year.id}}">{{year.tax_year_end}}</option>
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        {% for year in tax_forms %}
+            <option value="{{year.id}}">{{year.tax_year_end}}</option>
+        {% endfor %}
+        {% endif %}
+    </select>
+    <table>
+        <tr>
+            <th>Information Requested For R&D Tax Credit Study</th>
+            <th>Assigned To</th>
+            <th>Completed</th>
+        </tr>
+        <tr>
+            <td>Most Recent Company Organizational Chart(s)</td>
+            <td>
+                <select id="id_recent_company_chart_assigned_to" name="recent_company_chart_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.recent_company_chart_boolean %}
+                    <input type='radio' name='recent_company_chart_boolean' id='id_recent_company_chart_boolean' value='2' checked='checked'>Yes
+                    <input type='radio' name='recent_company_chart_boolean' id='id_recent_company_chart_boolean' value='3'>No
+                {% else %}
+                    <input type='radio' name='recent_company_chart_boolean' id='id_recent_company_chart_boolean' value='2'>Yes
+                    <input type='radio' name='recent_company_chart_boolean' id='id_recent_company_chart_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>List of Any Other 50%-Owned Companies</td>
+            <td>
+                <select id="id_other_owned_companies_assigned_to" name="other_owned_companies_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.other_owned_companies_boolean %}
+                    <input type='radio' name='other_owned_companies_boolean' id='id_other_owned_companies_boolean' value='2' checked='checked'>Yes
+                    <input type='radio' name='other_owned_companies_boolean' id='id_other_owned_companies_boolean' value='3'>No
+                {% else %}
+                    <input type='radio' name='other_owned_companies_boolean' id='id_other_owned_companies_boolean' value='2'>Yes
+                    <input type='radio' name='other_owned_companies_boolean' id='id_other_owned_companies_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Employees: Title, and Annual W-2 Wage Amounts (Box 1)</td>
+            <td>
+                <select id="id_employee_wage_ammounts_assigned_to" name="employee_wage_ammounts_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.employee_wage_amounts_boolean %}
+                <input type='radio' name='employee_wage_ammounts_boolean' id='id_employee_wage_ammounts_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='employee_wage_ammounts_boolean' id='id_employee_wage_ammounts_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='employee_wage_ammounts_boolean' id='id_employee_wage_ammounts_boolean' value='2'>Yes
+                <input type='radio' name='employee_wage_ammounts_boolean' id='id_employee_wage_ammounts_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Qualified Supplies - (Supply Cost Analysis)</td>
+            <td>
+                <select id="id_supply_cost_analysis_assigned_to" name="supply_cost_analysis_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.supply_cost_analysis_boolean %}
+                <input type='radio' name='supply_cost_analysis_boolean' id='id_supply_cost_analysis_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='supply_cost_analysis_boolean' id='id_supply_cost_analysis_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='supply_cost_analysis_boolean' id='id_supply_cost_analysis_boolean' value='2'>Yes
+                <input type='radio' name='supply_cost_analysis_boolean' id='id_supply_cost_analysis_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Contract Research - (Contract Research Cost Analysis)</td>
+            <td>
+                <select id="id_contract_research_analysis_assigned_to" name="contract_research_analysis_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.contract_research_analysis_boolean %}
+                <input type='radio' name='contract_research_analysis_boolean' id='id_contract_research_analysis_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='contract_research_analysis_boolean' id='id_contract_research_analysis_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='contract_research_analysis_boolean' id='id_contract_research_analysis_boolean' value='2'>Yes
+                <input type='radio' name='contract_research_analysis_boolean' id='id_contract_research_analysis_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Activity Time Analysis Worksheet (if applicable)</td>
+            <td>
+                <select id="id_activity_time_assigned_to" name="activity_time_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.activity_time_boolean %}
+                <input type='radio' name='activity_time_boolean' id='id_activity_time_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='activity_time_boolean' id='id_activity_time_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='activity_time_boolean' id='id_activity_time_boolean' value='2'>Yes
+                <input type='radio' name='activity_time_boolean' id='id_activity_time_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Project Listing - (Project List Analysis)</td>
+            <td>
+                <select id="id_project_listing_assigned_to" name="project_listing_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.project_listing_boolean %}
+                <input type='radio' name='project_listing_boolean' id='id_project_listing_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='project_listing_boolean' id='id_project_listing_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='project_listing_boolean' id='id_project_listing_boolean' value='2'>Yes
+                <input type='radio' name='project_listing_boolean' id='id_project_listing_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Job Descriptions / Bio's of Key R&D Employees</td>
+            <td>
+                <select id="id_job_description_assigned_to" name="job_description_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.job_description_boolean %}
+                <input type='radio' name='job_description_boolean' id='id_job_description_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='job_description_boolean' id='id_job_description_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='job_description_boolean' id='id_job_description_boolean' value='2'>Yes
+                <input type='radio' name='job_description_boolean' id='id_job_description_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Federal & State Tax Returns for Study Year (indluding other 50%-Owned Companies)</td>
+            <td>
+                <select id="id_tax_return_assigned_to" name="tax_return_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.tax_return_boolean %}
+                <input type='radio' name='tax_return_boolean' id='id_tax_return_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='tax_return_boolean' id='id_tax_return_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='tax_return_boolean' id='id_tax_return_boolean' value='2'>Yes
+                <input type='radio' name='tax_return_boolean' id='id_tax_return_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Federal & State Tax Returns for Prior 3 years (including other 50%-Owned Companies)</td>
+            <td>
+                <select id="id_tax_return_prior_assigned_to" name="tax_return_prior_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.tax_return_prior_boolean %}
+                <input type='radio' name='tax_return_prior_boolean' id='id_tax_return_prior_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='tax_return_prior_boolean' id='id_tax_return_prior_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='tax_return_prior_boolean' id='id_tax_return_prior_boolean' value='2'>Yes
+                <input type='radio' name='tax_return_prior_boolean' id='id_tax_return_prior_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Listing of Business Acquisitions/Dispositions</td>
+            <td>
+                <select id="id_acquisitions_dispositions_assigned_to" name="acquisitions_dispositions_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.acquisitions_dispositions_boolean %}
+                <input type='radio' name='acquisitions_dispositions_boolean' id='id_acquisitions_dispositions_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='acquisitions_dispositions_boolean' id='id_acquisitions_dispositions_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='acquisitions_dispositions_boolean' id='id_acquisitions_dispositions_boolean' value='2'>Yes
+                <input type='radio' name='acquisitions_dispositions_boolean' id='id_acquisitions_dispositions_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Previous R&D Credits Taken - Forms & Prior Studies</td>
+            <td>
+                <select id="id_previous_credits_taken_assigned_to" name="previous_credits_taken_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.previous_credits_taken_boolean %}
+                <input type='radio' name='previous_credits_taken_boolean' id='id_previous_credits_taken_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='previous_credits_taken_boolean' id='id_previous_credits_taken_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='previous_credits_taken_boolean' id='id_previous_credits_taken_boolean' value='2'>Yes
+                <input type='radio' name='previous_credits_taken_boolean' id='id_previous_credits_taken_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Trial Balance / General Ledge for Credit Year(s)</td>
+            <td>
+                <select id="id_trial_balance_1_assigned_to" name="trial_balance_1_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.trial_balance_1_boolean %}
+                <input type='radio' name='trial_balance_1_boolean' id='id_trial_balance_1_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='trial_balance_1_boolean' id='id_trial_balance_1_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='trial_balance_1_boolean' id='id_trial_balance_1_boolean' value='2'>Yes
+                <input type='radio' name='trial_balance_1_boolean' id='id_trial_balance_1_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Trial Balance / General Ledger for Credit Year(s)</td>
+            <td>
+                <select id="id_trial_balance_2_assigned_to" name="trial_balance_2_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.trial_balance_2_boolean %}
+                <input type='radio' name='trial_balance_2_boolean' id='id_trial_balance_2_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='trial_balance_2_boolean' id='id_trial_balance_2_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='trial_balance_2_boolean' id='id_trial_balance_2_boolean' value='2'>Yes
+                <input type='radio' name='trial_balance_2_boolean' id='id_trial_balance_2_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>(If Amending Returns) - Exact Filing Dates of Co & S/H Previous Returns</td>
+            <td>
+                <select id="id_exact_filing_dates_assigned_to" name="exact_filing_dates_assigned_to">
+                    {% for user in users %}
+                    <option value="{{user.id}}">{{user}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                {% if info_checklist.exact_filing_dates_boolean %}
+                <input type='radio' name='exact_filing_dates_boolean' id='id_exact_filing_dates_boolean' value='2' checked='checked'>Yes
+                <input type='radio' name='exact_filing_dates_boolean' id='id_exact_filing_dates_boolean' value='3'>No
+                {% else %}
+                <input type='radio' name='exact_filing_dates_boolean' id='id_exact_filing_dates_boolean' value='2'>Yes
+                <input type='radio' name='exact_filing_dates_boolean' id='id_exact_filing_dates_boolean' value='3' checked='checked'>No
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <input type="submit" name="submit" value="Save"/>
+</form>
+{% endblock%}
+
+{% block endScripts %}
+{% endblock %}

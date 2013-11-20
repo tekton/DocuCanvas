@@ -1,6 +1,7 @@
 {% extends "taxes/base.html" %}
 
 {% block contextNav %}
+{% include "taxes/contextnav-taxes.html" %}
 {% endblock %} 
 
 {% block pageTitle %}
@@ -19,7 +20,18 @@ R&D Supplies Consumed
         <table width='100%'>
             <tr>
                 <td width='50%'>Company Name: <input type='text' name='company_name' id='id_company_name' value='{{supply_analysis.company_name}}'/></td>
-                <td width='50%'>Tax Year End: <input type='text' name='tax_year_end' id='id_tax_year_end' value='{{supply_analysis.tax_year_end}}'/></td>
+                <td width='50%'>
+                    Tax Year End:
+                    <select id='id_tax_year' name='tax_year'>
+                        <option value="{{supply_analysis.tax_year.id}}">{{supply_analysis.tax_year.tax_year_end}}</option>
+                        {% for year in tax_forms %}
+                        {% if year == supply_analysis.tax_year %}
+                        {% else %}
+                            <option value="{{year.id}}">{{year.tax_year_end}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
             </tr>
         </table>
     </br>

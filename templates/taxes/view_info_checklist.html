@@ -1,0 +1,218 @@
+{% extends "taxes/base.html" %}
+
+{% block contextNav %}
+{% include "taxes/contextnav-taxes.html" %}
+{% endblock %} 
+
+{% block pageTitle %}
+R&D Tax Accounting:</br>
+Information Checklist Form
+{% endblock %}
+
+{% block bodyContent%}
+    <table>
+        <tr>
+            <th>Information Requested For R&D Tax Credit Study</th>
+            <th>Assigned To</th>
+            <th>Completed</th>
+        </tr>
+        <tr>
+            <td>Most Recent Company Organizational Chart(s)</td>
+            <td>
+                {% if info_checklist.recent_company_chart_assigned_to %}
+                {{info_checklist.recent_company_chart_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.recent_company_chart_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>List of Any Other 50%-Owned Companies</td>
+            <td>
+                {% if info_checklist.other_owned_companies_assigned_to %}
+                {{info_checklist.other_owned_companies_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.other_owned_companies_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Employees: Title, and Annual W-2 Wage Amounts (Box 1)</td>
+            <td>
+                {% if info_checklist.employee_wage_ammounts_assigned_to %}
+                {{info_checklist.employee_wage_ammounts_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.employee_wage_ammounts_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Qualified Supplies - (Supply Cost Analysis)</td>
+            <td>
+                {% if info_checklist.supply_cost_analysis_assigned_to %}
+                {{info_checklist.supply_cost_analysis_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.supply_cost_analysis_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Contract Research - (Contract Research Cost Analysis)</td>
+            <td>
+                {% if info_checklist.contract_research_analysis_assigned_to %}
+                {{info_checklist.contract_research_analysis_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.contract_research_analysis_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Activity Time Analysis Worksheet (if applicable)</td>
+            <td>
+                {% if info_checklist.activity_time_assigned_to %}
+                {{info_checklist.activity_time_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.activity_time_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Project Listing - (Project List Analysis)</td>
+            <td>
+                {% if info_checklist.project_listing_assigned_to %}
+                {{info_checklist.project_listing_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.project_listing_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Job Descriptions / Bio's of Key R&D Employees</td>
+            <td>
+                {% if info_checklist.job_description_assigned_to %}
+                {{info_checklist.job_description_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.job_description_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Federal & State Tax Returns for Study Year (indluding other 50%-Owned Companies)</td>
+            <td>
+                {% if info_checklist.tax_return_assigned_to %}
+                {{info_checklist.tax_return_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.tax_return_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Federal & State Tax Returns for Prior 3 years (including other 50%-Owned Companies)</td>
+            <td>
+                {% if info_checklist.tax_return_prior_assigned_to %}
+                {{info_checklist.tax_return_prior_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.tax_return_prior_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Listing of Business Acquisitions/Dispositions</td>
+            <td>
+                {% if info_checklist.acquisitions_dispositions_assigned_to %}
+                {{info_checklist.acquisitions_dispositions_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.acquisitions_dispositions_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Previous R&D Credits Taken - Forms & Prior Studies</td>
+            <td>
+                {% if info_checklist.previous_credits_taken_assigned_to %}
+                {{info_checklist.previous_credits_taken_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.previous_credits_taken_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Trial Balance / General Ledge for Credit Year(s)</td>
+            <td>
+                {% if info_checklist.trial_balance_1_assigned_to %}
+                {{info_checklist.trial_balance_1_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.trial_balance_1_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>Trial Balance / General Ledger for Credit Year(s)</td>
+            <td>
+                {% if info_checklist.trial_balance_2_assigned_to %}
+                {{info_checklist.trial_balance_2_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.trial_balance_2_boolean}}
+            </td>
+        </tr>
+        <tr>
+            <td>(If Amending Returns) - Exact Filing Dates of Co & S/H Previous Returns</td>
+            <td>
+                {% if info_checklist.exact_filing_dates_assigned_to %}
+                {{info_checklist.exact_filing_dates_assigned_to}}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {{info_checklist.exact_filing_dates_boolean}}
+            </td>
+        </tr>
+    </table>
+{% endblock%}
+
+{% block endScripts %}
+{% endblock %}
