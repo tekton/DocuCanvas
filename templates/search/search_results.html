@@ -12,6 +12,9 @@ Search Results for "{{search}}"
 
 {% block bodyContent %}
 <!-- Begin search-results -->
+{% if message and message != 0 %}
+	<p>Issue with ID <a href="/issue/{{message}}">{{message}}</a> found!</p>
+{% endif %}
 <div class="row search-results">
 	
 	<div class="span9">
