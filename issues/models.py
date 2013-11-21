@@ -317,28 +317,10 @@ class ProjectPlannerItemConnection(models.Model):
 
 class AdvancedSearchHash(models.Model):
     search_hash = models.CharField(max_length=255, unique=True)
-    query = models.CharField(max_length=255)
+    query = models.TextField()
     created = models.DateField(auto_now_add=True)
-    modified = models.DateField(blank=True, null=True)
-
-
-class AdvancedSearch(models.Model):
-    project = models.CommaSeparatedIntegerField(max_length=255, blank=True, null=True)
-    meta_issue = models.CommaSeparatedIntegerField(max_length=255, blank=True, null=True)
-    assigned_to = models.CommaSeparatedIntegerField(max_length=255, blank=True, null=True)
-    created_by = models.CommaSeparatedIntegerField(max_length=255, blank=True, null=True)
-    issue_type = models.CharField(max_length=255, blank=True, null=True)
-    title = models.CharField(max_length=255, blank=True, null=True)
-    summary = models.CharField(max_length=255, blank=True, null=True)
-    description = models.CharField(max_length=255, blank=True, null=True)
-    status = models.CharField(max_length=255, blank=True, null=True)
-    os = models.CharField(max_length=255, blank=True, null=True)
-    os_version = models.CharField(max_length=255, blank=True, null=True)
-    browser = models.CharField(max_length=255, blank=True, null=True)
-    browser_version = models.CharField(max_length=255, blank=True, null=True)
-    criticality = models.IntegerField(blank=True, null=True)
-    priority = models.IntegerField(blank=True, null=True)
-    fixability = models.IntegerField(blank=True, null=True)
+    modified = models.DateField(auto_now=True, blank=True, null=True)
 
 
 admin.site.register(IssueScreenshot)
+admin.site.register(AdvancedSearchHash)

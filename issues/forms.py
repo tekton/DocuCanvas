@@ -148,8 +148,8 @@ class AdvSearchForm(forms.Form):
     """
         TODO: move fields to init so they are actually dynamic
     """
-    project = forms.ModelChoiceField(required=False, queryset=Project.objects.all())
-    meta_issues = forms.ModelChoiceField(required=False, queryset=MetaIssue.objects.all())
+    project = forms.ModelMultipleChoiceField(required=False, queryset=Project.objects.all())
+    meta_issues = forms.ModelMultipleChoiceField(required=False, queryset=MetaIssue.objects.all())
     # state = forms.MultipleChoiceField(required=False, choices=models.BUGSTATE)
     # dates
     # projected_start = forms.DateField(required=False)
@@ -168,8 +168,8 @@ class AdvSearchForm(forms.Form):
     # wireframe = forms.CharField(required=False)
     # uri_to_test = forms.CharField(required=False)
 
-    assigned_to = forms.ModelChoiceField(required=False, queryset=User.objects.all())
-    created_by = forms.ModelChoiceField(required=False, queryset=User.objects.all())
+    assigned_to = forms.ModelMultipleChoiceField(required=False, queryset=User.objects.all())
+    created_by = forms.ModelMultipleChoiceField(required=False, queryset=User.objects.all())
     issue_type = forms.MultipleChoiceField(required=False, choices=ISSUETYPE)
 
     title = MultipleTextField(required=False)

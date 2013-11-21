@@ -21,7 +21,7 @@ from accounts.utils import get_permission_form_for_model, set_permissions_for_mo
 
 from datetime import date
 
-from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot, AdvancedSearch, AdvancedSearchHash
+from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot, AdvancedSearchHash
 from accounts import utils as rputils
 from accounts.models import Account
 from projects.models import Project
@@ -701,66 +701,10 @@ def issue_search_advanced(request):
         print e
     if request.method == "GET":
         return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm(), "projects": projects}, context_instance=RequestContext(request))
-    sq = AdvancedSearch()
-    sq.project = ""
-    for project in request.POST.getlist('project'):
-        sq.project += str(project) + ','
-    sq.metaissue = ""
-    for meta in request.POST.getlist('meta_issues'):
-        sq.metaissue += str(meta) + ','
-    sq.assigned_to = ""
-    for user in request.POST.getlist('assigned_to'):
-        sq.assigned_to += str(user) + ','
-    sq.created_by = ""
-    for user in request.POST.getlist('created_by'):
-        sq.created_by += str(user) + ','
-    sq.issue_type = ""
-    for issue_type in request.POST.getlist('issue_type'):
-        sq.issue_type += str(issue_type) + ','
-    try:
-        sq.title = request.POST.getlist('title')[0]
-    except:
-        pass
-    try:
-        sq.summary = request.POST.getlist('summary')[0]
-    except:
-        pass
-    try:
-        sq.description = request.POST.getlist('description')[0]
-    except:
-        pass
-    sq.status = ""
-    for status in request.POST.getlist('status'):
-        sq.status += str(status) + ','
-    try:
-        sq.criticality = request.POST.getlist('criticality')[0]
-    except:
-        pass
-    try:
-        sq.priority = request.POST.getlist('priority')[0]
-    except:
-        pass
-    try:
-        sq.fixability = request.POST.getlist('fixability')[0]
-    except:
-        pass
-    try:
-        sq.os = request.POST.getlist('os')[0]
-    except:
-        pass
-    try:
-        sq.os_version = request.POST.getlist('os_version')[0]
-    except:
-        pass
-    try:
-        sq.browser = request.POST.getlist('browser')[0]
-    except:
-        pass
-    try:
-        sq.browser_version = request.POST.getlist('browser_version')[0]
-    except:
-        pass
-    sq_string = pickle.dumps(sq)
+    form = AdvSearchForm(request.POST)
+    if not form.is_valid():
+        raise Exception("Invalid adv search form values")
+    sq_string = pickle.dumps(form)
     m = hashlib.new('ripemd160')
     m.update(sq_string)
     hash_string =  m.hexdigest()
@@ -768,120 +712,84 @@ def issue_search_advanced(request):
         search_hash = AdvancedSearchHash.objects.get(search_hash=hash_string)
         return redirect('issues.views.loadSearchResults', hash_string)
     except Exception, e:
-        print e
+        print "Not a hashed search"
     try:
         search_hash = AdvancedSearchHash()
         search_hash.search_hash = hash_string
         search_hash.query = sq_string
         search_hash.save()
-        return redirect('issues.views.loadSearchResults', hash_string)
+        return redirect('issues.views.loadSearchResults', search_hash.search_hash)
     except Exception, e:
         print e
     return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm(), "projects": projects}, context_instance=RequestContext(request))
 
 
-def returnDataSet(field_name, value_list):
-    query_set = []
-    if field_name == 'project':
-        for value in value_list:
-            if value == "":
-                return query_set
-            else:
-                project = Project.objects.get(pk=value)
-                query_set.extend(Issue.objects.filter(project=project))
-    elif field_name == 'meta_issue':
-        for value in value_list:
-            if value == "":
-                return query_set
-            else:
-                meta_issue = MetaIssue.objects.get(pk=value)
-                query_set.extend(Issue.objects.filter(meta_issues=meta_issue))
-    elif field_name == 'assigned_to':
-        for value in value_list:
-            if value == "":
-                return query_set
-            else:
-                user = User.objects.get(pk=value)
-                query_set.extend(Issue.objects.filter(assigned_to=user))
-    elif field_name == 'created_by':
-        for value in value_list:
-            if value == "":
-                return query_set
-            else:
-                user = User.objects.get(pk=value)
-                query_set.extend(Issue.objects.filter(created_by=user))
-    elif field_name == 'issue_type':
-        for value in value_list:
-            if value == "":
-                return query_set
-            else:
-                query_set.extend(Issue.objects.filter(issue_type=value))
-    elif field_name == 'status':
-        for value in value_list:
-            if value == "":
-                return query_set
-            else:
-                query_set.extend(Issue.objects.filter(status=value))
-    return query_set
-
-
 def returnQuery(field_name, field_value):
-    if field_name == 'title':
-        return Issue.objects.filter(Q(title__contains=field_value))
+    if field_name == 'project':
+        return Issue.objects.filter(project=field_value), field_value.name
+    elif field_name == 'meta_issue':
+        return Issue.objects.filter(meta_issues=field_value), field_value.title
+    elif field_name == 'assigned_to':
+        return Issue.objects.filter(assigned_to=field_value), field_value.username
+    elif field_name == 'created_by':
+        return Issue.objects.filter(created_by=field_value), field_value.username
+    elif field_name == 'issue_type':
+        return Issue.objects.filter(issue_type=field_value), field_value
+    elif field_name == 'status':
+        return Issue.objects.filter(status=field_value), field_value
+    elif field_name == 'title':
+        return Issue.objects.filter(Q(title__contains=field_value)), field_value
     elif field_name == 'summary':
-        return Issue.objects.filter(Q(summary__contains=field_value))
+        return Issue.objects.filter(Q(summary__contains=field_value)), field_value
     elif field_name == 'description':
-        return Issue.objects.filter(Q(description__contains=field_value))
+        return Issue.objects.filter(Q(description__contains=field_value)), field_value
     elif field_Name == 'os':
-        return Issue.objects.filter(Q(os__contains=field_value))
+        return Issue.objects.filter(Q(os__contains=field_value)), field_value
     elif field_name == 'os_version':
-        return Issue.objects.filter(Q(os_version__contains=field_value))
+        return Issue.objects.filter(Q(os_version__contains=field_value)), field_value
     elif field_name == 'browser':
-        return Issue.objects.filter(Q(browser__contains=field_value))
+        return Issue.objects.filter(Q(browser__contains=field_value)), field_value
     elif field_name == 'browser_version':
-        return Issue.objects.filter(Q(browser_version__contains=field_value))
+        return Issue.objects.filter(Q(browser_version__contains=field_value)), field_value
     elif field_name == 'criticality':
-        return Issue.objects.filter(criticality=field_value)
+        return Issue.objects.filter(criticality=field_value), field_value
     elif field_name == 'priority':
-        return Issue.objects.filter(priority=field_value)
+        return Issue.objects.filter(priority=field_value), field_value
     elif field_name == 'fixability':
-        return Issue.objects.filter(fixability=field_value)
-    return []
+        return Issue.objects.filter(fixability=field_value), field_value
+    return [],""
 
 
 def loadSearchResults(request, search_hash_id):
-    comma_fields = ['project', 'meta_issue', 'assigned_to', 'created_by', 'issue_type', 'status']
     try:
         projects = Project.objects.all()
     except Exception, e:
         print e
     try:
         search_hash = AdvancedSearchHash.objects.get(search_hash=search_hash_id)
-        query = model_to_dict(pickle.loads(search_hash.query))
-        print query
+        search_hash.modified = date.today()
+        search_hash.save()
+        query = pickle.loads(search_hash.query)
         q = []
-        for field in AdvancedSearch._meta.fields:
+        params = {}
+        for field in query.cleaned_data.keys():
             temp = []
-            if field.name != 'id':
-                if field.name in comma_fields:
-                    if query[field.name] != "" and query[field.name] is not None:
-                        mylist = query[field.name].split(',')
-                        if not q:
-                            q.extend(returnDataSet(field.name, mylist))
-                        else:
-                            q = list(set(q) & set(returnDataSet(field.name, mylist)))
+            if query.cleaned_data[field]:
+                params[field] = []
+                for value in query.cleaned_data[field]:
+                    temp2, param_value = returnQuery(field, value)
+                    temp.extend(temp2)
+                    params[field].append(param_value)
+                if q:
+                    q = list(set(q) & set(temp))
                 else:
-                    if not q:
-                        q.extend(returnQuery(field.name, query[field.name]))
-                    else:
-                        q = list(set(q) & set(returnQuery(field.name, query[field.name])))
+                    q.extend(temp)
     except Exception, e:
         print e
-    for k,v in query.items():
-        query[k] = unicode(v)
+        return redirect('issues.views.issue_search_advanced')
     return render_to_response("issues/adv_search_results.html", {'projects': projects,
                                                                  'issues': q,
-                                                                 'query': json.dumps(query),
+                                                                 'query': json.dumps(params),
                                                                  'form': AdvSearchForm(),}, context_instance=RequestContext(request))
 
 '''
