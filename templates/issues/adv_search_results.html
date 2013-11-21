@@ -38,6 +38,8 @@
 	</div>
 	<div id="issue-column-aside" class="span3 metainfo-asidecolumn">
         <aside id="issue-metainfo" class="well metainfo metainfo-show">
+        	<table id="applied-filter-table">
+        	</table>
 			<form action="{% url 'issues.views.issue_search_advanced' %}" method="POST">
 				{% csrf_token %}
 				<p id="addField">Add Field: <select id="fieldList"></select> <a href="#">Add</a></p>
@@ -52,5 +54,18 @@
 {% endblock %}
 
 {% block endScripts %}
-<script src="/static/js/advsearch.js"></script>
+<script type="text/javascript">
+	var filters = JSON.parse('{{query|escapejs|safe}}');
+	$(function(){
+		var content = ""
+		for(filter in filters){
+			if(filters[filter] != "" && filters[filter] != null && filters[filter] != "None"){
+				content += "<tr><th>" + filter + "</th></tr><tr><td>" + filters[filter] + "</td></tr>";
+			}
+		}
+		$('#applied-filter-table').append(content);
+	});
+</script>
+<script src="/static/js/advsearch.js">
+</script>
 {% endblock %}

@@ -877,9 +877,11 @@ def loadSearchResults(request, search_hash_id):
                         q = list(set(q) & set(returnQuery(field.name, query[field.name])))
     except Exception, e:
         print e
-    print q
+    for k,v in query.items():
+        query[k] = unicode(v)
     return render_to_response("issues/adv_search_results.html", {'projects': projects,
                                                                  'issues': q,
+                                                                 'query': json.dumps(query),
                                                                  'form': AdvSearchForm(),}, context_instance=RequestContext(request))
 
 '''
