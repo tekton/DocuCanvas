@@ -100,6 +100,9 @@ class UserTemplates(models.Model):
     def __unicode__(self):
         return "{} :: {}".format(self.account.user.username, self.viewName)
 
+    class Meta:
+        unique_together = (('account', 'viewName'),)
+
 
 class GoogleAccount(models.Model):
     """

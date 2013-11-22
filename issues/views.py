@@ -21,7 +21,7 @@ from datetime import date
 
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot
 from accounts import utils as rputils
-from accounts.models import Account
+from accounts.models import Account, UserTemplates
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
 from communications.views import prepMail
@@ -564,6 +564,7 @@ def issue_overview(request, issue_id):
     except Exception as e:
         print "No accounts for you...or me..."
         print e
+    # attempt to get the user defined template first, then check for an override template
     template = request.GET.get("template", "issues/issue_overview.html")
     return render_to_response(template, {'issue': issue,
                                                              'related_issues': related_issues,
@@ -996,3 +997,18 @@ def trackIssues(request):
                                                             'filter_assigned': filter_assigned,
                                                             'filter_status': filter_status,
                                                             'filter_meta': filter_meta}, context_instance=RequestContext(request))
+
+
+def checkUserTemplate(view_name, account):
+    """
+        take the name of the view that's being delivered and the account requesting the view
+    """
+    try:
+        template = UserTemplates.objects.get(account=account, viewName=view_name)
+    except Exception as e:
+        print "Unable to find template for user"
+        print e
+    if template:
+        return template
+    else:
+        return False
