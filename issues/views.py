@@ -705,7 +705,7 @@ def issue_search_advanced(request):
     form = AdvSearchForm(request.POST)
     if not form.is_valid():
         raise Exception("Invalid adv search form values")
-        return redirect('issues.views.issue_advanced_search.html')
+        return redirect('issues.views.issue_advanced_search')
     sq_string = pickle.dumps(form)
     m = hashlib.new('ripemd160')
     m.update(sq_string)
@@ -714,7 +714,7 @@ def issue_search_advanced(request):
         search_hash = AdvancedSearchHash.objects.get(search_hash=hash_string)
         return redirect('issues.views.loadSearchResults', hash_string)
     except Exception, e:
-        print "Not a hashed search"
+        print "Search Query not in database: Creating new hash"
     try:
         search_hash = AdvancedSearchHash()
         search_hash.search_hash = hash_string
@@ -722,7 +722,7 @@ def issue_search_advanced(request):
         search_hash.save()
         return redirect('issues.views.loadSearchResults', search_hash.search_hash)
     except Exception, e:
-        print e
+        print "Search Hash could not be created"
     return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm(), "projects": projects}, context_instance=RequestContext(request))
 
 
@@ -763,13 +763,14 @@ def returnQuery(field_name, field_value):
 
 
 def returnDateQuery(start, end, field):
+    # function called by loadSearchResults()... returns Issue Queryset based on dates created (or modified)
     start_yr = start.strftime('%Y')
     start_mo = start.strftime('%m')
     start_da = start.strftime('%d')
     date_range_start = str(start_yr) + '-' + str(start_mo) + '-' + str(start_da)
-    stop_yr = stop.strftime('%Y')
-    stop_mo = stop.strftime('%m')
-    stop_da = stop.strftime('%d')
+    stop_yr = end.strftime('%Y')
+    stop_mo = end.strftime('%m')
+    stop_da = end.strftime('%d')
     date_range_end = str(stop_yr) + '-' + str(stop_mo) + '-' + str(stop_da)
     if field == 'created':
         if start <= end:
@@ -785,6 +786,7 @@ def returnDateQuery(start, end, field):
 
 
 def returnDayQuery(date, field):
+    # returns Issue Queryset created (or modified) on a specific date
     yr = date.strftime('%Y')
     mo = date.strftime('%m')
     da = date.strftime('%d')
@@ -802,28 +804,38 @@ def loadSearchResults(request, search_hash_id):
     except Exception, e:
         print e
     try:
+        # load hashed search query (pickled form is stored in AdvancedSearchHash object)
         search_hash = AdvancedSearchHash.objects.get(search_hash=search_hash_id)
         search_hash.modified = date.today()
         search_hash.save()
         query = pickle.loads(search_hash.query)
         q = []
+        # params is used to pass a list of fields + values (that were used to make the query)
+        # params is passed as a JSON object to be displayed on the page
         params = {}
         by_created = False
         by_modified = False
         for field in query.cleaned_data.keys():
             temp = []
             if field == 'created_start' or field == 'created_stop':
+                # Search by date created requires special handling
                 if not by_created:
+                    start = None
+                    query_stop = None
                     if query.cleaned_data['created_start'] and query.cleaned_data['created_stop']:
                         start = query.cleaned_data['created_start']
-                        stop = query.cleaned_data['created_stop']
-                        temp.extend(returnDateQuery(start, stop, 'created'))
+                        query_stop = query.cleaned_data['created_stop']
+                        temp.extend(returnDateQuery(start, query_stop, 'created'))
                     elif query.cleaned_data['created_start']:
                         start = query.cleaned_data['created_start']
                         temp.extend(returnDayQuery(start, 'created'))
                     elif query.cleaned_data['created_stop']:
                         start = query.cleaned_data['created_stop']
                         temp.extend(returnDayQuery(start, 'created'))
+                    if query.cleaned_data['created_stop']:
+                        params['Date Range (Created)'] = [start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y")]
+                    elif start:
+                        params['Date (Created)'] = [start.strftime("%b %d %Y")]
                     if temp:
                         if q:
                             q = list(set(q) & set(temp))
@@ -831,17 +843,24 @@ def loadSearchResults(request, search_hash_id):
                             q.extend(temp)
                     by_created = True
             elif field == 'modified_start' or field == 'modified_stop':
+                # Search by date modified requires special handling
                 if not by_modified:
+                    start = None
+                    query_stop = None
                     if query.cleaned_data['modified_start'] and query.cleaned_data['modified_stop']:
                         start = query.cleaned_data['modified_start']
-                        stop = query.cleaned_data['modified_stop']
-                        temp.extend(returnDateQuery(start, stop, 'modified'))
+                        query_stop = query.cleaned_data['modified_stop']
+                        temp.extend(returnDateQuery(start, query_stop, 'modified'))
                     elif query.cleaned_data['modified_start']:
                         start = query.cleaned_data['created_start']
                         temp.extend(returnDayQuery(start, 'modified'))
                     elif query.cleaned_data['modified_stop']:
                         start = query.cleaned_data['modified_stop']
                         temp.extend(returnDayQuery(start, 'modified'))
+                    if query.cleaned_data['modified_stop']:
+                        params['Date Range (Modified)'] = [start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y")]
+                    elif start:
+                        params['Date (Modified)'] = [start.strftime("%b %d %Y")]
                     if temp:
                         if q:
                             q = list(set(q) & set(temp))
@@ -849,6 +868,7 @@ def loadSearchResults(request, search_hash_id):
                             q.extend(temp)
                     by_modified = True
             elif query.cleaned_data[field]:
+                # All non-Date related fields are handled by this code
                 params[field] = []
                 for value in query.cleaned_data[field]:
                     temp2, param_value = returnQuery(field, value)
