@@ -1,0 +1,161 @@
+/* ------------------------------------------------------
+	Test templates
+	
+	Last updated: 2013.11.21
+-------------------------------------------------------*/
+
+
+
+/* --- General
+-------------------------------------------------------*/
+
+/* --- | Label Colors | --- */
+
+.label.None { background-color: #B21212; } /* Red*/
+.label.active { background-color: #0DA1FF; } /* Blue */
+.label.retest { color: #000; background-color: #E3E12D; } /* Yellow*/
+.label.fixed { background-color: #53AB00; } /* Green */
+.label.not_a_bug { background-color: #6B6B6B; } /* Grey*/
+.label.wont_fix { background-color: #6B6B6B; } /* Grey */
+.label.duplicate { background-color: #6B6B6B; } /* Grey*/
+.label.unverified { background-color: #6B6B6B; } /* Grey*/
+
+/* --- Dashboard
+-------------------------------------------------------*/
+
+body.dashboard {}
+	
+	/* --- | Pagehader | --- */
+	
+/*	body.dashboard #pageheader { display: none; }*/
+	
+	/* --- | Dash Module | --- */
+	
+	body.dashboard .dash-module {
+		margin-bottom: 15px;
+		border: 1px solid #e3e3e3;
+	}
+		
+		/* --- | Header | --- */
+		
+		body.dashboard .dash-module header {
+			color: #fff;
+			padding: 5px;
+			background: #000;
+		}
+			
+			body.dashboard .dash-module header h3 {
+				font-size: 14px;
+				line-height: 1em;
+				margin: 0;
+			}
+		
+		/* --- | Table | --- */
+		
+		body.dashboard .dash-module table {
+			font-size: 12px;
+			margin: 0;
+		}
+		
+			body.dashboard .dash-module table .issue-name {
+/*				font-weight: bold;*/
+			}
+	
+	/* --- | Newsfeed | --- */
+	
+	body.dashboard .newsfeed {}
+		
+		body.dashboard .newsfeed .media {
+			font-size: 13px;
+			margin: 5px;
+		}
+		
+			body.dashboard .newsfeed .media .footer {
+				font-size: 11px;
+			}
+
+
+
+/* --- Issue
+-------------------------------------------------------*/
+
+body.issue-overview {}
+	
+	/* --- | Well | --- */
+	
+	body.issue-overview .well {
+		border: 1px solid #e3e3e3;
+		box-shadow: none;
+		border-radius: 0;
+	}
+		
+		body.issue-overview .well h3 {
+			font-size: 18px;
+			line-height: 1em;
+			margin-top: 0;
+		}
+	
+	/* --- | Pageheader | --- */
+	
+	body.issue-overview #pageheader {
+		margin: 1em 0;
+	}
+		
+		body.issue-overview #pageheader ul.issue-subtitle {
+			font-size: 14px;
+			color: #999;
+			list-style: none;
+			margin: 0 0 .5em;
+		}
+		
+			body.issue-overview #pageheader ul.issue-subtitle li {
+				display: inline;
+				margin-left: 15px;
+				padding-left: 15px;
+				border-left: 1px solid #999;
+			}
+			body.issue-overview #pageheader ul.issue-subtitle li:first-child {
+				margin-left: 0;
+				padding-left: 0;
+				border: 0;
+			}
+			
+		body.issue-overview #pageheader h1 {
+			font-size: 28px;
+			line-height: 1.25em;
+			text-align: left;
+			margin: 0;
+			padding: 0;
+			border: 0;
+		}
+	
+	/* --- | Comments | --- */
+	
+	body.issue-overview #issue-comments-list {}
+		
+		body.issue-overview #issue-comments-list li {
+			padding-top: 15px;
+			border-top: 1px solid #eee;
+		}
+			
+			body.issue-overview #issue-comments-list li time {
+				font-size: 12px;
+			}
+	
+	/* --- | Issue Metainfo | --- */
+
+	body.issue-overview #issue-metainfo {
+		font-size: 14px;
+	}
+		
+		body.issue-overview #issue-metainfo dl {
+			margin: 0;
+		}
+			
+			body.issue-overview #issue-metainfo dl dt {
+
+			}
+			
+			body.issue-overview #issue-metainfo dl dd {
+				margin: 0 0 .5em;
+			}

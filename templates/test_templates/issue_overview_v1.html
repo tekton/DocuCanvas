@@ -1,6 +1,7 @@
 {% extends "issues/base.html" %}
 {% load markup %}
 {% load humanize %}
+{% load static %}
 {% comment %}
 Extends /templates/issue/base.html
 
@@ -28,6 +29,10 @@ Extends /templates/issue/base.html
 		**NOTE: made available by baseContent - if baseContent is defined within the template,bodyContent will not be displayed unless contained within baseContent**
 {% endcomment %}
 
+{% block additionalHead %}
+    {{ form.media }}
+	<link rel="stylesheet" href="{% static 'css/test_template.css' %}">
+{% endblock %}
 {% block bodyClass %}issue-overview{% endblock %}
 
 {% block issueSubtitle %}
@@ -83,10 +88,6 @@ Extends /templates/issue/base.html
     <li><a href="{% url 'issues.views.history' issue.id %}">History</a></li>
 	<li><a href="{% url 'issues.views.edit' issue.id %}">Edit</a></li>
 {% endblock%}
-
-{% block additionalHead %}
-    {{ form.media }}
-{% endblock %}
 
 {% block bodyContent %}
 	<article class="row">
