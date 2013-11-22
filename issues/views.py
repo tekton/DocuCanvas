@@ -852,7 +852,10 @@ def loadSearchResults(request, search_hash_id):
                 params[field] = []
                 for value in query.cleaned_data[field]:
                     temp2, param_value = returnQuery(field, value)
-                    temp.extend(temp2)
+                    if temp:
+                        temp = list(set(temp2) & set(temp))
+                    else:
+                        temp.extend(temp2)
                     params[field].append(param_value)
                 if q:
                     q = list(set(q) & set(temp))
