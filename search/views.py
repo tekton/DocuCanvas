@@ -37,7 +37,7 @@ def searchGlobal(request):
     search = request.POST["searchText"]
 
     temp = search.lower()
-    if temp[0:6] == 'issue ' and temp[6:].isdigit():
+    if temp[0:6] == 'issue:' and temp[6:].isdigit():
         try:
             issue = Issue.objects.get(pk=temp[6:])
             return redirect('issues.views.issue_overview', issue.id)
