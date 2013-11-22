@@ -26,6 +26,8 @@ from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
 from communications.views import prepMail
 
+import celery
+
 @login_required
 def pin(request, issue_id):
     to_json = {'success': True, 'is_pinned': False, 'error': False}
@@ -999,16 +1001,28 @@ def trackIssues(request):
                                                             'filter_meta': filter_meta}, context_instance=RequestContext(request))
 
 
-def checkUserTemplate(view_name, account):
-    """
-        take the name of the view that's being delivered and the account requesting the view
-    """
-    try:
-        template = UserTemplates.objects.get(account=account, viewName=view_name)
-    except Exception as e:
-        print "Unable to find template for user"
-        print e
-    if template:
-        return template
+def cache_checkUserTemplate(view_name, account):
+    '''
+        Ask Redis for a view from the account view hash
+    '''
+    r = None
+    template_in_redis = r.hget(account, view_name)
+    if template_in_redis:
+        return template_in_redis
     else:
         return False
+
+
+@celery.task
+def cache_populateUserTemplates():
+    """
+        cycle through possible view_names and Accounts, if something is set populate the cache
+    """
+    templates = UserTemplates.objects.all()
+    for template in templates:
+        r = None
+        try:
+            r.hset(template.account, template.viewName, template.pathToTemplate)
+        except Exception as e:
+            print "Unable to set template in cache: {}".format(str(e))
+    return True
