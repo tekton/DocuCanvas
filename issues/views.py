@@ -705,6 +705,7 @@ def issue_search_advanced(request):
     form = AdvSearchForm(request.POST)
     if not form.is_valid():
         raise Exception("Invalid adv search form values")
+        return redirect('issues.views.issue_advanced_search.html')
     sq_string = pickle.dumps(form)
     m = hashlib.new('ripemd160')
     m.update(sq_string)
@@ -761,6 +762,40 @@ def returnQuery(field_name, field_value):
     return [],""
 
 
+def returnDateQuery(start, end, field):
+    start_yr = start.strftime('%Y')
+    start_mo = start.strftime('%m')
+    start_da = start.strftime('%d')
+    date_range_start = str(start_yr) + '-' + str(start_mo) + '-' + str(start_da)
+    stop_yr = stop.strftime('%Y')
+    stop_mo = stop.strftime('%m')
+    stop_da = stop.strftime('%d')
+    date_range_end = str(stop_yr) + '-' + str(stop_mo) + '-' + str(stop_da)
+    if field == 'created':
+        if start <= end:
+            return Issue.objects.filter(created__range=[date_range_start, date_range_end])
+        else:
+            return Issue.objects.filter(created__range=[date_range_end, date_range_start])
+    elif field == 'modified':
+        if start <= end:
+            return Issue.objects.filter(modified__range=[date_range_start, date_range_end])
+        else:
+            return Issue.objects.filter(modified__range=[date_range_end, date_range_start])
+    return []
+
+
+def returnDayQuery(date, field):
+    yr = date.strftime('%Y')
+    mo = date.strftime('%m')
+    da = date.strftime('%d')
+    date_range = str(yr) + '-' + str(mo) + '-' + str(da)
+    if field == 'created':
+        return Issue.objects.filter(created__range=[date_range, date_range])
+    elif field == 'modified':
+        return Issue.objects.filter(modified__range=[date_range, date_range])
+    return []
+
+
 def loadSearchResults(request, search_hash_id):
     try:
         projects = Project.objects.all()
@@ -782,29 +817,13 @@ def loadSearchResults(request, search_hash_id):
                     if query.cleaned_data['created_start'] and query.cleaned_data['created_stop']:
                         start = query.cleaned_data['created_start']
                         stop = query.cleaned_data['created_stop']
-                        start_yr = start.strftime('%Y')
-                        start_mo = start.strftime('%m')
-                        start_da = start.strftime('%d')
-                        date_range_start = str(start_yr) + '-' + str(start_mo) + '-' + str(start_da)
-                        stop_yr = stop.strftime('%Y')
-                        stop_mo = stop.strftime('%m')
-                        stop_da = stop.strftime('%d')
-                        date_range_end = str(stop_yr) + '-' + str(stop_mo) + '-' + str(stop_da)
-                        temp.extend(Issue.objects.filter(created__range=[date_range_start, date_range_end]))
+                        temp.extend(returnDateQuery(start, stop, 'created'))
                     elif query.cleaned_data['created_start']:
                         start = query.cleaned_data['created_start']
-                        start_yr = start.strftime('%Y')
-                        start_mo = start.strftime('%m')
-                        start_da = start.strftime('%d')
-                        date_range_start = str(start_yr) + '-' + str(start_mo) + '-' + str(start_da)
-                        temp.extend(Issue.objects.filter(created__range=[date_range_start, date_range_start]))
+                        temp.extend(returnDayQuery(start, 'created'))
                     elif query.cleaned_data['created_stop']:
                         start = query.cleaned_data['created_stop']
-                        start_yr = start.strftime('%Y')
-                        start_mo = start.strftime('%m')
-                        start_da = start.strftime('%d')
-                        date_range_start = str(start_yr) + '-' + str(start_mo) + '-' + str(start_da)
-                        temp.extend(Issue.objects.filter(created__range=[date_range_start, date_range_start]))
+                        temp.extend(returnDayQuery(start, 'created'))
                     if temp:
                         if q:
                             q = list(set(q) & set(temp))
@@ -816,29 +835,13 @@ def loadSearchResults(request, search_hash_id):
                     if query.cleaned_data['modified_start'] and query.cleaned_data['modified_stop']:
                         start = query.cleaned_data['modified_start']
                         stop = query.cleaned_data['modified_stop']
-                        start_yr = start.strftime('%Y')
-                        start_mo = start.strftime('%m')
-                        start_da = start.strftime('%d')
-                        date_range_start = str(start_yr) + '-' + str(start_mo) + '-' + str(start_da)
-                        stop_yr = stop.strftime('%Y')
-                        stop_mo = stop.strftime('%m')
-                        stop_da = stop.strftime('%d')
-                        date_range_end = str(stop_yr) + '-' + str(stop_mo) + '-' + str(stop_da)
-                        temp.extend(Issue.objects.filter(created__range=[date_range_start, date_range_end]))
+                        temp.extend(returnDateQuery(start, stop, 'modified'))
                     elif query.cleaned_data['modified_start']:
                         start = query.cleaned_data['created_start']
-                        start_yr = start.strftime('%Y')
-                        start_mo = start.strftime('%m')
-                        start_da = start.strftime('%d')
-                        date_range_start = str(start_yr) + '-' + str(start_mo) + '-' + str(start_da)
-                        temp.extend(Issue.objects.filter(created__range=[date_range_start, date_range_start]))
+                        temp.extend(returnDayQuery(start, 'modified'))
                     elif query.cleaned_data['modified_stop']:
                         start = query.cleaned_data['modified_stop']
-                        start_yr = start.strftime('%Y')
-                        start_mo = start.strftime('%m')
-                        start_da = start.strftime('%d')
-                        date_range_start = str(start_yr) + '-' + str(start_mo) + '-' + str(start_da)
-                        temp.extend(Issue.objects.filter(created__range=[date_range_start, date_range_start]))
+                        temp.extend(returnDayQuery(start, 'modified'))
                     if temp:
                         if q:
                             q = list(set(q) & set(temp))

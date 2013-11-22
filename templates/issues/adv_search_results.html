@@ -61,11 +61,11 @@
 	var filters = JSON.parse('{{query|escapejs|safe}}');
 	$(function(){
 		var content = "";
+        $('#id_created_start').datepicker();
+        $('#id_created_stop').datepicker();
+        $('#id_modified_stop').datepicker();
+        $('#id_modified_stop').datepicker();
 		for(filter in filters){
-            $('#id_created_start').datepicker();
-            $('#id_created_stop').datepicker();
-            $('#id_modified_stop').datepicker();
-            $('#id_modified_stop').datepicker();
             content += "<tr><th style='text-align:left;'>" + filter + "</th></tr>";
             for(var i = 0; i < filters[filter].length; i++){
                 var detail = filters[filter][i];
