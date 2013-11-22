@@ -1,0 +1,264 @@
+{% extends "dashboard/base.html" %}
+{% load humanize %}
+{% load set_var %}
+{% load static %}
+
+{% block additionalHead %}
+	<link rel="stylesheet" href="{% static 'css/test_template.css' %}">
+{% endblock %}
+{% block bodyClass %}dashboard{% endblock %}
+
+{% block contextNav %}
+{% include "_includes/contextnav-default.html" %}
+{% endblock %}
+
+{% block pageTitle %}
+Hello, {{user}}
+{% endblock %}
+
+{% block endScripts %}
+<script>
+	var num_notifications = '{{num_notifications}}';
+
+	function mark_notification_as_read(notification_id) {
+		$.ajax({
+			type: "POST",
+			url: "/notification/mark_as_read",
+			data: {
+				notification_id: notification_id,
+			},
+			success: function(data) {
+				num_notifications--;
+				if (num_notifications == 0) {
+					$('#notification_section').hide();
+				}
+			},
+			error: function(data) {
+				alert("Server side error");
+			}
+		});
+	}
+</script>
+{% endblock %}
+
+{% block bodyContent %}
+
+    {% if notifications %}
+    <section class="alert alert-block alert-success" id="notification_section">
+	    <ul>
+            {% for notification in notifications %}
+            <li>
+	           <button type="button" class="close" data-dismiss="alert" onClick="mark_notification_as_read({{notification.id}})">&times;</button>
+               <p>{{notification.notification.message}}</p>
+               <p class="meta text-right">From <a href="{% url 'auth.views.user_overview' notification.notification.creator.id %}">{{notification.notification.creator}}</a> on {{notification.created}}</p>
+	       </li>
+	       {% endfor %}
+	    </ul>
+    </section>
+    {% endif %}
+	
+	<!-- Begin row-fluid -->
+	<div class="row-fluid">
+		
+		<!-- Begin span6 -->
+		<div class="span6">
+			
+			{% if issues %}
+			<div class="dash-module">
+		        <header>
+		            <h3>Assigned to me</h3>
+		        </header>
+				<div class="content">
+			        <table class="table table-condensed table-striped">
+						<thead>
+							<tr>
+								<th>Summary</th>
+								<th>Project</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+			            <tbody>
+			            {% for issue in issues%}
+			                <tr>
+			                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}: {{issue.summary}}</a></td>
+								<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+								<td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
+			                </tr>
+			            {% endfor%}
+			            </tbody>
+			        </table>
+				</div>
+			</div>
+			{% endif %}
+		
+			{% if pins %}
+			<div class="dash-module">
+		        <header>
+		            <h3>Pinned</h3>
+		        </header>
+		        <table class="table table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>Summary</th>
+							<th>Project</th>
+							<th>Assigned To</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+		            <tbody>
+		            {% for issue in pins%}
+		                <tr>
+		                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}: {{issue.summary}}</a></td>
+							<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+		                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
+		                    <td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
+		                </tr>
+		            {% endfor%}
+		            </tbody>
+		        </table>
+			</div>
+			{% endif %}
+		
+		    {% if subscribed %}
+			<div class="dash-module">
+			
+		        <header>
+		            <h3>Subscribed</h3>
+		        </header>
+		        <table class="table table-condensed table-striped">
+		            <tbody>
+						<tr>
+							<th>Summary</th>
+							<th>Project</th>
+							<th>Assigned To</th>
+							<th>Status</th>
+						</tr>
+		            {% for issue in subscribed%}
+	                <tr>
+	                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}: {{issue.summary}}</a></td>
+						<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+	                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
+	                    <td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
+	                </tr>
+		            {% endfor%}
+		            </tbody>
+		        </table>
+			
+			</div>
+		    {% endif %}
+			
+		</div>
+		<!-- End span6 -->
+		
+		<!-- Begin span6 -->
+		<div class="span6">
+			
+			<div class="dash-module newsfeed">
+				
+		        <header>
+		            <h3><a href="{% url 'newsfeed.views.newsfeeds' %}">Newsfeed</a></h3>
+		        </header>
+				
+                {% for newsfeed in newsfeeds%}
+        			
+                    {% if newsfeed.newsfeed_type == 'update_issue' %}
+                        {% if newsfeed.field_change == "modified_by_id" %}
+                    {% else %}
+					<div class="media">
+						<a class="pull-left" href="{% url 'auth.views.user_overview' newsfeed.user.id %}">
+							<img class="media-object" src="http://lorempixel.com/40/40/cats/" />
+						</a>
+						<div class="media-body">
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a>
+                            {% if newsfeed.field_change == "assigned_to_id" or newsfeed.field_change == "created_by" or newsfeed.field_change == "point_of_contact"%}
+                                    {%if newsfeed.field_change == "assigned_to_id" %}
+                                        <strong>assigned</strong>
+                                    {% else %}
+                                        {{newsfeed.field_change}}
+                                    {% endif %}
+                                    from
+                                    {% if newsfeed.old_value == None %}
+                                        none
+                                    {% else %}
+                                        {% for user in users%}
+                                            {% if user.id|stringformat:"d" == newsfeed.old_value %}
+                                                {{user.username}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif%}
+                                    to 
+                                    {% if newsfeed.new_value == None %}
+                                        None
+                                    {% else %}
+                                    {% for user in users%}
+                                        {% if user.id|stringformat:"d" == newsfeed.new_value %}
+                                            {{user.username}}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                            {% else%}
+							<strong>changed {{newsfeed.field_change}}</strong> to {{newsfeed.new_value|striptags|truncatechars:40}}
+                            {% endif %}
+							in <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}</a>.
+							<p class="footer">Project: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a> | {{newsfeed.timestamp}}</p>
+						</div>
+					</div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if newsfeed.newsfeed_type == 'create_issue' %}
+					<div class="media">
+						<a class="pull-left" href="{% url 'auth.views.user_overview' newsfeed.user.id %}">
+							<img class="media-object" src="http://lorempixel.com/40/40/cats/" />
+						</a>
+						<div class="media-body">
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>created</strong> a new issue: <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}</a>.
+							<p class="footer">Project: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a> | {{newsfeed.timestamp}}</p>
+						</div>
+					</div>
+                    {% endif %}
+
+                    {% if newsfeed.newsfeed_type == 'comment' %}
+					<div class="media">
+						<a class="pull-left" href="{% url 'auth.views.user_overview' newsfeed.user.id %}">
+							<img class="media-object" src="http://lorempixel.com/40/40/cats/" />
+						</a>
+						<div class="media-body">
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>commented</strong> on <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}:</a><br />
+							<blockquote>{{newsfeed.comment|truncatechars:40}}</blockquote>
+							<p class="footer">Project: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a> | {{newsfeed.timestamp}}</p>
+						</div>
+					</div>
+                    {% endif %}
+                    {% if newsfeed.newsfeed_type == 'update_project' %}
+					<div class="media">
+						<a class="pull-left" href="{% url 'auth.views.user_overview' newsfeed.user.id %}">
+							<img class="media-object" src="http://lorempixel.com/40/40/cats/" />
+						</a>
+						<div class="media-body">
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>updated project information</strong> for <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a>
+							<p class="footer">{{newsfeed.timestamp}}</p>
+						</div>
+					</div>
+                    {% endif %}
+                    {% if newsfeed.newsfeed_type == 'create_project' %}
+					<div class="media">
+						<a class="pull-left" href="{% url 'auth.views.user_overview' newsfeed.user.id %}">
+							<img class="media-object" src="http://lorempixel.com/40/40/cats/" />
+						</a>
+						<div class="media-body">
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>created a new project</strong>: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a>
+							<p class="footer">{{newsfeed.timestamp}}</p>
+						</div>
+					</div>
+                    {% endif %}
+                {% endfor%}
+				
+			</div>
+			
+		</div>
+		<!-- End span6 -->
+	</div>
+	<!-- End row-fluid -->
+
+{% endblock%}
