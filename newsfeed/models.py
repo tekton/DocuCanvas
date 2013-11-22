@@ -19,10 +19,10 @@ class NewsFeedItem(models.Model):
     food = models.ForeignKey('food.FoodRequest', blank=True, null=True)  # fk
     checklist = models.ForeignKey('checklists.Checklist', blank=True, null=True)  # fk
     daily_report = models.ForeignKey(UserDailyReport, blank=True, null=True)  # fk
-    comment = models.CharField(max_length=255, blank=True, null=True)
+    comment = models.TextField(blank=True, null=True)
     field_change = models.CharField(max_length=255, blank=True, null=True)
-    old_value = models.CharField(max_length=255, blank=True, null=True)
-    new_value = models.CharField(max_length=255, blank=True, null=True)
-    description = models.TextField(blank=True, null=True, max_length=255)
+    old_value = models.TextField(blank=True, null=True)
+    new_value = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     newsfeed_type = models.CharField(max_length=255, blank=True, null=True, choices=NEWSFEEDTYPE)
     timestamp = models.DateField(auto_now_add=True)
