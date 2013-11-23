@@ -21,10 +21,12 @@ from datetime import date
 
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot
 from accounts import utils as rputils
-from accounts.models import Account
+from accounts.models import Account, UserTemplates
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
 from communications.views import prepMail
+
+import celery
 
 @login_required
 def pin(request, issue_id):
@@ -564,6 +566,7 @@ def issue_overview(request, issue_id):
     except Exception as e:
         print "No accounts for you...or me..."
         print e
+    # attempt to get the user defined template first, then check for an override template
     template = request.GET.get("template", "issues/issue_overview.html")
     return render_to_response(template, {'issue': issue,
                                                              'related_issues': related_issues,
@@ -996,3 +999,30 @@ def trackIssues(request):
                                                             'filter_assigned': filter_assigned,
                                                             'filter_status': filter_status,
                                                             'filter_meta': filter_meta}, context_instance=RequestContext(request))
+
+
+def cache_checkUserTemplate(view_name, account):
+    '''
+        Ask Redis for a view from the account view hash
+    '''
+    r = None
+    template_in_redis = r.hget(account, view_name)
+    if template_in_redis:
+        return template_in_redis
+    else:
+        return False
+
+
+@celery.task
+def cache_populateUserTemplates():
+    """
+        cycle through possible view_names and Accounts, if something is set populate the cache
+    """
+    templates = UserTemplates.objects.all()
+    for template in templates:
+        r = None
+        try:
+            r.hset(template.account, template.viewName, template.pathToTemplate)
+        except Exception as e:
+            print "Unable to set template in cache: {}".format(str(e))
+    return True

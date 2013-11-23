@@ -91,6 +91,19 @@ class Account(models.Model):
         return self.user.username
 
 
+class UserTemplates(models.Model):
+    account = models.ForeignKey(Account)
+    viewName = models.CharField(max_length=255)  # it's possible this could just be a dropdown for the supported views, but we may as well enable them all as possible
+    example_url = models.CharField(max_length=255, null=True, blank=True)
+    pathToTemplate = models.CharField(max_length=255)  # this is relative to template- should add a "users upload section"
+
+    def __unicode__(self):
+        return "{} :: {}".format(self.account.user.username, self.viewName)
+
+    class Meta:
+        unique_together = (('account', 'viewName'),)
+
+
 class GoogleAccount(models.Model):
     """
         Google Account table to allow people to link 1 to unlimited Google/YouTube account to their account
@@ -104,8 +117,10 @@ class GoogleAccount(models.Model):
     # client_auth_key_expiration = models.DateTimeField(null=True, blank=True)
     credentials = CredentialsField()
 
+
 add_introspection_rules([], ["^oauth2client\.django_orm\.CredentialsField"])
+
 
 admin.site.register(GoogleAccount)
 admin.site.register(RecordPermission)
-#admin.site.register(RecordPermission)
+admin.site.register(Account)
