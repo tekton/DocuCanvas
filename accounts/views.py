@@ -145,7 +145,7 @@ def cache_checkUserTemplate(user, view_name):
     '''
     redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')  # this is for the heroku install!
     r = redis.from_url(redis_url)
-    template_in_redis = r.hget(user, view_name)
+    template_in_redis = r.hget(user.id, view_name)
     if template_in_redis:
         print template_in_redis
         return template_in_redis
