@@ -27,7 +27,23 @@ body.dashboard {}
 	
 	/* --- | Pagehader | --- */
 	
-/*	body.dashboard #pageheader { display: none; }*/
+	body.dashboard #pageheader {
+		margin: 15px 0;
+	}
+	
+		body.dashboard #pageheader h1 {
+			font-weight: normal;
+			text-align: left;
+			margin: 0;
+			padding: 0;
+			border: 0;
+		}
+		
+		body.dashboard #pageheader h2 {
+			font-size: 24px;
+			font-weight: normal;
+			margin: 0;
+		}
 	
 	/* --- | Dash Module | --- */
 	
@@ -50,6 +66,12 @@ body.dashboard {}
 				margin: 0;
 			}
 		
+		/* --- | Issue Tables | --- */
+		
+		body.dashboard .dash-module .issue-status {
+			width: 70px;
+		}
+		
 		/* --- | Table | --- */
 		
 		body.dashboard .dash-module table {
@@ -69,9 +91,26 @@ body.dashboard {}
 			font-size: 13px;
 			margin: 5px;
 		}
-		
+			
+			body.dashboard .newsfeed .media blockquote {
+				margin-bottom: 0;
+			}
+			
 			body.dashboard .newsfeed .media .footer {
 				font-size: 11px;
+				color: #999;
+			}
+		
+		body.dashboard .newsfeed .view-more {
+			font-size: 13px;
+			text-align: center;
+			margin: 0;
+			border-top: 1px solid #e3e3e3;
+		}
+			
+			body.dashboard .newsfeed .view-more a {
+				display: block;
+				padding: 5px 0;
 			}
 
 

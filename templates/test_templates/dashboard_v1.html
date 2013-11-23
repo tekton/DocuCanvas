@@ -16,6 +16,14 @@
 Hello, {{user}}
 {% endblock %}
 
+{% block issueSubtitle %}
+{% if issues %}
+<h2>You have {{ issues.count }} issues assigned to you. Get to work!</h2>
+{% else %}
+<h2>You have no issues assigned to you. Good job!</h2>
+{% endif %}
+{% endblock %}
+
 {% block endScripts %}
 <script>
 	var num_notifications = '{{num_notifications}}';
@@ -72,6 +80,7 @@ Hello, {{user}}
 			        <table class="table table-condensed table-striped">
 						<thead>
 							<tr>
+								<th>ID</th>
 								<th>Summary</th>
 								<th>Project</th>
 								<th>Status</th>
@@ -80,7 +89,8 @@ Hello, {{user}}
 			            <tbody>
 			            {% for issue in issues%}
 			                <tr>
-			                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}: {{issue.summary}}</a></td>
+								<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
+			                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
 								<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
 								<td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
 			                </tr>
@@ -99,6 +109,7 @@ Hello, {{user}}
 		        <table class="table table-condensed table-striped">
 					<thead>
 						<tr>
+							<th>ID</th>
 							<th>Summary</th>
 							<th>Project</th>
 							<th>Assigned To</th>
@@ -108,7 +119,8 @@ Hello, {{user}}
 		            <tbody>
 		            {% for issue in pins%}
 		                <tr>
-		                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}: {{issue.summary}}</a></td>
+							<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
+		                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
 							<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
 		                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
 		                    <td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
@@ -128,6 +140,7 @@ Hello, {{user}}
 		        <table class="table table-condensed table-striped">
 		            <tbody>
 						<tr>
+							<th>ID</th>
 							<th>Summary</th>
 							<th>Project</th>
 							<th>Assigned To</th>
@@ -135,7 +148,8 @@ Hello, {{user}}
 						</tr>
 		            {% for issue in subscribed%}
 	                <tr>
-	                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}: {{issue.summary}}</a></td>
+						<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
+	                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
 						<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
 	                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
 	                    <td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
@@ -156,7 +170,7 @@ Hello, {{user}}
 			<div class="dash-module newsfeed">
 				
 		        <header>
-		            <h3><a href="{% url 'newsfeed.views.newsfeeds' %}">Newsfeed</a></h3>
+		            <h3>Recent Activity</h3>
 		        </header>
 				
                 {% for newsfeed in newsfeeds%}
@@ -253,6 +267,8 @@ Hello, {{user}}
 					</div>
                     {% endif %}
                 {% endfor%}
+				
+				<p class="view-more"><a href="{% url 'newsfeed.views.newsfeeds' %}">View more</a></p>
 				
 			</div>
 			
