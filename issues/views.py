@@ -575,10 +575,12 @@ def issue_overview(request, issue_id):
     filename, codeline, viewName, text = stack[-1]
     default = "issues/issue_overview.html"
     try:
-        grArgh = cache_checkUserTemplate(request.user, viewName)
-        if grArgh:
-            template = request.GET.get("template", default)
-    except:
+        cache_template = cache_checkUserTemplate(request.user, viewName)
+        if cache_template:
+            default = cache_template
+    except Exception as e:
+        # only print if debug is really necisary
+        print "Unable to get template from cache :: ".format(str(e))
         pass
     template = request.GET.get("template", default)
     return render_to_response(template, {'issue': issue,
