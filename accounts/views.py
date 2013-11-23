@@ -13,11 +13,14 @@ from django.utils import timezone
 import datetime
 
 import celery
+import redis
 
 from oauth2client.client import OAuth2WebServerFlow, TokenRevokeError
 from apiclient.discovery import build
 
-from models import GoogleAccount, Account
+from models import GoogleAccount, Account, UserTemplates
+
+from forms import UserTemplatesForm
 
 
 def _get_flow():
@@ -107,3 +110,61 @@ def setAssignable(account_q):
     except Exception as e:
         print "Unable to save account update"
         print e
+
+
+@login_required
+def assignTemplateForView(request):
+    """
+        accept post, else use get function
+    """
+    if request.method == "POST":
+        form = UserTemplatesForm(request.POST)  #, instance=temp)
+        try:
+            form.full_clean()
+            itm = form.save()
+            redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')  # this is for the heroku install!
+            r = redis.from_url(redis_url)
+            print dir(itm)
+            try:
+                x = r.hset(itm.user.id, itm.viewName, itm.pathToTemplate)
+                print x
+            except Exception as e:
+                print e
+        except Exception as e:
+            print e
+            print form.errors
+    else:
+        form = UserTemplatesForm(initial={"user": request.user})
+    return render_to_response("user/user_template_form.html", {'form': form}, RequestContext(request))
+
+
+
+def cache_checkUserTemplate(user, view_name):
+    '''
+        Ask Redis for a view from the account view hash
+    '''
+    redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')  # this is for the heroku install!
+    r = redis.from_url(redis_url)
+    template_in_redis = r.hget(user, view_name)
+    if template_in_redis:
+        print template_in_redis
+        return template_in_redis
+    else:
+        return False
+
+
+@celery.task
+def cache_populateUserTemplates():
+    """
+        cycle through possible view_names and Accounts, if something is set populate the cache
+    """
+    redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')  # this is for the heroku install!
+    r = redis.from_url(redis_url)
+    templates = UserTemplates.objects.all()
+    for template in templates:
+        try:
+            r.hset(template.user, template.viewName, template.pathToTemplate)
+        except Exception as e:
+            print "Unable to set template in cache: {}".format(str(e))
+    return True
+

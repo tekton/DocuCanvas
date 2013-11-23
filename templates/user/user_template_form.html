@@ -1,0 +1,7 @@
+<form action="{% url 'accounts.views.assignTemplateForView' %}" method="POST">
+{% csrf_token %}
+<label>{{form.viewName.label}}</label><input type="text" id="id_viewName" name="viewName" value="{{form.viewName.value}}" /><br />
+<label>{{form.pathToTemplate.label}}</label><input type="text" id="id_pathToTemplate" name="pathToTemplate" value="{{form.pathToTemplate.value}}" /><br />
+<input type="hidden" id="id_user" name="user" value="{{form.user.value}}" />
+<input type="Submit" />
+</form>

@@ -21,12 +21,15 @@ from datetime import date
 
 from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot
 from accounts import utils as rputils
-from accounts.models import Account, UserTemplates
+from accounts.models import Account
+from accounts.views import cache_checkUserTemplate
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
 from communications.views import prepMail
 
 import celery
+import traceback
+
 
 @login_required
 def pin(request, issue_id):
@@ -536,17 +539,18 @@ def issue_overview(request, issue_id):
         projects = Project.objects.all().order_by('-created')
     except Exception, e:
         print 'Unable to load projects'
+        print e
 
     try:
         pin = PinIssue.objects.get(issue=issue, user=request.user)
-    except:
-        print 'Unable to find pin for issue'
+    except Exception as e:
+        # print e  # we know what went wrong technically
         pin = None
 
     try:
         subscribe = SubscriptionToIssue.objects.get(issue=issue, user=request.user)
-    except:
-        print 'Unable to find subscription for issue'
+    except Exception as e:
+        # print e  # we know what went wrong technically
         subscribe = None
 
     try:
@@ -556,7 +560,7 @@ def issue_overview(request, issue_id):
 
     try:
         comment_form = CommentForm()
-    except Exception, e:
+    except Exception as e:
         print e
 
     form = IssueFullForm(instance=issue)
@@ -567,7 +571,16 @@ def issue_overview(request, issue_id):
         print "No accounts for you...or me..."
         print e
     # attempt to get the user defined template first, then check for an override template
-    template = request.GET.get("template", "issues/issue_overview.html")
+    stack = traceback.extract_stack()
+    filename, codeline, viewName, text = stack[-1]
+    default = "issues/issue_overview.html"
+    try:
+        grArgh = cache_checkUserTemplate(request.user, viewName)
+        if grArgh:
+            template = request.GET.get("template", default)
+    except:
+        pass
+    template = request.GET.get("template", default)
     return render_to_response(template, {'issue': issue,
                                                              'related_issues': related_issues,
                                                              'project_issues': project_issues,
@@ -999,30 +1012,3 @@ def trackIssues(request):
                                                             'filter_assigned': filter_assigned,
                                                             'filter_status': filter_status,
                                                             'filter_meta': filter_meta}, context_instance=RequestContext(request))
-
-
-def cache_checkUserTemplate(view_name, account):
-    '''
-        Ask Redis for a view from the account view hash
-    '''
-    r = None
-    template_in_redis = r.hget(account, view_name)
-    if template_in_redis:
-        return template_in_redis
-    else:
-        return False
-
-
-@celery.task
-def cache_populateUserTemplates():
-    """
-        cycle through possible view_names and Accounts, if something is set populate the cache
-    """
-    templates = UserTemplates.objects.all()
-    for template in templates:
-        r = None
-        try:
-            r.hset(template.account, template.viewName, template.pathToTemplate)
-        except Exception as e:
-            print "Unable to set template in cache: {}".format(str(e))
-    return True

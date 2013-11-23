@@ -44,6 +44,23 @@ def register(request):
     # return render_to_response("registration/registration.html", {'r_form': form, 'next': nextPage}, context_instance=RequestContext(request))
     return render_to_response("registration/login.html", {}, context_instance=RequestContext(request))
 
+def create_account(user):
+    try:
+        account = Account.objects.get(user=user)
+        # print "Account already exists"
+    except:
+        account = Account()
+        account.user = User.objects.get(pk=user.id)
+        account.created_by = user
+        try:
+            account.save()
+            return True
+        except Exception as e:
+            print "Unable to save account..."
+            print e
+            return False
+    return True
+
 
 def login_func(request):
     nextPage = request.GET.get("next", "/")
@@ -59,6 +76,11 @@ def login_func(request):
                     if user.is_active:
                         login(request, user)
                         state = "You're successfully logged in!"
+                        try:
+                            create_account(user)
+                        except Exception as e:
+                            print "Unable to create account!"
+                            print e
                     else:
                         state = "Your account is not active, please contact the site admin."
                 else:

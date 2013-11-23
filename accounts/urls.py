@@ -6,4 +6,5 @@ urlpatterns = patterns('accounts.views',
     (r'revoke', 'oauth_revoke_auth'),
     (r'authorize$', 'oauth_authorize'),
     (r'oauth2callback$', 'oauth_callback'),
+    (r'template', 'assignTemplateForView'),
 )

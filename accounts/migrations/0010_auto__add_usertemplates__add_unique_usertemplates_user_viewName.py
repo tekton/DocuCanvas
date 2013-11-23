@@ -11,15 +11,21 @@ class Migration(SchemaMigration):
         # Adding model 'UserTemplates'
         db.create_table(u'accounts_usertemplates', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('account', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['accounts.Account'])),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('viewName', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('example_url', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
             ('pathToTemplate', self.gf('django.db.models.fields.CharField')(max_length=255)),
         ))
         db.send_create_signal(u'accounts', ['UserTemplates'])
 
+        # Adding unique constraint on 'UserTemplates', fields ['user', 'viewName']
+        db.create_unique(u'accounts_usertemplates', ['user_id', 'viewName'])
+
 
     def backwards(self, orm):
+        # Removing unique constraint on 'UserTemplates', fields ['user', 'viewName']
+        db.delete_unique(u'accounts_usertemplates', ['user_id', 'viewName'])
+
         # Deleting model 'UserTemplates'
         db.delete_table(u'accounts_usertemplates')
 
@@ -61,11 +67,11 @@ class Migration(SchemaMigration):
             'viewableFields': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '255', 'blank': 'True'})
         },
         u'accounts.usertemplates': {
-            'Meta': {'object_name': 'UserTemplates'},
-            'account': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['accounts.Account']"}),
+            'Meta': {'unique_together': "(('user', 'viewName'),)", 'object_name': 'UserTemplates'},
             'example_url': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'pathToTemplate': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
             'viewName': ('django.db.models.fields.CharField', [], {'max_length': '255'})
         },
         u'auth.group': {

@@ -92,16 +92,16 @@ class Account(models.Model):
 
 
 class UserTemplates(models.Model):
-    account = models.ForeignKey(Account)
+    user = models.ForeignKey(User)
     viewName = models.CharField(max_length=255)  # it's possible this could just be a dropdown for the supported views, but we may as well enable them all as possible
     example_url = models.CharField(max_length=255, null=True, blank=True)
     pathToTemplate = models.CharField(max_length=255)  # this is relative to template- should add a "users upload section"
 
     def __unicode__(self):
-        return "{} :: {}".format(self.account.user.username, self.viewName)
+        return "{} :: {}".format(self.user.username, self.viewName)
 
     class Meta:
-        unique_together = (('account', 'viewName'),)
+        unique_together = (('user', 'viewName'),)
 
 
 class GoogleAccount(models.Model):
@@ -123,4 +123,4 @@ add_introspection_rules([], ["^oauth2client\.django_orm\.CredentialsField"])
 
 admin.site.register(GoogleAccount)
 admin.site.register(RecordPermission)
-admin.site.register(Account)
+# admin.site.register(Account)
