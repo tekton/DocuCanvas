@@ -209,65 +209,73 @@ textarea {
 /* --- Search Results
 -------------------------------------------------------*/
 
-div.search-results {
+body.search-results {
 	
 }
+	
+	/* --- | Page Header | --- */
+	
+	body.search-results #pageheader {
+		padding: 25px 0 15px;
+	}
+	
+		body.search-results #pagetitle {
+			font-size: 18px;
+			line-height: 1em;
+			margin: 0;
+			padding: 0;
+			border: 0;
+		}
 	
 	/* --- | Category | --- */
 	
 	div.search-results .category {
-		margin-bottom: 2em;
+		margin-bottom: 3em;
 	}
 	
 	div.search-results h2 {
 		font-size: 16px;
 		font-weight: normal;
+		line-height: 1em;
 		color: #999;
-		border-bottom: 1px solid #ccc;
+		padding-bottom: 5px;
+		border-bottom: 2px solid #ccc;
 	}
 		
 	div.search-results h2 strong { color: #000; }
 	
-	div.search-results ul {
-		list-style: none;
-		margin: 0;
-		padding: 0;
+	div.search-results table {
+		font-size: 14px;
 	}
 		
-		div.search-results ul li {
-			font-size: 16px;
-			margin-bottom: 1.5em;
+		div.search-results table thead th {
+			font-size: 12px;
+		}
+	
+	/* --- | Search Filters | --- */
+	
+	body.search-results .search-filters {
+		font-size: 12px;
+		margin-bottom: 2em;
+		padding: 5px;
+		border: 1px solid #ccc;
+		background: #f9f9f9;
+	}
+		
+		body.search-results .search-filters h2 {
+			font-size: 14px;
+			line-height: 20px;
+			float: left;
+			margin: 0 1em 0 0;
 		}
 		
-			div.search-results ul li h3 {
-				font-size: 18px;
-				font-weight: normal;
-				line-height: 1em;
-				margin: 0 0 5px;
-			}
-			
-			div.search-results ul li p {
-				line-height: 1em;
-				margin: 0 0 5px;
-			}
-			
-			div.search-results ul li .attribs {
+		body.search-results .search-filters li {
+			float: left;
+			margin: 0 25px 0 0;
+		}
+		
+			body.search-results .search-filters li label {
 				font-size: 12px;
-				color: #179400;
-			}
-	
-	/* --- | Comment | --- */
-	
-	div.search-results .sidenav {}
-		
-		div.search-results .sidenav li {
-			display: block;
-			margin: 0 0 -1px;
-			padding: 8px 14px;
-			border: 1px solid #eee;
-		}
-		
-			div.search-results .sidenav li label {
 				margin-bottom: 0;
 			}
 

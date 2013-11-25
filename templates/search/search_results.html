@@ -11,10 +11,40 @@ Search Results for "{{search}}"
 {% endblock %}
 
 {% block bodyContent %}
-<!-- Begin search-results -->
-<div class="row search-results">
+
+<div class="search-filters clearfix">
 	
-	<div class="span9">
+	<h2>Filter results:</h2>
+	<ul class="nav sidenav nav-list">
+		{% if issues %}
+		<li>
+			<label class="checkbox">
+				<input type="checkbox" checked data-toggle="issues"> Issues (<strong>{{issue_count}}</strong>)
+			</label>
+		</li>
+		{% endif %}
+		{% if helps %}
+		<li>
+			<label class="checkbox">
+				<input type="checkbox" checked data-toggle="help-desk"> Help Desk (<strong>{{help_count}}</strong>)
+			</label>
+		</li>
+		{% endif %}
+		{% if reports %}
+		<li>
+			<label class="checkbox">
+				<input type="checkbox" checked data-toggle="reports"> Daily Reports (<strong>{{report_count}}</strong>)
+			</label>
+		</li>
+		{% endif %}
+	</ul>
+	
+</div>
+
+<!-- Begin search-results -->
+<div class="search-results">
+	
+	<div>
 	
 		{% if issues or helps or reports %}
 		{% if issues %}
@@ -22,15 +52,26 @@ Search Results for "{{search}}"
 		<div class="category issues">
 			<h2 id='issue_header'><strong>{{issue_count}}</strong> results in <em>Issues</em></h2>
 
-			<ul>
-				{% for issue in issues %}
-				<li>
-					<h3><a href="/issue/{{issue.id}}">{{issue.summary|truncatechars:80}}</a></h3>
-					<p class="description">{{issue.description|truncatechars:140|striptags}}</p>
-					<p class="attribs">Status: {{issue.status}} | Project: {{issue.project}}</p>
-				</li>
-				{% endfor %}
-			</ul>
+			<table class="table table-condensed table-striped">
+				<thead>
+					<tr>
+						<th width="200">Summary</th>
+						<th>Description</th>
+						<th width="100">Project</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for issue in issues %}
+					<tr>
+						<td><a href="/issue/{{issue.id}}">{{issue.summary|truncatechars:80}}</a></td>
+						<td class="description">{{issue.description|truncatechars:140|striptags}}</td>
+						<td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
+						<td class="attribs">{{issue.status}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
 		<!-- End category -->
 		{% endif %}
@@ -40,27 +81,38 @@ Search Results for "{{search}}"
 		<div class="category help-desk">
 			<h2 id='help_header'><strong>{{help_count}}</strong> results in <em>Help Desk</em></h2>
 	
-			<ul>
-				{% for help in helps %}
-				<li>
-					<h3><a href="/help/{{help.id}}">{{help.name|truncatechars:80}}</a></h3>
-					<p class="description">{{issue.description|truncatechars:140|striptags}}</p>
-					<p class="attribs">Status: {% if help.status == '(1, 1)' %}
-			                No Responses
-			            {% elif help.status == "('active', 'Active Responses')" %}
-			                Active
-			            {% elif help.status == "('reopened', 'Re-Opened')" %}
-			                Re-Opened
-			            {% elif help.status == "('resolved', 'Resolved')" %}
-			                Resolved
-			            {% elif help.status == "('closed', 'Closed')" %}
-			                Solved &amp; Sealed
-			            {% else %}
-			                >{{help.status}}
-			            {% endif %}</p>
-				</li>
-				{% endfor %}
-			</ul>
+			<table class="table table-condensed table-striped">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Question</th>
+						<th>Submitted by</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for help in helps %}
+					<tr>
+						<td><a href="/help/{{help.id}}">{{help.name|truncatechars:80}}</a></td>
+						<td class="description">{{help.question|truncatechars:140|striptags}}</td>
+						<td>{{help.user}}</td>
+						<td class="attribs">{% if help.status == '(1, 1)' %}
+				                No Responses
+				            {% elif help.status == "('active', 'Active Responses')" %}
+				                Active
+				            {% elif help.status == "('reopened', 'Re-Opened')" %}
+				                Re-Opened
+				            {% elif help.status == "('resolved', 'Resolved')" %}
+				                Resolved
+				            {% elif help.status == "('closed', 'Closed')" %}
+				                Solved &amp; Sealed
+				            {% else %}
+				                >{{help.status}}
+				            {% endif %}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
 		<!-- End category -->
 		{% endif %}
@@ -70,14 +122,24 @@ Search Results for "{{search}}"
 		<div class="category reports">
 			<h2 id='report_header'><strong>{{report_count}}</strong> results in <em>Daily Reports</em></h2>
 	
-			<ul>
-				{% for report in reports %}
-				<li>
-					<h3><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80|striptags}}</a></h3>
-					<p class="attribs">By {{report.user}} | {{report.date}}</p>
-				</li>
-				{% endfor %}
-			</ul>
+			<table class="table table-condensed table-striped">
+				<thead>
+					<tr>
+						<th>Description</th>
+						<th>User</th>
+						<th>Date</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for report in reports %}
+					<tr>
+						<td><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80|striptags}}</a></td>
+						<td class="attribs"><a href="{% url 'auth.views.user_overview' report.user.id %}">{{report.user}}</a></td>
+						<td>{{report.date}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
 		<!-- End category -->
 		{% endif %}
@@ -86,35 +148,6 @@ Search Results for "{{search}}"
 		<p>Your search for <strong>{{search}}</strong> returned no results</p>
 		{% endif %}
 	
-	</div>
-	
-	<div class="span3">
-		
-		<h2>Filter results</h2>
-		<ul class="nav sidenav nav-list">
-			{% if issues %}
-			<li>
-				<label class="checkbox">
-					<input type="checkbox" checked data-toggle="issues"> Issues (<strong>{{issue_count}}</strong>)
-				</label>
-			</li>
-			{% endif %}
-			{% if helps %}
-			<li>
-				<label class="checkbox">
-					<input type="checkbox" checked data-toggle="help-desk"> Help Desk (<strong>{{help_count}}</strong>)
-				</label>
-			</li>
-			{% endif %}
-			{% if reports %}
-			<li>
-				<label class="checkbox">
-					<input type="checkbox" checked data-toggle="reports"> Daily Reports (<strong>{{report_count}}</strong>)
-				</label>
-			</li>
-			{% endif %}
-		</ul>
-		
 	</div>
 	
 </div>
