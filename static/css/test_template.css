@@ -195,6 +195,8 @@ body.issue-overview {}
 			body.issue-overview .related-issues table th {
 				font-size: 12px;
 			}
+			
+			body.issue-overview .related-issues table td.text-right { text-align: right; }
 	
 	/* --- | Comments | --- */
 	

@@ -137,7 +137,7 @@ Extends /templates/issue/base.html
 						<th>
 							Relation
 						</th>
-						<th></th>
+						<th width="50"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -151,7 +151,7 @@ Extends /templates/issue/base.html
 							{% endif %}
 						</td>
 						<td>{{issue_to_issue.link_type}}</td>
-						<td><a class="btn btn-mini unlink" data-unlink-primary="{{issue_to_issue.primary_issue.id}}" data-unlink-secondary="{{issue_to_issue.secondary_issue.id}}">Unlink</a></td>
+						<td class="text-right"><a class="btn btn-mini unlink" data-unlink-primary="{{issue_to_issue.primary_issue.id}}" data-unlink-secondary="{{issue_to_issue.secondary_issue.id}}">Unlink</a></td>
 					</tr>
 					{% endfor %}
 				</tbody>
