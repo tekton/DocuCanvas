@@ -45,8 +45,8 @@ class Issue(models.Model):
     #
     date_reported = models.DateField(null=True, blank=True)
     #
-    created = models.DateField(auto_now_add=True, null=True, blank=True)  # NOW
-    modified = models.DateField(auto_now=True)  # auto update time
+    created = models.DateTimeField(auto_now_add=True, null=True, blank=True)  # NOW
+    modified = models.DateTimeField(auto_now=True)  # auto update time
     #
     view_type = models.CharField(max_length=255, blank=True, null=True)  # default via name, or Issue ID
     #
