@@ -25,4 +25,4 @@ class NewsFeedItem(models.Model):
     new_value = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     newsfeed_type = models.CharField(max_length=255, blank=True, null=True, choices=NEWSFEEDTYPE)
-    timestamp = models.DateField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
