@@ -76,7 +76,7 @@ def issueSubscribe(request, issue_id, user_id):
     rtn_dict = {"success": True}
     
     try:
-        u = Users.objects.get(pk=user_id)
+        u = User.objects.get(pk=user_id)
     except Exception as e:
         rtn_dict = {"error": "Unable to get User", "no_user_e": str(e), "success": False}
     try:
@@ -88,12 +88,15 @@ def issueSubscribe(request, issue_id, user_id):
         sub = SubscriptionToIssue.objects.get(user=u, issue=issue)
     except:
         sub = SubscriptionToIssue()
+    if u and issue:
         sub.user = u
         sub.issue = issue
-    try:
-        sub.save()
-    except Exception as e:
-        rtn_dict = {"error": "Unable to save Subscription", "no_save_e": str(e), "success": False}
+        try:
+            sub.save()
+        except Exception as e:
+            rtn_dict = {"error": "Unable to save Subscription", "no_save_e": str(e), "success": False}
+    else:
+        pass
     return HttpResponse(json.dumps(rtn_dict), content_type='application/json')
 
 
