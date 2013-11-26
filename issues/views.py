@@ -36,41 +36,65 @@ import traceback
 
 @login_required
 def pin(request, issue_id):
-    to_json = {'success': True, 'is_pinned': False, 'error': False}
-    try:
-        issue = Issue.objects.get(pk=issue_id)
-    except Issue.DoesNotExist:
-        raise Http404
-
-    try:
-        pin = PinIssue.objects.get(user=request.user, issue=issue)
-    except PinIssue.DoesNotExist:
-        pin = None
-
-    if pin:
-        try:
-            pin.delete()
-        except Exception as e:
-            to_json['success'] = False
-            to_json['error'] = str(e)
-            print e
-    else:
-        pin = PinIssue()
-        pin.issue = issue
-        pin.user = request.user
-        try:
-            pin.save()
-        except Exception as e:
-            to_json['success'] = False
-            to_json['error'] = str(e)
-            print e
-        else:
-            to_json['is_pinned'] = True
-
     if request.is_ajax():
+        to_json = {'success': True, 'is_pinned': False, 'error': False}
+        try:
+            issue = Issue.objects.get(pk=issue_id)
+        except Issue.DoesNotExist:
+            to_json['success'] = False
+            to_json['error'] = str(e)
+
+        try:
+            pin = PinIssue.objects.get(user=request.user, issue=issue)
+        except PinIssue.DoesNotExist:
+            pin = None
+
+        if pin:
+            try:
+                pin.delete()
+            except Exception as e:
+                to_json['success'] = False
+                to_json['error'] = str(e)
+        else:
+            pin = PinIssue()
+            pin.issue = issue
+            pin.user = request.user
+            try:
+                pin.save()
+            except Exception as e:
+                to_json['success'] = False
+                to_json['error'] = str(e)
+            else:
+                to_json['is_pinned'] = True
         return HttpResponse(json.dumps(to_json), mimetype='application/json')
     else:
         return redirect('issues.views.issue_overview', issue_id)
+
+
+@login_required
+def issueSubscribe(request, issue_id, user_id):
+    rtn_dict = {"success": True}
+    
+    try:
+        u = Users.objects.get(pk=user_id)
+    except Exception as e:
+        rtn_dict = {"error": "Unable to get User", "no_user_e": str(e), "success": False}
+    try:
+        issue = Issues.objects.get(pk=issue_id)
+    except Exception as e:
+        rtn_dict = {"error": "Unable to get Issue", "no_issue_e": str(e), "success": False}
+
+    try:
+        sub = SubscriptionToIssue.objects.get(user=u, issue=issue)
+    except:
+        sub = SubscriptionToIssue()
+        sub.user = u
+        sub.issue = issue
+    try:
+        sub.save()
+    except Exception as e:
+        rtn_dict = {"error": "Unable to save Subscription", "no_save_e": str(e), "success": False}
+    return HttpResponse(json.dumps(rtn_dict), content_type='application/json')
 
 
 @login_required
@@ -526,23 +550,21 @@ def issue_overview(request, issue_id):
             project_issues = Issue.objects.filter(project=issue.project)
             project_issues = project_issues.exclude(pk=issue.id)
         except Exception, e:
-            print e
-            print 'could not find other issues in same project'
+            print "could not find other issues in same project :: {}".format(str(e))
     except Exception, e:
-        print "Somebody messed up the issue overview"
-        print e
+        print "Somebody messed up the issue overview :: {}".format(str(e))
 
     try:
         users = User.objects.all()
     except Exception, e:
-        print "Unable to get user list"
-        print e
+        # print "Unable to get user list :: {}".format(str(e)) # we know what went wrong technically
+        pass
 
     try:
-        projects = Project.objects.all().order_by('-created')
+        projects = Project.objects.all().order_by('created')
     except Exception, e:
-        print 'Unable to load projects'
-        print e
+        # print 'Unable to load projects :: {}'.format(str(e)) # we know what went wrong technically
+        pass
 
     try:
         pin = PinIssue.objects.get(issue=issue, user=request.user)
@@ -559,7 +581,8 @@ def issue_overview(request, issue_id):
     try:
         related_issues = IssueToIssue.objects.select_related().filter(Q(primary_issue=issue) | Q(secondary_issue=issue))
     except:
-        print 'Unable to find any related issues'
+        # print 'Unable to find any related issues'  # just causes log spam
+        pass
 
     try:
         comment_form = CommentForm()
@@ -571,8 +594,7 @@ def issue_overview(request, issue_id):
     try:
         accounts = Account.objects.all().order_by('user__username')
     except Exception as e:
-        print "No accounts for you...or me..."
-        print e
+        print "No accounts for you...or me... :: {}".format(str(e))
     # attempt to get the user defined template first, then check for an override template
     stack = traceback.extract_stack()
     filename, codeline, viewName, text = stack[-1]
@@ -600,6 +622,7 @@ def issue_overview(request, issue_id):
                                                              "page_value": "Issue",
                                                              "images": images,
                                                              'accounts': accounts,
+                                                             "users": users,
                                                             }, context_instance=RequestContext(request))
 
 

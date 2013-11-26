@@ -38,6 +38,10 @@ body.dashboard {}
 			padding: 0;
 			border: 0;
 		}
+			
+			body.dashboard-v2 #pageheader h1 {
+				text-align: center;
+			}
 		
 		body.dashboard #pageheader h2 {
 			font-size: 24px;
@@ -78,6 +82,10 @@ body.dashboard {}
 			font-size: 12px;
 			margin: 0;
 		}
+			
+			body.dashboard-v2 .dash-module table {
+				font-size: 16px;
+			}
 		
 			body.dashboard .dash-module table .issue-name {
 				font-weight: bold;
@@ -94,6 +102,11 @@ body.dashboard {}
 			border-bottom: 1px solid #eee;
 		}
 			
+			body.dashboard-v2 .newsfeed .media {
+				font-size: 16px;
+				padding: 0 5px 5px;
+			}
+			
 			body.dashboard .newsfeed .media blockquote {
 				margin-bottom: 0;
 			}
@@ -102,6 +115,10 @@ body.dashboard {}
 				font-size: 11px;
 				color: #999;
 			}
+				
+				body.dashboard-v2 .newsfeed .media .footer {
+					font-size: 14px;
+				}
 		
 		body.dashboard .newsfeed .view-more {
 			font-size: 13px;
@@ -109,6 +126,9 @@ body.dashboard {}
 			margin: 15px 0 0;
 			border-top: 1px solid #e3e3e3;
 		}
+			
+			body.dashboard-v2 .newsfeed .view-more {
+				font-size: 16px;}
 			
 			body.dashboard .newsfeed .view-more a {
 				color: #fff;
