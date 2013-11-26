@@ -33,7 +33,23 @@ def searchGlobal(request):
     except Exception, e:
         print e
 
+    message = None
     search = request.POST["searchText"]
+
+    temp = search.lower()
+    if temp[0:6] == 'issue:' and temp[6:].isdigit():
+        try:
+            issue = Issue.objects.get(pk=temp[6:])
+            return redirect('issues.views.issue_overview', issue.id)
+        except Exception, e:
+            print e
+    elif temp.isdigit():
+        try:
+            issue = Issue.objects.get(pk=temp)
+            message = issue.id
+        except Exception, e:
+            print e
+
     
     q_issues = Issue.objects.filter(Q(summary__contains=search) | Q(description__contains=search))
     q_helprequest = HelpRequest.objects.filter(Q(question__contains=search) | Q(name__contains=search))
@@ -46,4 +62,5 @@ def searchGlobal(request):
                                                              "reports": q_dailyreports, 
                                                              "report_count": q_dailyreports.count(), 
                                                              "projects": projects, 
-                                                             "search": search}, context_instance=RequestContext(request))
+                                                             "search": search,
+                                                             "message": message}, context_instance=RequestContext(request))

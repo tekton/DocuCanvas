@@ -1,4 +1,6 @@
 import json
+import hashlib
+import pickle
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
@@ -18,8 +20,9 @@ from accounts.forms import PermissionForm
 from accounts.utils import get_permission_form_for_model, set_permissions_for_model
 
 from datetime import date
+from datetime import datetime
 
-from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot
+from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot, AdvancedSearchHash
 from accounts import utils as rputils
 from accounts.models import Account
 from accounts.views import cache_checkUserTemplate
@@ -738,9 +741,204 @@ def issue_search_advanced(request):
         projects = Project.objects.all()
     except Exception, e:
         print e
+    if request.method == "GET":
+        return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm(), "projects": projects}, context_instance=RequestContext(request))
+    form = AdvSearchForm(request.POST)
+    if not form.is_valid():
+        raise Exception("Invalid adv search form values")
+        return redirect('issues.views.issue_advanced_search')
+    sq_string = pickle.dumps(form)
+    m = hashlib.new('ripemd160')
+    m.update(sq_string)
+    hash_string =  m.hexdigest()
+    try:
+        search_hash = AdvancedSearchHash.objects.get(search_hash=hash_string)
+        return redirect('issues.views.loadSearchResults', hash_string)
+    except Exception, e:
+        print "Search Query not in database: Creating new hash"
+    try:
+        search_hash = AdvancedSearchHash()
+        search_hash.search_hash = hash_string
+        search_hash.query = sq_string
+        search_hash.save()
+        return redirect('issues.views.loadSearchResults', search_hash.search_hash)
+    except Exception, e:
+        print "Search Hash could not be created"
+    return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm(), "projects": projects}, context_instance=RequestContext(request))
+
+
+def returnQuery(field_name, field_value):
+    if field_name == 'project':
+        return Issue.objects.filter(project=field_value), field_value.name
+    elif field_name == 'meta_issues':
+        return Issue.objects.filter(meta_issues=field_value), field_value.title
+    elif field_name == 'assigned_to':
+        return Issue.objects.filter(assigned_to=field_value), field_value.username
+    elif field_name == 'created_by':
+        return Issue.objects.filter(created_by=field_value), field_value.username
+    elif field_name == 'issue_type':
+        return Issue.objects.filter(issue_type=field_value), field_value
+    elif field_name == 'status':
+        return Issue.objects.filter(status=field_value), field_value
+    elif field_name == 'title':
+        return Issue.objects.filter(Q(title__contains=field_value)), field_value
+    elif field_name == 'summary':
+        return Issue.objects.filter(Q(summary__contains=field_value)), field_value
+    elif field_name == 'description':
+        return Issue.objects.filter(Q(description__contains=field_value)), field_value
+    elif field_name == 'os':
+        return Issue.objects.filter(Q(os__contains=field_value)), field_value
+    elif field_name == 'os_version':
+        return Issue.objects.filter(Q(os_version__contains=field_value)), field_value
+    elif field_name == 'browser':
+        return Issue.objects.filter(Q(browser__contains=field_value)), field_value
+    elif field_name == 'browser_version':
+        return Issue.objects.filter(Q(browser_version__contains=field_value)), field_value
+    elif field_name == 'criticality':
+        return Issue.objects.filter(criticality=field_value), field_value
+    elif field_name == 'priority':
+        return Issue.objects.filter(priority=field_value), field_value
+    elif field_name == 'fixability':
+        return Issue.objects.filter(fixability=field_value), field_value
+    return [],""
+
+
+def returnDateQuery(start, end, field):
+    # function called by loadSearchResults()... returns Issue Queryset based on dates created (or modified)
+    start_yr = start.strftime('%Y')
+    start_mo = start.strftime('%m')
+    start_da = start.strftime('%d')
+    date_range_start = str(start_yr) + '-' + str(start_mo) + '-' + str(start_da)
+    stop_yr = end.strftime('%Y')
+    stop_mo = end.strftime('%m')
+    stop_da = end.strftime('%d')
+    date_range_end = str(stop_yr) + '-' + str(stop_mo) + '-' + str(stop_da)
+    if field == 'created':
+        if start <= end:
+            return Issue.objects.filter(created__range=[date_range_start, date_range_end])
+        else:
+            return Issue.objects.filter(created__range=[date_range_end, date_range_start])
+    elif field == 'modified':
+        if start <= end:
+            return Issue.objects.filter(modified__range=[date_range_start, date_range_end])
+        else:
+            return Issue.objects.filter(modified__range=[date_range_end, date_range_start])
+    return []
+
+
+def returnDayQuery(date, field):
+    # returns Issue Queryset created (or modified) on a specific date
+    yr = date.strftime('%Y')
+    mo = date.strftime('%m')
+    da = date.strftime('%d')
+    date_range = str(yr) + '-' + str(mo) + '-' + str(da)
+    if field == 'created':
+        return Issue.objects.filter(created__range=[date_range, date_range])
+    elif field == 'modified':
+        return Issue.objects.filter(modified__range=[date_range, date_range])
+    return []
+
+
+def loadSearchResults(request, search_hash_id):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    try:
+        # load hashed search query (pickled form is stored in AdvancedSearchHash object)
+        search_hash = AdvancedSearchHash.objects.get(search_hash=search_hash_id)
+        search_hash.modified = date.today()
+        search_hash.save()
+        query = pickle.loads(search_hash.query)
+        q = []
+        # params is used to pass a list of fields + values (that were used to make the query)
+        # params is passed as a JSON object to be displayed on the page
+        params = {}
+        by_created = False
+        by_modified = False
+        for field in query.cleaned_data.keys():
+            temp = []
+            if field == 'created_start' or field == 'created_stop':
+                # Search by date created requires special handling
+                if not by_created:
+                    start = None
+                    query_stop = None
+                    if query.cleaned_data['created_start'] and query.cleaned_data['created_stop']:
+                        start = query.cleaned_data['created_start']
+                        query_stop = query.cleaned_data['created_stop']
+                        temp.extend(returnDateQuery(start, query_stop, 'created'))
+                    elif query.cleaned_data['created_start']:
+                        start = query.cleaned_data['created_start']
+                        temp.extend(returnDayQuery(start, 'created'))
+                    elif query.cleaned_data['created_stop']:
+                        start = query.cleaned_data['created_stop']
+                        temp.extend(returnDayQuery(start, 'created'))
+                    if query.cleaned_data['created_stop']:
+                        params['Date Range (Created)'] = [start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y")]
+                    elif start:
+                        params['Date (Created)'] = [start.strftime("%b %d %Y")]
+                    if temp:
+                        if q:
+                            q = list(set(q) & set(temp))
+                        else:
+                            q.extend(temp)
+                    by_created = True
+            elif field == 'modified_start' or field == 'modified_stop':
+                # Search by date modified requires special handling
+                if not by_modified:
+                    start = None
+                    query_stop = None
+                    if query.cleaned_data['modified_start'] and query.cleaned_data['modified_stop']:
+                        start = query.cleaned_data['modified_start']
+                        query_stop = query.cleaned_data['modified_stop']
+                        temp.extend(returnDateQuery(start, query_stop, 'modified'))
+                    elif query.cleaned_data['modified_start']:
+                        start = query.cleaned_data['created_start']
+                        temp.extend(returnDayQuery(start, 'modified'))
+                    elif query.cleaned_data['modified_stop']:
+                        start = query.cleaned_data['modified_stop']
+                        temp.extend(returnDayQuery(start, 'modified'))
+                    if query.cleaned_data['modified_stop']:
+                        params['Date Range (Modified)'] = [start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y")]
+                    elif start:
+                        params['Date (Modified)'] = [start.strftime("%b %d %Y")]
+                    if temp:
+                        if q:
+                            q = list(set(q) & set(temp))
+                        else:
+                            q.extend(temp)
+                    by_modified = True
+            elif query.cleaned_data[field]:
+                # All non-Date related fields are handled by this code
+                params[field] = []
+                for value in query.cleaned_data[field]:
+                    temp2, param_value = returnQuery(field, value)
+                    temp.extend(temp2)
+                    params[field].append(param_value)
+                if q:
+                    q = list(set(q) & set(temp))
+                else:
+                    q.extend(temp)
+    except Exception, e:
+        print e
+        return redirect('issues.views.issue_search_advanced')
+    return render_to_response("issues/adv_search_results.html", {'projects': projects,
+                                                                 'issues': q,
+                                                                 'query': json.dumps(params),
+                                                                 'form': AdvSearchForm(),}, context_instance=RequestContext(request))
+
+'''
+@login_required
+def issue_search_advanced(request):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
 
     if request.method == "GET":
         return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm(), "projects": projects}, context_instance=RequestContext(request))
+
+    print request.POST
 
     form = AdvSearchForm(request.POST)
     if not form.is_valid():
@@ -771,7 +969,7 @@ def issue_search_advanced(request):
         print query
         return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm(), "projects": projects}, context_instance=RequestContext(request))
     return render_to_response("issues/issue_search_results.html", {'results': results, "projects": projects}, context_instance=RequestContext(request))
-
+'''
 
 @login_required
 def edit_comment(request):
