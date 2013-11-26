@@ -9,6 +9,8 @@ from newsfeed.models import NewsFeedItem
 from notifications.models import Notification, NotificationRecipient
 from issues.models import *
 
+import traceback
+
 @login_required
 def dashboard(request):
     '''
