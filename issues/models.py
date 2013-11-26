@@ -314,4 +314,13 @@ class ProjectPlannerItemConnection(models.Model):
     def __unicode__(self):
         return str(self.source.meta_issue.title) + ' -> ' + str(self.target.meta_issue.title)
 
+
+class AdvancedSearchHash(models.Model):
+    search_hash = models.CharField(max_length=255, unique=True)
+    query = models.TextField()
+    created = models.DateField(auto_now_add=True)
+    modified = models.DateField(auto_now=True, blank=True, null=True)
+
+
 admin.site.register(IssueScreenshot)
+admin.site.register(AdvancedSearchHash)
