@@ -123,6 +123,43 @@ Extends /templates/issue/base.html
 				{% endif %}
 			</div>
 
+		{% if related_issues %}
+		<div class="related-issues">
+			
+			<h3>Related Issues</h3>
+			
+			<table class="table table-condensed table-striped">
+				<thead>
+					<tr>
+						<th>
+							Description
+						</th>
+						<th>
+							Relation
+						</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for issue_to_issue in related_issues %}
+					<tr>
+						<td>
+							{% if issue_to_issue.primary_issue == issue %}
+							<a href="{% url 'issues.views.issue_overview' issue_to_issue.secondary_issue.id %}">{{issue_to_issue.secondary_issue.summary}}</a>
+							{% elif issue_to_issue.secondary_issue == issue %}
+							<a href="{% url 'issues.views.issue_overview' issue_to_issue.primary_issue.id %}">{{issue_to_issue.primary_issue.summary}}</a>
+							{% endif %}
+						</td>
+						<td>{{issue_to_issue.link_type}}</td>
+						<td><a class="btn btn-mini unlink" data-unlink-primary="{{issue_to_issue.primary_issue.id}}" data-unlink-secondary="{{issue_to_issue.secondary_issue.id}}">Unlink</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			
+		</div>
+		{% endif %}
+			
 			<aside id="issue-comments" class="well">
 				<header>
 					<h3>Comments</h3>
@@ -179,9 +216,6 @@ Extends /templates/issue/base.html
 				</div>
 				<div id="issue-metainfo-content" class="metainfo-content">
 					<dl>
-						<!-- <dt>Issue Id</dt>
-						<dd>{{issue.id}}</dd> -->
-
 						<dt>Assigned To</dt>
 							<dd>
 								{% if issue.assigned_to.id %}
@@ -194,160 +228,59 @@ Extends /templates/issue/base.html
 						<dt>Issue Type</dt>
 						<dd>{{issue.issue_type}}</dd>
 						
-						<!-- <dt>Status</dt>
-						<dd>
-							<span class="label {{issueLabelClass}}">{{issue.get_status_display}}</span>
-						</dd> -->
-						
 						<dt>Criticality</dt>
 						<dd>{{issue.criticality}}</dd>
 						
 						<hr />
 
-						{% if issue.meta_issues %}
 						<dt>Meta Issue</dt>
-                        <dd><a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues.title}}</a></dd>
+                        <dd>{% if issue.meta_issues %}<a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues.title}}</a>{% else %}None{% endif %}</dd>
 						
 						<hr />
-						{% endif %}
-						
-						<!--
-						<dt>Project Name:</dt>
-							<dd><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></dd>
-
-						<dt>State:</dt>
-							<dd>{{issue.state}}</dd>
-
-						<dt>Projected Start:</dt>
-							<dd>{{issue.projected_start}}</dd>
-
-						<dt>Projected End:</dt>
-							<dd>{{issue.projected_end}}</dd>
-
-						<dt>Actual Start:</dt>
-							<dd>{{issue.actual_start}}</dd>
-
-						<dt>Actual End:</dt>
-							<dd>{{issue.actual_end}}</dd>-->
-
-						{% if issue.date_reported %}
-						<dt>Date Reported</dt>
-						<dd>{{issue.date_reported}}</dd>
-						{% endif %}
 
 						<dt>Created On</dt>
-							<dd>{{issue.created}}</dd>
+						<dd>{{issue.created}}</dd>
 						
-						{% if issue.created_by %}
 						<dt>Created By</dt>
-							<dd><a href="{% url 'auth.views.user_overview' issue.created_by.id %}">{{issue.created_by}}</a></dd>
-						{% endif %}
+						<dd>{% if issue.created_by %}<a href="{% url 'auth.views.user_overview' issue.created_by.id %}">{{issue.created_by}}</a>{% else %}{{issue.created_by}}{% endif %}</dd>
 						
-						{% if issue.modified_by %}
+						<hr />
+						
 						<dt>Last Modified</dt>
-							<dd>{{issue.modified}}</dd>
-						{% endif %}
+						<dd>{{issue.modified}}</dd>
 						
-						{% if issue.modified_by %}
 						<dt>Modified By</dt>
-							<dd><a href="{% url 'auth.views.user_overview' issue.modified_by.id %}">{{issue.modified_by}}</a></dd>
-						{% endif %}
+						<dd>{% if issue.modified_by %}<a href="{% url 'auth.views.user_overview' issue.modified_by.id %}">{{issue.modified_by}}</a>{% else %}{{issue.modified_by}}{% endif %}</dd>
 
-						{% if issue.point_of_contact %}
+						<hr />
+						
+						<dt>Date Reported</dt>
+						<dd>{{issue.date_reported}}</dd>
+						
 						<dt>Point of Contact</dt>
 						<dd>{{issue.point_of_contact}}</dd>
-						{% endif %}
 						
-
-						<!--<dt>Title:</dt>
-							<dd>{{issue.title}}</dd>
-
-						<dt>Link Slug:</dt>
-							<dd>{{issue.link_slug}}</dd>-->
-						
-						{% if issue.view_type or issue.fixability %}
 						<hr />
-						{% if issue.view_type %}
+						
 						<dt>View Type</dt>
-							<dd>{{issue.view_type}}</dd>
-						{% endif %}
+						<dd>{{issue.view_type}}</dd>
 						
-						{% if issue.fixability %}
 						<dt>Fixability</dt>
-							<dd>{{issue.fixability}}</dd>
-						{% endif %}
-						{% endif %}
-
-						<!--<dt>R &amp; D:</dt>
-							<dd>{{issue.r_and_d}}</dd>
-
-						<dt>Feature:</dt>
-							<dd>{{issue.feature}}</dd>-->
+						<dd>{{issue.fixability}}</dd>
 						
-						{% if issue.os or issue.os_version or issue.browser or issue.browser_version %}
 						<hr />
-						{% if issue.os %}
+						
 						<dt>OS</dt>
-							<dd>{{issue.os}}</dd>
-						{% endif %}
-						{% if issue.os_version %}
+						<dd>{{issue.os}}</dd>
+						
 						<dt>OS Version</dt>
-							<dd>{{issue.os_version}}</dd>
-						{% endif %}
-						{% if issue.browser %}
+						<dd>{{issue.os_version}}</dd>
+						
 						<dt>Browser</dt>
-							<dd>{{issue.browser}}</dd>
-						{% endif %}
-						{% if issue.browser_version %}
+						<dd>{{issue.browser}}</dd>
+						
 						<dt>Browser Version</dt>
-							<dd>{{issue.browser_version}}</dd>
-						{% endif %}
-						{% endif %}
-						<!--<dt>Screen Shot:</dt>
-							<dd>{{issue.screen_shot}}</dd>
-
-						<dt>Wireframe:</dt>
-							<dd>{{issue.wireframe}}<br/></dd>
-
-						<dt>URI to Test:</dt>
-							<dd>{{issue.uri_to_test}}</dd>-->
-					</dl>
-
-					{% if related_issues %}
-					<hr />
-					<table class="table table-condensed">
-						<caption>
-							Related Issues
-						</caption>
-						<thead>
-							<tr>
-								<th>
-									Issue
-								</th>
-								<th>
-									Relation
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% for issue_to_issue in related_issues %}
-							<tr>
-								<td>
-									{% if issue_to_issue.primary_issue == issue %}
-									<a href="{% url 'issues.views.issue_overview' issue_to_issue.secondary_issue.id %}">{{issue_to_issue.secondary_issue.summary}}</a>
-									{% elif issue_to_issue.secondary_issue == issue %}
-									<a href="{% url 'issues.views.issue_overview' issue_to_issue.primary_issue.id %}">{{issue_to_issue.primary_issue.summary}}</a>
-									{% endif %}
-								</td>
-								<td>
-									<a class="btn btn-mini pull-right unlink" data-unlink-primary="{{issue_to_issue.primary_issue.id}}" data-unlink-secondary="{{issue_to_issue.secondary_issue.id}}"><i class="icon-remove-circle"></i></a>
-									{{issue_to_issue.link_type}}
-								</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-					{% endif %}
+						<dd>{{issue.browser_version}}</dd>
 				</div>
 			</aside>
 		</div>
