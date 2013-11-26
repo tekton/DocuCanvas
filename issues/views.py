@@ -74,13 +74,15 @@ def pin(request, issue_id):
 @login_required
 def issueSubscribe(request, issue_id, user_id):
     rtn_dict = {"success": True}
+    u = None
+    issue = None
     
     try:
         u = User.objects.get(pk=user_id)
     except Exception as e:
         rtn_dict = {"error": "Unable to get User", "no_user_e": str(e), "success": False}
     try:
-        issue = Issues.objects.get(pk=issue_id)
+        issue = Issue.objects.get(pk=issue_id)
     except Exception as e:
         rtn_dict = {"error": "Unable to get Issue", "no_issue_e": str(e), "success": False}
 
