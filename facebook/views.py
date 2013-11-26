@@ -48,7 +48,7 @@ def getAccessToken(request):
 			myprofile.save()
 		# user = authenticate(username=profile.user.username, password=hashlib.new(profile.fb_uid).hexdigest())
 		# login(request,user)
-	return redirect('dashboard.views.home')
+	return redirect('dashboard.views.dashboard')
 
 
 def facebookConnect(request):
@@ -77,7 +77,7 @@ def sendTestNotification(request, user_id):
 	resp, cont = client.request(request_url, 'POST')
 	print resp
 	notification = FBNotification(sender=request.user, fb_profile=facebook, text=content)
-	return redirect('dashboard.views.home')
+	return redirect('dashboard.views.dashboard')
 
 
 def getAppAccessToken(request, user_id):
@@ -108,4 +108,4 @@ def sendNotification(request, notification_id):
 	resp, cont = client.request(request_url, 'POST')
 	print resp
 	notification = FBNotification(sender=request.user, fb_profile=facebook, text=content)
-	return redirect('dashboard.views.home')
+	return redirect('dashboard.views.dashboard')

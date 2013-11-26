@@ -70,7 +70,7 @@ def getAccessToken(request):
         print e
         # user = authenticate(username=profile.user.username, password=hashlib.new(profile.fb_uid).hexdigest())
         # login(request,user)
-    return redirect('dashboard.views.home')
+    return redirect('dashboard.views.dashboard')
 
 
 @login_required
@@ -79,7 +79,7 @@ def facebookConnect(request):
         facebook = FacebookProfile.objects.get(user=request.user)
         facebook.active = True
         facebook.save()
-        return redirect('dashboard.views.home')
+        return redirect('dashboard.views.dashboard')
     except Exception, e:
         print e
     callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/getAccessToken'
@@ -108,7 +108,7 @@ def sendTestNotification(request, user_id):
     resp, cont = client.request(request_url, 'POST')
     print resp
     notification = FBNotification(sender=request.user, fb_profile=facebook, text=content)
-    return redirect('dashboard.views.home')
+    return redirect('dashboard.views.dashboard')
 
 
 @login_required
@@ -136,14 +136,14 @@ def add_twitter_acct(request):
                 if twit.user_name == twat.user_name:
                     if not twit.active:
                         twit.Activate()
-                        return redirect('dashboard.views.home')
+                        return redirect('dashboard.views.dashboard')
                     print "user_name already in database"
-                    return redirect('dashboard.views.home')
+                    return redirect('dashboard.views.dashboard')
             try:
                 twat.save()
             except Exception, e:
                 print e
-            return redirect('dashboard.views.home')
+            return redirect('dashboard.views.dashboard')
         else:
             print "form not valid"
     twatForm = TwitterForm(instance=twat)
@@ -157,7 +157,7 @@ def remove_twitter_acct(request):
         twat = TwitterProfile(user=myuser)
         twat.Deactivate()
         print "Account Deactivated"
-        return redirect('dashboard.views.home')
+        return redirect('dashboard.views.dashboard')
     return render_to_response('twitter/deactivate.html', {}, context_instance=RequestContext(request))
 
 
@@ -170,7 +170,7 @@ def access_for_broadcast(request, notification_id):
     if notification.facebook:
         callback_url = 'http://' + request.META['HTTP_HOST'] + '/socialplatform/broadcast/' + notification_id
         return HttpResponseRedirect(REQUEST_TOKEN_URL + '?client_id=%s&client_secret=%s&grand_type=client_credentials&redirect_uri=%s' % (APP_ID, APP_SECRET, callback_url))
-    return redirect('dashboard.views.home')
+    return redirect('dashboard.views.dashboard')
 
 
 @login_required
@@ -222,7 +222,7 @@ def social_broadcast(request, notification_id):
                     api.send_direct_message(screen_name=twitter.user_name, text=notification.message)
                 except Exception, e:
                     print e
-    return redirect('dashboard.views.home')
+    return redirect('dashboard.views.dashboard')
 
 
 @login_required
@@ -377,7 +377,7 @@ def modify_permissions(request):
     try:
         facebook = FacebookProfile.objects.get(user=request.user)
     except Exception, e:
-        return redirect('dashboard.views.home')
+        return redirect('dashboard.views.dashboard')
     if request.method == 'POST':
         permission_form = FacebookPermissions(request.POST, instance=facebook)
         if permission_form.is_valid():
@@ -387,7 +387,7 @@ def modify_permissions(request):
                 print e
             if not facebook.active:
                 facebook.deactivate()
-            return redirect('dashboard.views.home')
+            return redirect('dashboard.views.dashboard')
     else:
         permission_form = FacebookPermissions(instance=facebook)
     return render_to_response('socialplatform/facebook_permissions.html', {'facebook': facebook, 'form': permission_form, 'projects': projects}, context_instance=RequestContext(request))

@@ -10,7 +10,7 @@ from notifications.models import Notification, NotificationRecipient
 from issues.models import *
 
 @login_required
-def home(request):
+def dashboard(request):
     '''
         need comments
     '''

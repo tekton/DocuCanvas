@@ -39,14 +39,12 @@ def add_twitter_acct(request):
 				if twit.user_name == twat.user_name:
 					if not twit.active:
 						twit.Activate()
-						return redirect('dashboard.views.home')
 					print "user_name already in database"
-					return redirect('dashboard.views.home')
 			try:
 				twat.save()
 			except Exception, e:
 				print e
-			return redirect('dashboard.views.home')
+			return redirect('dashboard.views.dashboard')
 		else:
 			print "form not valid"
 	twatForm = TwitterForm(instance=twat)
@@ -60,7 +58,7 @@ def remove_twitter_acct(request):
 		twat = TwitterProfile(user=myuser)
 		twat.Deactivate()
 		print "Account Deactivated"
-		return redirect('dashboard.views.home')
+		return redirect('dashboard.views.dashboard')
 	return render_to_response('twitter/deactivate.html', {}, context_instance=RequestContext(request))
 
 
@@ -81,7 +79,7 @@ def send_dm_comment_update(request, user_id, issue_comment_id):
 				api.send_direct_message(screen_name=twat.user_name, text=content)
 			except Exception, e:
 				print e
-	return redirect('dashboard.views.home')
+	return redirect('dashboard.views.dashboard')
 
 
 @login_required
@@ -100,7 +98,7 @@ def send_dm_new_issue(request, user_id, issue_id):
 				api.send_direct_message(screen_name=twat.user_name, text=content)
 			except Exception, e:
 				print e
-	return redirect('dashboard.views.home')
+	return redirect('dashboard.views.dashboard')
 
 
 @login_required
@@ -120,7 +118,7 @@ def send_dm_new_issue_all(request, issue_id):
 					api.send_direct_message(screen_name=twit.user_name, text=content)
 				except Exception, e:
 					print "failed to send message to " + twit.user_name
-	return redirect('dashboard.views.home')
+	return redirect('dashboard.views.dashboard')
 
 
 @login_required
@@ -135,7 +133,7 @@ def send_dm_new_project(request, user_id, project_id):
 		content = "New Project Created! " + project.name
 		if twat.active:
 			api.send_direct_message(screen_name=twat.user_name, text=content)
-	return redirect('dashboard.views.home')
+	return redirect('dashboard.views.dashboard')
 
 
 @login_required
@@ -153,7 +151,7 @@ def send_dm_new_project_all(request, project_id):
 					api.send_direct_message(screen_name=twit.user_name, text=content)
 				except Exception, e:
 					print "faield to send message to " + twit.user_name
-	return redirect('dashboard.views.home')
+	return redirect('dashboard.views.dashboard')
 
 
 @login_required
@@ -165,7 +163,7 @@ def new_project_tweet(request, project_id):
 		api = tweepy.API(auth)
 		content = "New Project Created! " + project.name
 		api.update_status(status=content)
-	return redirect('dashboard.views.home')
+	return redirect('dashboard.views.dashboard')
 
 
 def new_tweet(request):
@@ -182,5 +180,5 @@ def new_tweet(request):
 					tweet.save()
 				except Exception, e:
 					print e
-				return redirect('dashboard.views.home')
+				return redirect('dashboard.views.dashboard')
 	return render_to_response('twitter/new_tweet.html', {}, context_instance=RequestContext(request))

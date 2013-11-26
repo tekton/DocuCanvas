@@ -63,7 +63,7 @@ def notification_form(request):
 
         notification_form = NotificationForm(instance=notification, auto_id=False)
     else:
-        return redirect('dashboard.views.home')
+        return redirect('dashboard.views.dashboard')
 
     return render_to_response("notifications/notification_form.html", {'formset': formset, "notification_form": notification_form, "users": json.dumps(users_dict), "num_users": num_users, "projects": projects, "page_type": "Notification", "page_value": "New"}, context_instance=RequestContext(request))
 

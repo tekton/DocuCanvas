@@ -133,7 +133,7 @@ def change_password(request):
             if form.is_valid():
                 try:
                     form.save()
-                    return redirect('dashboard.views.home')
+                    return redirect('dashboard.views.dashboard')
                 except Exception as e:
                     print "Error saving form"
             else:
@@ -160,7 +160,7 @@ def change_email(request):
                     user = request.user
                     user.email = request.POST['email']
                     user.save()
-                    return redirect('dashboard.views.home')
+                    return redirect('dashboard.views.dashboard')
                 except Exception as e:
                     print e
 
