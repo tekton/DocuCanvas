@@ -61,9 +61,19 @@ def home(request):
 
     # print users
     #subscribed = SubscriptionToIssue.objects.select_related().filter(user=request.user)
-    
-    template = request.GET.get("template", "dashboard/dashboard.html")
-
+    # attempt to get the user defined template first, then check for an override template
+    stack = traceback.extract_stack()
+    filename, codeline, viewName, text = stack[-1]
+    default = "dashboard/dashboard.html"
+    try:
+        cache_template = cache_checkUserTemplate(request.user, viewName)
+        if cache_template:
+            default = cache_template
+    except Exception as e:
+        # only print if debug is really necisary
+        print "Unable to get template from cache :: ".format(str(e))
+        pass
+    template = request.GET.get("template", default)
     return render_to_response(template, {"issues": issues, "subscribed": subscribed,
             "projects": projects, "pins": pins, "newsfeeds": newsfeeds, "notifications": notification_recipients,
             "num_notifications": num_notifications, "users": users, "page_type": "Dashboard", "page_value": "Overview",
