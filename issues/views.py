@@ -729,7 +729,7 @@ def issue_search_advanced(request):
 def returnQuery(field_name, field_value):
     if field_name == 'project':
         return Issue.objects.filter(project=field_value), field_value.name
-    elif field_name == 'meta_issue':
+    elif field_name == 'meta_issues':
         return Issue.objects.filter(meta_issues=field_value), field_value.title
     elif field_name == 'assigned_to':
         return Issue.objects.filter(assigned_to=field_value), field_value.username
@@ -745,7 +745,7 @@ def returnQuery(field_name, field_value):
         return Issue.objects.filter(Q(summary__contains=field_value)), field_value
     elif field_name == 'description':
         return Issue.objects.filter(Q(description__contains=field_value)), field_value
-    elif field_Name == 'os':
+    elif field_name == 'os':
         return Issue.objects.filter(Q(os__contains=field_value)), field_value
     elif field_name == 'os_version':
         return Issue.objects.filter(Q(os_version__contains=field_value)), field_value
