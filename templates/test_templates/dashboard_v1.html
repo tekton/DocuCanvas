@@ -211,9 +211,9 @@ Hello, {{user}}
                                     {% endfor %}
                                     {% endif %}
                             {% else%}
-							<strong>changed {{newsfeed.field_change}}</strong> to {{newsfeed.new_value|striptags|truncatechars:40}}
+							<strong>changed {{newsfeed.field_change}}</strong> to {{newsfeed.new_value|striptags|truncatechars:140}}
                             {% endif %}
-							in <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}</a>.
+							in <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:140}}</a>.
 							<p class="footer">Project: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a> | {{newsfeed.timestamp}}</p>
 						</div>
 					</div>
@@ -226,7 +226,7 @@ Hello, {{user}}
 							<img class="media-object" src="http://lorempixel.com/40/40/cats/" />
 						</a>
 						<div class="media-body">
-							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>created</strong> a new issue: <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}</a>.
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>created</strong> a new issue: <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:140}}</a>.
 							<p class="footer">Project: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a> | {{newsfeed.timestamp}}</p>
 						</div>
 					</div>
@@ -238,8 +238,8 @@ Hello, {{user}}
 							<img class="media-object" src="http://lorempixel.com/40/40/cats/" />
 						</a>
 						<div class="media-body">
-							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>commented</strong> on <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}:</a><br />
-							<blockquote>{{newsfeed.comment|truncatechars:40}}</blockquote>
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>commented</strong> on <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:140}}:</a><br />
+							<blockquote>{{newsfeed.comment|truncatechars:140}}</blockquote>
 							<p class="footer">Project: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a> | {{newsfeed.timestamp}}</p>
 						</div>
 					</div>

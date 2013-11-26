@@ -56,6 +56,17 @@ Extends /templates/issue/base.html
 	<li class="nav-header">New</li>
 	<li><a id="context-issue-new" href="{% url 'issues.views.issue_form_project' issue.project.id %}">Issue : {{issue.project.name}}</a></li>
 	<li class="nav-header">Issue Actions</li>
+	<li><a id="test-subscribe">
+		<form class="form-inline">
+			<label>Subscribe:</label>
+			<select name="subscribed_user" class="input-small">
+				{% for u in users %}
+				<option value="{{u.id}}" {% if u == user %}selected{% endif %}>{{u.username}}</option>
+				{% endfor%}
+			</select>
+			<button class="btn" type="button">Subscribe</button>
+		</form>
+	</a></li>
 	<li><a id="context-issue-subscribe" href="{% url 'issues.views.subscribe' issue.id %}">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
 	<li><a id="context-issue-pin" href="{% url 'issues.views.pin' issue.id %}">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
 	<li><a id="context-issue-assign" href="{% url 'issues.views.assign' issue.id %}">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
@@ -399,6 +410,24 @@ Extends /templates/issue/base.html
 	            AlertMessage.error('<strong>Subscribe error!</strong>' + data.error);
 	        }
 	    },AlertMessage.genericUnknownError);
+		
+		// Context menu - Subscribe (other)
+		$('#test-subscribe .btn').click(function(){
+			var btn = $(this),
+				statusField = btn.siblings('select');
+
+			$.ajax({
+			    type: 'POST',
+			    url: '/issue/subscribe/{{ issue.id }}/' + statusField.val(),
+			    data:{
+					csrfmiddlewaretoken: '{{csrf_token}}'
+			    },
+			    success: function(data){
+			    	AlertMessage.success('Issue has been successfully assigned');
+			    },
+			    error: AlertMessage.genericUnknownError
+			});
+		});
 
 	    // Context menu - Pin
 	    $('#context-issue-pin').asAjax(function(data, status) {
