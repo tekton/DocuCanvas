@@ -809,7 +809,7 @@ def returnQuery(field_name, field_value):
 
 
 query_fields = {'project': 'Projects', 'meta_issues': 'Meta Issues', 'assigned_to': 'Assigned To', 'created_by': 'Created By', 'issue_type': 'Issue Type',
-                'status': 'Status', 'title': 'Title', 'summary': 'Summary', 'description': 'Description', 'os': 'OS', 'os_version': 'OS Version', 'broser': 'Browser',
+                'status': 'Status', 'title': 'Title', 'summary': 'Summary', 'description': 'Description', 'os': 'OS', 'os_version': 'OS Version', 'browser': 'Browser',
                 'browser_version': 'Browser Version', 'criticality': 'Criticality', 'priority': 'Priority', 'fixability': 'Fixability'}
 
 
