@@ -7,62 +7,63 @@
 {% endblock%}
 
 {% block pageTitle %}
+{{poll.name}}
 {% endblock %}
 
 {% block baseContent %}
-<h2>{{poll.name}}</h2>
-<p>{{poll.context}}</p><br/>
-<p>End Date: {{poll.end_date}}</p><br/>
-<p>Votes Allowed Per Person: {{poll.max_votes}}</p><br/>
-<form action="{% url 'polls.views.vote' poll.id %}" id="poll" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <table>
-    <tr>
-        <td></td>
-        <td><b>Item</b></td>
-        <td><b>Votes</b></td>
-        <td></td>
-        <td></td>
-    </tr>
-    {% for deez in usernotvoteitems %}
-    <tr>        
-            <td>
-                {% if sup and not deez.voted %}
-                    <input type="checkbox" id="deez" name="{{deez.item.id}}" value="Submit" >  
-                {% endif %}
-            </td>
-            <td>{{deez.item.item}}</td>
-            <td>{{deez.item.votes}}</td>
-            <td><input type='hidden' name='item' id='id_item' value='{{deez.item.id}}'/></td>
-            
-            <td><meter style="width:200px;height:25px;" id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{deez.item.votes}}">Value can be here too</meter></td>
-    </tr>
-    {% endfor %}
-</table>
-{% if sup %}
-</br>
-<input type="submit" name="submit" value="Submit"/>
-{% endif %}
 
-</form>
+<!-- Begin container -->
+<div class="container">
+	
+	<h2>{{poll.name}}</h2>
+	<p class="lead">{{poll.context}}</p>
+	
+	<form action="{% url 'polls.views.vote' poll.id %}" id="poll" method="post" enctype="multipart/form-data" class="poll-voting">
+	    {% csrf_token %}
+	    <table class="table table-striped">
+		    {% for deez in usernotvoteitems %}
+		    <tr>        
+				<td class="item">
+					{% if sup and not deez.voted %}
+					<label class="checkbox">
+						<input type="checkbox" id="deez" name="{{deez.item.id}}" value="Submit" />{{deez.item.item}}
+					</label>
+					{% else %}
+					{{deez.item.item}}
+					{% endif %}
+	            </td>
+	            <td width="1"><input type='hidden' name='item' id='id_item' value='{{deez.item.id}}'/></td>
+	            <td>{% if not sup %}<meter id="items" title="Poll Results" max="{{most_votes}}" low="1" high="8" optimum="5" value="{{deez.item.votes}}">Value can be here too</meter>{% endif %}</td>
+				<td class="votes">{% if not sup %}{{deez.item.votes}}{% endif %}</td>
+		    </tr>
+		    {% endfor %}
+		</table>
+	
+		<div class="form-actions">
+			<p class="pull-right text-right"><small>Votes Allowed Per Person: <strong>{{poll.max_votes}}</strong><br />Voting ends <strong>{{poll.end_date}}</strong></small></p>
+	
+			{% if sup %}
+			<button type="submit" name="submit" value="Vote" class="btn btn-primary pull-left"><i class="icon-ok icon-white"></i> Vote</button>
+			{% endif %}
+		</div>
+	</form>
+	
+	{% if uservoteitems.count %}
+	<form action="{% url 'polls.views.undo_vote' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">		
+	    {% csrf_token %}
+	    <input type="submit" name="undo_vote" value="Undo Vote" class="btn btn-warning" />
+	</form>
+	{% endif %}
 
-<form action="{% url 'polls.views.undo_vote' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="submit" name="undo_vote" value="Undo Vote"/>
-</form>
-
-{% if user == poll.creator %}
-<form action="{% url 'polls.views.end_poll' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    </br>
-    <input type="submit" name="end_poll" value="End Poll"/>
-</form>
-{% endif %}
-
-
-
-
-
+	{% if user == poll.creator %}
+	<form action="{% url 'polls.views.end_poll' poll.id %}" id = "pollForm" method="post" enctype="multipart/form-data">
+	    {% csrf_token %}
+	    <input type="submit" name="end_poll" value="End Poll" class="btn btn-danger" />
+	</form>
+	{% endif %}
+	
+</div>
+<!-- End container -->
 
 {% endblock %}
 

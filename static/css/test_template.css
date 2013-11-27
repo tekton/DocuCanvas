@@ -191,6 +191,11 @@ body.issue-overview {}
 			padding: 0;
 			border: 0;
 		}
+			
+			body.issue-overview-v2 #pageheader h1 {
+				font-size: 38px;
+				text-align: center;
+			}
 	
 	/* --- | Related Issues | --- */
 	
