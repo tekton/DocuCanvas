@@ -808,6 +808,11 @@ def returnQuery(field_name, field_value):
     return [],""
 
 
+query_fields = {'project': 'Projects', 'meta_issues': 'Meta Issues', 'assigned_to': 'Assigned To', 'created_by': 'Created By', 'issue_type': 'Issue Type',
+                'status': 'Status', 'title': 'Title', 'summary': 'Summary', 'description': 'Description', 'os': 'OS', 'os_version': 'OS Version', 'broser': 'Browser',
+                'browser_version': 'Browser Version', 'criticality': 'Criticality', 'priority': 'Priority', 'fixability': 'Fixability'}
+
+
 def returnDateQuery(start, end, field):
     # function called by loadSearchResults()... returns Issue Queryset based on dates created (or modified)
     start_yr = start.strftime('%Y')
@@ -915,11 +920,11 @@ def loadSearchResults(request, search_hash_id):
                     by_modified = True
             elif query.cleaned_data[field]:
                 # All non-Date related fields are handled by this code
-                params[field] = []
+                params[query_fields[field]] = []
                 for value in query.cleaned_data[field]:
                     temp2, param_value = returnQuery(field, value)
                     temp.extend(temp2)
-                    params[field].append(param_value)
+                    params[query_fields[field]].append(param_value)
                 if q:
                     q = list(set(q) & set(temp))
                 else:
