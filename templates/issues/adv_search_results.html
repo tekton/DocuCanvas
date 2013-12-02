@@ -44,6 +44,8 @@
 				{% csrf_token %}
                 {% if query %}
                 </br>
+                <div id="return-query-hidden">
+                </div>
                 {% endif %}
 				<p id="addField">Add Field: <select id="fieldList"></select> <a href="#">Add</a></p>
 		        <input type="submit" value="Submit"/>
@@ -59,6 +61,7 @@
 {% block endScripts %}
 <script type="text/javascript">
 	var filters = JSON.parse('{{query|escapejs|safe}}');
+    var return_query = JSON.parse('{{return_query|escapejs|safe}}');
 	$(function(){
 		var content = "";
         $('#id_created_start').datepicker();
@@ -73,6 +76,15 @@
             }
 		}
 		$('#applied-filter-table').append(content);
+
+        var hidden_returns = "";
+        for(query in return_query){
+            for(var i = 0; i < return_query[query].length; i++){
+                var data = return_query[query][i];
+                hidden_returns += "<input type='hidden' name='" + query + "' value='" + String(data) + "'/>";
+            }
+        }
+        $('#return-query-hidden').append(hidden_returns);
     });
     
 </script>

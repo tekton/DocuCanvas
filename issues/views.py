@@ -864,6 +864,7 @@ def loadSearchResults(request, search_hash_id):
         # params is used to pass a list of fields + values (that were used to make the query)
         # params is passed as a JSON object to be displayed on the page
         params = {}
+        return_params = {}
         by_created = False
         by_modified = False
         for field in query.cleaned_data.keys():
@@ -885,8 +886,11 @@ def loadSearchResults(request, search_hash_id):
                         temp.extend(returnDayQuery(start, 'created'))
                     if query.cleaned_data['created_stop']:
                         params['Date Range (Created)'] = [start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y")]
+                        return_params['created_stop'] = query_stop.strftime("%b %d %Y")
+                        return_params['created_start'] = start.strftime("%b %d %Y")
                     elif start:
                         params['Date (Created)'] = [start.strftime("%b %d %Y")]
+                        return_params['created_start'] = start.strftime("%b %d %Y")
                     if temp:
                         if q:
                             q = list(set(q) & set(temp))
@@ -910,8 +914,11 @@ def loadSearchResults(request, search_hash_id):
                         temp.extend(returnDayQuery(start, 'modified'))
                     if query.cleaned_data['modified_stop']:
                         params['Date Range (Modified)'] = [start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y")]
+                        return_params['modified_start'] = start.strftime("%b %d %Y")
+                        return_params['modified_stop'] = query_stop.strftime("%b %d %Y")
                     elif start:
                         params['Date (Modified)'] = [start.strftime("%b %d %Y")]
+                        return_params['modified_start'] = start.strftime("%b %d %Y")
                     if temp:
                         if q:
                             q = list(set(q) & set(temp))
@@ -921,10 +928,12 @@ def loadSearchResults(request, search_hash_id):
             elif query.cleaned_data[field]:
                 # All non-Date related fields are handled by this code
                 params[query_fields[field]] = []
+                return_params[field] = []
                 for value in query.cleaned_data[field]:
                     temp2, param_value = returnQuery(field, value)
                     temp.extend(temp2)
                     params[query_fields[field]].append(param_value)
+                    return_params[field].append(value.id)
                 if q:
                     q = list(set(q) & set(temp))
                 else:
@@ -935,6 +944,7 @@ def loadSearchResults(request, search_hash_id):
     return render_to_response("issues/adv_search_results.html", {'projects': projects,
                                                                  'issues': q,
                                                                  'query': json.dumps(params),
+                                                                 'return_query': json.dumps(return_params),
                                                                  'form': AdvSearchForm(),}, context_instance=RequestContext(request))
 
 '''
