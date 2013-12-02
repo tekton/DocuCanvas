@@ -929,11 +929,14 @@ def loadSearchResults(request, search_hash_id):
                 # All non-Date related fields are handled by this code
                 params[query_fields[field]] = []
                 return_params[field] = []
+                completed_values = []
                 for value in query.cleaned_data[field]:
-                    temp2, param_value = returnQuery(field, value)
-                    temp.extend(temp2)
-                    params[query_fields[field]].append(param_value)
-                    return_params[field].append(value.id)
+                    if value not in completed_values:
+                        temp2, param_value = returnQuery(field, value)
+                        temp.extend(temp2)
+                        params[query_fields[field]].append(param_value)
+                        return_params[field].append(value.id)
+                        completed_values.append(value)
                 if q:
                     q = list(set(q) & set(temp))
                 else:
