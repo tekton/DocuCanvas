@@ -886,11 +886,11 @@ def loadSearchResults(request, search_hash_id):
                         temp.extend(returnDayQuery(start, 'created'))
                     if query.cleaned_data['created_stop']:
                         params['Date Range (Created)'] = [[start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y"), 'skip']]
-                        return_params['created_stop'] = query_stop.strftime("%b %d %Y")
-                        return_params['created_start'] = start.strftime("%b %d %Y")
+                        return_params['created_stop'] = [[query_stop.strftime("%b %d %Y"), 'skip']]
+                        return_params['created_start'] = [[start.strftime("%b %d %Y"), 'skip']]
                     elif start:
-                        params['Date (Created)'] = [[start.strftime("%b %d %Y")]]
-                        return_params['created_start'] = start.strftime("%b %d %Y")
+                        params['Date (Created)'] = [[start.strftime("%b %d %Y"), 'skip']]
+                        return_params['created_start'] = [[start.strftime("%b %d %Y"), 'skip']]
                     if temp:
                         if q:
                             q = list(set(q) & set(temp))
@@ -914,11 +914,11 @@ def loadSearchResults(request, search_hash_id):
                         temp.extend(returnDayQuery(start, 'modified'))
                     if query.cleaned_data['modified_stop']:
                         params['Date Range (Modified)'] = [[start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y"), 'skip']]
-                        return_params['modified_start'] = start.strftime("%b %d %Y")
-                        return_params['modified_stop'] = query_stop.strftime("%b %d %Y")
+                        return_params['modified_start'] = [[start.strftime("%b %d %Y"), 'skip']]
+                        return_params['modified_stop'] = [[query_stop.strftime("%b %d %Y"), 'skip']]
                     elif start:
-                        params['Date (Modified)'] = [[start.strftime("%b %d %Y")]]
-                        return_params['modified_start'] = start.strftime("%b %d %Y")
+                        params['Date (Modified)'] = [[start.strftime("%b %d %Y"), 'skip']]
+                        return_params['modified_start'] = [[start.strftime("%b %d %Y"), 'skip']]
                     if temp:
                         if q:
                             q = list(set(q) & set(temp))

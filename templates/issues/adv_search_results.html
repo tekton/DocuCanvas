@@ -72,7 +72,12 @@
             content += "<tr><th style='text-align:left;'>" + filter + "</th></tr>";
             for(var i = 0; i < filters[filter].length; i++){
                 var detail = filters[filter][i][0];
-                content += "<tr><td id='" + String(filters[filter][i][1]) + "_" + i + "'>" + detail + "  <a onclick='removeParam(\"" + String(filters[filter][i][1]) + "\", " + i + ")'>[Remove]</a></td></tr>";
+                if(String(filters[filter][i][1]) == 'skip'){
+                    content += "<tr><td>" + detail + "</td></tr>";
+                }
+                else{
+                    content += "<tr><td id='" + String(filters[filter][i][1]) + "_" + i + "'>" + detail + "  <a onclick='removeParam(\"" + String(filters[filter][i][1]) + "\", " + i + ")'>[Remove]</a></td></tr>";
+                }
             }
 		}
 		$('#applied-filter-table').append(content);
