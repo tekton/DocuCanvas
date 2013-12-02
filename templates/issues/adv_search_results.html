@@ -71,8 +71,8 @@
 		for(filter in filters){
             content += "<tr><th style='text-align:left;'>" + filter + "</th></tr>";
             for(var i = 0; i < filters[filter].length; i++){
-                var detail = filters[filter][i];
-                content += "<tr><td>" + detail + "</td></tr>";
+                var detail = filters[filter][i][0];
+                content += "<tr><td id='" + String(filters[filter][i][1]) + "_" + i + "'>" + detail + "  <a onclick='removeParam(\"" + String(filters[filter][i][1]) + "\", " + i + ")'>[Remove]</a></td></tr>";
             }
 		}
 		$('#applied-filter-table').append(content);
@@ -81,11 +81,18 @@
         for(query in return_query){
             for(var i = 0; i < return_query[query].length; i++){
                 var data = return_query[query][i];
-                hidden_returns += "<input type='hidden' name='" + query + "' value='" + String(data) + "'/>";
+                hidden_returns += "<input type='hidden' id=" + String(filters[filter][i][1]) + "-" + i + " name='" + query + "' value='" + String(data) + "'/>";
             }
         }
         $('#return-query-hidden').append(hidden_returns);
     });
+
+    function removeParam(field, param_id){
+        var param_field = String(field);
+        var parameter = String(param_id);
+        document.getElementById(param_field + '_' + parameter).remove();
+        document.getElementById(param_field + '-' + parameter).remove();
+    }
     
 </script>
 <script src="/static/js/advsearch.js">

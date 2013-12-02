@@ -885,11 +885,11 @@ def loadSearchResults(request, search_hash_id):
                         start = query.cleaned_data['created_stop']
                         temp.extend(returnDayQuery(start, 'created'))
                     if query.cleaned_data['created_stop']:
-                        params['Date Range (Created)'] = [start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y")]
+                        params['Date Range (Created)'] = [[start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y"), 'skip']]
                         return_params['created_stop'] = query_stop.strftime("%b %d %Y")
                         return_params['created_start'] = start.strftime("%b %d %Y")
                     elif start:
-                        params['Date (Created)'] = [start.strftime("%b %d %Y")]
+                        params['Date (Created)'] = [[start.strftime("%b %d %Y")]]
                         return_params['created_start'] = start.strftime("%b %d %Y")
                     if temp:
                         if q:
@@ -913,11 +913,11 @@ def loadSearchResults(request, search_hash_id):
                         start = query.cleaned_data['modified_stop']
                         temp.extend(returnDayQuery(start, 'modified'))
                     if query.cleaned_data['modified_stop']:
-                        params['Date Range (Modified)'] = [start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y")]
+                        params['Date Range (Modified)'] = [[start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y"), 'skip']]
                         return_params['modified_start'] = start.strftime("%b %d %Y")
                         return_params['modified_stop'] = query_stop.strftime("%b %d %Y")
                     elif start:
-                        params['Date (Modified)'] = [start.strftime("%b %d %Y")]
+                        params['Date (Modified)'] = [[start.strftime("%b %d %Y")]]
                         return_params['modified_start'] = start.strftime("%b %d %Y")
                     if temp:
                         if q:
@@ -933,10 +933,13 @@ def loadSearchResults(request, search_hash_id):
                 for value in query.cleaned_data[field]:
                     if value not in completed_values:
                         temp2, param_value = returnQuery(field, value)
-                        temp.extend(temp2)
-                        params[query_fields[field]].append(param_value)
+                        params[query_fields[field]].append([param_value, field])
                         return_params[field].append(value.id)
                         completed_values.append(value)
+                        if temp:
+                            temp = temp | temp2
+                        else:
+                            temp = temp2
                 if q:
                     q = list(set(q) & set(temp))
                 else:
