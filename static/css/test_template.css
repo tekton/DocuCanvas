@@ -253,3 +253,18 @@ body.issue-overview {}
 			body.issue-overview #issue-metainfo dl dd {
 				margin: 0 0 .5em;
 			}
+
+
+
+/* --- Account Settings
+-------------------------------------------------------*/
+			
+body.account-settings {}
+	
+	body.account-settings .password-hide { display: none; }
+	
+	body.account-settings .social-settings {}
+		
+		body.account-settings .social-settings li {
+			margin: 0 0 1em;
+		}

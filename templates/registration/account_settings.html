@@ -1,21 +1,151 @@
 {% extends "registration/base.html" %}
 
+{% load staticfiles %}
+
 {% block contextNav %}
     {% include '_includes/contextnav-default.html' %}
 {% endblock%}
 
+{% block additionalHead %}
+	<link rel="stylesheet" href="{% static 'css/test_template.css' %}">
+{% endblock %}
+
+{% block pageTitle %}
+Account Settings
+{% endblock %}
+
+{% block bodyClass %}account-settings{% endblock %}
 
 {% block bodyContent %}
-<a href="{% url 'auth.views.change_email' %}">Change Email Address</a><br>
-<a href="{% url 'auth.views.change_password' %}">Change Password</a></br></br>
+<a href="{% url 'auth.views.change_email' %}">Change Email Address</a><br />
+<a href="{% url 'auth.views.change_password' %}">Change Password</a><br />
 {% if fb.active %}
-	<a href="{% url 'socialplatform.views.modify_permissions' %}">Manage Facebook Settings</a></br>
+	<a href="{% url 'socialplatform.views.modify_permissions' %}">Manage Facebook Settings</a><br />
 {% else %}
-	<a href="{% url 'socialplatform.views.facebookConnect' %}">Add Facebook Account</a></br>
+	<a href="{% url 'socialplatform.views.facebookConnect' %}">Add Facebook Account</a><br />
 {% endif %}
 {% if tw.active %}
 	<a href="{% url 'socialplatform.views.remove_twitter_acct' %}">Remove Twitter Account</a>
 {% else %}
 	<a href="{% url 'socialplatform.views.add_twitter_acct' %}">Add Twitter Account</a>
 {% endif %}
+  
+<hr />
+  
+	<form class="form-horizontal">
+		
+		<h3>E-mail and Password</h3>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputEmail">E-mail Address</label>
+			<div class="controls">
+				<input type="text" />
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputEmail"><a href="#" class="change-password">Change Password</a></label>
+			<div class="controls password-hide">
+				<input type="password" />
+			</div>
+		</div>
+		
+		<div class="control-group password-hide">
+			<label class="control-label" for="inputEmail">Reconfirm</label>
+			<div class="controls">
+				<input type="password" />
+			</div>
+		</div>
+		
+		<hr />
+		
+		<div class="social-settings">
+			<h3>Social</h3>
+		
+			<div class="control-group">
+				<div class="controls">
+					<ul class="unstyled">
+						{% if fb.active %}
+							<a href="{% url 'socialplatform.views.modify_permissions' %}">Manage Facebook Settings</a><br />
+						{% else %}
+							<li><a href="#"><img src="{% static 'img/pressed_404.png' %}"></a></li>
+						{% endif %}
+						{% if tw.active %}
+							<a href="{% url 'socialplatform.views.remove_twitter_acct' %}">Remove Twitter Account</a>
+						{% else %}
+							<li><a href="#"><img src="{% static 'img/sign-in-with-twitter-gray.png' %}"></a></li>
+						{% endif %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<hr />
+		
+		<h3>E-mail Notification Settings</h3>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputEmail">Status Changes</label>
+			<div class="controls">
+				<div class="btn-group btn-toggle"> 
+					<button class="btn btn-default">ON</button>
+					<button class="btn btn-primary active">OFF</button>
+				</div>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputEmail">New Comments</label>
+			<div class="controls">
+				<div class="btn-group btn-toggle"> 
+					<button class="btn btn-default">ON</button>
+					<button class="btn btn-primary active">OFF</button>
+				</div>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputEmail">Assigned to an Issue</label>
+			<div class="controls">
+				<div class="btn-group btn-toggle"> 
+					<button class="btn btn-default">ON</button>
+					<button class="btn btn-primary active">OFF</button>
+				</div>
+			</div>
+		</div>
+	</form>
+{% endblock %}
+
+{% block endScripts %}
+<script>
+$('.btn-toggle').click(function() {
+    $(this).find('.btn').toggleClass('active');  
+    
+    if ($(this).find('.btn-primary').size()>0) {
+    	$(this).find('.btn').toggleClass('btn-primary');
+    }
+    if ($(this).find('.btn-danger').size()>0) {
+    	$(this).find('.btn').toggleClass('btn-danger');
+    }
+    if ($(this).find('.btn-success').size()>0) {
+    	$(this).find('.btn').toggleClass('btn-success');
+    }
+    if ($(this).find('.btn-info').size()>0) {
+    	$(this).find('.btn').toggleClass('btn-info');
+    }
+    
+    $(this).find('.btn').toggleClass('btn-default');
+       
+});
+
+$('.change-password').on('click', function(e){
+	e.preventDefault();
+	
+	$('.password-hide').fadeIn();
+});
+
+$('form').submit(function(){
+    return false;
+});
+</script>
 {% endblock %}
