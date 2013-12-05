@@ -118,19 +118,28 @@ def assignTemplateForView(request):
         accept post, else use get function
     """
     if request.method == "POST":
-        form = UserTemplatesForm(request.POST)  #, instance=temp)
+        try:
+            print request.POST["viewName"]
+            temp = UserTemplates.objects.get(user=request.user, viewName=request.POST["viewName"])
+        except:
+            temp = UserTemplates()
+        form = UserTemplatesForm(request.POST, instance=temp)
+        # print dir(form)
         try:
             form.full_clean()
             itm = form.save()
             redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')  # this is for the heroku install!
             r = redis.from_url(redis_url)
-            print dir(itm)
             try:
-                x = r.hset(itm.user.id, itm.viewName, itm.pathToTemplate)
+                print "{0} - {1} - {2}".format("user.settings.{}.hash".format(itm.user.id), itm.viewName, itm.pathToTemplate)
+                x = r.hset("user.settings.{}.hash".format(itm.user.id), itm.viewName, itm.pathToTemplate)
                 print x
             except Exception as e:
+                print "post set..."
                 print e
+                print "...post e"
         except Exception as e:
+            print "Clean or save failed..."
             print e
             print form.errors
     else:
@@ -145,7 +154,7 @@ def cache_checkUserTemplate(user, view_name):
     '''
     redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')  # this is for the heroku install!
     r = redis.from_url(redis_url)
-    template_in_redis = r.hget(user.id, view_name)
+    template_in_redis = r.hget("user.settings.{}.hash".format(user.id), view_name)
     if template_in_redis:
         print template_in_redis
         return template_in_redis
@@ -163,7 +172,7 @@ def cache_populateUserTemplates():
     templates = UserTemplates.objects.all()
     for template in templates:
         try:
-            r.hset(template.user, template.viewName, template.pathToTemplate)
+            r.hset("user.settings.{}.hash".format(template.user.id), template.viewName, template.pathToTemplate)
         except Exception as e:
             print "Unable to set template in cache: {}".format(str(e))
     return True
