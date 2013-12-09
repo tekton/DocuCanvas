@@ -12,6 +12,7 @@ Search Results for "{{search}}"
 
 {% block bodyContent %}
 
+{% if issues or helps or reports %}
 <div class="search-filters clearfix">
 	
 	<h2>Filter results:</h2>
@@ -40,119 +41,115 @@ Search Results for "{{search}}"
 	</ul>
 	
 </div>
+{% endif %}
 
 <!-- Begin search-results -->
 <div class="search-results">
 {% if message and message != 0 %}
 	<p>Issue with ID <a href="/issue/{{message}}">{{message}}</a> found!</p>
 {% endif %}
-<div class="row search-results">
 	
-	<div>
-	
-		{% if issues or helps or reports %}
-		{% if issues %}
-		<!-- Begin category -->
-		<div class="category issues">
-			<h2 id='issue_header'><strong>{{issue_count}}</strong> results in <em>Issues</em></h2>
+	{% if issues or helps or reports %}
+	{% if issues %}
+	<!-- Begin category -->
+	<div class="category issues">
+		<h2 id='issue_header'><strong>{{issue_count}}</strong> results in <em>Issues</em></h2>
 
-			<table class="table table-condensed table-striped">
-				<thead>
-					<tr>
-						<th width="200">Summary</th>
-						<th>Description</th>
-						<th width="100">Project</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for issue in issues %}
-					<tr>
-						<td><a href="/issue/{{issue.id}}">{{issue.summary|truncatechars:80}}</a></td>
-						<td class="description">{{issue.description|truncatechars:140|striptags}}</td>
-						<td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
-						<td class="attribs">{{issue.status}}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-		<!-- End category -->
-		{% endif %}
-	
-		{% if helps %}
-		<!-- Begin category -->
-		<div class="category help-desk">
-			<h2 id='help_header'><strong>{{help_count}}</strong> results in <em>Help Desk</em></h2>
-	
-			<table class="table table-condensed table-striped">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Question</th>
-						<th>Submitted by</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for help in helps %}
-					<tr>
-						<td><a href="/help/{{help.id}}">{{help.name|truncatechars:80}}</a></td>
-						<td class="description">{{help.question|truncatechars:140|striptags}}</td>
-						<td>{{help.user}}</td>
-						<td class="attribs">{% if help.status == '(1, 1)' %}
-				                No Responses
-				            {% elif help.status == "('active', 'Active Responses')" %}
-				                Active
-				            {% elif help.status == "('reopened', 'Re-Opened')" %}
-				                Re-Opened
-				            {% elif help.status == "('resolved', 'Resolved')" %}
-				                Resolved
-				            {% elif help.status == "('closed', 'Closed')" %}
-				                Solved &amp; Sealed
-				            {% else %}
-				                >{{help.status}}
-				            {% endif %}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-		<!-- End category -->
-		{% endif %}
-	
-		{% if reports %}
-		<!-- Begin category -->
-		<div class="category reports">
-			<h2 id='report_header'><strong>{{report_count}}</strong> results in <em>Daily Reports</em></h2>
-	
-			<table class="table table-condensed table-striped">
-				<thead>
-					<tr>
-						<th>Description</th>
-						<th>User</th>
-						<th>Date</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for report in reports %}
-					<tr>
-						<td><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80|striptags}}</a></td>
-						<td class="attribs"><a href="{% url 'auth.views.user_overview' report.user.id %}">{{report.user}}</a></td>
-						<td>{{report.date}}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-		<!-- End category -->
-		{% endif %}
-	
-		{% else %}
-		<p>Your search for <strong>{{search}}</strong> returned no results</p>
-		{% endif %}
-	
+		<table class="table table-condensed table-striped">
+			<thead>
+				<tr>
+					<th width="200">Summary</th>
+					<th>Description</th>
+					<th width="100">Project</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for issue in issues %}
+				<tr>
+					<td><a href="/issue/{{issue.id}}">{{issue.summary|truncatechars:80}}</a></td>
+					<td class="description">{{issue.description|truncatechars:140|striptags}}</td>
+					<td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
+					<td class="attribs">{{issue.status}}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
+	<!-- End category -->
+	{% endif %}
+
+	{% if helps %}
+	<!-- Begin category -->
+	<div class="category help-desk">
+		<h2 id='help_header'><strong>{{help_count}}</strong> results in <em>Help Desk</em></h2>
+
+		<table class="table table-condensed table-striped">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Question</th>
+					<th>Submitted by</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for help in helps %}
+				<tr>
+					<td><a href="/help/{{help.id}}">{{help.name|truncatechars:80}}</a></td>
+					<td class="description">{{help.question|truncatechars:140|striptags}}</td>
+					<td>{{help.user}}</td>
+					<td class="attribs">{% if help.status == '(1, 1)' %}
+			                No Responses
+			            {% elif help.status == "('active', 'Active Responses')" %}
+			                Active
+			            {% elif help.status == "('reopened', 'Re-Opened')" %}
+			                Re-Opened
+			            {% elif help.status == "('resolved', 'Resolved')" %}
+			                Resolved
+			            {% elif help.status == "('closed', 'Closed')" %}
+			                Solved &amp; Sealed
+			            {% else %}
+			                >{{help.status}}
+			            {% endif %}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<!-- End category -->
+	{% endif %}
+
+	{% if reports %}
+	<!-- Begin category -->
+	<div class="category reports">
+		<h2 id='report_header'><strong>{{report_count}}</strong> results in <em>Daily Reports</em></h2>
+
+		<table class="table table-condensed table-striped">
+			<thead>
+				<tr>
+					<th>Description</th>
+					<th>User</th>
+					<th>Date</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for report in reports %}
+				<tr>
+					<td><a href="/reports/report_redirect?date={{report.date}}">{{report.description|truncatechars:80|striptags}}</a></td>
+					<td class="attribs"><a href="{% url 'auth.views.user_overview' report.user.id %}">{{report.user}}</a></td>
+					<td>{{report.date}}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<!-- End category -->
+	{% endif %}
+
+	{% else %}
+	<p class="text-center">Your search for <strong>{{search}}</strong> returned no results</p>
+	{% endif %}
 	
 </div>
 <!-- End search-results -->
