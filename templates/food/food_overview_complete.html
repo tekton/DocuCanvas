@@ -1,11 +1,7 @@
 {% extends "food/base.html" %}
 
 {% block contextNav %}
-    <li><a href="{% url 'food.views.food_form' %}">New Food Request</a></li>
-	<li class="divider"></li>
-	<li><a href="{% url 'food.views.all_food' %}">All Requests</a></li>
-    <li><a href="{% url 'food.views.food_overview_complete' %}">Completed Requests</a></li>
-    <li><a href="{% url 'food.views.food_overview' %}">Pending Requests</a></li>
+{% include '_includes/contextnav-food.html' %}
 {% endblock %}
 
 {% block pageTitle %}Pending Food Requests{% endblock %}

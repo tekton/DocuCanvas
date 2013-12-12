@@ -1,0 +1,43 @@
+{% extends "food/base.html" %}
+
+{% block contextNav %}
+{% include '_includes/contextnav-food.html' %}
+{% endblock %}  
+
+{% block pageTitle %}Shopping List: {{shopping_list.name}}{% endblock %}
+
+{% block bodyContent%}
+<table class="table table-striped">
+	<thead>
+    <tr>
+        <th>Item:</th>
+        <th>Quantity:</th>
+        <th>Total Cost:</th>
+        <th style="width:5%;"></th>
+    </tr>
+	</thead>
+	<tbody>
+    {% for item in items%}
+    <tr id="{{item.id}}-item-instance">
+        <td>{{item.item}}</td>
+        <td>{{item.quantity}}</td>
+        <td>${{item.estimated_cost}}</td>
+        <td><a onclick='removeItem("{{item.id}}")'>&#x2717</a></td>
+    </tr>
+    {% endfor%}
+    <tr>
+        <td><b>Total Unique Items: {{shopping_list.total_items}}</b></td>
+        <td></td>
+        <td><b>${{shopping_list.estimated_cost}}</b></td>
+        <td></td>
+	</tbody>
+</table>
+{% endblock%}
+
+{% block endScripts %}
+<script type="text/javascript">
+function removeItem(item_id){
+
+};
+</script>
+{% endblock %}

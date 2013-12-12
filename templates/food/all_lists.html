@@ -1,0 +1,28 @@
+{% extends "food/base.html" %}
+
+{% block contextNav %}
+{% include '_includes/contextnav-food.html' %}
+{% endblock %}  
+
+{% block pageTitle %}All Requests{% endblock %}
+
+{% block bodyContent%}
+<table class="table table-striped">
+	<thead>
+    <tr>
+        <th>Name</th>
+        <th>Items</th>
+        <th>Estimated Cost</th>
+    </tr>
+	</thead>
+	<tbody>
+    {% for list in shopping_lists %}
+    <tr>
+        <td><a href="{% url 'food.views.viewList' list.id %}">{{list.name}}</a></td>
+        <td>{{list.total_items}}</td>
+        <td>${{list.estimated_cost}}</td>
+    </tr>
+    {% endfor%}
+	</tbody>
+</table>
+{% endblock%}

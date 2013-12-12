@@ -1,0 +1,59 @@
+{% extends "food/base.html" %}
+
+{% block contextNav %}
+{% include '_includes/contextnav-food.html' %}
+{% endblock %}
+
+{% block pageTitle %}New Food Request{% endblock %}
+
+{% block additionalHead %}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+{% endblock %}
+
+{% block bodyContent %}
+<form action="{% url 'food.views.submitRequest' %}" method="post" class="form-horizontal span8 offset2" enctype="multipart/form-data">
+	{% csrf_token %}
+
+	<table>
+		<thead>
+			<tr>
+				<td>Item Name/Description</td>
+				<td>Quantity</td>
+				<td>Estimated Cost</td>
+			</tr>
+		</thead>
+		<tbody id='item-container'>
+			<tr>
+				<td><input type='text' id='id_item_name-0' name='item_name-0' /></td>
+				<td><input type='number' id='id_quantity-0' name='quantity-0' /></td>
+				<td><input type='number' id='id_cost-0' name='cost-0' /></td>
+			</tr>
+		</tbody>
+	</table>
+	<table style="width:100%;">
+		<tr><td style="width:100%;text-align:center;"><a onclick='addItem()'>[+] Add More Items</a></td></tr>
+	</table>
+
+	<div class="form-actions">
+		<input type='hidden' name="total-items" id="id_total-items" value='1'/>
+		<input type='hidden' name="user" id="id_user" value='{{user.id}}'/>
+		<input type="submit" value="Submit" class="btn btn-primary" />
+	</div>
+</form>
+{% endblock %}
+
+{% block endScripts %}
+<script>
+var itemCount = 1;
+function addItem(){
+	$('#item-container').append("<tr><td><input type='text' id='id_item_name-" + itemCount + "' name='item_name-" + itemCount + "' /></td><td><input type='number' id='id_quantity-" + itemCount + "' name='quantity-" + itemCount + "' /></td><td><input type='number' id='id_cost-" + itemCount + "' name='cost-" + itemCount + "' /></td></tr>");
+	$('#id_total-items').val(function(i, oldval){
+        return ++oldval;
+    });
+    itemCount++;
+};
+$(function(){
+    $('#id_desired_completion').datepicker();
+});
+</script>
+{% endblock %}

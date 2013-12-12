@@ -1,0 +1,35 @@
+{% extends "food/base.html" %}
+
+{% block contextNav %}
+{% include '_includes/contextnav-food.html' %}
+{% endblock %}  
+
+{% block pageTitle %}All Requests{% endblock %}
+
+{% block bodyContent%}
+<table class="table table-striped">
+	<thead>
+    <tr>
+        <th>Submitted By:</th>
+        <th>Item:</th>
+        <th>Quantity:</th>
+        <th>Cost:</th>
+        <th>List</th>
+    </tr>
+	</thead>
+	<tbody>
+    {% for item in items%}
+    <tr>
+        <td>{{item.user}}</td>
+        <td>{{item.item}}</td>
+        <td>{{item.quantity}}</td>
+        <td>${{item.estimated_cost}}</td>
+        <td>{% if item.shopping_list %}
+            <a href="{% url 'food.views.viewList' item.shopping_list.id %}">{{item.shopping_list.name}}</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor%}
+	</tbody>
+</table>
+{% endblock%}
