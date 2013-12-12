@@ -144,6 +144,22 @@ def createList(request):
     return render_to_response('food/create_list.html', {'items': items, 'projects': projects}, context_instance=RequestContext(request))
 
 
+@login_required
+def removeItems(request, list_id):
+    if request.method == 'POST':
+        for thing in request.POST.getlist('removal-list'):
+            try:
+                item = ListItem.objects.get(pk=thing)
+                item.shopping_list = None
+                item.save()
+                item.shopping_list.removeItem(item.estimated_cost)
+                item.shopping_list.save()
+            except Exception, e:
+                print e
+    return redirect('food.views.viewList', list_id)
+
+
+@login_required
 def viewAllLists(request):
     try:
         projects = Project.objects.all()
