@@ -64,6 +64,7 @@ def create_account(user):
 
 def login_func(request):
     nextPage = request.GET.get("next", "/")
+    print nextPage
     state = ""
     stateStatus = ""
     if request.method == 'POST':

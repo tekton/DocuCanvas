@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
 
-from newsfeed.models import NewsFeedItem
+# from newsfeed.models import NewsFeedItem
 # Create your models here.
 quantity_choices = (('qty','Items'),('lbs','Pounds'),('ltr','Litres'),('gal','Gallons'))
 
