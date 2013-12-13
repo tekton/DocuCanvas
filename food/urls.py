@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     (r'list/itemRemoval/(\d+)', 'food.views.removeItems'),
     (r'list/new', 'food.views.createList'),
     (r'list/(\d+)', 'food.views.viewList'),
+    (r'list/update/(\d+)', 'food.views.updateList'),
     (r'([A-Za-z0-9_\.-]+)', 'food.views.get_food'),
 )

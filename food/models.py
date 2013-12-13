@@ -34,17 +34,7 @@ class ShoppingList(models.Model):
     modified = models.DateField(auto_now=True, blank=True, null=True)
 
     def __unicode__(self):
-        return self.name + ':' + self.total_items + ' items'
-
-    def addItem(self, cost):
-        self.total_items = self.total_items + 1
-        self.estimated_cost = self.estimated_cost + cost
-        self.save()
-
-    def removeItem(self, cost):
-        self.total_items = self.total_items - 1
-        self.estimated_cost = self.estimated_cost - cost
-        self.save()
+        return self.name + ':' + str(self.total_items) + ' items'
 
 
 class ListItem(models.Model):

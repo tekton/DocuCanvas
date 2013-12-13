@@ -4,9 +4,10 @@
 {% include '_includes/contextnav-food.html' %}
 {% endblock %}  
 
-{% block pageTitle %}All Requests{% endblock %}
+{% block pageTitle %}All Shopping Lists{% endblock %}
 
 {% block bodyContent%}
+{% if list %}
 <table class="table table-striped">
 	<thead>
     <tr>
@@ -25,4 +26,7 @@
     {% endfor%}
 	</tbody>
 </table>
+{% else %}
+<p>No Lists Available</p>
+{% endif %}
 {% endblock%}

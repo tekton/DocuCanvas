@@ -1,6 +1,8 @@
 {% extends "food/base.html" %}
 
 {% block contextNav %}
+<li><a href="{% url 'food.views.updateList' shopping_list.id %}">Add More Items</a></li>
+<li class="divider"></li>
 {% include '_includes/contextnav-food.html' %}
 {% endblock %}  
 

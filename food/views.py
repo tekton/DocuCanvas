@@ -137,7 +137,9 @@ def createList(request):
                 list_item = ListItem.objects.get(pk=item)
                 list_item.shopping_list = shopping_list
                 list_item.save()
-                shopping_list.addItem(list_item.estimated_cost)
+                shopping_list.estimated_cost = shopping_list.estimated_cost + list_item.estimated_cost
+                shopping_list.total_items = shopping_list.total_items + 1
+            shopping_list.save()
             return redirect('food.views.viewList', shopping_list.id)
         except Exception as e:
             print e
@@ -150,13 +152,43 @@ def removeItems(request, list_id):
         for thing in request.POST.getlist('removal-list'):
             try:
                 item = ListItem.objects.get(pk=thing)
+                item.shopping_list.estimated_cost = item.shopping_list.estimated_cost - item.estimated_cost
+                item.shopping_list.total_items = item.shopping_list.total_items - 1
+                item.shopping_list.save()
                 item.shopping_list = None
                 item.save()
-                item.shopping_list.removeItem(item.estimated_cost)
-                item.shopping_list.save()
             except Exception, e:
                 print e
     return redirect('food.views.viewList', list_id)
+
+
+@login_required
+def updateList(request, list_id):
+    try:
+        projects = Project.objects.all()
+    except Exception, e:
+        print e
+    try:
+        shopping_list = ShoppingList.objects.get(pk=list_id)
+    except Exception, e:
+        print e
+    if request.method == 'POST':
+        print request.POST
+        for item_id in request.POST.getlist('item_list'):
+            item = ListItem.objects.get(pk=item_id)
+            shopping_list.estimated_cost = shopping_list.estimated_cost + item.estimated_cost
+            shopping_list.total_items = shopping_list.total_items + 1
+            item.shopping_list = shopping_list
+            item.save()
+        shopping_list.save()
+        return redirect('food.views.viewList', list_id)
+    try:
+        items = ListItem.objects.filter(shopping_list__isnull=True)
+    except Exception, e:
+        print e
+    return render_to_response('food/update_list.html', {'items': items, 'list': shopping_list, 'projects': projects}, context_instance=RequestContext(request))
+    
+
 
 
 @login_required
