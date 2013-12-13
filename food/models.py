@@ -43,6 +43,8 @@ class ListItem(models.Model):
     item = models.CharField(max_length=255)
     quantity = models.IntegerField(default=0)
     estimated_cost = models.FloatField(default=0)
+    single_use = models.NullBooleanField(default=False)
+    use_count = models.IntegerField(default=0)
     created = models.DateField(auto_now_add=True)
     modified = models.DateField(auto_now=True, blank=True, null=True)
 

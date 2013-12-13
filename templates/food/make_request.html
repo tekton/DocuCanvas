@@ -17,9 +17,10 @@
 	<table>
 		<thead>
 			<tr>
-				<td>Item Name/Description</td>
-				<td>Quantity</td>
-				<td>Estimated Cost</td>
+				<th>Item Name/Description</th>
+				<th>Quantity</th>
+				<th>Estimated Cost</th>
+				<th>One Off Purchase</th>
 			</tr>
 		</thead>
 		<tbody id='item-container'>
@@ -27,6 +28,7 @@
 				<td><input type='text' id='id_item_name-0' name='item_name-0' /></td>
 				<td><input type='number' id='id_quantity-0' name='quantity-0' /></td>
 				<td><input type='number' id='id_cost-0' name='cost-0' /></td>
+				<td><input type='checkbox' id='id_single-use-0' name='single-use-0' /><td>
 			</tr>
 		</tbody>
 	</table>
@@ -46,7 +48,7 @@
 <script>
 var itemCount = 1;
 function addItem(){
-	$('#item-container').append("<tr><td><input type='text' id='id_item_name-" + itemCount + "' name='item_name-" + itemCount + "' /></td><td><input type='number' id='id_quantity-" + itemCount + "' name='quantity-" + itemCount + "' /></td><td><input type='number' id='id_cost-" + itemCount + "' name='cost-" + itemCount + "' /></td></tr>");
+	$('#item-container').append("<tr><td><input type='text' id='id_item_name-" + itemCount + "' name='item_name-" + itemCount + "' /></td><td><input type='number' id='id_quantity-" + itemCount + "' name='quantity-" + itemCount + "' /></td><td><input type='number' id='id_cost-" + itemCount + "' name='cost-" + itemCount + "' /></td><td><input type='checkbox' id='id_single-use-" + itemCount + "' name='single-user-" + itemCount + "' /><td></tr>");
 	$('#id_total-items').val(function(i, oldval){
         return ++oldval;
     });

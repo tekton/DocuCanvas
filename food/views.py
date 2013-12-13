@@ -124,7 +124,16 @@ def createList(request):
     except Exception, e:
         print e
     try:
-        items = ListItem.objects.filter(shopping_list__isnull=True).order_by('-created')
+        items_list = ListItem.objects.filter(shopping_list__isnull=True).order_by('-created')
+        items = []
+        for item in items_list:
+            if item.single_use:
+                if item.use_count != 0:
+                    pass
+                else:
+                    items.append(item)
+            else:
+                items.append(item)
     except Exception, e:
         print e
     if request.method == 'POST':
@@ -136,6 +145,7 @@ def createList(request):
             for item in request.POST.getlist('item_list'):
                 list_item = ListItem.objects.get(pk=item)
                 list_item.shopping_list = shopping_list
+                list_item.use_count = list_item.use_count + 1
                 list_item.save()
                 shopping_list.estimated_cost = shopping_list.estimated_cost + list_item.estimated_cost
                 shopping_list.total_items = shopping_list.total_items + 1
@@ -179,11 +189,21 @@ def updateList(request, list_id):
             shopping_list.estimated_cost = shopping_list.estimated_cost + item.estimated_cost
             shopping_list.total_items = shopping_list.total_items + 1
             item.shopping_list = shopping_list
+            item.use_count = item.use_count + 1
             item.save()
         shopping_list.save()
         return redirect('food.views.viewList', list_id)
     try:
-        items = ListItem.objects.filter(shopping_list__isnull=True)
+        items_list = ListItem.objects.filter(shopping_list__isnull=True)
+        items = []
+        for item in items_list:
+            if item.single_use:
+                if item.use_count != 0:
+                    pass
+                else:
+                    items.append(item)
+            else:
+                items.append(item)
     except Exception, e:
         print e
     return render_to_response('food/update_list.html', {'items': items, 'list': shopping_list, 'projects': projects}, context_instance=RequestContext(request))
@@ -226,7 +246,16 @@ def allRequests(request):
     except Exception, e:
         print e
     try:
-        items = ListItem.objects.all()
+        items_list = ListItem.objects.all()
+        items = []
+        for item in items_list:
+            if item.single_use:
+                if item.use_count != 0:
+                    pass
+                else:
+                    items.append(item)
+            else:
+                items.append(item)
     except Exception, e:
         print e
     return render_to_response('food/all_requests.html', {'projects': projects, 'items': items, 'lists': shopping_lists}, context_instance=RequestContext(request))
@@ -248,6 +277,11 @@ def submitRequest(request):
                 item.quantity = int(request.POST.get('quantity-' + str(i), 0))
                 item.estimated_cost = float(request.POST.get('cost-' + str(i), 0))
                 item.user = User.objects.get(pk=int(request.POST['user']))
+                if request.POST.get('single-use-' + str(i)):
+                    item.single_use = True
+                else:
+                    item.single_use = False
+                print item.single_use
                 item.save()
                 return redirect('food.views.allRequests')
             except Exception, e:
