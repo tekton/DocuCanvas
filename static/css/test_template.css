@@ -105,6 +105,15 @@ body.dashboard {}
 		border: 3px dashed #ccc;
 	}
 	
+	body.dashboard .target {
+		border: 3px dashed #ccc;
+	}
+	
+	body.dashboard .placeholder {
+		height: 50px;
+		background: #ccc;
+	}
+	
 	/* --- | Dash Module | --- */
 	
 	body.dashboard .dash-module {

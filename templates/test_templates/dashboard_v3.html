@@ -42,11 +42,64 @@ Dashboard
 	$(function(){
 		var columns = $('.module-container [class^="span"]');
 		
+		$.fn.serial = function() {
+			var array = [];
+			var $elem = $(this);
+
+			$elem.each(function(i){
+				var menu = this.id;
+				$('.dash-module', this).each(function(e){
+					array.push('col'+i + '['+e+']=' + this.id);
+				})
+			})
+			return array.join('&');
+		}
+		
+		var dashSettings = 'col1[1]=module-pinned&col1[3]=module-subscribed&col0[2]=module-newsfeed&col0[0]=module-assigned';
+		
+		var parseDashSettings = function(queryString){
+			var queries,temp,i;
+			var cols = [];
+			cols[0] = [];
+			cols[1] = [];
+			
+			queries = queryString.split('&');
+			
+			for (i = 0; i < queries.length; i++){
+				temp = queries[i].split('=');
+				tempArr = temp[0].split('[');
+				tempArr[0] = parseInt(tempArr[0].substring(3,4));
+				tempArr[1] = parseInt(tempArr[1].substring(0,1));
+				
+				switch (tempArr[0]) {
+					case 0:
+						cols[0][tempArr[1]] = temp[1];
+						break;
+					case 1:
+						cols[1][tempArr[1]] = temp[1];
+						break;
+				}
+			}
+			
+			for (i = 0; i < cols.length; i++){
+				for (j = 0; j < cols[i].length; j++){
+					$(columns.get(i)).append($('#'+cols[i][j]));
+				}
+			}
+			
+			if (cols[0].length > 0 && cols[1].length > 0) {
+				columns.removeClass().addClass('span6');
+			}
+		}
+		
+		parseDashSettings(dashSettings);
+		
 		$('.column-controls input').on('change', function(){
 			
 			switch ($(this).attr('value')) {
 				case 'column1':
-					columns.removeClass().addClass('span12').last().addClass('hide');
+					columns.removeClass().addClass('span12').last().addClass('hide');	// Change column layout
+					columns.last().find('.dash-module').appendTo(columns.first());	// Move modules to visible column
 					break;
 				case 'column2':
 					columns.removeClass().addClass('span6');
@@ -59,6 +112,7 @@ Dashboard
 		
 		$('.module-container [class^="span"]').sortable({
 			connectWith: '.module-container [class^="span"]',
+			placeholder: 'placeholder',
 			update: function(e, ui){
 				columns.each(function(){
 					if (jQuery.trim($(this).text()) == ''){
@@ -68,10 +122,14 @@ Dashboard
 						$(this).removeClass('empty');
 					}
 				})
+
+				console.log(columns.serial());
 			}
 		});
 		
-		columns.droppable();
+		columns.droppable({
+			activeClass: 'target'
+		});
 	});
 </script>
 {% endblock %}
@@ -135,7 +193,7 @@ Dashboard
 		<div class="span12">
 		
 			{% if issues %}
-			<div class="dash-module">
+			<div class="dash-module" id="module-assigned">
 		        <header>
 		            <h3>Assigned to me</h3>
 		        </header>
@@ -165,7 +223,7 @@ Dashboard
 			{% endif %}
 		
 			{% if pins %}
-			<div class="dash-module">
+			<div class="dash-module" id="module-pinned">
 		        <header>
 		            <h3>Pinned</h3>
 		        </header>
@@ -195,7 +253,7 @@ Dashboard
 			{% endif %}
 		
 		    {% if subscribed %}
-			<div class="dash-module">
+			<div class="dash-module" id="module-subscribed">
 			
 		        <header>
 		            <h3>Subscribed</h3>
@@ -224,7 +282,7 @@ Dashboard
 			</div>
 		    {% endif %}
 			
-			<div class="dash-module newsfeed">
+			<div class="dash-module newsfeed" id="module-newsfeed">
 				
 		        <header>
 		            <h3>Recent Activity</h3>
