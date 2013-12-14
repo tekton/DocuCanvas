@@ -1,0 +1,60 @@
+{% extends "food/base.html" %}
+
+{% block contextNav %}
+{% include '_includes/contextnav-food.html' %}
+{% endblock %}
+
+{% block pageTitle %}Create Shopping List{% endblock %}
+
+{% block additionalHead %}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+{% endblock %}
+
+{% block bodyContent %}
+<form action="{% url 'food.views.createList' %}" method="post" class="form-horizontal span8 offset2" enctype="multipart/form-data">
+	{% csrf_token %}
+	<p>List Name: <input type='text' name='shopping-list-name'/></p>
+
+	<div id='item-list-container'>
+	</div>
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Item Name/Description</th>
+				<th style="text-align:center;">Quantity</th>
+				<th style="text-align:center;">Cost</th>
+				<th style="text-align:center;">Add/Remove</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in items %}
+			<tr>
+				<td>{{item.item}}</td>
+				<td style="text-align:center;">{{item.quantity}}</td>
+				<td style="text-align:center;">{{item.estimated_cost}}</td>
+				<td style="text-align:center;" id='{{item.id}}-items'><a onclick='addToList("{{item.id}}")'>[+]</a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<div class="form-actions">
+		<input type="submit" value="Submit" class="btn btn-primary" />
+	</div>
+</form>
+{% endblock %}
+
+{% block endScripts %}
+<script>
+function addToList(item_id){
+	$('#item-list-container').append("<input type='hidden' id='" + item_id + "-included-item' name='item_list' value='" + item_id + "' />");
+	document.getElementById(item_id + "-items").innerHTML="<a onclick='removeItem(" + item_id + ")'>&#10004</a>";
+};
+function removeItem(item_id){
+	var elem = document.getElementById(item_id + "-included-item");
+	elem.parentNode.removeChild(elem);
+	document.getElementById(item_id + "-items").innerHTML="<a onclick='addToList(" + item_id + ")'>[+]</a>";
+}
+</script>
+{% endblock %}

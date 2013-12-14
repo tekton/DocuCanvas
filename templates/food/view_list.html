@@ -1,0 +1,56 @@
+{% extends "food/base.html" %}
+
+{% block contextNav %}
+<li><a href="{% url 'food.views.updateList' shopping_list.id %}">Add More Items</a></li>
+<li class="divider"></li>
+{% include '_includes/contextnav-food.html' %}
+{% endblock %}  
+
+{% block pageTitle %}Shopping List: {{shopping_list.name}}{% endblock %}
+
+{% block bodyContent%}
+<table class="table table-striped">
+	<thead>
+    <tr>
+        <th>Item:</th>
+        <th>Quantity:</th>
+        <th>Estimated Cost:</th>
+        <th style="width:5%;"></th>
+    </tr>
+	</thead>
+	<tbody>
+    {% for item in items%}
+    <tr>
+        <td>{{item.item}}</td>
+        <td>{{item.quantity}}</td>
+        <td>${{item.estimated_cost}}</td>
+        <td id="{{item.id}}-item-instance"><a onclick='removeItem({{item.id}})'>&#x2717</a></td>
+    </tr>
+    {% endfor%}
+    <tr>
+        <td><b>Unique Items: {{shopping_list.total_items}}</b></td>
+        <td></td>
+        <td><b>${{shopping_list.estimated_cost}}</b></td>
+        <td></td>
+	</tbody>
+</table>
+<form action="{% url 'food.views.removeItems' shopping_list.id %}" method="post" class="form-horizontal span8 offset2" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div id="items-to-remove"></div>
+    <input type='submit' value='Save'/>
+</form>
+{% endblock%}
+
+{% block endScripts %}
+<script type="text/javascript">
+function removeItem(item_id){
+    $('#items-to-remove').append('<input type="hidden" name="removal-list" value="' + item_id + '" id="' + item_id + '-to-remove"/>');
+    document.getElementById(item_id + "-item-instance").innerHTML="<a onclick='undo(" + item_id + ")'>undo</a>";
+};
+function undo(item_id){
+    var elem = document.getElementById(item_id + "-to-remove");
+    elem.parentNode.removeChild(elem);
+    document.getElementById(item_id + "-item-instance").innerHTML="<a onclick='removeItem(" + item_id + ")'>&#x2717</a>";
+};
+</script>
+{% endblock %}
