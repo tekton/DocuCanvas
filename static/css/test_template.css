@@ -213,7 +213,8 @@ body.issue-overview {}
 	
 	body.issue-overview .well {
 		border: 1px solid #e3e3e3;
-		box-shadow: none;
+	    -webkit-box-shadow: 0px 0px 2px 0px rgba(0,0,0,.2);
+	            box-shadow: 0px 0px 2px 0px rgba(0,0,0,.2);
 		border-radius: 0;
 	}
 		
