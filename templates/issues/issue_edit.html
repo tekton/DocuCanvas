@@ -31,7 +31,7 @@ Edit Issue
 				<!-- Begin well -->
 				<div class="well">
 					<label>{{ form.summary.label }}</label>
-					{{ form.summary }}
+					{{ form.summary|addcss:"input-block-level" }}
 				
 					<label>{{ form.description.label }}</label>
 					{{ form.description }}
