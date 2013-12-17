@@ -26,8 +26,10 @@ Issues Overview
 			<th>ID</th>
 			<th>Summary</th>
 			<th>Project</th>
-			<th>Sprint</th>
+			<th>Assigned To</th>
 			<th>Status</th>
+			<th>Priority</th>
+			<th>Sprint</th>
 			<th>Created</th>
 			<th>Last Modified</th>
 		</tr>
@@ -37,13 +39,15 @@ Issues Overview
 			<th>ID</th>
 			<th>Summary</th>
 			<th>Project</th>
-			<th>Sprint</th>
+			<th>Assigned To</th>
 			<th>Status</th>
+			<th>Priority</th>
+			<th>Sprint</th>
 			<th>Created</th>
 			<th>Last Modified</th>
 		</tr>
 		<tr>
-			<th colspan="7" class="ts-pager form-horizontal">
+			<th colspan="9" class="ts-pager form-horizontal">
 				<button type="button" class="btn first"><i class="icon-step-backward glyphicon glyphicon-step-backward"></i></button>
 				<button type="button" class="btn prev"><i class="icon-arrow-left glyphicon glyphicon-backward"></i></button>
 				<span class="pagedisplay"></span> <!-- this can be any element, including an input -->
@@ -65,10 +69,12 @@ Issues Overview
 			<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
             <td class="issue-summary"><div><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></div></td>
 			<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
-			<td class="issue-sprint"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.sprint}}</a></td>
+			<td class="issue-sprint"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.assigned_to}}</a></td>
 			<td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
-			<td class="issue-create">{{issue.created|date:"M j, o h:i a"}}</td>
-			<td class="issue-modify">{{issue.modified|date:"M j, o h:i a"}}</td>
+			<td class="issue-priority">{{issue.criticality}}</td>
+			<td class="issue-sprint"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.sprint}}</a></td>
+			<td class="issue-create">{{issue.created|date:"n/j/o h:i A"}}</td>
+			<td class="issue-modify">{{issue.modified|date:"n/j/o h:i A"}}</td>
         </tr>
         {% endfor%}
 	</tbody>
@@ -85,22 +91,16 @@ $(function(){
 	    // these classes are added to the table. To see other table classes available,
 	    // look here: http://twitter.github.com/bootstrap/base-css.html#tables
 	    table      : 'table table-bordered',
-	    caption    : 'caption',
-	    icons      : '', // add "icon-white" to make them white; this icon class is added to the <i> in the header
 	    sortNone   : 'bootstrap-icon-unsorted',
 	    sortAsc    : 'icon-chevron-up glyphicon glyphicon-chevron-up',     // includes classes for Bootstrap v2 & v3
-	    sortDesc   : 'icon-chevron-down glyphicon glyphicon-chevron-down', // includes classes for Bootstrap v2 & v3
-	    active     : '', // applied when column is sorted
-	    hover      : '', // use custom css here - bootstrap class may not override it
-	    filterRow  : '', // filter row class
-	    even       : '', // odd row zebra striping
-	    odd        : ''  // even row zebra striping
+	    sortDesc   : 'icon-chevron-down glyphicon glyphicon-chevron-down' // includes classes for Bootstrap v2 & v3
 	  });
 	
 	$('.overview-table').tablesorter({
 		theme: 'bootstrap',
+		showProcessing: true,
 		headerTemplate: '{content} {icon}',
-		widgets : ['uitheme']
+		widgets : ['uitheme', 'filter', 'zebra']
 	})
 	.tablesorterPager({
 

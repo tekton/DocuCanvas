@@ -327,6 +327,10 @@ body.issue-overview {}
 
 body.issues-overview {}
 	
+	body.issues-overview #maincontent {
+		margin: 0 25px;
+	}
+	
 	body.issues-overview .overview-table {
 		font-size: 15px;
 	}
