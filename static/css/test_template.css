@@ -322,6 +322,34 @@ body.issue-overview {}
 
 
 
+/* --- Issues Overview
+-------------------------------------------------------*/
+
+body.issues-overview {}
+	
+	body.issues-overview .overview-table {
+		font-size: 15px;
+	}
+		
+		body.issues-overview .overview-table .issue-summary div {
+			max-width: 700px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		
+		body.issues-overview .overview-table .issue-project {
+			white-space: nowrap;
+		}
+		
+		body.issues-overview .overview-table .issue-create,
+		body.issues-overview .overview-table .issue-modify {
+			font-size: 13px;
+			white-space: nowrap;
+		}
+	
+	
+	
 /* --- Account Settings
 -------------------------------------------------------*/
 			

@@ -1261,3 +1261,14 @@ def trackIssues(request):
                                                             'filter_assigned': filter_assigned,
                                                             'filter_status': filter_status,
                                                             'filter_meta': filter_meta}, context_instance=RequestContext(request))
+
+@login_required
+def overview(request):
+    
+    try:
+        issues = Issue.objects.order_by('-created')
+    except Exception, e:
+        print e
+        issues = []
+    
+    return render_to_response("issues/overview.html", {"issues": issues}, context_instance=RequestContext(request))

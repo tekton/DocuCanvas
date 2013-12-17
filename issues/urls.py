@@ -31,5 +31,6 @@ urlpatterns = patterns('',
     (r'comment/([A-Za-z0-9_\.-]+)', 'issues.views.submit_comment'),
     (r'edit_comment', 'issues.views.edit_comment'),
     (r'track', 'issues.views.trackIssues'),
+    (r'overview', 'issues.views.overview'),
     (r'([A-Za-z0-9_\.-]+)', 'issues.views.issue_overview'),
 )
