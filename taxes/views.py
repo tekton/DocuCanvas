@@ -70,8 +70,6 @@ def viewAllForms(request):
     json_count = []
     my_count = {'count': count}
     json_count.append(my_count)
-    print json_files
-    print json_count
     return render_to_response('taxes/display_all_forms.html', {'projects': projects,
                                                                'tax_years': json.dumps(json_files),
                                                                'item_count': json.dumps(json_count)}, context_instance=RequestContext(request))
@@ -110,14 +108,12 @@ def submitProjectForm(request):
     project_item_formset = inlineformset_factory(ProjectAnalysis, ProjectListAnalysis, can_delete=False, extra=1)
 
     if request.method == 'POST':
-        print request.POST
         project_form = ProjectAnalysisForm(request.POST, instance=project_analysis)
         project_formset = project_item_formset(request.POST, instance=project_analysis)
         if project_form.is_valid() and project_formset.is_valid():
             try:
                 project_analysis = project_form.save()
                 project_formset.save()
-                print "data saved"
                 return redirect('taxes.views.submitProjectForm')
             except Exception, e:
                 print e
