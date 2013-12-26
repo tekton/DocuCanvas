@@ -4,4 +4,5 @@
 {% if user.is_superuser%}
 <li class="nav-header">Admin</li>
 <li><a href="{% url 'daily_reports.views.report_selection' %}">Report Selection</a></li>
+<li><a href="{% url 'daily_reports.views.request_report_summary' %}">Request Summary</a></li>
 {% endif %}
