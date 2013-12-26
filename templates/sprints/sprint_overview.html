@@ -1,0 +1,28 @@
+{% extends "sprints/base.html" %}
+
+{% block pageTitle %}
+{{sprint.name}}
+{% endblock %}
+
+{% block bodyContent %}
+<table>
+	<tr>
+		<th>Start Date</th>
+		<th>End Date</th>
+	</tr>
+	<tr>
+		<td>{{sprint.start}}</td>
+		<td>{{sprint.end}}</td>
+	</tr>
+</table>
+<table>
+	<tr><th style='colspan:3;'>Issues</th></tr>
+	{% for issue in issues %}
+	<tr>
+		<td>{{issue.project}}</td>
+		<td>{{issue.summary}}</td>
+		<td>{{issue.status}}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends "sprints/base.html" %}
+
+{% block pageTitle %}
+New Sprint Form
+{% endblock %}
+
+{% block bodyContent %}
+<form action="{% url 'sprints.views.createSprint' %}" method="post" enctype="multipart/form-data" class='form-horizontal'>
+	{% csrf_token %}
+	<tr>
+		<th>
+			<label for="id_name">Name:</label>
+		</th>
+		<td>
+			<input id="id_name" maxlength="255" name="name" type="text" onchange="lockName()" value="Sprint" />
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="id_start">Start:</label>
+		</th>
+		<td>
+			<input id="id_start" name="start" type="text" onchange="lockStart()" />
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="id_end">End:</label>
+		</th>
+		<td>
+			<input id="id_end" name="end" type="text" onchange="lockEnd()" />
+		</td>
+	</tr>
+	</br><input type="submit" value="Submit" />
+
+</form>
+{% endblock %}
+
+{% block endScripts %}
+<script type="text/javascript">
+var start_lock = false;
+var end_lock = false;
+var name_lock = false;
+
+var start_date = new Date();
+var end_date = new Date();
+
+function lockName(){
+	name_lock = true;
+};
+
+function lockEnd(){
+	end_lock = true;
+	var end = document.getElementById("id_end");
+	var name = document.getElementById("id_name");
+	var start = document.getElementById("id_start");
+	var endDate = end.value;
+	if(endDate < start_date){
+		window.alert("End Date must be after start date");
+		end.value = end_date;
+	}
+	else{
+		end_date = new Date(endDate);
+	}
+	if(!start_lock){
+		var time_delta = end_date.getDay();
+		if(time_delta == 1){
+			start_date.setDate(end_date.getDate());
+		}
+		else if(time_delta == 0){
+			start_date.setDate(end_date.getDate() - 6);
+		}
+		else{
+			start_date.setDate(end_date.getDate() - (time_delta - 1));
+		}
+		start.value = start_date.getFullYear() + "/" + (start_date.getMonth() + 1) + "/" + start_date.getDate();
+	}
+	else{
+		start_date = document.getElementById("id_start").value;
+	}
+	if(!name_lock){
+		name.value = "Sprint " + start_date.getFullYear() + "." + start_date.getMonth() + "." + start_date.getDate() + " - " + end_date.getFullYear() + "."  + end_date.getMonth() + "." + end_date.getDate();
+	}
+};
+
+function lockStart(){
+	start_lock = true;
+	var end = document.getElementById("id_end");
+	var name = document.getElementById("id_name");
+	var start = document.getElementById("id_start");
+	startDate = document.getElementById("id_start").value;
+	if(startDate > end_date){
+		window.alert("Start Date must be before start date");
+		start.value = start_date;
+	}
+	else{
+		start_date = new Date(startDate);
+	}
+	if(!end_lock){
+		var time_delta = start_date.getDay();
+		if(time_delta == 5){
+			end_date.setDate(start_date.getDate());
+		}
+		else if(time_delta == 6){
+			end_date.setDate(end_date.getDate() + 7);
+		}
+		else{
+			end_date.setDate(start_date.getDate() + (5 - time_delta));
+		}
+		end.value = end_date.getFullYear() + "/"  + (end_date.getMonth() + 1) + "/" + end_date.getDate();
+	}
+	if(!name_lock){
+		name.value = "Sprint " + start_date.getFullYear() + "." + start_date.getMonth() + "." + start_date.getDate() + " - " + end_date.getFullYear() + "."  + end_date.getMonth() + "." + end_date.getDate();
+	}
+};
+
+$(function(){
+    $('#id_end').datepicker({dateFormat: 'yy/mm/dd'});
+    $('#id_start').datepicker({dateFormat: 'yy/mm/dd'});
+});
+
+</script>
+{% endblock %}
