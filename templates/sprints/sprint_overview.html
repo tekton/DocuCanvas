@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block bodyContent %}
+<!--
 <table style="width:100%;">
 	<tr>
 		<th>Start Date</th>
@@ -36,4 +37,49 @@
 	</tr>
 	{% endfor %}
 </table>
+-->
+<article class="row">
+    <div id="issue-column-main" class="span9 metainfo-maincolumn">
+        <div id="issue-details" class="well">
+			<table width='100%'>
+                <tr>
+                    <th style="text-align: left;">User</th>
+                    <th style="text-align: left;">Project</th>
+                    <th style="text-align: left;">Meta Issue</th>
+                    <th style="text-align: left;">Status</th>
+                    <th style="text-align: left;">Description</th>
+                    <th style="text-align: left;">Last Modified</th>
+                </tr>
+                {% for issue in issues %}
+                <tr>
+                    <td>{{issue.assigned_to}}</td>
+                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
+                    {% if issue.meta_issues %}
+                    <td><a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues}}</td>
+                    {% else %}
+                    <td>{{issue.meta_issues}}</td>
+                    {% endif %}
+                    <td>{{issue.status}}</td>
+                    <td><a href="{{issue.id}}">{{issue.summary|truncatechars:80}}</a></td>
+                    <td>{{issue.modified}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+		</div>
+	</div>
+	<div id="issue-column-aside" class="span3 metainfo-asidecolumn">
+        <aside id="issue-metainfo" class="well metainfo metainfo-show">
+        	<table>
+        		<tr>
+					<th>Start Date</th>
+					<td>{{sprint.start}}</td>
+				</tr>
+				<tr>
+					<th>End Date</th>
+					<td>{{sprint.end}}</td>
+				</tr>
+        	</table>
+		</aside>
+	</div>
+</article>
 {% endblock %}
