@@ -1,0 +1,15 @@
+{% extends "sprints/base.html" %}
+
+{% block pageTitle %}
+{{sprint.name}}
+{% endblock %}
+
+{% block contextNav %}
+{% include '_includes/contextnav-sprints.html' %}
+{% endblock %}
+
+{% block bodyContent %}
+{% for sprint in sprints %}
+<a href="{% url 'sprints.views.viewSprint' sprint.id %}">{{sprint.name}}</a></br>
+{% endfor %}
+{% endblock %}

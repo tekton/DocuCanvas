@@ -1250,6 +1250,9 @@ def trackIssues(request):
         q.extend(Issue.objects.all())
 
     # Sort list of issues by date of creation
+    for item in q:
+        if not item.created:
+            q.remove(item)
     q.sort(key=lambda x: x.created, reverse=True)
 
     return render_to_response("issues/issue_tracker.html", {'projects': projects, 

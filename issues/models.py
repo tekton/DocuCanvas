@@ -2,8 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from newsfeed.models import NewsFeedItem
+from sprints.models import Sprint
 # from django.utils.translation import ugettext as _
 from projects.models import Project
+from sprints.models import Sprint
 from django.contrib import admin
 from tinymce.models import HTMLField
 
@@ -34,7 +36,8 @@ class MetaIssue(models.Model):
 class Issue(models.Model):
     project = models.ForeignKey(Project)  # fk
     meta_issues = models.ForeignKey(MetaIssue, null=True, blank=True)  # fk
-    state = models.CharField(max_length=255, blank=True, null=True)  # list
+    sprint = models.ForeignKey(Sprint, blank=True, null=True) # fk for weekly sprints
+    state = models.CharField(max_length=255, null=True, blank=True)  # list
     # dates
     projected_start = models.DateField(null=True, blank=True)
     projected_end = models.DateField(null=True, blank=True)
