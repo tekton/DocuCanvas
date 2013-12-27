@@ -9,5 +9,8 @@ class Sprint(models.Model):
 	created = models.DateField(auto_now_add=True)
 	modified = models.DateField(auto_now=True)
 
+	def __unicode__(self):
+		return self.name
+
 
 admin.site.register(Sprint)

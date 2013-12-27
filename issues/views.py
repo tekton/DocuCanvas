@@ -29,6 +29,7 @@ from accounts.views import cache_checkUserTemplate
 from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
 from communications.views import prepMail
+from sprints.models import Sprint
 
 import celery
 import traceback
@@ -638,6 +639,10 @@ def edit(request, issue_id):
         projects = Project.objects.all()
     except Exception, e:
         print e
+    try:
+        sprints = Sprint.objects.all()
+    except Exception, e:
+        print e
 
     if request.method == 'POST':
         issue = Issue.objects.get(pk=issue_id)
@@ -668,7 +673,7 @@ def edit(request, issue_id):
             if issue.id:
                 return redirect('issues.views.issue_overview', issue.id)
             else:
-                return render_to_response('issues/issue_edit.html', {'form': form, "issue": issue, "projects": projects}, context_instance=RequestContext(request))
+                return render_to_response('issues/issue_edit.html', {'form': form, "issue": issue, "projects": projects, 'sprints': sprints}, context_instance=RequestContext(request))
 
     else:
         issue = Issue.objects.get(pk=issue_id)
