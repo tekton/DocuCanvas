@@ -84,6 +84,7 @@ def autoCreateSprints(request):
 			check = Sprint.objects.filter(name=sprint.name)
 			if check:
 				count = count + 1
+				start_date = start_date + datetime.timedelta(days=7)
 				payload['message'].append('%s already exists' % sprint.name)
 				continue
 		except:
