@@ -97,5 +97,3 @@ def autoCreateSprints(request):
 		start_date = start_date + datetime.timedelta(days=7)
 		count = count + 1
 	return HttpResponse(json.dumps(payload))
-			
-

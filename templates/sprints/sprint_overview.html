@@ -9,18 +9,18 @@
 {% endblock %}
 
 {% block bodyContent %}
-<table>
+<table style="width:100%;">
 	<tr>
 		<th>Start Date</th>
 		<th>End Date</th>
 	</tr>
 	<tr>
-		<td>{{sprint.start}}</td>
-		<td>{{sprint.end}}</td>
+		<td style="text-align:center;">{{sprint.start}}</td>
+		<td style="text-align:center;">{{sprint.end}}</td>
 	</tr>
 </table>
-<table>
-	<tr><th style='colspan:3;'>Issues</th></tr>
+<table style="width:100%;">
+	<tr><th colspan="4" style='text-align:center;'>Issues</th></tr>
 	<tr>
 		<th>Project</th>
 		<th>Summary</th>
