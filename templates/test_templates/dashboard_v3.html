@@ -55,14 +55,17 @@ Dashboard
 			return array.join('&');
 		}
 		
-		var dashSettings = 'col1[1]=module-pinned&col1[3]=module-subscribed&col0[2]=module-newsfeed&col0[0]=module-assigned';
+		var dashSettings = 'col1[1]=module-pinned&col1[2]=module-subscribed&col0[2]=module-newsfeed&col0[0]=module-assigned';
 		
 		var parseDashSettings = function(queryString){
 			var queries,temp,i;
 			var cols = [];
-			cols[0] = [];
-			cols[1] = [];
 			
+			for (i = 0; i < columns.length; i++){
+				cols[i] = [];
+			}
+			
+			// Split up query string
 			queries = queryString.split('&');
 			
 			for (i = 0; i < queries.length; i++){
@@ -71,22 +74,17 @@ Dashboard
 				tempArr[0] = parseInt(tempArr[0].substring(3,4));
 				tempArr[1] = parseInt(tempArr[1].substring(0,1));
 				
-				switch (tempArr[0]) {
-					case 0:
-						cols[0][tempArr[1]] = temp[1];
-						break;
-					case 1:
-						cols[1][tempArr[1]] = temp[1];
-						break;
-				}
+				cols[tempArr[0]][tempArr[1]] = temp[1];
 			}
-			
+
+			// Putting modules in order by column
 			for (i = 0; i < cols.length; i++){
 				for (j = 0; j < cols[i].length; j++){
 					$(columns.get(i)).append($('#'+cols[i][j]));
 				}
 			}
 			
+			// Two column layout
 			if (cols[0].length > 0 && cols[1].length > 0) {
 				columns.removeClass().addClass('span6');
 			}
@@ -267,17 +265,17 @@ Dashboard
 							<th>Assigned To</th>
 							<th>Status</th>
 						</tr>
-		            {% for issue in subscribed%}
-	                <tr>
-						<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
-	                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
-						<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
-	                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
-	                    <td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
-	                </tr>
-		            {% endfor%}
-		            </tbody>
-		        </table>
+						{% for issue in subscribed%}
+						<tr>
+							<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
+							<td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
+							<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+							<td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
+							<td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
+						</tr>
+						{% endfor%}
+					</tbody>
+				</table>
 			
 			</div>
 		    {% endif %}
