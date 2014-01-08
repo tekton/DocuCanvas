@@ -60,7 +60,7 @@
                     {% endif %}
                     <td>{{issue.assigned_to}}</td>
                     <td>{{issue.status}}</td>
-                    <td><a href="{{issue.id}}">{{issue.summary|truncatechars:80}}</a></td>
+                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary|truncatechars:80}}</a></td>
                     <td>{{issue.modified}}</td>
                 </tr>
                 {% endfor %}
