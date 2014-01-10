@@ -118,6 +118,15 @@ class GoogleAccount(models.Model):
     credentials = CredentialsField()
 
 
+class AccountSetting(models.Model):
+    user = models.ForeignKey(User)
+    setting_name = models.CharField(max_length=255)
+    setting_value = models.CharField(max_length=255, null=True, blank=True)
+    # the fun parts...
+    created = models.DateField(auto_now_add=True, null=True, blank=True)    # NOW
+    modified = models.DateField(auto_now=True)                              # auto update time
+
+
 add_introspection_rules([], ["^oauth2client\.django_orm\.CredentialsField"])
 
 

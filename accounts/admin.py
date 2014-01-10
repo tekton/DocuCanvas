@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from accounts.models import Account, UserTemplates
+from accounts.models import Account, UserTemplates, AccountSetting
 from accounts.views import setAssignable
 
 def make_assignable(modeladmin, request, queryset):
@@ -18,3 +18,4 @@ class AccountAdmin(admin.ModelAdmin):
 
 admin.site.register(Account, AccountAdmin)
 admin.site.register(UserTemplates)
+admin.site.register(AccountSetting)
