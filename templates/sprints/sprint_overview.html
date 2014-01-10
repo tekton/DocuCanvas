@@ -48,7 +48,7 @@
                     <th style="text-align: left;">Developer</th>
                     <th style="text-align: left;">Status</th>
                     <th style="text-align: left;">Description</th>
-                    <th style="text-align: left;">Last Modified</th>
+                    <th style="text-align: left;">Modified</th>
                 </tr>
                 {% for issue in issues %}
                 <tr>
@@ -60,7 +60,7 @@
                     {% endif %}
                     <td>{{issue.assigned_to}}</td>
                     <td>{{issue.status}}</td>
-                    <td><a href="{{issue.id}}">{{issue.summary|truncatechars:80}}</a></td>
+                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary|truncatechars:80}}</a></td>
                     <td>{{issue.modified}}</td>
                 </tr>
                 {% endfor %}

@@ -268,7 +268,6 @@ def submitRequest(request):
     except Exception as e:
         print e
     if request.method == 'POST':
-        print request.POST
         total = int(request.POST['total-items'])
         for i in range(0,total):
             item = ListItem()
@@ -281,9 +280,8 @@ def submitRequest(request):
                     item.single_use = True
                 else:
                     item.single_use = False
-                print item.single_use
                 item.save()
-                return redirect('food.views.allRequests')
             except Exception, e:
                 print e
+        return redirect('food.views.allRequests')
     return render_to_response('food/make_request.html', {'projects': projects}, context_instance=RequestContext(request))
