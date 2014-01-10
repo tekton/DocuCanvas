@@ -18,7 +18,7 @@ import redis
 from oauth2client.client import OAuth2WebServerFlow, TokenRevokeError
 from apiclient.discovery import build
 
-from models import GoogleAccount, Account, UserTemplates
+from models import GoogleAccount, Account, UserTemplates, AccountSetting
 
 from forms import UserTemplatesForm
 
@@ -177,3 +177,22 @@ def cache_populateUserTemplates():
             print "Unable to set template in cache: {}".format(str(e))
     return True
 
+
+def settings_update(request, setting_to_set, new_value):
+    # only except post? they have to be logged in anyway though...
+    try:  # this could get a get_or_create but that limits us and would just make us write code if we wanted slightly different functionality
+        setting = AccountSetting.objects.get(user=request.user, setting_name=setting_to_set)
+        if setting.setting_value == new_value:
+            return HttpResponse(json.dumps({"msg": "no change"}), content_type='application/json', status=200)
+    except Exception as e:
+        print "Hoping it just didn't exit yes, just in case :: {}".format(e)
+        setting = AccountSetting()
+        setting.user = request.user
+        setting.setting_name = setting_to_set
+    print setting_to_set, new_value
+    if setting.setting_value == new_value:
+        pass
+    else:
+        setting.setting_value = new_value
+        setting.save()
+    return HttpResponse(json.dumps({"msg": "what"}), content_type='application/json', status=200)

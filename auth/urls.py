@@ -12,8 +12,6 @@ urlpatterns = patterns('',
 #    url(r'forgot_password', 'auth.views.forgot_password'),
     url(r'logout', logout, name="logout"),
     url(r'user/(\d+)', 'auth.views.user_overview'),
-
-
 #    (r'password/change/$', 'password_change', {'post_change_redirect' : '/accounts/password/done/'}),
 #    (r'password/done/$', 'password_change_done'),
 #    (r'password/reset/$', "password_reset"),

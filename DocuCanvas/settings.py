@@ -144,14 +144,15 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     ### will be depricated in 1.6, will ahve to find a new way to do this...
-    'django.contrib.markup',
+    # 'django.contrib.markup',
     ### The following are base apps that make things easier...
     'south',
     'gunicorn',
     'djcelery',
     ### other basic modules/apps
-    'accounts',
-    ### Add project specifics apps here
+    'accounts',)
+
+INSTALLED_APPS += (### Add project specifics apps here
     'projects',
     'issues',
     'notifications',
@@ -177,7 +178,7 @@ INSTALLED_APPS = (
     'search',
     'communications',
     'taxes',
-    'sprints', )
+    'sprints',)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

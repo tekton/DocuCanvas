@@ -7,4 +7,5 @@ urlpatterns = patterns('accounts.views',
     (r'authorize$', 'oauth_authorize'),
     (r'oauth2callback$', 'oauth_callback'),
     (r'template', 'assignTemplateForView'),
+    (r'settings/toggle/(.*)/(.*)', 'settings_update'),
 )

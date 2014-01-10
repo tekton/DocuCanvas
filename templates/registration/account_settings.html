@@ -85,7 +85,7 @@ Account Settings
 		<h3>E-mail Notification Settings</h3>
 		
 		<div class="control-group">
-			<label class="control-label" for="inputEmail">Status Changes</label>
+			<label class="control-label" for="statusChange">Status Changes</label>
 			<div class="controls">
 				<div class="btn-group btn-toggle"> 
 					<button class="btn btn-default">ON</button>
@@ -95,7 +95,7 @@ Account Settings
 		</div>
 		
 		<div class="control-group">
-			<label class="control-label" for="inputEmail">New Comments</label>
+			<label class="control-label" for="newComment">New Comments</label>
 			<div class="controls">
 				<div class="btn-group btn-toggle"> 
 					<button class="btn btn-default">ON</button>
@@ -105,7 +105,7 @@ Account Settings
 		</div>
 		
 		<div class="control-group">
-			<label class="control-label" for="inputEmail">Assigned to an Issue</label>
+			<label class="control-label" for="assignedIssue">Assigned to an Issue</label>
 			<div class="controls">
 				<div class="btn-group btn-toggle"> 
 					<button class="btn btn-default">ON</button>
@@ -119,8 +119,8 @@ Account Settings
 {% block endScripts %}
 <script>
 $('.btn-toggle').click(function() {
-    $(this).find('.btn').toggleClass('active');  
-    
+    $(this).find('.btn').toggleClass('active');
+
     if ($(this).find('.btn-primary').size()>0) {
     	$(this).find('.btn').toggleClass('btn-primary');
     }
@@ -135,7 +135,23 @@ $('.btn-toggle').click(function() {
     }
     
     $(this).find('.btn').toggleClass('btn-default');
-       
+
+    var setting,val;
+    setting = $(this).parent().parent().find('.control-label').attr("for");
+    if ($(this).find('.btn').attr("class").indexOf("active") != -1) { val = "True";} else { val = "False"; }
+	console.log(setting,val)
+
+	$.ajax({
+		type: "POST",
+		url: "/acct/settings/toggle/"+setting+"/"+val,
+		data: { },
+		success: function(data) {
+			console.log("success");
+		},
+		error: function(data) {
+			console.log("error");
+		}
+	});
 });
 
 $('.change-password').on('click', function(e){
