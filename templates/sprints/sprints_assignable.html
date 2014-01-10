@@ -50,8 +50,9 @@
 			    },
 			    success: function(data){
 			    	var content = document.getElementById("issue-draggable-" + issue_id).innerHTML;
+			    	var assigned_to = document.getElementById(user_id).innerHTML;
 			    	document.getElementById("issue-draggable-" + issue_id).remove();
-			    	$("#issue_selection").append('<li id="issue-draggable-' + issue_id + '">' + content + '</li>');
+			    	$("#issue_selection").append('<li id="issue-draggable-' + issue_id + '">' + content + ' assigned to ' + assigned_to +'</li>');
 			    	AlertMessage.success('Issue has been successfully assigned');
 			    },
 			    error: AlertMessage.genericUnknownError
@@ -60,15 +61,15 @@
 </script>
 <style type="text/css">
 	.wrapper {
-		max-width: 620px;
+		width: 100%;
 		height: auto;
 	}
 	.box {
 		border: 2px solid black;
 		display: inline-block;
 		position: relative;
-		width: 200px;
-		height: 200px;
+		width: 150px;
+		height: 150px;
 		background: #91BDFF;
 		z-index: 0;
 		margin: 2px 2px 2px -2px;
