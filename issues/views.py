@@ -1280,3 +1280,29 @@ def overview(request):
         issues = []
     
     return render_to_response("issues/overview.html", {"issues": issues}, context_instance=RequestContext(request))
+
+
+@login_required
+def assign_to_user(request, user_id, issue_id):
+    to_json = {'success': True, 'is_subscribed': False, 'error': False}
+    try:
+        issue = Issue.objects.get(pk=issue_id)
+    except Exception, e:
+        to_json['success'] = False
+        to_json['error'] = str(e)
+    if user_id == 0:
+        issue.assigned_to = None
+        issue.save()
+        return HttpResponse(json.dumps(to_json), mimetype="application/json")
+    try:
+        user = User.objects.get(pk=user_id)
+    except Exception, e:
+        to_json['success'] = False
+        to_json['error'] = str(e)
+    try:
+        issue.assigned_to = user
+        issue.save()
+    except Exception, e:
+        to_json['success'] = False
+        to_json['error'] = str(e)
+    return HttpResponse(json.dumps(to_json), mimetype="application/json")

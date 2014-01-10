@@ -1,0 +1,84 @@
+{% extends "sprints/base.html" %}
+
+{% block pageTitle %}
+{{sprint.name}}
+{% endblock %}
+
+{% block contextNav %}
+{% include '_includes/contextnav-sprints.html' %}
+{% endblock %}
+
+{% block bodyContent %}
+<ul class="wrapper">
+	{% for user in users %}
+	<li class="box" id="{{user.id}}">{{user.username}}</li>
+	{% endfor %}
+</ul>
+<div style="width:100%;border-style:solid;border-width:1px;">
+	<ul id="issue_selection">
+		{% for issue in issues %}
+		<li id="issue-draggable-{{issue}}">{{issue}} - {{issue.summary|truncatechars:80}}</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock %}
+
+{% block endScripts %}
+<script type="text/javascript">
+	$(function() {
+		$("#issue_selection li").draggable({
+			revert: "invalid",
+			helper: "clone",
+		});
+
+		$(".box").droppable({
+			activeClass: "ui-state-hover",
+			hoverClass: "ui-state-active",
+			drop: function(event,ui){
+				console.log(this.id);
+				assignIssue(this.id, ui.draggable.text().split(" ")[0]);
+			}
+		});
+	});
+
+	function assignIssue(user_id, issue_id){
+		$.ajax({
+			    type: 'POST',
+			    url: '/issue/as/' + user_id + '/' + issue_id,
+			    data:{
+ 					csrfmiddlewaretoken: '{{csrf_token}}'
+			    },
+			    success: function(data){
+			    	var content = document.getElementById("issue-draggable-" + issue_id).innerHTML;
+			    	document.getElementById("issue-draggable-" + issue_id).remove();
+			    	$("#issue_selection").append('<li id="issue-draggable-' + issue_id + '">' + content + '</li>');
+			    	AlertMessage.success('Issue has been successfully assigned');
+			    },
+			    error: AlertMessage.genericUnknownError
+		});
+	}
+</script>
+<style type="text/css">
+	.wrapper {
+		max-width: 620px;
+		height: auto;
+	}
+	.box {
+		border: 2px solid black;
+		display: inline-block;
+		position: relative;
+		width: 200px;
+		height: 200px;
+		background: #91BDFF;
+		z-index: 0;
+		margin: 2px 2px 2px -2px;
+		transition: all .15s ease-in-out;
+	}
+	.box:hover {
+		background: #9CC;
+		z-index:100;
+		transform: scale(1.2,1.2);
+		box-shadow: 0 5px 10px 0 rgba(0,0,0,.2);
+	}
+</style>
+{% endblock %}
