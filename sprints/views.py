@@ -4,6 +4,7 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 
+from accounts.models import Account
 from sprints.models import Sprint
 from sprints.forms import SprintForm
 from projects.models import Project
@@ -148,10 +149,13 @@ def assignSprint(request, sprint_id, group_id=0):
 			user = User.objects.all()
 	else:
 		try:
-			user = User.objects.all()
+			accounts = Account.objects.filter(assignable=True)
+			users = []
+			for user in accounts:
+				users.append(user.user)
 		except Exception, e:
 			raise e
 	return render_to_response('sprints/sprints_assignable.html', {'sprint': sprint,
 		                                                          'issues': issues,
 		                                                          'projects': projects,
-		                                                          'users': user,}, context_instance=RequestContext(request))
+		                                                          'users': users,}, context_instance=RequestContext(request))
