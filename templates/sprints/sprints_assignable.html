@@ -17,7 +17,7 @@
 <div style="width:100%;border-style:solid;border-width:1px;">
 	<ul id="issue_selection">
 		{% for issue in issues %}
-		<li id="issue-draggable-{{issue}}">{{issue}} - {{issue.summary|truncatechars:80}}</li>
+		<li id="issue-draggable-{{issue}}">{{issue}} [{{issue.status}} | {{issue.assigned_to}}] {{issue.summary|truncatechars:80}}</li>
 		{% endfor %}
 	</ul>
 </div>
