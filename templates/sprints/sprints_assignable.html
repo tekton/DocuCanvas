@@ -52,7 +52,7 @@
 			    	var content = document.getElementById("issue-draggable-" + issue_id).innerHTML;
 			    	var assigned_to = document.getElementById(user_id).innerHTML;
 			    	document.getElementById("issue-draggable-" + issue_id).remove();
-			    	$("#issue_selection").append('<li id="issue-draggable-' + issue_id + '">' + content + ' assigned to ' + assigned_to +'</li>');
+			    	$("#issue_selection").append('<li id="issue-draggable-' + issue_id + '">' + data["data"]["id"] + ' [' + data["data"]["status"] + " | " + data["data"]["assigned_to"] + '] ' + data["data"]["summary"] +'</li>');
 			    	AlertMessage.success('Issue has been successfully assigned');
 			    },
 			    error: AlertMessage.genericUnknownError

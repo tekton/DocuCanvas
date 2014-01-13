@@ -1302,6 +1302,8 @@ def assign_to_user(request, user_id, issue_id):
     try:
         issue.assigned_to = user
         issue.save()
+        to_json["data"] = model_to_dict(issue)
+        to_json["data"]["assigned_to"] = user.username
     except Exception, e:
         to_json['success'] = False
         to_json['error'] = str(e)
