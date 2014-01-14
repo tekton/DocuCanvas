@@ -19,16 +19,6 @@ Account Settings
 {% block bodyContent %}
 <a href="{% url 'auth.views.change_email' %}">Change Email Address</a><br />
 <a href="{% url 'auth.views.change_password' %}">Change Password</a><br />
-{% if fb.active %}
-	<a href="{% url 'socialplatform.views.modify_permissions' %}">Manage Facebook Settings</a><br />
-{% else %}
-	<a href="{% url 'socialplatform.views.facebookConnect' %}">Add Facebook Account</a><br />
-{% endif %}
-{% if tw.active %}
-	<a href="{% url 'socialplatform.views.remove_twitter_acct' %}">Remove Twitter Account</a>
-{% else %}
-	<a href="{% url 'socialplatform.views.add_twitter_acct' %}">Add Twitter Account</a>
-{% endif %}
   
 <hr />
   
@@ -47,14 +37,21 @@ Account Settings
 		<div class="control-group">
 			<label class="control-label" for="inputEmail"><a href="#" class="change-password">Change Password</a></label>
 			<div class="controls password-hide">
-				<input type="password" name="password" />
+				<input type="password" name="new_password1" />
 			</div>
 		</div>
 		
 		<div class="control-group password-hide">
 			<label class="control-label" for="inputEmail">Reconfirm</label>
 			<div class="controls">
-				<input type="password" name="password-confirm"/>
+				<input type="password" name="new_password2"/>
+			</div>
+		</div>
+
+		<div class="control-group password-hide">
+			<label class="control-label" for="inputEmail">Old Password</label>
+			<div class="controls">
+				<input type="password" name="old_password"/>
 			</div>
 		</div>
 		
@@ -163,6 +160,17 @@ $('.change-password').on('click', function(e){
 });
 /*
 $('form').submit(function(){
+	$.ajax({
+		type: "POST",
+		url: "/acct/save",
+		data: { },
+		success: function(data) {
+			console.log("success");
+		}
+		error: function(data) {
+			console.log("error");
+		}
+	});
     return false;
 });
 */

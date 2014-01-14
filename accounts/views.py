@@ -200,4 +200,17 @@ def settings_update(request, setting_to_set, new_value):
 
 def save_settings(request):
     print request.POST
+    if request.method == "POST":
+        if request.POST["email"]:
+            email = request.POST["email"]
+            user = request.user
+            user.email = email
+            user.save()
+        if request.POST["new_password1"] and request.POST["new_password2"] and request.POST["old_password"]:
+            form = PasswordChangeForm(user=request.user, data=request.POST)
+            if form.is_valid():
+                try:
+                    form.save()
+                except Exception, e:
+                    print e
     return redirect("auth.views.account_settings")
