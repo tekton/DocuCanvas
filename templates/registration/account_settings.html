@@ -17,11 +17,6 @@ Account Settings
 {% block bodyClass %}account-settings{% endblock %}
 
 {% block bodyContent %}
-<a href="{% url 'auth.views.change_email' %}">Change Email Address</a><br />
-<a href="{% url 'auth.views.change_password' %}">Change Password</a><br />
-  
-<hr />
-  
 	<form action="{% url 'accounts.views.save_settings' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
 		{% csrf_token %}
 		
