@@ -32,28 +32,29 @@ Account Settings
   
 <hr />
   
-	<form class="form-horizontal">
+	<form action="{% url 'accounts.views.save_settings' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+		{% csrf_token %}
 		
 		<h3>E-mail and Password</h3>
 		
 		<div class="control-group">
 			<label class="control-label" for="inputEmail">E-mail Address</label>
 			<div class="controls">
-				<input type="text" />
+				<input type="text" name="email" />
 			</div>
 		</div>
 		
 		<div class="control-group">
 			<label class="control-label" for="inputEmail"><a href="#" class="change-password">Change Password</a></label>
 			<div class="controls password-hide">
-				<input type="password" />
+				<input type="password" name="password" />
 			</div>
 		</div>
 		
 		<div class="control-group password-hide">
 			<label class="control-label" for="inputEmail">Reconfirm</label>
 			<div class="controls">
-				<input type="password" />
+				<input type="password" name="password-confirm"/>
 			</div>
 		</div>
 		
@@ -68,7 +69,7 @@ Account Settings
 						{% if fb.active %}
 							<a href="{% url 'socialplatform.views.modify_permissions' %}">Manage Facebook Settings</a><br />
 						{% else %}
-							<li><a href="#"><img src="{% static 'img/pressed_404.png' %}"></a></li>
+							<li><a href="{% url 'socialplatform.views.facebookConnect' %}"><img src="{% static 'img/pressed_404.png' %}"></a></li>
 						{% endif %}
 						{% if tw.active %}
 							<a href="{% url 'socialplatform.views.remove_twitter_acct' %}">Remove Twitter Account</a>
@@ -113,6 +114,7 @@ Account Settings
 				</div>
 			</div>
 		</div>
+		<input type="submit" value="Submit" />
 	</form>
 {% endblock %}
 
@@ -159,9 +161,10 @@ $('.change-password').on('click', function(e){
 	
 	$('.password-hide').fadeIn();
 });
-
+/*
 $('form').submit(function(){
     return false;
 });
+*/
 </script>
 {% endblock %}

@@ -70,7 +70,7 @@ def getAccessToken(request):
         print e
         # user = authenticate(username=profile.user.username, password=hashlib.new(profile.fb_uid).hexdigest())
         # login(request,user)
-    return redirect('dashboard.views.dashboard')
+    return redirect('auth.views.account_settings')
 
 
 @login_required
@@ -377,7 +377,7 @@ def modify_permissions(request):
     try:
         facebook = FacebookProfile.objects.get(user=request.user)
     except Exception, e:
-        return redirect('dashboard.views.dashboard')
+        return redirect('auth.views.account_settings')
     if request.method == 'POST':
         permission_form = FacebookPermissions(request.POST, instance=facebook)
         if permission_form.is_valid():
@@ -387,7 +387,7 @@ def modify_permissions(request):
                 print e
             if not facebook.active:
                 facebook.deactivate()
-            return redirect('dashboard.views.dashboard')
+            return redirect('auth.views.account_settings')
     else:
         permission_form = FacebookPermissions(instance=facebook)
     return render_to_response('socialplatform/facebook_permissions.html', {'facebook': facebook, 'form': permission_form, 'projects': projects}, context_instance=RequestContext(request))

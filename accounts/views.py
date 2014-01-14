@@ -196,3 +196,8 @@ def settings_update(request, setting_to_set, new_value):
         setting.setting_value = new_value
         setting.save()
     return HttpResponse(json.dumps({"msg": "what"}), content_type='application/json', status=200)
+
+
+def save_settings(request):
+    print request.POST
+    return redirect("auth.views.account_settings")
