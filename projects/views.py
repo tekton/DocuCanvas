@@ -58,8 +58,8 @@ def project_overview(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
         metas = MetaIssue.objects.filter(project=project)
-        incomplete_issues = Issue.objects.filter(project=project).exclude(status='fixed').order_by('-created')
-        fixed_issues = Issue.objects.filter(project=project, status='fixed').order_by('-created')
+        incomplete_issues = Issue.objects.filter(project=project).exclude(status='fixed').exclude(status='wont_fix').exclude(status='not_a_bug').exclude(status='duplicate').order_by('-created')
+        fixed_issues = Issue.objects.filter(project=project).exclude(status='active').exclude(status__isnull=True).order_by('-created')
 
         project_planner_items = ProjectPlannerItem.objects.filter(project=project)
         if not project_planner_items:
