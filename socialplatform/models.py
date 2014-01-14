@@ -8,7 +8,7 @@ import os
 
 
 class FacebookProfile(models.Model):
-	user = models.OneToOneField(User)
+	user = models.ForeignKey(User)
 	facebook_id = models.CharField(max_length=150)
 	profilePicture = models.ImageField(upload_to="upload/facebook", null=True, blank=True)
 	image_url = models.URLField()

@@ -4,6 +4,7 @@ import os
 
 from httplib2 import Http
 
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
@@ -199,7 +200,6 @@ def settings_update(request, setting_to_set, new_value):
 
 
 def save_settings(request):
-    print request.POST
     if request.method == "POST":
         if request.POST["email"]:
             email = request.POST["email"]
