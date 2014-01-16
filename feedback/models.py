@@ -14,5 +14,12 @@ class SignedFeedback(models.Model):
 	timestamp = models.DateField(auto_now=True)
 
 
+class Feedback(models.Model):
+	user = models.ForeignKey(User)
+	feedback = models.TextField()
+	created = models.DateField(auto_now_add=True)
+	page = models.CharField(max_length=255)
+
+
 admin.site.register(AnonymousFeedback)
 admin.site.register(SignedFeedback)
