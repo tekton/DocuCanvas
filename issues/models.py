@@ -10,6 +10,7 @@ from django.contrib import admin
 from tinymce.models import HTMLField
 
 import datetime
+import os
 
 ISSUETOISSUETYPE = (('duplicated', 'Duplicate'), ('related', 'Related'), ('child', 'Child'), ('parent', 'Parent'))
 ISSUETYPE = (("bug", "Bug"), ("task", "Task"), ("suggestion", "Suggestion"))
@@ -298,6 +299,10 @@ class IssueComment(models.Model):
 class IssueScreenshot(models.Model):
     issue = models.ForeignKey(Issue)
     screenshot = models.ImageField(upload_to="upload/issues", blank=True, null=True)
+    
+    def extension(self):
+        name, extension = os.path.splitext(self.screenshot.name)
+        return extension
 
 
 class ProjectPlannerItem(models.Model):
