@@ -14,7 +14,7 @@ Forms for submitting bug reports and suggestions
 
 
 class IssueForm(forms.ModelForm):
-    description = forms.CharField(widget=TinyMCE(attrs={'cols': 100, 'rows': 20, 'id': 'something'}), required=False)
+    # description = forms.CharField(widget=TinyMCE(attrs={'cols': 100, 'rows': 20, 'id': 'something'}), required=False)
     class Meta:
         model = Issue
         fields = ('project', 'summary', 'description', 'meta_issues', 'projected_start','projected_end', 'assigned_to')

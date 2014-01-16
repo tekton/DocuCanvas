@@ -1,4 +1,5 @@
 {% extends "issues/base.html" %}
+{% load addcss %}
 
 <!--{%block extra_head%}
     <script type="text/javascript">
@@ -27,46 +28,52 @@ New Issue
 	<form action="{% url 'issues.views.issue_form' %}" method="post" class="form-horizontal span11" enctype="multipart/form-data" autocomplete="off">
 		{% csrf_token %}
         <div class="control-group">
-        <label class="control-label" for="id_project">Project:</label>
-            <div class="controls">
-                <pre>
+			<label class="control-label" for="id_project">Project:</label>
+			<div class="controls">
+                <!-- <pre>
                     {% for choice in form.fields.project.field.choices %}
                        {{choice.0}}
                     {% endfor %}
-                </pre>
+                </pre> -->
                 {{form.project}}
             </div>
         </div>
+		
         <div class="control-group">
-        <label class="control-label" for="id_summary">Summary (required):</label>
-            <div class="controls">
-                {{form.summary}}
-                <ul class="media-list" id="similar_issues_results"></ul>
+			<label class="control-label" for="id_description">Description</label>
+			<div class="controls">
+                {{form.description}}
             </div>
         </div>
-        <div class="control-group">
-        <label class="control-label" for="id_description">Description</label>
-            <div class="controls">
-                {{form.description}}
+		
+		<div class="control-group summary">
+			<label class="control-label" for="id_summary">Summary</label>
+			<div class="controls">
+                {{form.summary|addcss:"input-block-level"}}
+				<span class="help-block">Auto-fills from the first 140 characters or up to the first line break of Description field.</span>
+                <ul class="media-list" id="similar_issues_results"></ul>
             </div>
         </div>
 
         <div class="control-group">
+			<label class="control-label" for="id_myfiles">Attachments</label>
             <div class="controls">
-            <input type="file" name="myfiles" multiple>
+            	<input type="file" name="myfiles" multiple>
             </div>
         </div>
-		<div class="form-actions">
-			<input type="submit" value="Submit" class="btn btn-primary">
-		</div>
+		
         <div id="advanced_issue_form">
             <div class="control-group">
-            <label class="control-label" for="id_meta_issues">MetaIssue</label>
+            <label class="control-label" for="id_meta_issues">Meta Issue</label>
                 <div class="controls">
                     {{form.meta_issues}}
                 </div>
             </div>
-        </div>  
+        </div>
+		
+		<div class="form-actions">
+			<input type="submit" value="Submit" class="btn btn-primary">
+		</div>
 	</form>
 {% endblock %}
 
@@ -74,6 +81,36 @@ New Issue
 <script type="text/javascript">
     $(document).ready(function(){
         $('#id_summary').keyup( $.debounce(350, getSimilarIssues));
+		
+		$('textarea[name="description"]').on('keyup', function(){
+			$('.control-group.summary').css("visibility", "visible");
+			$('.control-group.summary input').val($(this).val());
+    
+		    descrip = $(this).val();
+		    if(checkLineBreaks(descrip) || descrip.length >= 140){
+		        $('textarea[name="description"]').unbind();
+		    }
+		});
+
+		$('.control-group.summary input').on('focus', function(){
+		    $('textarea[name="description"]').unbind();
+		});
+
+		function checkLineBreaks(descrip){
+		    found = false;
+    
+		    if (descrip.match(/\r\n/g) != null){
+		        if (descrip.match(/\r\n/g).length>0){
+		            found = true;
+		        }
+		    }
+		    if (descrip.match(/[\r\n]/g) != null){
+		        if (descrip.match(/[\r\n]/g).length>0){
+		            found = true;
+		        }
+		    }
+		    return found;
+		}
     });
 
     function returnModelLink(html_obj, model_dict, project_id){
