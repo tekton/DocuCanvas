@@ -2,9 +2,10 @@
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
+from django.http import HttpResponse
 from django.template import RequestContext
 from projects.models import Project
-from feedback.models import AnonymousFeedback, SignedFeedback
+from feedback.models import AnonymousFeedback, SignedFeedback, Feedback
 from feedback.forms import AnonymousForm, SignedForm
 
 
@@ -97,3 +98,26 @@ def all_signed(request):
 	except Exception, e:
 		print e
 	return render_to_response('feedback/signed_all.html', {'projects': projects, 'signed': feedback}, context_instance=RequestContext(request))
+
+
+@login_required
+def recordFeedback(request):
+	to_json = {"success": True}
+	try:
+		referrer = request.META["HTTP_REFERER"]
+	except Exception, e:
+		to_json["success"] = False
+		to_json["error_message"] = "HTTP Referer could not be retrieved"
+	try:
+		data = request.POST["data"]
+	except Exception, e:
+		to_json["success"] = False
+		to_json["error_message"] = "POST data required"
+	try:
+		feedback = Feedback(page=referrer, feedback=data, user=request.user)
+		feedback.save()
+	except Exception, e:
+		to_json["success" = False
+		to_json["error_message"] = "Database Failure"
+	return HttpResponse(json.dumps(to_json), content_type='application/json')
+	
