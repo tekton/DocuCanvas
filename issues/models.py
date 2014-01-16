@@ -302,7 +302,7 @@ class IssueScreenshot(models.Model):
     
     def extension(self):
         name, extension = os.path.splitext(self.screenshot.name)
-        return name, extension
+        return extension
 
     def file_name(self):
         name, extension = os.path.splitext(self.screenshot.name)
