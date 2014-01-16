@@ -6,6 +6,7 @@ from customfields import *
 from django.forms.models import model_to_dict
 from newsfeed.models import *
 from tinymce.widgets import TinyMCE
+from accounts.models import Account
 
 
 '''
@@ -167,8 +168,8 @@ class AdvSearchForm(forms.Form):
     # screen_shot = forms.CharField(required=False)
     # wireframe = forms.CharField(required=False)
     # uri_to_test = forms.CharField(required=False)
-    assigned_to = forms.ModelMultipleChoiceField(required=False, queryset=User.objects.all())
-    created_by = forms.ModelMultipleChoiceField(required=False, queryset=User.objects.all())
+    assigned_to = forms.ModelMultipleChoiceField(required=False, queryset=Account.objects.filter(assignable=True))
+    created_by = forms.ModelMultipleChoiceField(required=False, queryset=Account.objects.filter(assignable=True))
     issue_type = forms.MultipleChoiceField(required=False, choices=ISSUETYPE)
 
     title = MultipleTextField(required=False)

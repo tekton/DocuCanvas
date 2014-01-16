@@ -783,9 +783,9 @@ def returnQuery(field_name, field_value):
     elif field_name == 'meta_issues':
         return Issue.objects.filter(meta_issues=field_value), field_value.title
     elif field_name == 'assigned_to':
-        return Issue.objects.filter(assigned_to=field_value), field_value.username
+        return Issue.objects.filter(assigned_to=field_value.user), field_value.user.username
     elif field_name == 'created_by':
-        return Issue.objects.filter(created_by=field_value), field_value.username
+        return Issue.objects.filter(created_by=field_value.user), field_value.user.username
     elif field_name == 'issue_type':
         return Issue.objects.filter(issue_type=field_value), field_value
     elif field_name == 'status':
