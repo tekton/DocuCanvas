@@ -36,7 +36,7 @@ Issues Overview
 					<!-- Begin span3 -->
 					<div class="span3">
 						<form>
-							<a href="#">Create new filters</a><br />or<br />
+							<a onclick="saveForm()" href="#">Create new filters</a><br />or<br />
 							<label class="control-label" for="inputEmail">Load Saved Filters</label>
 							<select>
 								<option></option>
@@ -48,7 +48,7 @@ Issues Overview
 					
 					<!-- Begin span9 -->
 					<div class="span9">
-                        <form action="{% url 'issues.views.tempTrack' %}" method="POST">
+                        <form id="use-this-form-to-save" action="{% url 'issues.views.tempTrack' %}" method="POST">
     						<table class="table table-condensed">
     						</table>
                         {% csrf_token %}
@@ -238,5 +238,19 @@ $(function(){
     function reload(){
         window.location = '/issue/track';
     };
+
+    function saveForm(){
+        $.ajax({
+            type: 'post',
+            url: '{% url "issues.views.trackIssues" %}',
+            data: $('#use-this-form-to-save').serialize(),
+            success: function(data){
+                window.location.open('{% url "issues.views.tempTrack" %}');
+            },
+            error: function(data){
+                alert("error");
+            }
+        });
+    }
 </script>
 {% endblock %}

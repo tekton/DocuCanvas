@@ -1113,6 +1113,9 @@ def set_issue_start_and_end_dates(request):
 
 @login_required
 def trackIssues(request):
+    print request.POST
+    return redirect('issues.views.tempTrack')
+    '''
     to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status"]}
     try:
         projects = Project.objects.all()
@@ -1279,7 +1282,7 @@ def trackIssues(request):
                                                             'filter_assigned': filter_assigned,
                                                             'filter_status': filter_status,
                                                             'filter_meta': filter_meta,
-                                                            'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))
+                                                            'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))'''
 
 @login_required
 def overview(request):
