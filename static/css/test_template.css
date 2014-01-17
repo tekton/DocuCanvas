@@ -338,6 +338,27 @@ body.issues-overview {}
 		margin: 0 25px;
 	}
 	
+	/* --- | Filters | --- */
+	
+	body.issues-overview #filters {}
+		
+		body.issues-overview #filters table {}
+			
+			body.issues-overview #filters table select {
+				height: 25px;
+				margin-bottom: 0;
+			}
+			
+			body.issues-overview #filters table .btn {
+				line-height: 25px;
+				width: 25px;
+				height: 25px;
+				padding: 0;
+				border-radius: 13px;
+			}
+	
+	/* --- | Issues | --- */
+	
 	body.issues-overview .overview-table {
 		font-size: 15px;
 	}

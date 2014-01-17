@@ -20,10 +20,10 @@ Issues Overview
 {% endblock%}
 
 {% block bodyContent %}
-<div class="accordion" id="accordion2">
+<div class="accordion" id="filters">
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="#filters" href="#collapseOne">
 				Filter Issues
 			</a>
 		</div>
@@ -80,7 +80,7 @@ Issues Overview
 			    <input type="button" value="Remove Filters" class="btn btn-warning" onclick="reload()"></br>
 			    {% endif %}
 				
-				<table class="table table-bordered">
+				<table class="table table-condensed">
 					<tr>
 						<td>
 							<select>
@@ -106,8 +106,8 @@ Issues Overview
 								<option value="no_status">No Status (None)</option>
 							</select>
 						</td>
-						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
-						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
 					</tr>
 					<tr>
 						<td>
@@ -131,8 +131,8 @@ Issues Overview
 								<option value="not_a_bug">Jason</option>
 							</select>
 						</td>
-						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
-						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
 					</tr>
 					<tr>
 						<td>
@@ -153,8 +153,8 @@ Issues Overview
 							<select>
 							</select>
 						</td>
-						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
-						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
 					</tr>
 				</table>
 				
