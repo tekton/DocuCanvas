@@ -1363,6 +1363,7 @@ def tempTrack(request):
     else:
         q = Issue.objects.all()
         return_queries = 0
+        return_query = {}
     return render_to_response("issues/overview.html", {'user': request.user, 
                                                        'issues': q, 
                                                        'total_filters': return_queries,

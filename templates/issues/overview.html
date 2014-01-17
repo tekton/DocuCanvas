@@ -276,6 +276,7 @@ Issues Overview
 <script src="{% static 'js/jquery.tablesorter.pager.min.js' %}"></script>
 <script>
 var query = JSON.parse('{{json_query|escapejs|safe}}');
+var hist = JSON.parse('{{applied_filters|escapejs|safe}}');
 var filter_count = 1;
 
 $(document).ready(function(){
