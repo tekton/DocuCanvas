@@ -20,6 +20,28 @@
 .label.duplicate { background-color: #6B6B6B; } /* Grey*/
 .label.unverified { background-color: #6B6B6B; } /* Grey*/
 
+
+
+/* --- General Classes
+-------------------------------------------------------*/
+
+/* --- | Well | --- */
+
+.well {
+	border: 1px solid #e3e3e3;
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(0,0,0,.2);
+            box-shadow: 0px 0px 2px 0px rgba(0,0,0,.2);
+	border-radius: 0;
+}
+	
+	.well h3 {
+		font-size: 18px;
+		line-height: 1em;
+		margin-top: 0;
+	}
+
+
+
 /* --- Dashboard
 -------------------------------------------------------*/
 
@@ -208,21 +230,6 @@ body.dashboard {}
 -------------------------------------------------------*/
 
 body.issue-overview {}
-	
-	/* --- | Well | --- */
-	
-	body.issue-overview .well {
-		border: 1px solid #e3e3e3;
-	    -webkit-box-shadow: 0px 0px 2px 0px rgba(0,0,0,.2);
-	            box-shadow: 0px 0px 2px 0px rgba(0,0,0,.2);
-		border-radius: 0;
-	}
-		
-		body.issue-overview .well h3 {
-			font-size: 18px;
-			line-height: 1em;
-			margin-top: 0;
-		}
 	
 	/* --- | Pageheader | --- */
 	

@@ -20,6 +20,223 @@ Issues Overview
 {% endblock%}
 
 {% block bodyContent %}
+<div class="accordion" id="accordion2">
+	<div class="accordion-group">
+		<div class="accordion-heading">
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+				Filter Issues
+			</a>
+		</div>
+		<div id="collapseOne" class="accordion-body collapse">
+			<div class="accordion-inner">
+				
+			    {% if filter_assigned or filter_project or filter_status or filter_meta %}
+				<table class="table">
+				    {% if filter_assigned %}
+			        {% for user in filter_assigned %}
+					<tr>
+						<th>Assigned To</th>
+						<td>{{user}} </td>
+						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
+						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+					</tr>
+			        {% endfor %}
+				    {% endif %}
+		
+				    {% if filter_project %}
+			        {% for project in filter_project %}
+					<tr>
+						<th>Project</th>
+						<td>{{project}} </td>
+						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
+						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+					</tr>
+			        {% endfor %}
+				    {% endif %}
+		
+				    {% if filter_meta %}
+			        {% for meta in filter_meta %}
+					<tr>
+						<th>Meta Issue</th>
+						<td>{{meta}} </td>
+						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
+						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+					</tr>
+			        {% endfor %}
+				    {% endif %}
+		
+				    {% if filter_status %}
+			        {% for status in filter_status %}
+					<tr>
+						<th>Status</th>
+						<td>{{status}} </td>
+						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
+						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+					</tr>
+			        {% endfor %}
+				    {% endif %}
+				</table>
+	
+			    <input type="button" value="Remove Filters" class="btn btn-warning" onclick="reload()"></br>
+			    {% endif %}
+				
+				<table class="table table-bordered">
+					<tr>
+						<td>
+							<select>
+								<option>Status</option>
+							</select>
+						</td>
+						<td>
+							<select>
+								<option>is</option>
+								<option>is not</option>
+							</select>
+						</td>
+						<td>
+							<select>
+								<option value="none"></option>
+								<option value="active">Active</option>
+								<option value="duplicate">Duplicate</option>
+								<option value="fixed">Fixed</option>
+								<option value="not_a_bug">Not A Bug</option>
+								<option value="retest">Retest</option>
+								<option value="unverified">Unverified</option>
+								<option value="wont_fix">Won't Fix</option>
+								<option value="no_status">No Status (None)</option>
+							</select>
+						</td>
+						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
+						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+					</tr>
+					<tr>
+						<td>
+							<select>
+								<option>Assigned</option>
+							</select>
+						</td>
+						<td>
+							<select>
+								<option>is</option>
+								<option>is not</option>
+							</select>
+						</td>
+						<td>
+							<select>
+								<option value="none"></option>
+								<option>Unassigned</option>
+								<option value="active">Adam</option>
+								<option value="duplicate">Bob</option>
+								<option value="fixed">Chuck</option>
+								<option value="not_a_bug">Jason</option>
+							</select>
+						</td>
+						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
+						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+					</tr>
+					<tr>
+						<td>
+							<select>
+								<option>Assigned</option>
+								<option>Project</option>
+								<option>Meta Issue</option>
+								<option>Status</option>
+							</select>
+						</td>
+						<td>
+							<select>
+								<option>is</option>
+								<option>is not</option>
+							</select>
+						</td>
+						<td>
+							<select>
+							</select>
+						</td>
+						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
+						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+					</tr>
+				</table>
+				
+			    <form id="modal-issue-fixed-form" class="form-inline" action="{% url 'issues.views.trackIssues' %}" method="POST">
+			        {% csrf_token %}
+			        <table id="assigned-filter-table">
+			            <tr><td>Assigned To <a onclick='addAssignedTo()'>(+)</a></td></tr>
+			            <tr>
+			                <td>
+			                    <select name='assigned_to'>
+			                        <option value='none'></option>
+			                        {% for user in users %}
+			                        <option value='{{user.username}}'>{{user.username}}</option>
+			                        {% endfor %}
+			                    </select>
+			                </td>
+			            </tr>
+			        </table>
+			        <table id="project-filter-table">
+			            <tr><td>Project <a onclick='addProject()'>(+)</a></td></tr>
+			            <tr>
+			                <td>
+			                    <select name='project'>
+			                        <option value='none'></option>
+			                        {% for project in projects %}
+			                        <option value='{{project}}'>{{project.name}}</option>
+			                        {% endfor %}
+			                    </select>
+			                </td>
+			            </tr>
+			        </table>
+			        <table id="meta-filter-table">
+			            <tr><td>Meta Issue <a onclick='addMetaIssue()'>(+)</a></td></tr>
+			            <tr>
+			                <td>
+			                    <select name='meta-issue'>
+			                        <option value='none'></option>
+			                        {% for meta in meta_issues %}
+			                        <option value='{{meta}}'>{{meta.title}}</option>
+			                        {% endfor %}
+			                    </select>
+			                </td>
+			            </tr>
+			        </table>
+			        <table id='status-filter-table'>
+			            <tr><td>Status <a onclick='addStatus()'>(+)</a></td></tr>
+			            <tr>
+			                <td>
+			                    <select name='status'>
+			                        <option value='none'></option>
+			                        <option value='active'>Active</option>
+			                        <option value='duplicate'>Duplicate</option>
+			                        <option value='fixed'>Fixed</option>
+			                        <option value='not_a_bug'>Not A Bug</option>
+			                        <option value='retest'>Retest</option>
+			                        <option value='unverified'>Unverified</option>
+			                        <option value="wont_fix">Won't Fix</option>
+			                        <option value='no_status'>No Status (None)</option>
+			                    </select>
+			                </td>
+			            </tr>
+			        </table>
+			        <input type="submit" value="Apply Filters" class="btn btn-primary" />
+			        {% for status in filter_status %}
+			        <input type='hidden' name='status_filter' value='{{status}}'>
+			        {% endfor %}
+			        {% for project in filter_project %}
+			        <input type='hidden' name='project_filter' value='{{project}}'>
+			        {% endfor %}
+			        {% for user in filter_assigned %}
+			        <input type='hidden' name='assigned_filter' value='{{user}}'>
+			        {% endfor %}
+			        {% for meta in filter_meta %}
+			        <input type='hidden' name='meta_filter' value='{{meta}}'>
+			        {% endfor %}
+			    </form>
+				
+			</div>
+		</div>
+	</div>
+</div>
+
 <table class="table table-striped overview-table">
 	<thead>
 		<tr>
@@ -79,114 +296,6 @@ Issues Overview
         {% endfor%}
 	</tbody>
 </table>
-
-<aside id="issue-metainfo" class="well metainfo metainfo-show">
-            {% if filter_assigned or filter_project or filter_status or filter_meta %}
-                <h3>Applied Filters:</h3>
-                {% if filter_assigned %}
-                    <b>Users:</b>
-                    {% for user in filter_assigned %}
-                        </br>{{user}} 
-                    {% endfor %}
-                    </br>
-                {% endif %}
-                {% if filter_project %}
-                    <b>Projects:</b>
-                    {% for project in filter_project %}
-                        </br>{{project}}
-                    {% endfor %}
-                    </br>
-                {% endif %}
-                {% if filter_meta %}
-                    <b>Meta Issues:</b>
-                    {% for meta in filter_meta %}
-                        </br>{{meta}}
-                    {% endfor %}
-                    </br>
-                {% endif %}
-                {% if filter_status %}
-                    <b>Status:</b>
-                    {% for status in filter_status %}
-                        </br>{{status}}
-                    {% endfor %}
-                {% endif %}
-                </br><input type='button' value='Remove Filters' onclick='reload()'></br>
-            {% endif %}
-            <h3>Filter Options</h3>
-            <form id="modal-issue-fixed-form" class="form-inline" action="{% url 'issues.views.trackIssues' %}" method="POST">
-                {% csrf_token %}
-                <table id="assigned-filter-table">
-                    <tr><td>Assigned To <a onclick='addAssignedTo()'>(+)</a></td></tr>
-                    <tr>
-                        <td>
-                            <select name='assigned_to'>
-                                <option value='none'></option>
-                                {% for user in users %}
-                                <option value='{{user.username}}'>{{user.username}}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                    </tr>
-                </table>
-                <table id="project-filter-table">
-                    <tr><td>Project <a onclick='addProject()'>(+)</a></td></tr>
-                    <tr>
-                        <td>
-                            <select name='project'>
-                                <option value='none'></option>
-                                {% for project in projects %}
-                                <option value='{{project}}'>{{project.name}}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                    </tr>
-                </table>
-                <table id="meta-filter-table">
-                    <tr><td>Meta Issue <a onclick='addMetaIssue()'>(+)</a></td></tr>
-                    <tr>
-                        <td>
-                            <select name='meta-issue'>
-                                <option value='none'></option>
-                                {% for meta in meta_issues %}
-                                <option value='{{meta}}'>{{meta.title}}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                    </tr>
-                </table>
-                <table id='status-filter-table'>
-                    <tr><td>Status <a onclick='addStatus()'>(+)</a></td></tr>
-                    <tr>
-                        <td>
-                            <select name='status'>
-                                <option value='none'></option>
-                                <option value='active'>Active</option>
-                                <option value='duplicate'>Duplicate</option>
-                                <option value='fixed'>Fixed</option>
-                                <option value='not_a_bug'>Not A Bug</option>
-                                <option value='retest'>Retest</option>
-                                <option value='unverified'>Unverified</option>
-                                <option value="wont_fix">Won't Fix</option>
-                                <option value='no_status'>No Status (None)</option>
-                            </select>
-                        </td>
-                    </tr>
-                </table>
-                <input type='submit' value='Apply Filters'>
-                {% for status in filter_status %}
-                <input type='hidden' name='status_filter' value='{{status}}'>
-                {% endfor %}
-                {% for project in filter_project %}
-                <input type='hidden' name='project_filter' value='{{project}}'>
-                {% endfor %}
-                {% for user in filter_assigned %}
-                <input type='hidden' name='assigned_filter' value='{{user}}'>
-                {% endfor %}
-                {% for meta in filter_meta %}
-                <input type='hidden' name='meta_filter' value='{{meta}}'>
-                {% endfor %}
-            </form>
-        </aside>
 {% endblock %}
 
 {% block endScripts %}
