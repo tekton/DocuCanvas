@@ -30,6 +30,107 @@ Issues Overview
 		<div id="collapseOne" class="accordion-body collapse">
 			<div class="accordion-inner">
 				
+				<!-- Begin row-fluid -->
+				<div class="row-fluid">
+					
+					<!-- Begin span3 -->
+					<div class="span3">
+						<form>
+							<a href="#">Create new filters</a><br />or<br />
+							<label class="control-label" for="inputEmail">Load Saved Filters</label>
+							<select>
+								<option></option>
+								<option>Issues assigned to Me</option>
+							</select>
+						</form>
+					</div>
+					<!-- End span3 -->
+					
+					<!-- Begin span9 -->
+					<div class="span9">
+						<table class="table table-condensed">
+							<tr>
+								<td>
+									<select>
+										<option>Status</option>
+									</select>
+								</td>
+								<td>
+									<select>
+										<option>is</option>
+										<option>is not</option>
+									</select>
+								</td>
+								<td>
+									<select>
+										<option value="none"></option>
+										<option value="active">Active</option>
+										<option value="duplicate">Duplicate</option>
+										<option value="fixed">Fixed</option>
+										<option value="not_a_bug">Not A Bug</option>
+										<option value="retest">Retest</option>
+										<option value="unverified">Unverified</option>
+										<option value="wont_fix">Won't Fix</option>
+										<option value="no_status">No Status (None)</option>
+									</select>
+								</td>
+								<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
+								<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
+							</tr>
+							<tr>
+								<td>
+									<select>
+										<option>Assigned</option>
+									</select>
+								</td>
+								<td>
+									<select>
+										<option>is</option>
+										<option>is not</option>
+									</select>
+								</td>
+								<td>
+									<select>
+										<option value="none"></option>
+										<option>Unassigned</option>
+										<option value="active">Adam</option>
+										<option value="duplicate">Bob</option>
+										<option value="fixed">Chuck</option>
+										<option value="not_a_bug">Jason</option>
+									</select>
+								</td>
+								<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
+								<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
+							</tr>
+							<tr>
+								<td>
+									<select>
+										<option>Assigned</option>
+										<option>Project</option>
+										<option>Meta Issue</option>
+										<option>Status</option>
+									</select>
+								</td>
+								<td>
+									<select>
+										<option>is</option>
+										<option>is not</option>
+									</select>
+								</td>
+								<td>
+									<select>
+									</select>
+								</td>
+								<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
+								<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
+							</tr>
+						</table>
+					</div>
+					<!-- End span9 -->
+					
+				</div>
+				<!-- End row-fluid -->
+				
 			    {% if filter_assigned or filter_project or filter_status or filter_meta %}
 				<table class="table">
 				    {% if filter_assigned %}
@@ -80,97 +181,17 @@ Issues Overview
 			    <input type="button" value="Remove Filters" class="btn btn-warning" onclick="reload()"></br>
 			    {% endif %}
 				
-				<form class="form-horizontal">
-					<div class="control-group">
-						<label class="control-label" for="inputEmail">Saved Filters</label>
-						<div class="controls">
-							<select>
-								<option></option>
-								<option>Issues assigned to Me</option>
-							</select>
-						</div>
-					</div>
+				
+				
+				
+				
+				<form class="form-inline">
+					<label>Save search settings</label>
+					<input type="text" class="input-large" placeholder="Name">
+					<button type="submit" class="btn">Save</button>
 				</form>
 				
-				<table class="table table-condensed">
-					<tr>
-						<td>
-							<select>
-								<option>Status</option>
-							</select>
-						</td>
-						<td>
-							<select>
-								<option>is</option>
-								<option>is not</option>
-							</select>
-						</td>
-						<td>
-							<select>
-								<option value="none"></option>
-								<option value="active">Active</option>
-								<option value="duplicate">Duplicate</option>
-								<option value="fixed">Fixed</option>
-								<option value="not_a_bug">Not A Bug</option>
-								<option value="retest">Retest</option>
-								<option value="unverified">Unverified</option>
-								<option value="wont_fix">Won't Fix</option>
-								<option value="no_status">No Status (None)</option>
-							</select>
-						</td>
-						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-					</tr>
-					<tr>
-						<td>
-							<select>
-								<option>Assigned</option>
-							</select>
-						</td>
-						<td>
-							<select>
-								<option>is</option>
-								<option>is not</option>
-							</select>
-						</td>
-						<td>
-							<select>
-								<option value="none"></option>
-								<option>Unassigned</option>
-								<option value="active">Adam</option>
-								<option value="duplicate">Bob</option>
-								<option value="fixed">Chuck</option>
-								<option value="not_a_bug">Jason</option>
-							</select>
-						</td>
-						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-					</tr>
-					<tr>
-						<td>
-							<select>
-								<option>Assigned</option>
-								<option>Project</option>
-								<option>Meta Issue</option>
-								<option>Status</option>
-							</select>
-						</td>
-						<td>
-							<select>
-								<option>is</option>
-								<option>is not</option>
-							</select>
-						</td>
-						<td>
-							<select>
-							</select>
-						</td>
-						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-					</tr>
-				</table>
-				
-			    <form id="modal-issue-fixed-form" class="form-inline" action="{% url 'issues.views.trackIssues' %}" method="POST">
+			    <!-- <form id="modal-issue-fixed-form" class="form-inline" action="{% url 'issues.views.trackIssues' %}" method="POST">
 			        {% csrf_token %}
 			        <table id="assigned-filter-table">
 			            <tr><td>Assigned To <a onclick='addAssignedTo()'>(+)</a></td></tr>
@@ -242,7 +263,7 @@ Issues Overview
 			        {% for meta in filter_meta %}
 			        <input type='hidden' name='meta_filter' value='{{meta}}'>
 			        {% endfor %}
-			    </form>
+			    </form> -->
 				
 			</div>
 		</div>
