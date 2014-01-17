@@ -91,8 +91,9 @@ Issues Overview
 						</div>
 					</div>
 				</form>
-				
-				<table class="table table-condensed">
+				<form action="{% url 'issues.views.tempTrack' %}" method="POST".
+				<table class="table table-condensed filter-table">
+                <!--
 					<tr>
 						<td>
 							<select>
@@ -107,7 +108,7 @@ Issues Overview
 						</td>
 						<td>
 							<select>
-								<option value="none"></option>
+								<option value=""></option>
 								<option value="active">Active</option>
 								<option value="duplicate">Duplicate</option>
 								<option value="fixed">Fixed</option>
@@ -115,61 +116,19 @@ Issues Overview
 								<option value="retest">Retest</option>
 								<option value="unverified">Unverified</option>
 								<option value="wont_fix">Won't Fix</option>
-								<option value="no_status">No Status (None)</option>
+								<option value="None">No Status (None)</option>
 							</select>
 						</td>
 						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
 						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
 					</tr>
-					<tr>
-						<td>
-							<select>
-								<option>Assigned</option>
-							</select>
-						</td>
-						<td>
-							<select>
-								<option>is</option>
-								<option>is not</option>
-							</select>
-						</td>
-						<td>
-							<select>
-								<option value="none"></option>
-								<option>Unassigned</option>
-								<option value="active">Adam</option>
-								<option value="duplicate">Bob</option>
-								<option value="fixed">Chuck</option>
-								<option value="not_a_bug">Jason</option>
-							</select>
-						</td>
-						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-					</tr>
-					<tr>
-						<td>
-							<select>
-								<option>Assigned</option>
-								<option>Project</option>
-								<option>Meta Issue</option>
-								<option>Status</option>
-							</select>
-						</td>
-						<td>
-							<select>
-								<option>is</option>
-								<option>is not</option>
-							</select>
-						</td>
-						<td>
-							<select>
-							</select>
-						</td>
-						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-					</tr>
+                -->
 				</table>
-				
+                {% csrf_token %}
+                <input type="hidden" id="id-filter-count" name="filter-count" value="1">
+                <input type="submit">
+                </form>
+				<!--
 			    <form id="modal-issue-fixed-form" class="form-inline" action="{% url 'issues.views.trackIssues' %}" method="POST">
 			        {% csrf_token %}
 			        <table id="assigned-filter-table">
@@ -243,7 +202,7 @@ Issues Overview
 			        <input type='hidden' name='meta_filter' value='{{meta}}'>
 			        {% endfor %}
 			    </form>
-				
+				-->
 			</div>
 		</div>
 	</div>
@@ -308,11 +267,42 @@ Issues Overview
         {% endfor%}
 	</tbody>
 </table>
+<div id="formFields" hidden>
+    {{ form.as_p }}
+</div>
 {% endblock %}
 
 {% block endScripts %}
 <script src="{% static 'js/jquery.tablesorter.pager.min.js' %}"></script>
 <script>
+var query = JSON.parse('{{json_query|escapejs|safe}}');
+var filter_count = 1;
+
+$(document).ready(function(){
+    var content = "";
+    for(field in query["options"]){
+        content += "<option>" + query["options"][field] + "</option>";
+    }
+    var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select name=" + filter_count + "><option>is</option><option>is not</option></select></td><td><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
+    $('.filter-table').append(to_insert);
+})
+
+function populateOptions(filter_id){
+    var elem = document.getElementById(filter_id + "-selector");
+    var node = elem.options[elem.selectedIndex];
+    var fieldName = node.value;
+    if(fieldName == "Status"){
+        content = "<option value=\"\"></option><option value=\"active\">Active</option><option value=\"duplicate\">Duplicate</option><option value=\"fixed\">Fixed</option><option value=\"not_a_bug\">Not A Bug</option><option value=\"retest\">Retest</option><option value=\"unverified\">Unverified</option><option value=\"wont_fix\">Won't Fix</option><option value=\"None\">No Status (None)</option>";
+    }
+    else{
+        var content = "<option></option>";
+        for(option in query[fieldName]){
+            content += "<option>" + query[fieldName][option] + "</option>";
+        }
+    }
+    document.getElementById("filter-options-" + filter_id).innerHTML = content;
+}
+
 $(function(){
 	$('#maincontent').removeClass('container');
 	
@@ -349,6 +339,7 @@ $(function(){
 
 	  });
 })
+
 	function addAssignedTo(){
         var content = "<tr><td><select name='assigned_to'><option value='none'></option>{% for user in users %}<option value='{{user.username}}'>{{user.username}}</option>{% endfor %}</select></td></tr>";
         $('#assigned-filter-table').append(content);
