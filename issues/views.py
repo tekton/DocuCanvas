@@ -1113,16 +1113,26 @@ def set_issue_start_and_end_dates(request):
 
 @login_required
 def trackIssues(request):
+    to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status"]}
     try:
         projects = Project.objects.all()
+        to_json["Project"] = []
+        for project in projects:
+            to_json["Project"].append(project.name)
     except Exception, e:
         print e
     try:
-        users = User.objects.all()
+        users = Account.objects.filter(assignable=True)
+        to_json["Assigned User"] = []
+        for user in users:
+            to_json["Assigned User"].append(user.user.username)
     except Exception, e:
         print e
     try:
         meta_issues = MetaIssue.objects.all()
+        to_json["Meta Issue"] = []
+        for meta in meta_issues:
+            to_json["Meta Issue"].append(meta.title)
     except Exception, e:
         print e
 
@@ -1268,7 +1278,8 @@ def trackIssues(request):
                                                             'filter_project': filter_projects, 
                                                             'filter_assigned': filter_assigned,
                                                             'filter_status': filter_status,
-                                                            'filter_meta': filter_meta}, context_instance=RequestContext(request))
+                                                            'filter_meta': filter_meta,
+                                                            'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))
 
 @login_required
 def overview(request):
@@ -1308,3 +1319,66 @@ def assign_to_user(request, user_id, issue_id):
         to_json['success'] = False
         to_json['error'] = str(e)
     return HttpResponse(json.dumps(to_json), mimetype="application/json")
+
+
+@login_required
+def tempTrack(request):
+    to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status"]}
+    try:
+        projects = Project.objects.all()
+        to_json["Project"] = []
+        for project in projects:
+            to_json["Project"].append(project.name)
+    except Exception, e:
+        print e
+    try:
+        users = Account.objects.filter(assignable=True)
+        to_json["Assigned User"] = []
+        for user in users:
+            to_json["Assigned User"].append(user.user.username)
+    except Exception, e:
+        print e
+    try:
+        meta_issues = MetaIssue.objects.all()
+        to_json["Meta Issue"] = []
+        for meta in meta_issues:
+            to_json["Meta Issue"].append(meta.title)
+    except Exception, e:
+        print e
+    if request.method == "POST":
+        print request.POST
+        max_count = int(request.POST.getlist('filter-count')[0])
+        q = []
+        return_queries = 0
+        return_query = {}
+        for x in range(1, max_count + 1):
+            if str(x) in request.POST:
+                command = request.POST.getlist(str(x))
+                if q:
+                    q = list(set(q) & set(evaluateCommand(command[0], command[1], command[2])))
+                else:
+                    q = evaluateCommand(command[0], command[1], command[2])
+                return_queries = return_queries + 1
+                return_query[str(return_queries)] = command
+    else:
+        q = Issue.objects.all()
+        return_queries = 0
+        return_query = {}
+    return render_to_response("issues/overview.html", {'user': request.user, 
+                                                       'issues': q, 
+                                                       'total_filters': return_queries,
+                                                       'applied_filters': json.dumps(return_query), 
+                                                       'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))
+
+
+def evaluateCommand(field, op, value):
+    if value is None:
+        return []
+    keys = {"Project": "project__name", "Assigned User": "assigned_to__username", "Meta Issue": "meta_issues__title__contains", "Status": "status"}
+    kwargs = {keys[field]: value}
+    if field == "Status" and value == "None":
+        return Issue.objects.filter(status__isnull=True)
+    if op == "is":
+        return Issue.objects.filter(**kwargs)
+    else:
+        return Issue.objects.exclude(**kwargs)
