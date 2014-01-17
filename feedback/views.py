@@ -117,7 +117,6 @@ def recordFeedback(request):
 		feedback = Feedback(page=referrer, feedback=data, user=request.user)
 		feedback.save()
 	except Exception, e:
-		to_json["success" = False
+		to_json["success"] = False
 		to_json["error_message"] = "Database Failure"
 	return HttpResponse(json.dumps(to_json), content_type='application/json')
-	
