@@ -48,147 +48,18 @@ Issues Overview
 					
 					<!-- Begin span9 -->
 					<div class="span9">
-						<table class="table table-condensed">
-							<tr>
-								<td>
-									<select>
-										<option>Status</option>
-									</select>
-								</td>
-								<td>
-									<select>
-										<option>is</option>
-										<option>is not</option>
-									</select>
-								</td>
-								<td>
-									<select>
-										<option value="none"></option>
-										<option value="active">Active</option>
-										<option value="duplicate">Duplicate</option>
-										<option value="fixed">Fixed</option>
-										<option value="not_a_bug">Not A Bug</option>
-										<option value="retest">Retest</option>
-										<option value="unverified">Unverified</option>
-										<option value="wont_fix">Won't Fix</option>
-										<option value="no_status">No Status (None)</option>
-									</select>
-								</td>
-								<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-								<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-							</tr>
-							<tr>
-								<td>
-									<select>
-										<option>Assigned</option>
-									</select>
-								</td>
-								<td>
-									<select>
-										<option>is</option>
-										<option>is not</option>
-									</select>
-								</td>
-								<td>
-									<select>
-										<option value="none"></option>
-										<option>Unassigned</option>
-										<option value="active">Adam</option>
-										<option value="duplicate">Bob</option>
-										<option value="fixed">Chuck</option>
-										<option value="not_a_bug">Jason</option>
-									</select>
-								</td>
-								<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-								<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-							</tr>
-							<tr>
-								<td>
-									<select>
-										<option>Assigned</option>
-										<option>Project</option>
-										<option>Meta Issue</option>
-										<option>Status</option>
-									</select>
-								</td>
-								<td>
-									<select>
-										<option>is</option>
-										<option>is not</option>
-									</select>
-								</td>
-								<td>
-									<select>
-									</select>
-								</td>
-								<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-								<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-							</tr>
-						</table>
+                        <form action="{% url 'issues.views.tempTrack' %}" method="POST">
+    						<table class="table table-condensed">
+    						</table>
+                        {% csrf_token %}
+                        <input type="hidden" id="id-filter-count" name="filter-count" value="1">
+                        <input type="submit">
+                        </form>
 					</div>
 					<!-- End span9 -->
 					
 				</div>
 				<!-- End row-fluid -->
-				
-			    {% if filter_assigned or filter_project or filter_status or filter_meta %}
-				<table class="table">
-				    {% if filter_assigned %}
-			        {% for user in filter_assigned %}
-					<tr>
-						<th>Assigned To</th>
-						<td>{{user}} </td>
-						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-					</tr>
-			        {% endfor %}
-				    {% endif %}
-		
-				    {% if filter_project %}
-			        {% for project in filter_project %}
-					<tr>
-						<th>Project</th>
-						<td>{{project}} </td>
-						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-					</tr>
-			        {% endfor %}
-				    {% endif %}
-		
-				    {% if filter_meta %}
-			        {% for meta in filter_meta %}
-					<tr>
-						<th>Meta Issue</th>
-						<td>{{meta}} </td>
-						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-					</tr>
-			        {% endfor %}
-				    {% endif %}
-		
-				    {% if filter_status %}
-			        {% for status in filter_status %}
-					<tr>
-						<th>Status</th>
-						<td>{{status}} </td>
-						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-					</tr>
-			        {% endfor %}
-				    {% endif %}
-				</table>
-	
-			    <input type="button" value="Remove Filters" class="btn btn-warning" onclick="reload()"></br>
-			    {% endif %}
-
-				<form action="{% url 'issues.views.tempTrack' %}" method="POST">
-				<table class="table table-condensed filter-table">
-                
-				</table>
-                {% csrf_token %}
-                <input type="hidden" id="id-filter-count" name="filter-count" value="1">
-                <input type="submit">
-                </form>
 			</div>
 		</div>
 	</div>
@@ -266,13 +137,19 @@ var hist = JSON.parse('{{applied_filters|escapejs|safe}}');
 var filter_count = 1;
 
 $(document).ready(function(){
+    var hist_cont = "";
+    for(field in hist){
+        hist_cont += "<tr><td>" + hist[field][0] + "</td><td>" + hist[field][1]+ "</td><td>" + hist[field][2] + "</td></tr>";
+    }
+    $('.table-condensed').append(hist_cont);
+
     var content = "";
     for(field in query["options"]){
         content += "<option>" + query["options"][field] + "</option>";
     }
-    var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select name=" + filter_count + "><option>is</option><option>is not</option></select></td><td><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
-    $('.filter-table').append(to_insert);
-})
+    var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select name=" + filter_count + "><option>is</option><option>is not</option></select></td><td><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
+    $('.table-condensed').append(to_insert);
+});
 
 function populateOptions(filter_id){
     var elem = document.getElementById(filter_id + "-selector");
@@ -288,6 +165,17 @@ function populateOptions(filter_id){
         }
     }
     document.getElementById("filter-options-" + filter_id).innerHTML = content;
+};
+
+function addFilter(){
+    filter_count += 1;
+    var content = "";
+    for(field in query["options"]){
+        content += "<option>" + query["options"][field] + "</option>";
+    }
+    var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select name=" + filter_count + "><option>is</option><option>is not</option></select></td><td><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
+    $('.table-condensed').append(to_insert);
+    $('#id-filter-count').val(filter_count);
 }
 
 $(function(){

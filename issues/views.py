@@ -1349,17 +1349,23 @@ def tempTrack(request):
         print request.POST
         max_count = int(request.POST.getlist('filter-count')[0])
         q = []
+        issues = {}
         return_queries = 0
         return_query = {}
         for x in range(1, max_count + 1):
             if str(x) in request.POST:
                 command = request.POST.getlist(str(x))
-                if q:
-                    q = list(set(q) & set(evaluateCommand(command[0], command[1], command[2])))
+                if command[0] in issues:
+                    issues[command[0]] = list(set(issues[command[0]]) | set(evaluateCommand(command[0], command[1], command[2])))
                 else:
-                    q = evaluateCommand(command[0], command[1], command[2])
-                return_queries = return_queries + 1
+                    issues[command[0]] = evaluateCommand(command[0], command[1], command[2])
                 return_query[str(return_queries)] = command
+                return_queries = return_queries + 1
+        for k in issues:
+            if q:
+                q = list(set(q) & set(issues[k]))
+            else:
+                q = issues[k]
     else:
         q = Issue.objects.all()
         return_queries = 0
