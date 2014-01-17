@@ -37,8 +37,8 @@ Issues Overview
 					<tr>
 						<th>Assigned To</th>
 						<td>{{user}} </td>
-						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
-						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
 					</tr>
 			        {% endfor %}
 				    {% endif %}
@@ -48,8 +48,8 @@ Issues Overview
 					<tr>
 						<th>Project</th>
 						<td>{{project}} </td>
-						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
-						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
 					</tr>
 			        {% endfor %}
 				    {% endif %}
@@ -59,8 +59,8 @@ Issues Overview
 					<tr>
 						<th>Meta Issue</th>
 						<td>{{meta}} </td>
-						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
-						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
 					</tr>
 			        {% endfor %}
 				    {% endif %}
@@ -70,8 +70,8 @@ Issues Overview
 					<tr>
 						<th>Status</th>
 						<td>{{status}} </td>
-						<td><a class="btn btn-danger" href="#"><i class="icon-minus-sign"></i></a></td>
-						<td><a class="btn btn-success" href="#"><i class="icon-plus-sign"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
+						<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
 					</tr>
 			        {% endfor %}
 				    {% endif %}
@@ -79,6 +79,18 @@ Issues Overview
 	
 			    <input type="button" value="Remove Filters" class="btn btn-warning" onclick="reload()"></br>
 			    {% endif %}
+				
+				<form class="form-horizontal">
+					<div class="control-group">
+						<label class="control-label" for="inputEmail">Saved Filters</label>
+						<div class="controls">
+							<select>
+								<option></option>
+								<option>Issues assigned to Me</option>
+							</select>
+						</div>
+					</div>
+				</form>
 				
 				<table class="table table-condensed">
 					<tr>
