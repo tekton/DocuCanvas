@@ -40,14 +40,40 @@ All Projects
 		<thead>
 			<tr>
 				<td>Name</td>
+				<td>Code</td>
 				<td>Owner</td>
+				<td>Manager</td>
+				<td>Lead Developer</td>
+				<td>Slug</td>
+				<td>Priority</td>
+				<td>Business Case</td>
+				<td>Assumptions</td>
+				<td>Internal Requests</td>
+				<td>Status</td>
+				<td>Phase</td>
+				<td>Repository</td>
+				<td>Deployment Server</td>
+				<td>Deployment URL</td>
 			</tr>
 		</thead>
 		<tbody>
 		{% for project in projects %}
 			<tr>
-				<td><a href="{% url 'projects.views.project_overview' project.id %}>{{project.name}}"</a></td>
+				<td><a href="{% url 'projects.views.project_overview' project.id %}>">{{project.name}}</a></td>
+				<td>{{project.code_name}}</td>
 				<td>{%if project.product_owner %}<a href="{% url 'auth.views.user_overview' project.product_owner.id %}">{{project.product_owner}}</a> {% else %}{{project.product_owner}}{% endif %}</td>
+				<td>{{project.manager}}</td>
+				<td>{{project.lead_developer}}</td>
+				<td>{{project.slug}}</td>
+				<td>{{project.priority}}</td>
+				<td>{{project.business_case}}</td>
+				<td>{{project.assumptions}}</td>
+				<td>{{project.internal_requests}}</td>
+				<td>{{project.status}}</td>
+				<td>{{project.current_phase}}</td>
+				<td>{{project.repository_url}}</td>
+				<td>{{project.deployment_server}}</td>
+				<td>{{project.deployment_url}}</td>
 			</tr>
 		{% endfor%}
 		</tbody>
