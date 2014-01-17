@@ -19,7 +19,7 @@ def home(request):
         print e
         projects = []
     #owned_projects = Project.objects.filter(product_owner=request.user)
-    return render_to_response("projects/projects.html", {'projects': projects, "page_type": "Projects"}, context_instance=RequestContext(request))
+    return render_to_response("projects/projects_new.html", {'projects': projects, "page_type": "Projects"}, context_instance=RequestContext(request))
 
 
 @login_required
