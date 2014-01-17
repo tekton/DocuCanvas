@@ -27,7 +27,7 @@ from accounts import utils as rputils
 from accounts.models import Account
 from accounts.views import cache_checkUserTemplate
 from projects.models import Project
-from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm, TrackerForm
+from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
 from communications.views import prepMail
 from sprints.models import Sprint
 
@@ -1279,7 +1279,6 @@ def trackIssues(request):
                                                             'filter_assigned': filter_assigned,
                                                             'filter_status': filter_status,
                                                             'filter_meta': filter_meta,
-                                                            'form': TrackerForm(),
                                                             'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))
 
 @login_required
@@ -1351,6 +1350,7 @@ def tempTrack(request):
         max_count = int(request.POST.getlist('filter-count')[0])
         q = []
         return_queries = 0
+        return_query = {}
         for x in range(1, max_count + 1):
             if str(x) in request.POST:
                 command = request.POST.getlist(str(x))
@@ -1359,13 +1359,14 @@ def tempTrack(request):
                 else:
                     q = evaluateCommand(command[0], command[1], command[2])
                 return_queries = return_queries + 1
+                return_query[str(return_queries)] = command
     else:
         q = Issue.objects.all()
         return_queries = 0
     return render_to_response("issues/overview.html", {'user': request.user, 
                                                        'issues': q, 
-                                                       'form': TrackerForm(),
                                                        'total_filters': return_queries,
+                                                       'applied_filters': json.dumps(return_query), 
                                                        'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))
 
 
