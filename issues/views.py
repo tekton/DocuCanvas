@@ -1260,7 +1260,7 @@ def trackIssues(request):
             q.remove(item)
     q.sort(key=lambda x: x.created, reverse=True)
 
-    return render_to_response("issues/issue_tracker.html", {'projects': projects, 
+    return render_to_response("issues/overview.html", {'projects': projects, 
                                                             'users': users, 
                                                             'meta_issues': meta_issues,
                                                             'user': request.user, 
