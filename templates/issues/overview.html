@@ -134,12 +134,12 @@ Issues Overview
 <script>
 var query = JSON.parse('{{json_query|escapejs|safe}}');
 var hist = JSON.parse('{{applied_filters|escapejs|safe}}');
-var filter_count = 1;
+var filter_count = {{total_filters}};
 
 $(document).ready(function(){
     var hist_cont = "";
     for(field in hist){
-        hist_cont += "<tr><td>" + hist[field][0] + "</td><td>" + hist[field][1]+ "</td><td>" + hist[field][2] + "</td></tr>";
+        hist_cont += "<tr><td><input type='hidden' name='" + field + "' value='" + hist[field][0] + "'>" + hist[field][0] + "</td><td><input type='hidden' name='" + field + "' value='" + hist[field][1] + "'>" + hist[field][1]+ "</td><td><input type='hidden' name='" + field + "' value='" + hist[field][2] + "'>" + hist[field][2] + "</td></tr>";
     }
     $('.table-condensed').append(hist_cont);
 

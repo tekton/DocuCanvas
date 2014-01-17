@@ -1352,15 +1352,18 @@ def tempTrack(request):
         issues = {}
         return_queries = 0
         return_query = {}
-        for x in range(1, max_count + 1):
+        for x in range(max_count + 1):
             if str(x) in request.POST:
-                command = request.POST.getlist(str(x))
-                if command[0] in issues:
-                    issues[command[0]] = list(set(issues[command[0]]) | set(evaluateCommand(command[0], command[1], command[2])))
-                else:
-                    issues[command[0]] = evaluateCommand(command[0], command[1], command[2])
-                return_query[str(return_queries)] = command
-                return_queries = return_queries + 1
+                try:
+                    command = request.POST.getlist(str(x))
+                    if command[0] in issues:
+                        issues[command[0]] = list(set(issues[command[0]]) | set(evaluateCommand(command[0], command[1], command[2])))
+                    else:
+                        issues[command[0]] = evaluateCommand(command[0], command[1], command[2])
+                    return_query[str(return_queries)] = command
+                    return_queries = return_queries + 1
+                except:
+                    pass
         for k in issues:
             if q:
                 q = list(set(q) & set(issues[k]))
