@@ -1113,6 +1113,9 @@ def set_issue_start_and_end_dates(request):
 
 @login_required
 def trackIssues(request):
+    print request.POST
+    return redirect('issues.views.tempTrack')
+    '''
     to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status"]}
     try:
         projects = Project.objects.all()
@@ -1279,7 +1282,7 @@ def trackIssues(request):
                                                             'filter_assigned': filter_assigned,
                                                             'filter_status': filter_status,
                                                             'filter_meta': filter_meta,
-                                                            'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))
+                                                            'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))'''
 
 @login_required
 def overview(request):
@@ -1349,17 +1352,26 @@ def tempTrack(request):
         print request.POST
         max_count = int(request.POST.getlist('filter-count')[0])
         q = []
+        issues = {}
         return_queries = 0
         return_query = {}
-        for x in range(1, max_count + 1):
+        for x in range(max_count + 1):
             if str(x) in request.POST:
-                command = request.POST.getlist(str(x))
-                if q:
-                    q = list(set(q) & set(evaluateCommand(command[0], command[1], command[2])))
-                else:
-                    q = evaluateCommand(command[0], command[1], command[2])
-                return_queries = return_queries + 1
-                return_query[str(return_queries)] = command
+                try:
+                    command = request.POST.getlist(str(x))
+                    if command[0] in issues:
+                        issues[command[0]] = list(set(issues[command[0]]) | set(evaluateCommand(command[0], command[1], command[2])))
+                    else:
+                        issues[command[0]] = evaluateCommand(command[0], command[1], command[2])
+                    return_query[str(return_queries)] = command
+                    return_queries = return_queries + 1
+                except:
+                    pass
+        for k in issues:
+            if q:
+                q = list(set(q) & set(issues[k]))
+            else:
+                q = issues[k]
     else:
         q = Issue.objects.all()
         return_queries = 0
