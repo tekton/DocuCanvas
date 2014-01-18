@@ -20,6 +20,7 @@ Issues Overview
 {% endblock%}
 
 {% block bodyContent %}
+<!-- Begin filters -->
 <div class="accordion" id="filters">
 	<div class="accordion-group">
 		<div class="accordion-heading">
@@ -36,7 +37,6 @@ Issues Overview
 					<!-- Begin span3 -->
 					<div class="span3">
 						<form>
-							<a href="#">Create new filters</a><br />or<br />
 							<label class="control-label" for="inputEmail">Load Saved Filters</label>
 							<select>
 								<option></option>
@@ -48,83 +48,20 @@ Issues Overview
 					
 					<!-- Begin span9 -->
 					<div class="span9">
-						<table class="table table-condensed">
-							<tr>
-								<td>
-									<select>
-										<option>Status</option>
-									</select>
-								</td>
-								<td>
-									<select>
-										<option>is</option>
-										<option>is not</option>
-									</select>
-								</td>
-								<td>
-									<select>
-										<option value="none"></option>
-										<option value="active">Active</option>
-										<option value="duplicate">Duplicate</option>
-										<option value="fixed">Fixed</option>
-										<option value="not_a_bug">Not A Bug</option>
-										<option value="retest">Retest</option>
-										<option value="unverified">Unverified</option>
-										<option value="wont_fix">Won't Fix</option>
-										<option value="no_status">No Status (None)</option>
-									</select>
-								</td>
-								<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-								<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-							</tr>
-							<tr>
-								<td>
-									<select>
-										<option>Assigned</option>
-									</select>
-								</td>
-								<td>
-									<select>
-										<option>is</option>
-										<option>is not</option>
-									</select>
-								</td>
-								<td>
-									<select>
-										<option value="none"></option>
-										<option>Unassigned</option>
-										<option value="active">Adam</option>
-										<option value="duplicate">Bob</option>
-										<option value="fixed">Chuck</option>
-										<option value="not_a_bug">Jason</option>
-									</select>
-								</td>
-								<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-								<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-							</tr>
-							<tr>
-								<td>
-									<select>
-										<option>Assigned</option>
-										<option>Project</option>
-										<option>Meta Issue</option>
-										<option>Status</option>
-									</select>
-								</td>
-								<td>
-									<select>
-										<option>is</option>
-										<option>is not</option>
-									</select>
-								</td>
-								<td>
-									<select>
-									</select>
-								</td>
-								<td><a class="btn" href="#"><i class="icon-minus"></i></a></td>
-								<td><a class="btn" href="#"><i class="icon-plus"></i></a></td>
-							</tr>
-						</table>
+						<form action="{% url 'issues.views.tempTrack' %}" method="POST">
+			                {% csrf_token %}
+							<h3>Filters</h3>
+							<table class="table table-condensed filter-table">
+							
+							</table>
+						
+			                <input type="hidden" id="id-filter-count" name="filter-count" value="1">
+							
+							<div class="text-right">
+								<input type="button" value="Clear" class="btn" />
+								<input type="submit" value="Apply Filters" class="btn btn-primary" />
+							</div>
+		                </form>
 					</div>
 					<!-- End span9 -->
 					
@@ -177,22 +114,15 @@ Issues Overview
 			        {% endfor %}
 				    {% endif %}
 				</table>
-	
-			    <input type="button" value="Remove Filters" class="btn btn-warning" onclick="reload()"></br>
+				
+				
+			    <input type="button" value="Remove Filters" class="btn btn-warning" onclick="reload()">
 			    {% endif %}
-
-				<form action="{% url 'issues.views.tempTrack' %}" method="POST">
-				<table class="table table-condensed filter-table">
-                
-				</table>
-                {% csrf_token %}
-                <input type="hidden" id="id-filter-count" name="filter-count" value="1">
-                <input type="submit">
-                </form>
 			</div>
 		</div>
 	</div>
 </div>
+<!-- End filters -->
 
 <table class="table table-striped overview-table">
 	<thead>

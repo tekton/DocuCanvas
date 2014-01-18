@@ -342,6 +342,13 @@ body.issues-overview {}
 	
 	body.issues-overview #filters {}
 		
+		body.issues-overview #filters h3 {
+			font-size: 14px;
+			font-weight: normal;
+			line-height: 20px;
+			margin: 0 0 5px;
+		}
+		
 		body.issues-overview #filters table {
 			background: #f6f6f6;
 			border: 1px solid #ddd;
