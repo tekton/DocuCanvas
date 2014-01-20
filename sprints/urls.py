@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     (r'^assign/(\d+)$', 'sprints.views.assignSprint'),
     (r'^assign/(\d+)/(\d+)$', 'sprints.views.assignSprint'),
     (r'^auto$', 'sprints.views.autoCreateSprints'),
+    (r'^widget$', 'sprints.views.loadWidget'),
 )
