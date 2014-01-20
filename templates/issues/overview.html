@@ -20,6 +20,7 @@ Issues Overview
 {% endblock%}
 
 {% block bodyContent %}
+<!-- Begin filters -->
 <div class="accordion" id="filters">
 	<div class="accordion-group">
 		<div class="accordion-heading">
@@ -48,13 +49,20 @@ Issues Overview
 					
 					<!-- Begin span9 -->
 					<div class="span9">
-                        <form id="use-this-form-to-save" action="{% url 'issues.views.tempTrack' %}" method="POST">
-    						<table class="table table-condensed">
-    						</table>
-                        {% csrf_token %}
-                        <input type="hidden" id="id-filter-count" name="filter-count" value="1">
-                        <input type="submit">
-                        </form>
+						<form id="use-this-form-to-save" action="{% url 'issues.views.tempTrack' %}" method="POST">
+			                {% csrf_token %}
+							<h3>Filters</h3>
+							<table class="table table-condensed filter-table">
+							
+							</table>
+						
+			                <input type="hidden" id="id-filter-count" name="filter-count" value="1">
+							
+							<div class="text-right">
+								<input type="button" value="Clear" class="btn" />
+								<input type="submit" value="Apply Filters" class="btn btn-primary" />
+							</div>
+		                </form>
 					</div>
 					<!-- End span9 -->
 					
@@ -64,6 +72,7 @@ Issues Overview
 		</div>
 	</div>
 </div>
+<!-- End filters -->
 
 <table class="table table-striped overview-table">
 	<thead>
