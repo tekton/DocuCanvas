@@ -39,17 +39,45 @@
 </table>
 -->
 <article class="row">
-    <div id="issue-column-main" class="span9 metainfo-maincolumn">
+    <div id="issue-column-main" class="span15 metainfo-maincolumn">
         <div id="issue-details" class="well">
-			<table width='100%'>
-                <tr>
-                    <th style="text-align: left;">Project</th>
-                    <th style="text-align: left;">Meta Issue</th>
-                    <th style="text-align: left;">Developer</th>
-                    <th style="text-align: left;">Status</th>
-                    <th style="text-align: left;">Description</th>
-                    <th style="text-align: left;">Modified</th>
-                </tr>
+			<table class="sprint-issue-table" id="sprint-issue-table" width='100%'>
+				<thead>
+	                <tr>
+	                    <th style="text-align: left;" onclick="sortTable('project')">Project</th>
+	                    <th style="text-align: left;">Meta Issue</th>
+	                    <th style="text-align: left;">Developer</th>
+	                    <th style="text-align: left;">Status</th>
+	                    <th style="text-align: left;">Description</th>
+	                    <th style="text-align: left;" onclick="sortTable('modified')">Modified</th>
+	                </tr>
+	            </thead>
+	            <tfoot>
+					<tr>
+						<th style="text-align: left;">Project</th>
+						<th style="text-align: left;">Meta Issue</th>
+						<th style="text-align: left;">Developer</th>
+						<th style="text-align: left;">Status</th>
+						<th style="text-align: left;">Description</th>
+						<th style="text-align: left;">Modified</th>
+					</tr>
+					<tr>
+						<th colspan="12" class="ts-pager form-horizontal">
+							<button type="button" class="btn first"><i class="icon-step-backward glyphicon glyphicon-step-backward"></i></button>
+							<button type="button" class="btn prev"><i class="icon-arrow-left glyphicon glyphicon-backward"></i></button>
+							<span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+							<button type="button" class="btn next"><i class="icon-arrow-right glyphicon glyphicon-forward"></i></button>
+							<button type="button" class="btn last"><i class="icon-step-forward glyphicon glyphicon-step-forward"></i></button>
+							<select class="pagesize input-mini" title="Select page size">
+								<option selected="selected" value="10">10</option>
+								<option value="25">25</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+							</select>
+							<select class="pagenum input-mini" title="Select page number"></select>
+						</th>
+					</tr>
+				</tfoot>
                 {% for issue in issues %}
                 <tr>
                     <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
@@ -67,19 +95,47 @@
             </table>
 		</div>
 	</div>
-	<div id="issue-column-aside" class="span3 metainfo-asidecolumn">
-        <aside id="issue-metainfo" class="well metainfo metainfo-show">
-        	<table>
-        		<tr>
-					<th>Start Date</th>
-					<td>{{sprint.start}}</td>
-				</tr>
-				<tr>
-					<th>End Date</th>
-					<td>{{sprint.end}}</td>
-				</tr>
-        	</table>
-		</aside>
-	</div>
 </article>
+{% endblock %}
+
+{% block endScripts %}
+<script src="static/js/jquery.tablesorter.pager.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#maincontent').removeClass('container');
+	
+	$.extend($.tablesorter.themes.bootstrap, {
+	    // these classes are added to the table. To see other table classes available,
+	    // look here: http://twitter.github.com/bootstrap/base-css.html#tables
+	    table      : 'sprint-issue-table',
+	    sortNone   : 'bootstrap-icon-unsorted',
+	    sortAsc    : 'icon-chevron-up glyphicon glyphicon-chevron-up',     // includes classes for Bootstrap v2 & v3
+	    sortDesc   : 'icon-chevron-down glyphicon glyphicon-chevron-down' // includes classes for Bootstrap v2 & v3
+	  });
+	
+	$('#sprint-issue-table').tablesorter({
+		theme: 'bootstrap',
+		showProcessing: true,
+		headerTemplate: '{content} {icon}',
+		widgets : ['uitheme', 'filter', 'zebra']
+	})
+	.tablesorterPager({
+
+	    // target the pager markup - see the HTML block below
+	    container: $(".ts-pager"),
+
+	    // target the pager page select dropdown - choose a page
+	    cssGoto  : ".pagenum",
+
+	    // remove rows from the table to speed up the sort of large tables.
+	    // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+	    removeRows: false,
+
+	    // output string - default is '{page}/{totalPages}';
+	    // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+	    output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+
+	  });
+})
+</script>
 {% endblock %}
