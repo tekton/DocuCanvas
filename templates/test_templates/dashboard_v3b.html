@@ -128,7 +128,7 @@ Dashboard
 				console.log(columns.serial());
 				$.ajax({
 					type: "POST",
-					url: "/acct/settings/dashboard",
+					url: "/acct/settings/dashboardLayout",
 					data: { "new_value": columns.serial()},
 					success: function(data) {
 						console.log("success");

@@ -65,7 +65,7 @@ def dashboard(request):
     # get user setting for dashboard layout...
     dashboardLayout = "col0[0]=module-pinned&col0[1]=module-assigned&col1[0]=module-newsfeed"
     try:
-        cache_check = cache_checkUserTemplate(request.user, "dashboard")
+        cache_check = cache_checkUserTemplate(request.user, "dashboardLayout")
         if cache_check:
             dashboardLayout = cache_check
     except Exception as e:
