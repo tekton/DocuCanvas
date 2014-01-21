@@ -166,7 +166,7 @@ Dashboard
 <div class="dashboard-options" style="display: none;">
 	
 	<form class="form">
-		<h3>Modules</h3>
+		<!-- <h3>Modules</h3>
 		
 		<label class="checkbox inline">
 			<input type="checkbox" id="inlineCheckbox1" value="option1"> Assigned
@@ -179,7 +179,7 @@ Dashboard
 		</label>
 		<label class="checkbox inline">
 			<input type="checkbox" id="inlineCheckbox2" value="option2"> Recent Activity
-		</label>
+		</label> -->
 		
 		<h3>Columns</h3>
 		
@@ -191,6 +191,20 @@ Dashboard
 				<input type="radio" name="columns" id="inlineCheckbox2" value="column2"> 2
 			</label>
 		</div>
+		
+		<!-- <h3>Font Size</h3>
+		
+		<div class="font-controls">
+			<label class="radio inline">
+				<input type="radio" name="columns" id="inlineCheckbox1" value="font-small"> Small
+			</label>
+			<label class="radio inline">
+				<input type="radio" name="columns" id="inlineCheckbox2" value="font-medium"> Medium
+			</label>
+			<label class="radio inline">
+				<input type="radio" name="columns" id="inlineCheckbox2" value="font-large"> Large
+			</label>
+		</div> -->
 	</form>
 	
 	<p class="dashboard-toggle"><a href="#">Dashboard Options</a></p>
@@ -231,6 +245,7 @@ Dashboard
 								<th>Summary</th>
 								<th>Project</th>
 								<th>Status</th>
+								<th>Sprint</th>
 							</tr>
 						</thead>
 			            <tbody>
@@ -240,6 +255,7 @@ Dashboard
 			                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
 								<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
 								<td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
+								<td>{{issue.sprint}}</td>
 			                </tr>
 			            {% endfor%}
 			            </tbody>
