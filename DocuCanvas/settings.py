@@ -110,16 +110,6 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-HAYSTACK_CONNECTIONS = {
-
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
-    },
-
-}
-
-
 ROOT_URLCONF = 'DocuCanvas.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -144,7 +134,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     ### will be depricated in 1.6, will ahve to find a new way to do this...
-    'django.contrib.markup',
+    #'django.contrib.markup',
     ### The following are base apps that make things easier...
     'south',
     'gunicorn',
@@ -153,6 +143,7 @@ INSTALLED_APPS = (
     'accounts',)
 
 INSTALLED_APPS += (### Add project specifics apps here
+    'markdown',
     'projects',
     'issues',
     'notifications',
@@ -166,7 +157,6 @@ INSTALLED_APPS += (### Add project specifics apps here
     'helpdesknew',
     'gapps',
     'tinymce',
-    'haystack',
     'charts',
     #'facebook',
     #'twitter',
@@ -219,7 +209,7 @@ djcelery.setup_loader()
 BROKER_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 # CELERY_RESULT_BACKEND = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 CELERY_IMPORTS = ("communications.views", "accounts.views", "search.views")  # Uncomment line to add where the tasks are! A suggest default is in there
-CELERYBEAT_SCHEDULE = {'update_index': {'task': 'search.views.updateHaystackIndex', 'schedule': timedelta(seconds=300), },}
+CELERYBEAT_SCHEDULE = {}
 ### /CELERY ###
 
 TINYMCE_DEFAULT_CONFIG ={

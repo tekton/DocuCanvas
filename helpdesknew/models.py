@@ -3,8 +3,6 @@ from django.contrib.auth.models import User
 from django.contrib import admin
 from socialplatform.models import FacebookProfile
 
-from haystack.management.commands import update_index
-
 
 class HelpRequest(models.Model):
     help_state = (
@@ -48,11 +46,6 @@ class HelpRequest(models.Model):
         self.edit_status_bool = True
 
     def save(self, *args, **kwargs):
-        try:
-            update_index.Command().handle()
-        except Exception, e:
-            print 'unable to update index'
-            print e
         super(HelpRequest, self).save()
 
 
@@ -80,11 +73,6 @@ class HelpResponse(models.Model):
         print "response set as input"
 
     def save(self, *args, **kwargs):
-        try:
-            update_index.Command().handle()
-        except Exception, e:
-            print 'unable to update index'
-            print e
         super(HelpResponse, self).save()
 
 

@@ -11,7 +11,6 @@ from django.db.models import Q
 from django.forms.models import model_to_dict
 from accounts.forms import PermissionForm
 from accounts.utils import get_permission_form_for_model, set_permissions_for_model
-from haystack.management.commands import update_index
 
 from projects.models import Project
 from issues.models import Issue, IssueComment
@@ -19,11 +18,6 @@ from helpdesknew.models import HelpRequest, HelpResponse
 from daily_reports.models import UserDailyReport, DailyReport
 
 import celery
-
-
-@celery.task
-def updateHaystackIndex():
-    update_index.Command().handle()
 
 
 @login_required

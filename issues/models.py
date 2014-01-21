@@ -64,6 +64,7 @@ class Issue(models.Model):
     title = models.CharField(max_length=255, blank=True, null=True)
     summary = models.CharField(max_length=140, default="No Summary")
     description = models.TextField(null=True, blank=True)
+    description_type = models.CharField(max_length=255, blank=True, null=True)  # to allow for things like tinymce OR markdown OR plain, etc
     link_slug = models.SlugField(null=True, blank=True)
     # bug centric
     status = models.CharField(max_length=255, blank=True, null=True, choices=BUGSTATE)
