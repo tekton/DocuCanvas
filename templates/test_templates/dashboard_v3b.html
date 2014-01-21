@@ -10,6 +10,8 @@
 
 {% block contextNav %}
 {% include "_includes/contextnav-default.html" %}
+<li class="nav-header">Page Options</li>
+<li class="dashboard-toggle"><a href="#">Dashboard Options</a></li>
 {% endblock %}
 
 {% block pageTitle %}
@@ -151,13 +153,17 @@ Dashboard
 			activeClass: 'target'
 		});
 	});
+
+	$(".dashboard-toggle").click(function() {
+	  $(".dashboard-options").toggle("slow");
+	});
 </script>
 {% endblock %}
 
 {% block bodyContent %}
 
 <!-- Begin dashboard-options -->
-<div class="dashboard-options">
+<div class="dashboard-options" style="display: none;">
 	
 	<form class="form">
 		<h3>Modules</h3>
