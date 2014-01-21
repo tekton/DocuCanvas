@@ -260,7 +260,7 @@ body.issue-overview {}
 			}
 			
 		body.issue-overview #pageheader h1 {
-			font-size: 28px;
+			font-size: 38px;
 			line-height: 1.25em;
 			text-align: left;
 			margin: 0;
@@ -268,10 +268,10 @@ body.issue-overview {}
 			border: 0;
 		}
 			
-			body.issue-overview-v2 #pageheader h1 {
+/*			body.issue-overview-v2 #pageheader h1 {
 				font-size: 38px;
 				text-align: center;
-			}
+			}*/
 	
 	/* --- | Related Issues | --- */
 	

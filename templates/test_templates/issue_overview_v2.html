@@ -36,14 +36,8 @@ Extends /templates/issue/base.html
 {% block bodyClass %}issue-overview issue-overview-v2{% endblock %}
 
 {% block pageTitle %}
-<span class="title-pagetype">{{page_type}}</span>
-{% if page_value %}
-<span class="title-separator title-seperator-pagevalue">::</span>
-<span class="title-pagevalue">{{page_value}}</span>
-{% endif %}
 {% if issue %}
-<span class="title-separator title-seperator-issuestatus">::</span>
-<span class="title-issuestatus label {{issueLabelClass}}">{{issue.get_status_display}}</span>
+	{{page_value}} :: {{issue.summary}}
 {% endif %}
 {% endblock %}
 
@@ -99,12 +93,6 @@ Extends /templates/issue/base.html
 	<article class="row">
 		<div id="issue-column-main" class="span9 metainfo-maincolumn">
 			<div id="issue-details" class="well">
-				<div class="media">
-					<div class="media-body">
-						<h3 class="media-header">Summary</h3>
-						{{issue.summary}}
-					</div>
-				</div>
 				<div class="media">
 					<div class="media-body">
 						<h3 class="media-header">Description</h3>
@@ -222,8 +210,11 @@ Extends /templates/issue/base.html
 				</div>
 				<div id="issue-metainfo-content" class="metainfo-content">
 					<dl>
-						<dt>Issue ID:</dt>
-						<dd>{{issue.id}}</dd>
+						<dt>Project:</dt>
+						<dd><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{page_type}}</a></dd>
+						
+						<dt>Status</dt>
+						<dd><span class="title-issuestatus label {{issueLabelClass}}">{{issue.get_status_display}}</span></dd>
 						
 						<dt>Assigned To</dt>
 							<dd>
@@ -237,18 +228,20 @@ Extends /templates/issue/base.html
 						<dt>Issue Type</dt>
 						<dd>{{issue.issue_type}}</dd>
 						
-						<dt>Status</dt>
-						<dd><span class="title-issuestatus label {{issueLabelClass}}">{{issue.get_status_display}}</span></dd>
-						
 						<dt>Criticality</dt>
 						<dd>{{issue.criticality}}</dd>
 						
+						<dt>Sprint</dt>
+						<dd><a href="#">{{issue.sprint}}</a></dd>
+						
 						<hr />
-
+						
+						{% if issue.meta_issues %}
 						<dt>Meta Issue</dt>
                         <dd>{% if issue.meta_issues %}<a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues.title}}</a>{% else %}None{% endif %}</dd>
 						
 						<hr />
+						{% endif %}
 
 						<dt>Created On</dt>
 						<dd>{{issue.created}}</dd>
@@ -256,23 +249,25 @@ Extends /templates/issue/base.html
 						<dt>Created By</dt>
 						<dd>{% if issue.created_by %}<a href="{% url 'auth.views.user_overview' issue.created_by.id %}">{{issue.created_by}}</a>{% else %}{{issue.created_by}}{% endif %}</dd>
 						
+						{% if issue.modified_by %}
 						<hr />
-						
+
 						<dt>Last Modified</dt>
 						<dd>{{issue.modified}}</dd>
 						
 						<dt>Modified By</dt>
 						<dd>{% if issue.modified_by %}<a href="{% url 'auth.views.user_overview' issue.modified_by.id %}">{{issue.modified_by}}</a>{% else %}{{issue.modified_by}}{% endif %}</dd>
+						{% endif %}
 
-						<hr />
+						<!-- <hr />
 						
 						<dt>Date Reported</dt>
 						<dd>{{issue.date_reported}}</dd>
 						
 						<dt>Point of Contact</dt>
-						<dd>{{issue.point_of_contact}}</dd>
+						<dd>{{issue.point_of_contact}}</dd> -->
 						
-						<hr />
+						<!-- <hr />
 						
 						<dt>View Type</dt>
 						<dd>{{issue.view_type}}</dd>
@@ -292,7 +287,7 @@ Extends /templates/issue/base.html
 						<dd>{{issue.browser}}</dd>
 						
 						<dt>Browser Version</dt>
-						<dd>{{issue.browser_version}}</dd>
+						<dd>{{issue.browser_version}}</dd> -->
 				</div>
 			</aside>
 		</div>
