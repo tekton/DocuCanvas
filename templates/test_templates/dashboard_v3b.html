@@ -39,6 +39,21 @@ Dashboard
 		});
 	}
 
+	function send_dashboard_settings(cols) {
+		console.log(" :: "+cols);
+		$.ajax({
+			type: "POST",
+			url: "/acct/settings/dashboardLayout",
+			data: { "new_value": cols},
+			success: function(data) {
+				console.log("success");
+			},
+			error: function(data) {
+				console.log("error");
+			}
+		});
+	}
+
 	$(function(){
 		var columns = $('.module-container [class^="span"]');
 		
@@ -102,12 +117,14 @@ Dashboard
 				case 'column1':
 					columns.removeClass().addClass('span12').last().addClass('hide');	// Change column layout
 					columns.last().find('.dash-module').appendTo(columns.first());	// Move modules to visible column
+					send_dashboard_settings(columns.serial());
 					break;
 				case 'column2':
 					columns.removeClass().addClass('span6');
 					if (columns.last().text() == ''){
 						columns.last().addClass('empty');
 					}
+					send_dashboard_settings(columns.serial());
 					break;
 			}
 		});
@@ -126,17 +143,7 @@ Dashboard
 				})
 
 				console.log(columns.serial());
-				$.ajax({
-					type: "POST",
-					url: "/acct/settings/dashboardLayout",
-					data: { "new_value": columns.serial()},
-					success: function(data) {
-						console.log("success");
-					},
-					error: function(data) {
-						console.log("error");
-					}
-				});
+				send_dashboard_settings(columns.serial());
 			}
 		});
 		
