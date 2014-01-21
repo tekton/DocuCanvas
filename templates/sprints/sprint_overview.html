@@ -39,17 +39,17 @@
 </table>
 -->
 <article class="row">
-    <div id="issue-column-main" class="span9 metainfo-maincolumn">
+    <div id="issue-column-main" class="span12 metainfo-maincolumn">
         <div id="issue-details" class="well">
-			<table width='100%'>
-                <tr>
-                    <th style="text-align: left;">Project</th>
-                    <th style="text-align: left;">Meta Issue</th>
-                    <th style="text-align: left;">Developer</th>
-                    <th style="text-align: left;">Status</th>
-                    <th style="text-align: left;">Description</th>
-                    <th style="text-align: left;">Modified</th>
-                </tr>
+			<table id="sprint-issue-table" width='100%'>
+	                <tr>
+	                    <th style="text-align: left;" onclick="sortTable('project')">Project</th>
+	                    <th style="text-align: left;">Meta Issue</th>
+	                    <th style="text-align: left;">Developer</th>
+	                    <th style="text-align: left;">Status</th>
+	                    <th style="text-align: left;">Description</th>
+	                    <th style="text-align: left;" onclick="sortTable('modified')">Modified</th>
+	                </tr>
                 {% for issue in issues %}
                 <tr>
                     <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
@@ -66,20 +66,6 @@
                 {% endfor %}
             </table>
 		</div>
-	</div>
-	<div id="issue-column-aside" class="span3 metainfo-asidecolumn">
-        <aside id="issue-metainfo" class="well metainfo metainfo-show">
-        	<table>
-        		<tr>
-					<th>Start Date</th>
-					<td>{{sprint.start}}</td>
-				</tr>
-				<tr>
-					<th>End Date</th>
-					<td>{{sprint.end}}</td>
-				</tr>
-        	</table>
-		</aside>
 	</div>
 </article>
 {% endblock %}

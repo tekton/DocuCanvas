@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
 
 from accounts.models import Account
 from sprints.models import Sprint
@@ -45,7 +46,7 @@ def viewSprint(request, sprint_id):
 	except Exception as e:
 		print e
 	try:
-		issues = Issue.objects.filter(sprint=sprint)
+		issues = Issue.objects.filter(sprint=sprint).order_by("project").order_by("-modified")
 	except Exception as e:
 		print e
 	return render_to_response('sprints/sprint_overview.html', {'sprint': sprint, 'issues': issues, 'projects': projects}, context_instance=RequestContext(request))
@@ -159,3 +160,7 @@ def assignSprint(request, sprint_id, group_id=0):
 		                                                          'issues': issues,
 		                                                          'projects': projects,
 		                                                          'users': users,}, context_instance=RequestContext(request))
+
+
+def loadWidget(request):
+	return render_to_response('sprints/widget.html', {}, context_instance=RequestContext(request))

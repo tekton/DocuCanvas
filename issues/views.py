@@ -1113,7 +1113,6 @@ def set_issue_start_and_end_dates(request):
 
 @login_required
 def trackIssues(request):
-    print request.POST
     return redirect('issues.views.tempTrack')
     '''
     to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status"]}
@@ -1326,7 +1325,7 @@ def assign_to_user(request, user_id, issue_id):
 
 @login_required
 def tempTrack(request):
-    to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status"]}
+    to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status", "Sprint"]}
     try:
         projects = Project.objects.all()
         to_json["Project"] = []
@@ -1348,8 +1347,14 @@ def tempTrack(request):
             to_json["Meta Issue"].append(meta.title)
     except Exception, e:
         print e
+    try:
+        sprints = Sprint.objects.all()
+        to_json["Sprint"] = []
+        for sprint in sprints:
+            to_json["Sprint"].append(sprint.name)
+    except Exception, e:
+        print e
     if request.method == "POST":
-        print request.POST
         max_count = int(request.POST.getlist('filter-count')[0])
         q = []
         issues = {}
@@ -1386,7 +1391,7 @@ def tempTrack(request):
 def evaluateCommand(field, op, value):
     if value is None:
         return []
-    keys = {"Project": "project__name", "Assigned User": "assigned_to__username", "Meta Issue": "meta_issues__title__contains", "Status": "status"}
+    keys = {"Project": "project__name", "Assigned User": "assigned_to__username", "Meta Issue": "meta_issues__title", "Status": "status", "Sprint": "sprint__name"}
     kwargs = {keys[field]: value}
     if field == "Status" and value == "None":
         return Issue.objects.filter(status__isnull=True)
