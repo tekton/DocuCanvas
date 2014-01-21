@@ -344,10 +344,30 @@ body.issues-overview {}
 		
 		body.issues-overview #filters h3 {
 			font-size: 14px;
-			font-weight: normal;
+			font-weight: bold;
 			line-height: 20px;
 			margin: 0 0 5px;
 		}
+		
+		/* --- | Saved Filters | --- */
+		
+		body.issues-overview .saved-filters {
+			padding-right: 10px;
+			border-right: 1px solid #ddd;
+		}
+			
+			body.issues-overview .saved-filters .saved-filters-header {}
+			
+			body.issues-overview .saved-filters ul {
+				font-size: 14px;
+				list-style: none;
+				margin: 0;
+			}
+				
+				body.issues-overview .saved-filters ul button.close { display: none; }
+				body.issues-overview .saved-filters.edit ul button.close { display: block; }
+		
+		/* --- | Filter Table | --- */
 		
 		body.issues-overview #filters table {
 			background: #f6f6f6;

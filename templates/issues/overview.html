@@ -36,14 +36,26 @@ Issues Overview
 					
 					<!-- Begin span3 -->
 					<div class="span3">
-						<form>
-							<a onclick="saveForm()" href="#">Create new filters</a><br />or<br />
-							<label class="control-label" for="inputEmail">Load Saved Filters</label>
-							<select>
-								<option></option>
-								<option>Issues assigned to Me</option>
-							</select>
-						</form>
+						<!-- <label class="control-label" for="inputEmail">Saved Filters</label>
+						<select>
+							<option></option>
+							<option>Issues assigned to Me</option>
+						</select> -->
+						
+						<!-- Begin saved-filters -->
+						<div class="saved-filters">
+							<div class="saved-filters-header clearfix">
+								<h3 class="pull-left">Saved Filters</h3>
+								<button class="btn btn-mini pull-right">Edit</button>
+							</div>
+							<ul>
+								<li><a href="#">Issues assigned to me</a> <button class="close">&times;</button></li>
+								<li><a href="#">Duplicates</a> <button class="close">&times;</button></li>
+								<li><a href="#">Created by me</a> <button class="close">&times;</button></li>
+								<li><a href="#">Past due</a> <button class="close">&times;</button></li>
+							</ul>
+						</div>
+						<!-- End saved-filters -->
 					</div>
 					<!-- End span3 -->
 					
@@ -55,11 +67,14 @@ Issues Overview
 							<table class="table table-condensed filter-table">
 							
 							</table>
-						
+							
+							<!-- <a onclick="saveForm()" href="#">Create new filters</a> -->
+							
 			                <input type="hidden" id="id-filter-count" name="filter-count" value="1">
 							
 							<div class="text-right">
 								<input type="button" value="Clear" class="btn" />
+								<a href="#" class="btn filter-save"  rel="popover" data-content="<form class='form-inline span12 save-filter' style='float:none;margin:0;'><input type='text' class='input-medium' placeholder='Name'> <button type='submit' class='btn'>Save</button></form>" data-html="true" data-placement="left">Save Filter</a>
 								<input type="submit" value="Apply Filters" class="btn btn-primary" />
 							</div>
 		                </form>
@@ -190,6 +205,52 @@ function addFilter(){
 $(function(){
 	$('#maincontent').removeClass('container');
 	
+	savedFiltersEditMode = false;
+	
+	$('.saved-filters-header button').on('click', function(e){
+		e.preventDefault();
+		
+		if (savedFiltersEditMode){
+			$(this).text('Edit');
+			$('.saved-filters').removeClass('edit');
+			$('.saved-filters ul').sortable('disable');
+			savedFiltersEditMode = false;
+		}
+		else {
+			$(this).text('Done');
+			$('.saved-filters').addClass('edit');
+			$('.saved-filters ul').sortable({
+				update: function(e, ui){
+					// Code here to update saved filter list
+				}
+			});
+			$('.saved-filters ul').sortable('enable');
+			$('.saved-filters ul').disableSelection();
+			savedFiltersEditMode = true;
+		}
+	});
+
+	$(document).on('submit', function(e){
+		e.stopPropagation();
+		e.preventDefault();
+		console.log('hi');
+	});
+	
+	$('form').on('submit', function(e){
+		// return false;
+		e.preventDefault();
+		console.log("biiiitch");
+	})
+	
+	$('.saved-filters li button.close').on('click', function(e){
+		e.preventDefault();
+		$(this).parents('li').fadeOut();
+		
+		// Function here to remove saved filter from backend
+	})
+	
+	$('.filter-save').popover();
+	
 	$.extend($.tablesorter.themes.bootstrap, {
 	    // these classes are added to the table. To see other table classes available,
 	    // look here: http://twitter.github.com/bootstrap/base-css.html#tables
@@ -224,42 +285,42 @@ $(function(){
 	  });
 })
 
-	function addAssignedTo(){
-        var content = "<tr><td><select name='assigned_to'><option value='none'></option>{% for user in users %}<option value='{{user.username}}'>{{user.username}}</option>{% endfor %}</select></td></tr>";
-        $('#assigned-filter-table').append(content);
-    };
+function addAssignedTo(){
+    var content = "<tr><td><select name='assigned_to'><option value='none'></option>{% for user in users %}<option value='{{user.username}}'>{{user.username}}</option>{% endfor %}</select></td></tr>";
+    $('#assigned-filter-table').append(content);
+};
 
-    function addProject(){
-        var content = "<tr><td><select name='project'><option value='none'></option>{% for project in projects %}<option value='{{project}}'>{{project.name}}</option>{% endfor %}</select></td></tr>";
-        $('#project-filter-table').append(content);
-    };
+function addProject(){
+    var content = "<tr><td><select name='project'><option value='none'></option>{% for project in projects %}<option value='{{project}}'>{{project.name}}</option>{% endfor %}</select></td></tr>";
+    $('#project-filter-table').append(content);
+};
 
-    function addStatus(){
-        var content= "<tr><td><select name='status'><option value='none'></option><option value='active'>Active</option><option value='duplicate'>Duplicate</option><option value='fixed'>Fixed</option><option value='not_a_bug'>Not A Bug</option><option value='retest'>Retest</option><option value='unverified'>Unverified</option><option value='wont_fix'>Won't Fix</option></select></td></tr>";
-        $('#status-filter-table').append(content);
-    };
+function addStatus(){
+    var content= "<tr><td><select name='status'><option value='none'></option><option value='active'>Active</option><option value='duplicate'>Duplicate</option><option value='fixed'>Fixed</option><option value='not_a_bug'>Not A Bug</option><option value='retest'>Retest</option><option value='unverified'>Unverified</option><option value='wont_fix'>Won't Fix</option></select></td></tr>";
+    $('#status-filter-table').append(content);
+};
 
-    function addMetaIssue(){
-        var content = "<tr><td><select name='meta-issue'><option value='none'></option>{% for meta in meta_issues %}<option value='{{meta}}'>{{meta.title}}</option>{% endfor %}</select></td></tr>";
-        $('#meta-filter-table').append(content);
-    };
+function addMetaIssue(){
+    var content = "<tr><td><select name='meta-issue'><option value='none'></option>{% for meta in meta_issues %}<option value='{{meta}}'>{{meta.title}}</option>{% endfor %}</select></td></tr>";
+    $('#meta-filter-table').append(content);
+};
 
-    function reload(){
-        window.location = '/issue/track';
-    };
+function reload(){
+    window.location = '/issue/track';
+};
 
-    function saveForm(){
-        $.ajax({
-            type: 'post',
-            url: '{% url "issues.views.trackIssues" %}',
-            data: $('#use-this-form-to-save').serialize(),
-            success: function(data){
-                window.location.open('{% url "issues.views.tempTrack" %}');
-            },
-            error: function(data){
-                alert("error");
-            }
-        });
-    }
+function saveForm(){
+    $.ajax({
+        type: 'post',
+        url: '{% url "issues.views.trackIssues" %}',
+        data: $('#use-this-form-to-save').serialize(),
+        success: function(data){
+            window.location.open('{% url "issues.views.tempTrack" %}');
+        },
+        error: function(data){
+            alert("error");
+        }
+    });
+}
 </script>
 {% endblock %}
