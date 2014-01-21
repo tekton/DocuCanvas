@@ -8,6 +8,7 @@ from projects.forms import *
 from newsfeed.models import NewsFeedItem
 from notifications.models import Notification, NotificationRecipient
 from issues.models import *
+from accounts.views import cache_checkUserTemplate
 
 import traceback
 
@@ -61,6 +62,15 @@ def dashboard(request):
         print e
         notification_recipients = None
 
+    # get user setting for dashboard layout...
+    dashboardLayout = "col0[0]=module-pinned&col0[1]=module-assigned&col1[0]=module-newsfeed"
+    try:
+        cache_check = cache_checkUserTemplate(request.user, "dashboard")
+        if cache_check:
+            dashboardLayout = cache_check
+    except Exception as e:
+        print e
+        dashboardLayout = "col0[0]=module-pinned&col0[1]=module-assigned&col1[0]=module-newsfeed"
     # print users
     #subscribed = SubscriptionToIssue.objects.select_related().filter(user=request.user)
     # attempt to get the user defined template first, then check for an override template
@@ -76,7 +86,16 @@ def dashboard(request):
         print "Unable to get template from cache :: ".format(str(e))
         pass
     template = request.GET.get("template", default)
-    return render_to_response(template, {"issues": issues, "subscribed": subscribed,
-            "projects": projects, "pins": pins, "newsfeeds": newsfeeds, "notifications": notification_recipients,
-            "num_notifications": num_notifications, "users": users, "page_type": "Dashboard", "page_value": "Overview",
-            "navIndicator": 'dashboard'}, context_instance=RequestContext(request))
+    return render_to_response(template, {"issues": issues, 
+                                         "subscribed": subscribed,
+                                         "projects": projects,
+                                         "pins": pins,
+                                         "newsfeeds": newsfeeds,
+                                         "notifications": notification_recipients,
+                                         "num_notifications": num_notifications,
+                                         "users": users,
+                                         "page_type": "Dashboard",
+                                         "page_value": "Overview",
+                                         "navIndicator": 'dashboard',
+                                         "dashboardLayout": dashboardLayout,},
+                             context_instance=RequestContext(request))

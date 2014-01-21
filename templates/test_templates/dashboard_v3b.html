@@ -1,0 +1,403 @@
+{% extends "dashboard/base.html" %}
+{% load humanize %}
+{% load set_var %}
+{% load static %}
+
+{% block additionalHead %}
+	<link rel="stylesheet" href="{% static 'css/test_template.css' %}">
+{% endblock %}
+{% block bodyClass %}dashboard dashboard-v2{% endblock %}
+
+{% block contextNav %}
+{% include "_includes/contextnav-default.html" %}
+{% endblock %}
+
+{% block pageTitle %}
+Dashboard
+{% endblock %}
+
+{% block endScripts %}
+<script>
+	var num_notifications = '{{num_notifications}}';
+
+	function mark_notification_as_read(notification_id) {
+		$.ajax({
+			type: "POST",
+			url: "/notification/mark_as_read",
+			data: {
+				notification_id: notification_id,
+			},
+			success: function(data) {
+				num_notifications--;
+				if (num_notifications == 0) {
+					$('#notification_section').hide();
+				}
+			},
+			error: function(data) {
+				alert("Server side error");
+			}
+		});
+	}
+
+	$(function(){
+		var columns = $('.module-container [class^="span"]');
+		
+		$.fn.serial = function() {
+			var array = [];
+			var $elem = $(this);
+
+			$elem.each(function(i){
+				var menu = this.id;
+				$('.dash-module', this).each(function(e){
+					array.push('col'+i + '['+e+']=' + this.id);
+				})
+			})
+			return array.join('&');
+		}
+		
+		{% if dashboardLayout %}
+		var dashSettings = '{{dashboardLayout|safe}}';
+		{% else %}
+		var dashSettings = 'col1[1]=module-pinned&col1[2]=module-subscribed&col0[2]=module-newsfeed&col0[0]=module-assigned';
+		{% endif %}
+		
+		var parseDashSettings = function(queryString){
+			var queries,temp,i;
+			var cols = [];
+			
+			for (i = 0; i < columns.length; i++){
+				cols[i] = [];
+			}
+			
+			// Split up query string
+			queries = queryString.split('&');
+			
+			for (i = 0; i < queries.length; i++){
+				temp = queries[i].split('=');
+				tempArr = temp[0].split('[');
+				tempArr[0] = parseInt(tempArr[0].substring(3,4));
+				tempArr[1] = parseInt(tempArr[1].substring(0,1));
+				
+				cols[tempArr[0]][tempArr[1]] = temp[1];
+			}
+
+			// Putting modules in order by column
+			for (i = 0; i < cols.length; i++){
+				for (j = 0; j < cols[i].length; j++){
+					$(columns.get(i)).append($('#'+cols[i][j]));
+				}
+			}
+			
+			// Two column layout
+			if (cols[0].length > 0 && cols[1].length > 0) {
+				columns.removeClass().addClass('span6');
+			}
+		}
+		
+		parseDashSettings(dashSettings);
+		
+		$('.column-controls input').on('change', function(){
+			
+			switch ($(this).attr('value')) {
+				case 'column1':
+					columns.removeClass().addClass('span12').last().addClass('hide');	// Change column layout
+					columns.last().find('.dash-module').appendTo(columns.first());	// Move modules to visible column
+					break;
+				case 'column2':
+					columns.removeClass().addClass('span6');
+					if (columns.last().text() == ''){
+						columns.last().addClass('empty');
+					}
+					break;
+			}
+		});
+		
+		$('.module-container [class^="span"]').sortable({
+			connectWith: '.module-container [class^="span"]',
+			placeholder: 'placeholder',
+			update: function(e, ui){
+				columns.each(function(){
+					if (jQuery.trim($(this).text()) == ''){
+						$(this).addClass('empty');
+					}
+					else {
+						$(this).removeClass('empty');
+					}
+				})
+
+				console.log(columns.serial());
+				$.ajax({
+					type: "POST",
+					url: "/acct/settings/dashboard",
+					data: { "new_value": columns.serial()},
+					success: function(data) {
+						console.log("success");
+					},
+					error: function(data) {
+						console.log("error");
+					}
+				});
+			}
+		});
+		
+		columns.droppable({
+			activeClass: 'target'
+		});
+	});
+</script>
+{% endblock %}
+
+{% block bodyContent %}
+
+<!-- Begin dashboard-options -->
+<div class="dashboard-options">
+	
+	<form class="form">
+		<h3>Modules</h3>
+		
+		<label class="checkbox inline">
+			<input type="checkbox" id="inlineCheckbox1" value="option1"> Assigned
+		</label>
+		<label class="checkbox inline">
+			<input type="checkbox" id="inlineCheckbox2" value="option2"> Pinned
+		</label>
+		<label class="checkbox inline">
+			<input type="checkbox" id="inlineCheckbox2" value="option2"> Subscribed
+		</label>
+		<label class="checkbox inline">
+			<input type="checkbox" id="inlineCheckbox2" value="option2"> Recent Activity
+		</label>
+		
+		<h3>Columns</h3>
+		
+		<div class="column-controls">
+			<label class="radio inline">
+				<input type="radio" name="columns" id="inlineCheckbox1" value="column1"> 1
+			</label>
+			<label class="radio inline">
+				<input type="radio" name="columns" id="inlineCheckbox2" value="column2"> 2
+			</label>
+		</div>
+	</form>
+	
+	<p class="dashboard-toggle"><a href="#">Dashboard Options</a></p>
+	
+</div>
+<!-- End dashboard-options -->
+
+    {% if notifications %}
+    <section class="alert alert-block alert-success" id="notification_section">
+	    <ul>
+            {% for notification in notifications %}
+            <li>
+	           <button type="button" class="close" data-dismiss="alert" onClick="mark_notification_as_read({{notification.id}})">&times;</button>
+               <p>{{notification.notification.message}}</p>
+               <p class="meta text-right">From <a href="{% url 'auth.views.user_overview' notification.notification.creator.id %}">{{notification.notification.creator}}</a> on {{notification.created}}</p>
+	       </li>
+	       {% endfor %}
+	    </ul>
+    </section>
+    {% endif %}
+	
+	<!-- Begin row-fluid -->
+	<div class="row-fluid module-container">
+		
+		<!-- Begin span6 -->
+		<div class="span12">
+		
+			{% if issues %}
+			<div class="dash-module" id="module-assigned">
+		        <header>
+		            <h3>Assigned to me</h3>
+		        </header>
+				<div class="content">
+			        <table class="table table-condensed table-striped">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Summary</th>
+								<th>Project</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+			            <tbody>
+			            {% for issue in issues%}
+			                <tr>
+								<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
+			                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
+								<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+								<td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
+			                </tr>
+			            {% endfor%}
+			            </tbody>
+			        </table>
+				</div>
+			</div>
+			{% endif %}
+		
+			{% if pins %}
+			<div class="dash-module" id="module-pinned">
+		        <header>
+		            <h3>Pinned</h3>
+		        </header>
+		        <table class="table table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Summary</th>
+							<th>Project</th>
+							<th>Assigned To</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+		            <tbody>
+		            {% for issue in pins%}
+		                <tr>
+							<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
+		                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
+							<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+		                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
+		                    <td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
+		                </tr>
+		            {% endfor%}
+		            </tbody>
+		        </table>
+			</div>
+			{% endif %}
+		
+		    {% if subscribed %}
+			<div class="dash-module" id="module-subscribed">
+			
+		        <header>
+		            <h3>Subscribed</h3>
+		        </header>
+		        <table class="table table-condensed table-striped">
+		            <tbody>
+						<tr>
+							<th>ID</th>
+							<th>Summary</th>
+							<th>Project</th>
+							<th>Assigned To</th>
+							<th>Status</th>
+						</tr>
+						{% for issue in subscribed%}
+						<tr>
+							<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
+							<td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
+							<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+							<td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
+							<td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
+						</tr>
+						{% endfor%}
+					</tbody>
+				</table>
+			
+			</div>
+		    {% endif %}
+			
+			<div class="dash-module newsfeed" id="module-newsfeed">
+				
+		        <header>
+		            <h3>Recent Activity</h3>
+		        </header>
+				
+                {% for newsfeed in newsfeeds%}
+        			
+                    {% if newsfeed.newsfeed_type == 'update_issue' %}
+                        {% if newsfeed.field_change == "modified_by_id" %}
+                    {% else %}
+					<div class="media">
+						<a class="pull-left" href="{% url 'auth.views.user_overview' newsfeed.user.id %}"></a>
+						<div class="media-body">
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a>
+                            {% if newsfeed.field_change == "assigned_to_id" or newsfeed.field_change == "created_by" or newsfeed.field_change == "point_of_contact"%}
+                                    {%if newsfeed.field_change == "assigned_to_id" %}
+                                        <strong>assigned</strong>
+                                    {% else %}
+                                        {{newsfeed.field_change}}
+                                    {% endif %}
+                                    from
+                                    {% if newsfeed.old_value == None %}
+                                        none
+                                    {% else %}
+                                        {% for user in users%}
+                                            {% if user.id|stringformat:"d" == newsfeed.old_value %}
+                                                {{user.username}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif%}
+                                    to 
+                                    {% if newsfeed.new_value == None %}
+                                        None
+                                    {% else %}
+                                    {% for user in users%}
+                                        {% if user.id|stringformat:"d" == newsfeed.new_value %}
+                                            {{user.username}}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                            {% else%}
+							<strong>changed {{newsfeed.field_change}}</strong> to {{newsfeed.new_value|striptags|truncatechars:40}}
+                            {% endif %}
+							in <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}</a>.
+							<p class="footer">Project: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a> | {{newsfeed.timestamp}}</p>
+						</div>
+					</div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if newsfeed.newsfeed_type == 'create_issue' %}
+					<div class="media">
+						<a class="pull-left" href="{% url 'auth.views.user_overview' newsfeed.user.id %}"></a>
+						<div class="media-body">
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>created</strong> a new issue: <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}</a>.
+							<p class="footer">Project: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a> | {{newsfeed.timestamp}}</p>
+						</div>
+					</div>
+                    {% endif %}
+
+                    {% if newsfeed.newsfeed_type == 'comment' %}
+					<div class="media">
+						<a class="pull-left" href="{% url 'auth.views.user_overview' newsfeed.user.id %}"></a>
+						<div class="media-body">
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>commented</strong> on <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}:</a><br />
+							<blockquote>{{newsfeed.comment|truncatechars:40}}</blockquote>
+							<p class="footer">Project: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a> | {{newsfeed.timestamp}}</p>
+						</div>
+					</div>
+                    {% endif %}
+                    {% if newsfeed.newsfeed_type == 'update_project' %}
+					<div class="media">
+						<a class="pull-left" href="{% url 'auth.views.user_overview' newsfeed.user.id %}"></a>
+						<div class="media-body">
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>updated project information</strong> for <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a>
+							<p class="footer">{{newsfeed.timestamp}}</p>
+						</div>
+					</div>
+                    {% endif %}
+                    {% if newsfeed.newsfeed_type == 'create_project' %}
+					<div class="media">
+						<a class="pull-left" href="{% url 'auth.views.user_overview' newsfeed.user.id %}"></a>
+						<div class="media-body">
+							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>created a new project</strong>: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a>
+							<p class="footer">{{newsfeed.timestamp}}</p>
+						</div>
+					</div>
+                    {% endif %}
+                {% endfor%}
+				
+				<p class="view-more"><a href="{% url 'newsfeed.views.newsfeeds' %}">View more</a></p>
+				
+			</div>
+		
+		</div>
+		<!-- End span12 -->
+		
+		<!-- Begin span6 -->
+		<div class="span6"></div>
+		<!-- end span6 -->
+		
+	</div>
+	<!-- End row-fluid -->
+
+{% endblock%}

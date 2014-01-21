@@ -125,6 +125,8 @@ class AccountSetting(models.Model):
     # the fun parts...
     created = models.DateField(auto_now_add=True, null=True, blank=True)    # NOW
     modified = models.DateField(auto_now=True)                              # auto update time
+    class Meta:
+        unique_together = (('user', 'setting_name'),)
 
 
 add_introspection_rules([], ["^oauth2client\.django_orm\.CredentialsField"])

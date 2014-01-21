@@ -151,9 +151,9 @@ def assignTemplateForView(request):
 
 def cache_checkUserTemplate(user, view_name):
     '''
-        Ask Redis for a view from the account view hash
+        Ask Redis for a view from the account settings hash
     '''
-    redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')  # this is for the heroku install!
+    redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')  # this way REDISTOGO_URL can be overridden on an install basis
     r = redis.from_url(redis_url)
     template_in_redis = r.hget("user.settings.{}.hash".format(user.id), view_name)
     if template_in_redis:
@@ -164,13 +164,20 @@ def cache_checkUserTemplate(user, view_name):
 
 
 @celery.task
-def cache_populateUserTemplates():
+def cache_populateUserTemplates(single=None):
     """
         cycle through possible view_names and Accounts, if something is set populate the cache
     """
-    redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')  # this is for the heroku install!
+    redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
     r = redis.from_url(redis_url)
-    templates = UserTemplates.objects.all()
+    if single:
+        try:
+            templates = UserTemplates.objects.get(pk=single)
+        except Exception as e:
+            print str(e)
+            return False
+    else:
+        templates = UserTemplates.objects.all()
     for template in templates:
         try:
             r.hset("user.settings.{}.hash".format(template.user.id), template.viewName, template.pathToTemplate)
@@ -179,7 +186,9 @@ def cache_populateUserTemplates():
     return True
 
 
-def settings_update(request, setting_to_set, new_value):
+def settings_update(request, setting_to_set, new_value=None):
+    if request.method == "POST":
+        new_value = request.POST["new_value"]
     # only except post? they have to be logged in anyway though...
     try:  # this could get a get_or_create but that limits us and would just make us write code if we wanted slightly different functionality
         setting = AccountSetting.objects.get(user=request.user, setting_name=setting_to_set)
@@ -196,7 +205,13 @@ def settings_update(request, setting_to_set, new_value):
     else:
         setting.setting_value = new_value
         setting.save()
-    return HttpResponse(json.dumps({"msg": "what"}), content_type='application/json', status=200)
+        # now that it's saved in the DB lets save it in the cache! someday...
+        try:
+            r = redis.from_url(os.getenv('REDISTOGO_URL', 'redis://localhost:6379'))
+            r.hset("user.settings.{}.hash".format(request.user.id), setting_to_set, new_value)
+        except Exception as e:
+            print e
+    return HttpResponse(json.dumps({"msg": "I'm not a useful return..."}), content_type='application/json', status=200)
 
 
 def save_settings(request):
