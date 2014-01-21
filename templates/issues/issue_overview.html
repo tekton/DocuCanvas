@@ -236,7 +236,7 @@ Extends /templates/issue/base.html
 						<dd>{{issue.criticality}}</dd>
 						
 						<dt>Sprint</dt>
-						<dd><a href="#">{{issue.sprint}}</a></dd>
+						<dd><a href="{% url 'sprints.views.viewSprint' issue.sprint.id %}">{{issue.sprint}}</a></dd>
 						
 						<hr />
 						

@@ -278,6 +278,8 @@ body.issue-overview {}
 	body.issue-overview .related-issues {
 		margin-bottom: 20px;
 		border: 1px solid #e3e3e3;
+	    -webkit-box-shadow: 0px 0px 2px 0px rgba(0,0,0,.2);
+		box-shadow: 0px 0px 2px 0px rgba(0,0,0,.2);
 	}
 		
 		body.issue-overview .related-issues h3 {
@@ -286,7 +288,7 @@ body.issue-overview {}
 			color: #fff;
 			margin: 0;
 			padding: 5px;
-			background: #000;
+			background: #2B2F32;
 		}
 		
 		body.issue-overview .related-issues table {
