@@ -33,16 +33,14 @@ urlpatterns = patterns('',
     url(r'^help/', include('helpdesknew.urls')),
     url(r'^gapps/', include('gapps.urls')),
     # url(r'^tinymmce/', include('tinymce.urls')),
-    url(r'^search/', include('haystack.urls')),
     url(r'^charts/', include('charts.urls')),
     #url(r'^facebook/', include('facebook.urls')),
     #url(r'^twitter/', include('twitter.urls')),
     url(r'^socialplatform/', include('socialplatform.urls')),
     url(r'^polls/', include('polls.urls')),
     url(r'^feedback/', include('feedback.urls')),
-
+    #
     url(r'^docs/', include('docs.urls')),                         # wjmazza - 2013.07.09 - TEMP - R&D Test View
-    url(r'^tv/', include('solari.urls')),                         # wjmazza - 2013.07.15 - TEMP - R&D Test View
     url(r'^sitesearch', include('search.urls')),
     url(r'^research/', include('taxes.urls')),
     url(r'^sprints/', include('sprints.urls')),
