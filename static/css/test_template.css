@@ -87,8 +87,9 @@ body.dashboard {}
 		top: -5px;
 		min-width: 200px;
 		padding: 2px 10px 10px;
-		background: #ECFBFF;
-		border: 1px solid #BFFBFF;
+		background: #d9edf7;
+		border: 1px solid #bce8f1;
+		border-radius: 0 0 0 4px;
 	}
 		
 		body.dashboard .dashboard-options h3 {
@@ -112,9 +113,10 @@ body.dashboard {}
 			width: 125px;
 			height: 25px;
 			margin: 0;
-			background: #ECFBFF;
-			border: 1px solid #BFFBFF;
+			background: #d9edf7;
+			border: 1px solid #bce8f1;
 			border-top: 0;
+			border-radius: 0 0 4px 4px;
 		}
 			
 			body.dashboard .dashboard-options .dashboard-toggle a {
@@ -149,7 +151,7 @@ body.dashboard {}
 		body.dashboard .dash-module header {
 			color: #fff;
 			padding: 5px;
-			background: #000;
+			background: #2B2F32;
 		}
 			
 			body.dashboard .dash-module header h3 {
@@ -176,7 +178,7 @@ body.dashboard {}
 			}*/
 		
 			body.dashboard .dash-module table .issue-name {
-				font-weight: bold;
+/*				font-weight: bold;*/
 			}
 	
 	/* --- | Newsfeed | --- */

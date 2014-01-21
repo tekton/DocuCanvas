@@ -245,7 +245,6 @@ Dashboard
 								<th>Summary</th>
 								<th>Project</th>
 								<th>Status</th>
-								<th>Sprint</th>
 							</tr>
 						</thead>
 			            <tbody>
@@ -255,7 +254,6 @@ Dashboard
 			                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
 								<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
 								<td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
-								<td>{{issue.sprint}}</td>
 			                </tr>
 			            {% endfor%}
 			            </tbody>
@@ -285,7 +283,7 @@ Dashboard
 							<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
 		                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
 							<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
-		                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
+		                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}Unassigned{% endif %}</td>
 		                    <td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
 		                </tr>
 		            {% endfor%}
@@ -314,7 +312,7 @@ Dashboard
 							<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
 							<td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
 							<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
-							<td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}<em>Unassigned</em>{% endif %}</td>
+							<td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}Unassigned{% endif %}</td>
 							<td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
 						</tr>
 						{% endfor%}
