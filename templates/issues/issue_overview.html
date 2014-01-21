@@ -94,7 +94,11 @@ Extends /templates/issue/base.html
 				<div class="media">
 					<div class="media-body">
 						<h3 class="media-header">Description</h3>
-						{{issue.description|safe}}
+						{% if issue.description_type %}
+							{{issue.description|safe}}
+						{% else %}
+							{{issue.description|markdown}}
+						{% endif %}
 					</div>
 				</div>
 				{% if images %}

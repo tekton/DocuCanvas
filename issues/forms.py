@@ -44,7 +44,7 @@ class IssueForm(forms.ModelForm):
 
 
 class IssueFullForm(forms.ModelForm):
-    description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
+    # description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
 
     class Meta:
         model = Issue
@@ -139,7 +139,7 @@ class CommentForm(forms.ModelForm):
 
 
 class MetaIssueForm(forms.ModelForm):
-    description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
+    # description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
 
     class Meta:
         model = MetaIssue
@@ -196,7 +196,7 @@ class AdvSearchForm(forms.Form):
 
 
 class TestForm(forms.ModelForm):
-    description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'toolbar': 'undo redo textcolor'}))
+    # description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'toolbar': 'undo redo textcolor'}))
 
     class Meta:
         model = Issue
