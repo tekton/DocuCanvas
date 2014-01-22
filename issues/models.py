@@ -60,6 +60,7 @@ class Issue(models.Model):
     created_by = models.ForeignKey(User, blank=True, null=True, related_name='created_by', editable=False)
     point_of_contact = models.ForeignKey(User, blank=True, null=True, related_name='poc')
     modified_by = models.ForeignKey(User, blank=True, null=True, related_name='modified_by')
+    reported_by = models.ForeignKey(User, blank=True, null=True, related_name='reported_by')  # in case it's a different party that's reporting to a project manager and not a worker
     # basic information
     title = models.CharField(max_length=255, blank=True, null=True)
     summary = models.CharField(max_length=140, default="No Summary")
