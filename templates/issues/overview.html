@@ -53,6 +53,9 @@ Issues Overview
 								<li><a href="#">Duplicates</a> <button class="close">&times;</button></li>
 								<li><a href="#">Created by me</a> <button class="close">&times;</button></li>
 								<li><a href="#">Past due</a> <button class="close">&times;</button></li>
+								{% for query in saved_queries %}
+								<li><a href="{% url 'issues.views.trackIssues' query.query_hash %}">{{query.name}}</a> <button class="close">&times;</button></li>
+								{% endfor %}
 							</ul>
 						</div>
 						<!-- End saved-filters -->
@@ -70,11 +73,11 @@ Issues Overview
 							
 							<!-- <a onclick="saveForm()" href="#">Create new filters</a> -->
 							
-			                <input type="hidden" id="id-filter-count" name="filter-count" value="1">
+			                <input type="hidden" id="id-filter-count" name="filter_count" value="1">
 							
 							<div class="text-right">
 								<input type="button" value="Clear" class="btn" />
-								<a href="#" class="btn filter-save"  rel="popover" data-content="<form class='form-inline span12 save-filter' style='float:none;margin:0;'><input type='text' class='input-medium' placeholder='Name'> <button type='submit' class='btn'>Save</button></form>" data-html="true" data-placement="left">Save Filter</a>
+								<a href="#" class="btn filter-save"  rel="popover" data-content="<form class='form-inline span12 save-filter' style='float:none;margin:0;'><input type='text' id='filter-name-input' class='input-medium' placeholder='Name'> <button type='submit' class='btn' onclick='saveForm()'>Save</button></div>" data-html="true" data-placement="left">Save Filter</a>
 								<input type="submit" value="Apply Filters" class="btn btn-primary" />
 							</div>
 		                </form>
@@ -132,7 +135,7 @@ Issues Overview
 			</th>
 		</tr>
 	</tfoot>
-	<tbody>
+	<tbody class="issue_body">
         {% for issue in issues%}
         <tr>
 			<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
@@ -174,6 +177,7 @@ $(document).ready(function(){
     var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select name=" + filter_count + "><option>is</option><option>is not</option></select></td><td><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
     $('.table-condensed').append(to_insert);
 });
+
 
 function populateOptions(filter_id){
     var elem = document.getElementById(filter_id + "-selector");
@@ -230,7 +234,7 @@ $(function(){
 		}
 	});
 
-	$(document).on('submit', function(e){
+	$('.save-filter').on('submit', function(e){
 		e.stopPropagation();
 		e.preventDefault();
 		console.log('hi');
@@ -240,6 +244,17 @@ $(function(){
 		// return false;
 		e.preventDefault();
 		console.log("biiiitch");
+		$.ajax({
+	        type: 'post',
+	        url: '{% url "issues.views.trackIssues" %}',
+	        data: $('#use-this-form-to-save').serialize(),
+	        success: function(data){
+	            applyFilters(data);
+	        },
+	        error: function(data){
+	            alert("error");
+	        }
+	    });
 	})
 	
 	$('.saved-filters li button.close').on('click', function(e){
@@ -283,36 +298,41 @@ $(function(){
 	    output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
 
 	  });
-})
-
-function addAssignedTo(){
-    var content = "<tr><td><select name='assigned_to'><option value='none'></option>{% for user in users %}<option value='{{user.username}}'>{{user.username}}</option>{% endfor %}</select></td></tr>";
-    $('#assigned-filter-table').append(content);
-};
-
-function addProject(){
-    var content = "<tr><td><select name='project'><option value='none'></option>{% for project in projects %}<option value='{{project}}'>{{project.name}}</option>{% endfor %}</select></td></tr>";
-    $('#project-filter-table').append(content);
-};
-
-function addStatus(){
-    var content= "<tr><td><select name='status'><option value='none'></option><option value='active'>Active</option><option value='duplicate'>Duplicate</option><option value='fixed'>Fixed</option><option value='not_a_bug'>Not A Bug</option><option value='retest'>Retest</option><option value='unverified'>Unverified</option><option value='wont_fix'>Won't Fix</option></select></td></tr>";
-    $('#status-filter-table').append(content);
-};
-
-function addMetaIssue(){
-    var content = "<tr><td><select name='meta-issue'><option value='none'></option>{% for meta in meta_issues %}<option value='{{meta}}'>{{meta.title}}</option>{% endfor %}</select></td></tr>";
-    $('#meta-filter-table').append(content);
-};
+});
 
 function reload(){
     window.location = '/issue/track';
 };
 
+function applyFilters(input){
+	$('.table-condensed tr').remove();
+	var hist_cont = "";
+	data = JSON.parse(input);
+    for(field in data["hist"]){
+        hist_cont += "<tr><td><input type='hidden' name='" + field + "' value='" + data["hist"][field][0] + "'>" + data["hist"][field][0] + "</td><td><input type='hidden' name='" + field + "' value='" + data["hist"][field][1] + "'>" + data["hist"][field][1]+ "</td><td><input type='hidden' name='" + field + "' value='" + data["hist"][field][2] + "'>" + data["hist"][field][2] + "</td></tr>";
+    }
+    $(".table-condensed").append(hist_cont);
+	filter_count = data["total_filters"];
+    var content = "";
+    for(field in query["options"]){
+        content += "<option>" + query["options"][field] + "</option>";
+    }
+    var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select name=" + filter_count + "><option>is</option><option>is not</option></select></td><td><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
+    $('.table-condensed').append(to_insert);
+    var issue_content = "";
+    for(issue in data["issues"]){
+    	issue_content += "<tr><td class=\"issue-id\"><a href=\"/issue/" + data["issues"][issue]["id"] + "\">" + data["issues"][issue]["id"] + "</a></td><td class=\"issue-summary\"><div><a href=\"/issue/" + data["issues"][issue]["id"] + "\">" + data["issues"][issue]["summary"] + "</a></div></td><td class=\"issue-project\"><a href=\"/project/" + data["issues"][issue]["project_id"] + "\">" + data["issues"][issue]["project_name"] + "</a></td><td class=\"issue-sprint\"><a href=\"/auth/user/" + data["issues"][issue]["assigned_to_username"] + "\">" + data["issues"][issue]["assigned_to_username"] + "</a></td><td class=\"issue-status\"><span class=\"title-issuestatus label " + data["issues"][issue]["status"] + "\">"
+    	issue_content += data["issues"][issue]["status"] + "</span></td><td class=\"issue-priority\">" + data["issues"][issue]["criticality"] + "</td><td class=\"issue-sprint\"><a href=\"/sprints/" + data["issues"][issue]["sprint_id"] + "\">" + data["issues"][issue]["sprint_name"] + "</a></td><td class=\"issue-create\">" + data["issues"][issue]["created"] + "</td><td class=\"issue-modify\">" + data["issues"][issue]["modified"] + "</td></tr>";
+    }
+    $('.issue_body tr').remove();
+    $('.issue_body').append(issue_content);
+};
+
 function saveForm(){
+	var name = document.getElementById('filter-name-input').value;
     $.ajax({
         type: 'post',
-        url: '{% url "issues.views.trackIssues" %}',
+        url: '/issue/save_filters?name=' + name,
         data: $('#use-this-form-to-save').serialize(),
         success: function(data){
             window.location.open('{% url "issues.views.tempTrack" %}');
