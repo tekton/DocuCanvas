@@ -44,10 +44,6 @@ All Projects
 				<td>Owner</td>
 				<td>Manager</td>
 				<td>Lead Developer</td>
-				<td>Slug</td>
-				<td>Priority</td>
-				<td>Business Case</td>
-				<td>Assumptions</td>
 				<td>Internal Requests</td>
 				<td>Status</td>
 				<td>Phase</td>
@@ -70,10 +66,6 @@ All Projects
 				<td>{%if project.product_owner %}<a href="{% url 'auth.views.user_overview' project.product_owner.id %}">{{project.product_owner}}</a> {% else %}{{project.product_owner}}{% endif %}</td>
 				<td>{{project.project_manager}}</td>
 				<td>{{project.lead_developer}}</td>
-				<td>{{project.slug}}</td>
-				<td>{{project.priority}}</td>
-				<td>{{project.business_case}}</td>
-				<td>{{project.assumptions}}</td>
 				<td>{{project.internal_requests}}</td>
 				<td>{{project.status}}</td>
 				<td>{{project.current_phase}}</td>

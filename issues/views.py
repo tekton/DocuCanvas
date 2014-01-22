@@ -1252,7 +1252,7 @@ def issueTrackerQueryMaker():
     return to_json
 
 
-def evaluateCommand(field, op, value):
+def evaluateCommand(field, operator, value):
     if value is None:
         return []
     keys = {"Project": "project__name", 
@@ -1266,13 +1266,13 @@ def evaluateCommand(field, op, value):
     kwargs = {keys[field]: value}
     if field == "Status" and value == "None":
         return Issue.objects.filter(status__isnull=True)
-    if op == "is":
+    if operator == "is":
         return Issue.objects.filter(**kwargs)
-    elif op == "is not":
+    elif operator == "is not":
         return Issue.objects.exclude(**kwargs)
-    elif op == "is before":
+    elif operator == "is before":
         kwargs = {"%s__lte" % keys[field]: value}
-    elif op == "is after":
+    elif operator == "is after":
         kwargs = {"%s__gte" % keys[field]: value}
     print kwargs
     return Issue.objects.filter(**kwargs)

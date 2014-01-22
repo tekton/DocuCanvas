@@ -18,7 +18,7 @@ class IssueForm(forms.ModelForm):
     # description = forms.CharField(widget=TinyMCE(attrs={'cols': 100, 'rows': 20, 'id': 'something'}), required=False)
     class Meta:
         model = Issue
-        fields = ('project', 'summary', 'description', 'meta_issues', 'projected_start','projected_end', 'assigned_to')
+        fields = ('project', 'summary', 'description', 'meta_issues', 'projected_start','projected_end', 'assigned_to', 'sprint')
 
     def save(self, user=None, *args, **kwargs):
         print "form save"
@@ -41,7 +41,7 @@ class IssueForm(forms.ModelForm):
             if "project" in self.initial:
                 if self.initial["project"] is not None:
                     self.fields['meta_issues'] = forms.ModelChoiceField(required=False, queryset=MetaIssue.objects.filter(project=self.initial["project"]))
-
+            self.fields["assigned_to"] = forms.ModelChoiceField(required=False, queryset=User.objects.select_related().exclude(account__assignable=None))
 
 class IssueFullForm(forms.ModelForm):
     # description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
