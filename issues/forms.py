@@ -41,7 +41,7 @@ class IssueForm(forms.ModelForm):
             if "project" in self.initial:
                 if self.initial["project"] is not None:
                     self.fields['meta_issues'] = forms.ModelChoiceField(required=False, queryset=MetaIssue.objects.filter(project=self.initial["project"]))
-            self.fields["assigned_to"] = forms.ModelChoiceField(required=False, queryset=Account.objects.filter(assignable=True).order_by('user__username'))
+            self.fields["assigned_to"] = forms.ModelChoiceField(required=False, queryset=User.objects.select_related().exclude(account__assignable=None))
 
 class IssueFullForm(forms.ModelForm):
     # description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
