@@ -182,28 +182,21 @@ Extends /templates/issue/base.html
 						<button type="submit" class="btn btn-primary">Submit</button>
 					</form>
 				</div>
-				<ul id="issue-comments-list" class="media-list">
-					{% for comment in comments%}
-					<li class="media">
-						<article id="issue-comment-{{comment.id}}" class="issue-comment" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}">
-							<div class="media-body">
-								<aside class="clearfix">
-									<p class="muted">
-										<span class="pull-left"><a href="{% url 'auth.views.user_overview' comment.user.id %}">{{comment.user}}</a></span>
-										<span class="pull-right">
-											<time datetime="{{comment.created|date:"c"}}">{{comment.created|naturaltime}}</time>
-										</span>
-									</p>
-								</aside>
-								<button class="btn btn-mini pull-right comment-editbutton" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}" data-commentcontent="{{comment.description}}"><i class="icon-edit"></i></button>
-								<div class="comment-content">
-									{{comment.description|markdown:"safe"}}
-								</div>
-							</div>
-						</article>
-					</li>
-					{% endfor %}
-				</ul>
+				
+				{% for comment in comments%}
+				<div class="media issue-comment" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}">
+					<div class="media-body">
+						<div class="comment-header clearfix">
+							<h4><a href="{% url 'auth.views.user_overview' comment.user.id %}">{{comment.user}}</a></h4>
+						</div>
+						<button class="btn btn-mini pull-right comment-editbutton" data-commentid="{{comment.id}}" data-commentuser="{{comment.user}}" data-commentcontent="{{comment.description}}"><i class="icon-edit"></i></button>
+						<div class="comment-content">
+							{{comment.description|markdown:"safe"}}
+						</div>
+						<time class="pull-left" datetime="{{comment.created|date:"c"}}">{{comment.created|naturaltime}}</time>
+					</div>
+				</div>
+				{% endfor %}
 			</aside>
 		</div>
 
