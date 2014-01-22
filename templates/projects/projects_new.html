@@ -59,8 +59,8 @@ Used for all templates in /templates/projects
 			<tr>
 				<td><a href="{% url 'projects.views.project_overview' project.id %}>">{{project.name}}</a></td>
 				<td>{{project.code_name}}</td>
-				<td>{{project.status}}</td>
-				<td>{{project.current_phase}}</td>
+				<td>{{project.get_status_display}}</td>
+				<td>{{project.get_current_phase_display}}</td>
 				<td>{{project.deployment_server}}</td>
 				<td>{{project.deployment_url}}</td>
 				<td>{{project.modified}}</td>
