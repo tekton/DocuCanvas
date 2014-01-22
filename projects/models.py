@@ -29,11 +29,12 @@ class Project(models.Model):
     created = models.DateField(auto_now_add=True, null=True, blank=True)  # NOW
     modified = models.DateField(auto_now=True, null=True, blank=True)  # auto update time
     #
-    repository_url = models.CharField(max_length=255, blank=True, null=True)
-    deployment_server = models.CharField(max_length=255, blank=True, null=True)
-    deployment_url = models.CharField(max_length=255, blank=True, null=True)
+    repository_url = models.CharField(max_length=255, blank=True, null=True)  # where to check in github or internal server
+    deployment_server = models.CharField(max_length=255, blank=True, null=True)  # url for test environment
+    deployment_url = models.CharField(max_length=255, blank=True, null=True)  # url of live environment
     #
     code_name = models.CharField(max_length=255, blank=True, null=True)
+    active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.name
