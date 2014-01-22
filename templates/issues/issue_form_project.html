@@ -1,7 +1,7 @@
 {% extends "issues/base.html" %}
 {% load addcss %}
 
-{% block pageTitle %}Create New Issue{% endblock %}
+{% block pageTitle %}Create New Issue :: {{page_type}}{% endblock %}
 
 {% block contextNav %}
     <li><a href="{% url 'issues.views.unassigned_issues' %}" >Unassigned Issues</a></li>

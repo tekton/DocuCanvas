@@ -9,7 +9,7 @@
 {% block bodyClass %}dashboard dashboard-v2{% endblock %}
 
 {% block contextNav %}
-{% include "_includes/contextnav-default.html" %}
+{% include "_includes/contextnav-dashboard.html" %}
 <li class="nav-header">Page Options</li>
 <li class="dashboard-toggle"><a href="#">Dashboard Options</a></li>
 {% endblock %}
@@ -428,3 +428,25 @@ Dashboard
 	<!-- End row-fluid -->
 
 {% endblock%}
+
+{% block modalsIncluded %}
+	<div id="modal-new-issue" class="modal fade hide">
+		<header class="modal-header">
+			<button class="close" data-dismiss="modal">×</button>
+			<h3>New Issue</h3>
+		</header>
+		<div class="modal-body">
+            {% if projects.count > 0 %}
+			<h4>Project</h4>
+			<ul>
+                {% for project in projects%}
+				<li><a href="{% url 'issues.views.issue_form_project' project.id %}">{{project.name}}</a></li>
+                {% endfor %}
+			</ul>
+            {% endif %}
+		</div>
+		<footer class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+		</footer>
+	</div>
+{% endblock %}

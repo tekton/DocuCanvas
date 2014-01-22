@@ -223,6 +223,14 @@ textarea {
 	
 body.page-issues {}
 	
+	/* --- | Pageheader | --- */
+	
+	body.page-issues #pageheader {}
+		
+		body.page-issues #pageheader h1 {
+			font-size: 27px;
+		}
+	
 	body.page-issues .control-group.summary {
 		visibility: hidden;
 	}

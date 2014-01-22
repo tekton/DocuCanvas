@@ -1,0 +1,14 @@
+<li class="nav-header">New</li>
+<li><a href="#modal-new-issue" data-toggle="modal">Issue</a></li>
+<li><a href="{% url 'daily_reports.views.edit_report' %}">Daily Report</a></li>
+{% if user.is_superuser %}
+<li><a href="{% url 'notifications.views.notification_form' %}">Notification</a></li>
+{% endif %}
+<li><a href="{% url 'helpdesknew.views.user_help' %}">Help Desk</a></li>
+<li class="nav-header">Lists</li>
+<li><a href="{% url 'issues.views.unassigned_issues' %}">Unassigned Issues</a></li>
+<li><a href="{% url 'food.views.allRequests' %}">Food Requests</a></li>
+<li><a href="{% url 'notifications.views.notifications' %}">Past Notifications</a></li>
+<li><a href="{% url 'polls.views.all_polls' %}">Polls</a></li>
+<li><a href="{% url 'charts.views.home' %}">Charts</a></li>
+<li><a href="{% url 'sprints.views.viewAll' %}">Sprints</a></li>
