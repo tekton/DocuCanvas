@@ -1,6 +1,7 @@
 {% extends "issues/base.html" %}
 {% load markup %}
 {% load humanize %}
+{% load static %}
 {% comment %}
 Extends /templates/issue/base.html
 
@@ -28,15 +29,15 @@ Extends /templates/issue/base.html
 		**NOTE: made available by baseContent - if baseContent is defined within the template,bodyContent will not be displayed unless contained within baseContent**
 {% endcomment %}
 
+{% block additionalHead %}
+    {{ form.media }}
+	<link rel="stylesheet" href="{% static 'css/test_template.css' %}">
+{% endblock %}
+{% block bodyClass %}issue-overview issue-overview-v2{% endblock %}
+
 {% block pageTitle %}
-<span class="title-pagetype">{{page_type}}</span>
-{% if page_value %}
-<span class="title-separator title-seperator-pagevalue">::</span>
-<span class="title-pagevalue">{{page_value}}</span>
-{% endif %}
 {% if issue %}
-<span class="title-separator title-seperator-issuestatus">::</span>
-<span class="title-issuestatus label {{issueLabelClass}}">{{issue.get_status_display}}</span>
+	{{page_value}} :: {{issue.summary}}
 {% endif %}
 {% endblock %}
 
@@ -44,6 +45,17 @@ Extends /templates/issue/base.html
 	<li class="nav-header">New</li>
 	<li><a id="context-issue-new" href="{% url 'issues.views.issue_form_project' issue.project.id %}">Issue : {{issue.project.name}}</a></li>
 	<li class="nav-header">Issue Actions</li>
+	<li><a id="test-subscribe">
+		<form class="form-inline">
+			<label>Subscribe:</label>
+			<select name="subscribed_user" class="input-small">
+				{% for u in users %}
+				<option value="{{u.id}}" {% if u == user %}selected{% endif %}>{{u.username}}</option>
+				{% endfor%}
+			</select>
+			<button class="btn" type="button">Subscribe</button>
+		</form>
+	</a></li>
 	<li><a id="context-issue-subscribe" href="{% url 'issues.views.subscribe' issue.id %}">{% if subscribe == None%}Subscribe{% else %}Unsubscribe{% endif %}</a></li>
 	<li><a id="context-issue-pin" href="{% url 'issues.views.pin' issue.id %}">{% if pin %}Unpin{% else %}Pin{% endif %}</a></li>
 	<li><a id="context-issue-assign" href="{% url 'issues.views.assign' issue.id %}">{% if issue.assigned_to == user%}Unassign{% else %}Take{% endif %}</a></li>
@@ -77,20 +89,10 @@ Extends /templates/issue/base.html
 	<li><a href="{% url 'issues.views.edit' issue.id %}">Edit</a></li>
 {% endblock%}
 
-{% block additionalHead %}
-    {{ form.media }}
-{% endblock %}
-
 {% block bodyContent %}
 	<article class="row">
 		<div id="issue-column-main" class="span9 metainfo-maincolumn">
 			<div id="issue-details" class="well">
-				<div class="media">
-					<div class="media-body">
-						<h3 class="media-header">Summary</h3>
-						{{issue.summary}}
-					</div>
-				</div>
 				<div class="media">
 					<div class="media-body">
 						<h3 class="media-header">Description</h3>
@@ -119,6 +121,43 @@ Extends /templates/issue/base.html
 				{% endif %}
 			</div>
 
+		{% if related_issues %}
+		<div class="related-issues">
+			
+			<h3>Related Issues</h3>
+			
+			<table class="table table-condensed table-striped">
+				<thead>
+					<tr>
+						<th>
+							Description
+						</th>
+						<th>
+							Relation
+						</th>
+						<th width="50"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for issue_to_issue in related_issues %}
+					<tr>
+						<td>
+							{% if issue_to_issue.primary_issue == issue %}
+							<a href="{% url 'issues.views.issue_overview' issue_to_issue.secondary_issue.id %}">{{issue_to_issue.secondary_issue.summary}}</a>
+							{% elif issue_to_issue.secondary_issue == issue %}
+							<a href="{% url 'issues.views.issue_overview' issue_to_issue.primary_issue.id %}">{{issue_to_issue.primary_issue.summary}}</a>
+							{% endif %}
+						</td>
+						<td>{{issue_to_issue.link_type}}</td>
+						<td class="text-right"><a class="btn btn-mini unlink" data-unlink-primary="{{issue_to_issue.primary_issue.id}}" data-unlink-secondary="{{issue_to_issue.secondary_issue.id}}">Unlink</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			
+		</div>
+		{% endif %}
+			
 			<aside id="issue-comments" class="well">
 				<header>
 					<h3>Comments</h3>
@@ -134,7 +173,7 @@ Extends /templates/issue/base.html
 						</div>
 						{% endif %}
 						<div class="control-group">
-							<label class="control-label" for="id_description">Comment</label>
+							<label class="control-label" for="id_description">Add a Comment</label>
 							<div class="control-group">
 								{{comment_form.description}}
 							</div>
@@ -150,7 +189,7 @@ Extends /templates/issue/base.html
 							<div class="media-body">
 								<aside class="clearfix">
 									<p class="muted">
-										<span class="pull-left">{{comment.user}}</span>
+										<span class="pull-left"><a href="{% url 'auth.views.user_overview' comment.user.id %}">{{comment.user}}</a></span>
 										<span class="pull-right">
 											<time datetime="{{comment.created|date:"c"}}">{{comment.created|naturaltime}}</time>
 										</span>
@@ -175,10 +214,13 @@ Extends /templates/issue/base.html
 				</div>
 				<div id="issue-metainfo-content" class="metainfo-content">
 					<dl>
-						<dt>Issue Id:</dt>
-							<dd>{{issue.id}}</dd>
-
-						<dt>Assigned To:</dt>
+						<dt>Project:</dt>
+						<dd><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{page_type}}</a></dd>
+						
+						<dt>Status</dt>
+						<dd><span class="title-issuestatus label {{issueLabelClass}}">{{issue.get_status_display}}</span></dd>
+						
+						<dt>Assigned To</dt>
 							<dd>
 								{% if issue.assigned_to.id %}
 								<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>
@@ -186,132 +228,70 @@ Extends /templates/issue/base.html
 								{{issue.assigned_to}}
 								{% endif %}
 							</dd>
-
-						<dt>Meta Issue:</dt>
+						
+						<dt>Issue Type</dt>
+						<dd>{{issue.issue_type}}</dd>
+						
+						<dt>Criticality</dt>
+						<dd>{{issue.criticality}}</dd>
+						
+						<dt>Sprint</dt>
+						<dd><a href="{% url 'sprints.views.viewSprint' issue.sprint.id %}">{{issue.sprint}}</a></dd>
+						
+						<hr />
+						
+						{% if issue.meta_issues %}
+						<dt>Meta Issue</dt>
                         <dd>{% if issue.meta_issues %}<a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues.title}}</a>{% else %}None{% endif %}</dd>
+						
+						<hr />
+						{% endif %}
 
-						<!--
-						<dt>Project Name:</dt>
-							<dd><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></dd>
+						<dt>Created On</dt>
+						<dd>{{issue.created}}</dd>
+						
+						<dt>Created By</dt>
+						<dd>{% if issue.created_by %}<a href="{% url 'auth.views.user_overview' issue.created_by.id %}">{{issue.created_by}}</a>{% else %}{{issue.created_by}}{% endif %}</dd>
+						
+						{% if issue.modified_by %}
+						<hr />
 
-						<dt>State:</dt>
-							<dd>{{issue.state}}</dd>
+						<dt>Last Modified</dt>
+						<dd>{{issue.modified}}</dd>
+						
+						<dt>Modified By</dt>
+						<dd>{% if issue.modified_by %}<a href="{% url 'auth.views.user_overview' issue.modified_by.id %}">{{issue.modified_by}}</a>{% else %}{{issue.modified_by}}{% endif %}</dd>
+						{% endif %}
 
-						<dt>Projected Start:</dt>
-							<dd>{{issue.projected_start}}</dd>
-
-						<dt>Projected End:</dt>
-							<dd>{{issue.projected_end}}</dd>
-
-						<dt>Actual Start:</dt>
-							<dd>{{issue.actual_start}}</dd>
-
-						<dt>Actual End:</dt>
-							<dd>{{issue.actual_end}}</dd>-->
-
-						<dt>Date Reported:</dt>
-							<dd>{{issue.date_reported}}</dd>
-
-						<dt>Created:</dt>
-							<dd>{{issue.created}}</dd>
-
-						<dt>Modified:</dt>
-							<dd>{{issue.modified}}</dd>
-
-						<dt>View Type:</dt>
-							<dd>{{issue.view_type}}</dd>
-
-						<dt>Issue Type:</dt>
-							<dd>{{issue.issue_type}}</dd>
-
-						<!--<dt>Title:</dt>
-							<dd>{{issue.title}}</dd>
-
-						<dt>Link Slug:</dt>
-							<dd>{{issue.link_slug}}</dd>-->
-
-						<dt>Status:</dt>
-							<dd>
-								<span class="label {{issueLabelClass}}">{{issue.get_status_display}}</span>
-							</dd>
-
-						<dt>Criticality:</dt>
-							<dd>{{issue.criticality}}</dd>
-
-						<dt>Fixability:</dt>
-							<dd>{{issue.fixability}}</dd>
-
-						<!--<dt>R &amp; D:</dt>
-							<dd>{{issue.r_and_d}}</dd>
-
-						<dt>Feature:</dt>
-							<dd>{{issue.feature}}</dd>-->
-
-						<dt>OS:</dt>
-							<dd>{{issue.os}}</dd>
-
-						<dt>OS Version:</dt>
-							<dd>{{issue.os_version}}</dd>
-
-						<dt>Browser:</dt>
-							<dd>{{issue.browser}}</dd>
-
-						<dt>Browser Version:</dt>
-							<dd>{{issue.browser_version}}</dd>
-
-						<!--<dt>Screen Shot:</dt>
-							<dd>{{issue.screen_shot}}</dd>
-
-						<dt>Wireframe:</dt>
-							<dd>{{issue.wireframe}}<br/></dd>
-
-						<dt>URI to Test:</dt>
-							<dd>{{issue.uri_to_test}}</dd>-->
-
-						<dt>Created By:</dt>
-							<dd>{{issue.created_by}}</dd>
-
-						<dt>Modified By:</dt>
-							<dd>{{issue.modified_by}}</dd>
-
-						<dt>Point of Contact:</dt>
-							<dd>{{issue.point_of_contact}}</dd>
-					</dl>
-
-					{% if related_issues %}
-					<table class="table table-condensed">
-						<caption>
-							Related Issues
-						</caption>
-						<thead>
-							<tr>
-								<th>
-									Issue
-								</th>
-								<th>
-									Relation
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% for issue_to_issue in related_issues %}
-							<tr>
-								<td>
-									{% if issue_to_issue.primary_issue == issue %}
-									<a href="{% url 'issues.views.issue_overview' issue_to_issue.secondary_issue.id %}">{{issue_to_issue.secondary_issue.summary}}</a>
-									{% elif issue_to_issue.secondary_issue == issue %}
-									<a href="{% url 'issues.views.issue_overview' issue_to_issue.primary_issue.id %}">{{issue_to_issue.primary_issue.summary}}</a>
-									{% endif %}
-								</td>
-								<td>
-									<a class="btn btn-mini pull-right unlink" data-unlink-primary="{{issue_to_issue.primary_issue.id}}" data-unlink-secondary="{{issue_to_issue.secondary_issue.id}}"><i class="icon-remove-circle"></i></a>
-									{{issue_to_issue.link_type}}
-								</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-					{% endif %}
+						<!-- <hr />
+						
+						<dt>Date Reported</dt>
+						<dd>{{issue.date_reported}}</dd>
+						
+						<dt>Point of Contact</dt>
+						<dd>{{issue.point_of_contact}}</dd> -->
+						
+						<!-- <hr />
+						
+						<dt>View Type</dt>
+						<dd>{{issue.view_type}}</dd>
+						
+						<dt>Fixability</dt>
+						<dd>{{issue.fixability}}</dd>
+						
+						<hr />
+						
+						<dt>OS</dt>
+						<dd>{{issue.os}}</dd>
+						
+						<dt>OS Version</dt>
+						<dd>{{issue.os_version}}</dd>
+						
+						<dt>Browser</dt>
+						<dd>{{issue.browser}}</dd>
+						
+						<dt>Browser Version</dt>
+						<dd>{{issue.browser_version}}</dd> -->
 				</div>
 			</aside>
 		</div>
@@ -430,6 +410,24 @@ Extends /templates/issue/base.html
 	            AlertMessage.error('<strong>Subscribe error!</strong>' + data.error);
 	        }
 	    },AlertMessage.genericUnknownError);
+		
+		// Context menu - Subscribe (other)
+		$('#test-subscribe .btn').click(function(){
+			var btn = $(this),
+				statusField = btn.siblings('select');
+
+			$.ajax({
+			    type: 'POST',
+			    url: '/issue/subscribe/{{ issue.id }}/' + statusField.val(),
+			    data:{
+					csrfmiddlewaretoken: '{{csrf_token}}'
+			    },
+			    success: function(data){
+			    	AlertMessage.success('Issue has been successfully assigned');
+			    },
+			    error: AlertMessage.genericUnknownError
+			});
+		});
 
 	    // Context menu - Pin
 	    $('#context-issue-pin').asAjax(function(data, status) {
