@@ -66,7 +66,7 @@ function lockEnd(){
 	else{
 		end_date = new Date(endDate);
 	}
-	if(!start_lock){
+	if(start_lock == false){
 		var time_delta = end_date.getDay();
 		if(time_delta == 1){
 			start_date.setDate(end_date.getDate());
@@ -79,11 +79,8 @@ function lockEnd(){
 		}
 		start.value = start_date.getFullYear() + "/" + (start_date.getMonth() + 1) + "/" + start_date.getDate();
 	}
-	else{
-		start_date = document.getElementById("id_start").value;
-	}
-	if(!name_lock){
-		name.value = "Sprint " + start_date.getFullYear() + "." + start_date.getMonth() + "." + start_date.getDate() + " - " + end_date.getFullYear() + "."  + end_date.getMonth() + "." + end_date.getDate();
+	if(name_lock == false){
+		name.value = "Sprint " + start_date.getFullYear() + "." + (start_date.getMonth()+1) + "." + start_date.getDate() + " - " + end_date.getFullYear() + "."  + (end_date.getMonth()+1) + "." + end_date.getDate();
 	}
 };
 
@@ -114,7 +111,7 @@ function lockStart(){
 		end.value = end_date.getFullYear() + "/"  + (end_date.getMonth() + 1) + "/" + end_date.getDate();
 	}
 	if(!name_lock){
-		name.value = "Sprint " + start_date.getFullYear() + "." + start_date.getMonth() + "." + start_date.getDate() + " - " + end_date.getFullYear() + "."  + end_date.getMonth() + "." + end_date.getDate();
+		name.value = "Sprint " + start_date.getFullYear() + "." + (start_date.getMonth()+1) + "." + start_date.getDate() + " - " + end_date.getFullYear() + "."  + (end_date.getMonth()+1) + "." + end_date.getDate();
 	}
 };
 
