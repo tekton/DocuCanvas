@@ -1122,6 +1122,8 @@ def trackIssues(request, tracker_hash=0):
             print e
     elif request.method == "POST":
         query_dict = request.POST
+    else:
+        return redirect("issues.views.tempTrack")
     max_count = int(query_dict['filter_count'][0])
     q = []
     issues = {}
@@ -1135,9 +1137,17 @@ def trackIssues(request, tracker_hash=0):
                 else:
                     command = query_dict[str(x)]
                 if command[0] in issues:
-                    issues[command[0]] = list(set(issues[command[0]]) | set(evaluateCommand(command[0], command[1], command[2])))
+                    if "Date" in command[0]:
+                        the_date = datetime.strptime(command[2], "%Y/%m/%d")
+                        issues[command[0]] = list(set(issues[command[0]]) & set(evaluateCommand(command[0], command[1], the_date)))
+                    else:
+                        issues[command[0]] = list(set(issues[command[0]]) | set(evaluateCommand(command[0], command[1], command[2])))
                 else:
-                    issues[command[0]] = evaluateCommand(command[0], command[1], command[2])
+                    if "Date" in command[0]:
+                        the_date = datetime.strptime(command[2], "%Y/%m/%d")
+                        issues[command[0]] = evaluateCommand(command[0], command[1], the_date)
+                    else:
+                        issues[command[0]] = evaluateCommand(command[0], command[1], command[2])
                 return_query.append(command)
                 return_queries = return_queries + 1
             except:
@@ -1199,7 +1209,16 @@ def trackIssues(request, tracker_hash=0):
 
 
 def issueTrackerQueryMaker():
-    to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status", "Sprint"]}
+    to_json = {"options": ["Project", 
+                           "Assigned User", 
+                           "Meta Issue", 
+                           "Status", 
+                           "Sprint", 
+                           "Created By",
+                           "Date Created",
+                           "Date Modified",]}
+    to_json["Date Created"] = {"Ad_Ops": ["is before", "is after"]}
+    to_json["Date Modified"] = {"Ad_Ops": ["is before", "is after"]}
     try:
         projects = Project.objects.all()
         to_json["Project"] = []
@@ -1210,8 +1229,10 @@ def issueTrackerQueryMaker():
     try:
         users = Account.objects.filter(assignable=True)
         to_json["Assigned User"] = []
+        to_json["Created By"] = []
         for user in users:
             to_json["Assigned User"].append(user.user.username)
+            to_json["Created By"].append(user.user.username)
     except Exception, e:
         print e
     try:
@@ -1229,6 +1250,32 @@ def issueTrackerQueryMaker():
     except Exception, e:
         print e
     return to_json
+
+
+def evaluateCommand(field, op, value):
+    if value is None:
+        return []
+    keys = {"Project": "project__name", 
+            "Assigned User": "assigned_to__username", 
+            "Meta Issue": "meta_issues__title", 
+            "Status": "status", 
+            "Sprint": "sprint__name", 
+            "Created By": "created_by__username",
+            "Date Created": "created",
+            "Date Modified": "modified"}
+    kwargs = {keys[field]: value}
+    if field == "Status" and value == "None":
+        return Issue.objects.filter(status__isnull=True)
+    if op == "is":
+        return Issue.objects.filter(**kwargs)
+    elif op == "is not":
+        return Issue.objects.exclude(**kwargs)
+    elif op == "is before":
+        kwargs = {"%s__lte" % keys[field]: value}
+    elif op == "is after":
+        kwargs = {"%s__gte" % keys[field]: value}
+    print kwargs
+    return Issue.objects.filter(**kwargs)
 
 
 @login_required
@@ -1277,10 +1324,7 @@ def tempTrack(request):
         saved_queries = TrackerHash.objects.filter(user=request.user)
     except Exception, e:
         print e
-    if issues:
-        q = issues
-    else:
-        q = Issue.objects.all()
+    q = Issue.objects.all()
     return_queries = 0
     return_query = {}
     return render_to_response("issues/overview.html", {'user': request.user, 
@@ -1289,19 +1333,6 @@ def tempTrack(request):
                                                        'saved_queries': saved_queries,
                                                        'applied_filters': json.dumps(return_query), 
                                                        'json_query': json.dumps(issueTrackerQueryMaker())}, context_instance=RequestContext(request))
-
-
-def evaluateCommand(field, op, value):
-    if value is None:
-        return []
-    keys = {"Project": "project__name", "Assigned User": "assigned_to__username", "Meta Issue": "meta_issues__title", "Status": "status", "Sprint": "sprint__name"}
-    kwargs = {keys[field]: value}
-    if field == "Status" and value == "None":
-        return Issue.objects.filter(status__isnull=True)
-    if op == "is":
-        return Issue.objects.filter(**kwargs)
-    else:
-        return Issue.objects.exclude(**kwargs)
 
 
 def convertDictToString(dictionary):
@@ -1327,6 +1358,7 @@ def convertStringToDict(dict_string):
 
 
 def saveFilterSet(request):
+    json_response = {"success": True}
     if request.method == "POST":
         max_count = int(request.POST.getlist('filter_count')[0])
         return_queries = 0
@@ -1349,6 +1381,8 @@ def saveFilterSet(request):
         try:
             query_hash = TrackerHash(query_string=query_string, query_hash=hash_string, user=request.user, name=request.GET.get("name"))
             query_hash.save()
+            json_response["data"] = {"name": query_hash.name, "hash": query_hash.hash_string}
         except Exception, e:
             print e
-    return redirect('issues.views.tempTrack')
+            json_response["success"] = False
+    return HttpResponse(json.dumps(json_response), mimetype="application/json")

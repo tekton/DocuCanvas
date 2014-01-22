@@ -228,9 +228,10 @@ Extends /templates/issue/base.html
 						<dt>Criticality</dt>
 						<dd>{{issue.criticality}}</dd>
 						
+						{% if issue.sprint %}
 						<dt>Sprint</dt>
 						<dd><a href="{% url 'sprints.views.viewSprint' issue.sprint.id %}">{{issue.sprint}}</a></dd>
-						
+						{% endif %}
 						<hr />
 						
 						{% if issue.meta_issues %}

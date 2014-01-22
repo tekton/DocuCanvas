@@ -48,7 +48,7 @@ Issues Overview
 								<h3 class="pull-left">Saved Filters</h3>
 								<button class="btn btn-mini pull-right">Edit</button>
 							</div>
-							<ul>
+							<ul id="filter-list">
 								<li><a href="#">Issues assigned to me</a> <button class="close">&times;</button></li>
 								<li><a href="#">Duplicates</a> <button class="close">&times;</button></li>
 								<li><a href="#">Created by me</a> <button class="close">&times;</button></li>
@@ -174,7 +174,7 @@ $(document).ready(function(){
     for(field in query["options"]){
         content += "<option>" + query["options"][field] + "</option>";
     }
-    var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select name=" + filter_count + "><option>is</option><option>is not</option></select></td><td><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
+    var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select id=\"operator-selector" + filter_count + "\" name=" + filter_count + "><option>is</option><option>is not</option></select></td><td id='filter-option-cell" + filter_count + "'><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
     $('.table-condensed').append(to_insert);
 });
 
@@ -186,13 +186,25 @@ function populateOptions(filter_id){
     if(fieldName == "Status"){
         content = "<option value=\"\"></option><option value=\"active\">Active</option><option value=\"duplicate\">Duplicate</option><option value=\"fixed\">Fixed</option><option value=\"not_a_bug\">Not A Bug</option><option value=\"retest\">Retest</option><option value=\"unverified\">Unverified</option><option value=\"wont_fix\">Won't Fix</option><option value=\"None\">No Status (None)</option>";
     }
+    else if(fieldName == "Date Created" || fieldName == "Date Modified"){
+    	$('#operator-selector' + filter_id).append("<option>is before</option><option>is after</option>");
+    	var elem = document.getElementById('filter-options-' + filter_id);
+    	elem.parentNode.removeChild(elem);
+    	content = "<input name='" + filter_id + "' type='text' id='filter-options-" + filter_id + "'>";
+    	$("#filter-option-cell" + filter_id).append(content);
+    	$('#filter-options-' + filter_id).datepicker({dateFormat: 'yy/mm/dd'});
+    	return false;
+    }
     else{
         var content = "<option></option>";
         for(option in query[fieldName]){
             content += "<option>" + query[fieldName][option] + "</option>";
         }
     }
-    document.getElementById("filter-options-" + filter_id).innerHTML = content;
+    var elem = document.getElementById('filter-options-' + filter_id);
+    elem.parentNode.removeChild(elem);
+    $("#filter-option-cell" + filter_id).append("<select name=" + filter_id + " id='filter-options-" + filter_id + "'>" + content + "</select>");
+    document.getElementById('operator-selector' + filter_id).innerHTML = "<option>is</option><option>is not</option>";
 };
 
 function addFilter(){
@@ -201,7 +213,7 @@ function addFilter(){
     for(field in query["options"]){
         content += "<option>" + query["options"][field] + "</option>";
     }
-    var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select name=" + filter_count + "><option>is</option><option>is not</option></select></td><td><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
+    var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select id=\"operator-selector" + filter_count + "\" name=" + filter_count + "><option>is</option><option>is not</option></select></td><td id='filter-option-cell" + filter_count + "'><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
     $('.table-condensed').append(to_insert);
     $('#id-filter-count').val(filter_count);
 }
@@ -335,7 +347,9 @@ function saveForm(){
         url: '/issue/save_filters?name=' + name,
         data: $('#use-this-form-to-save').serialize(),
         success: function(data){
-            window.location.open('{% url "issues.views.tempTrack" %}');
+        	var input = JSON.parse(data);
+            $('#filter-list').append("<li><a href=\"/issue/track/" + input["data"]["hash"] + "\">" + input["data"]["name"] + "</a> <button class=\"close\">&times;</button></li>");
+            return false;
         },
         error: function(data){
             alert("error");
