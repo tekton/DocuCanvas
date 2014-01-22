@@ -32,7 +32,7 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         {% if projects.count > 0 %}
-                                            <li class="nav-header">All Projects</li>
+                                            <li class="nav-header"><a href="{% url 'projects.views.home' %}">All Projects</a></li>
                                             {% for project in projects%}
                                                 <li><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></li>
                                             {% endfor %}

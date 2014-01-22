@@ -37,7 +37,19 @@ textarea {
 }
 #sitenav #mainnav .dropdown-menu li {
     text-transform: none;
-}
+}	
+
+	#sitenav #mainnav .dropdown-menu li.nav-header {
+	    text-transform: none;
+	}
+		
+		#sitenav #mainnav .dropdown-menu li.nav-header a {
+			font-weight: bold;
+			color: #999;
+			padding: 0;
+		}
+		
+			#sitenav #mainnav .dropdown-menu li.nav-header a:hover { background: none; }
 
 #sitenav #userbar .btn { margin-top: 0; }
 
