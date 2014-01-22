@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+PROJECT_STATUS = (("on_time", "On Time"), ("at_risk", "At Risk"), ("late", "Late"), ("cancelled", "Cancelled"), ("on_hold", "On Hold"), ("not_started", "Not Started"),)
+PROJECT_PHASE = (("define", "Define"), ("design", "Design"), ("implementation", "Implementation"), ("sustain", "Sustain"), ("ongoing", "Ongoing"), ("cancelled", "Cancelled"),)
+
 class Project(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(blank=True, null=True)  # should really default to a slugified name
@@ -12,7 +15,7 @@ class Project(models.Model):
     priority = models.IntegerField(default=0)
     assumptions = models.TextField(blank=True, null=True)
     internal_requests = models.TextField(blank=True, null=True)
-    status = models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(max_length=255, blank=True, null=True, choices=PROJECT_STATUS)
     logo = models.CharField(max_length=255, blank=True, null=True)  # uri
     product_owner = models.ForeignKey(User, related_name='product_owner', blank=True, null=True)
     project_manager = models.ForeignKey(User, related_name='project_manager', blank=True, null=True)
@@ -20,7 +23,7 @@ class Project(models.Model):
     #
     potential_end_date = models.DateField(null=True, blank=True)  # calculated from tasks, features- bugs are backlog
     #
-    current_phase = models.CharField(max_length=255, blank=True, null=True)
+    current_phase = models.CharField(max_length=255, blank=True, null=True, choices=PROJECT_PHASE)
     phase_planning_start = models.DateField(null=True, blank=True)
     phase_planning_end = models.DateField(null=True, blank=True)
     phase_research_start = models.DateField(null=True, blank=True)
