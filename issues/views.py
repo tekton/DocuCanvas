@@ -1,6 +1,7 @@
 import json
 import hashlib
 import pickle
+import types
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
@@ -22,7 +23,7 @@ from accounts.utils import get_permission_form_for_model, set_permissions_for_mo
 from datetime import date
 from datetime import datetime
 
-from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot, AdvancedSearchHash
+from issues.models import Issue, IssueComment, SubscriptionToIssue, PinIssue, MetaIssue, IssueToIssue, IssueStatusUpdate, IssueFieldUpdate, IssueHistorical, IssueScreenshot, AdvancedSearchHash, TrackerHash
 from accounts import utils as rputils
 from accounts.models import Account
 from accounts.views import cache_checkUserTemplate
@@ -1112,176 +1113,119 @@ def set_issue_start_and_end_dates(request):
 '''
 
 @login_required
-def trackIssues(request):
-    return redirect('issues.views.tempTrack')
-    '''
-    to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status"]}
-    try:
-        projects = Project.objects.all()
-        to_json["Project"] = []
-        for project in projects:
-            to_json["Project"].append(project.name)
-    except Exception, e:
-        print e
-    try:
-        users = Account.objects.filter(assignable=True)
-        to_json["Assigned User"] = []
-        for user in users:
-            to_json["Assigned User"].append(user.user.username)
-    except Exception, e:
-        print e
-    try:
-        meta_issues = MetaIssue.objects.all()
-        to_json["Meta Issue"] = []
-        for meta in meta_issues:
-            to_json["Meta Issue"].append(meta.title)
-    except Exception, e:
-        print e
-
-    filter_projects = []
-    filter_assigned = []
-    filter_status = []
-    filter_meta = []
-    project_list = []
-    user_list = []
-    status_list = []
-    meta_list = []
+def trackIssues(request, tracker_hash=0):
+    if not tracker_hash == 0:
+        try:
+            tracker = TrackerHash.objects.get(query_hash=tracker_hash)
+            query_dict = convertStringToDict(tracker.query_string)
+        except Exception, e:
+            print e
+    elif request.method == "POST":
+        query_dict = request.POST
+    max_count = int(query_dict['filter_count'][0])
     q = []
-
-    # If request.POST, apply appropriate filters based on POST data
-    if request.method == 'POST':
-        print request.POST
-        project_filters = []
-        project_filters.extend(request.POST.getlist('project_filter'))
-        for project in request.POST.getlist('project'):
-            if project not in project_filters:
-                project_filters.append(project)
-        user_filters = []
-        user_filters.extend(request.POST.getlist('assigned_filter'))
-        for user in request.POST.getlist('assigned_to'):
-            if user not in user_filters:
-                user_filters.append(user)
-        status_filters = []
-        status_filters.extend(request.POST.getlist('status_filter'))
-        for status in request.POST.getlist('status'):
-            if status not in status_filters:
-                status_filters.append(status)
-        meta_filters = []
-        meta_filters.extend(request.POST.getlist('meta_filter'))
-        for meta in request.POST.getlist('meta-issue'):
-            if meta not in meta_filters:
-                meta_filters.append(meta)
-
-        for project in project_filters:
-            if project == 'none':
+    issues = {}
+    return_queries = 0
+    return_query = []
+    for x in range(max_count + 1):
+        if str(x) in query_dict:
+            try:
+                if tracker_hash == 0:
+                    command = query_dict.getlist(str(x))
+                else:
+                    command = query_dict[str(x)]
+                if command[0] in issues:
+                    issues[command[0]] = list(set(issues[command[0]]) | set(evaluateCommand(command[0], command[1], command[2])))
+                else:
+                    issues[command[0]] = evaluateCommand(command[0], command[1], command[2])
+                return_query.append(command)
+                return_queries = return_queries + 1
+            except:
                 pass
-            elif project is None:
-                pass
+    for k in issues:
+        if q:
+            q = list(set(q) & set(issues[k]))
+        else:
+            q = issues[k]
+    if tracker_hash == 0:
+        temp_list = []
+        for issue in q:
+            if issue.meta_issues:
+                meta_issue_id = issue.meta_issues.id
+                meta_issue_name = issue.meta_issues.title
             else:
-                filter_projects.append(project)
-                my_project = Project.objects.get(name=project)
-                project_list.extend(Issue.objects.filter(Q(project=my_project)))
-        for user in user_filters:
-            if user == 'none':
-                pass
-            elif user is None:
-                pass
+                meta_issue_id, meta_issue_name = "None", "None"
+            if issue.sprint:
+                sprint_id = issue.sprint.id
+                sprint_name = issue.sprint.name
             else:
-                filter_assigned.append(user)
-                my_user = User.objects.get(username=user)
-                user_list.extend(Issue.objects.filter(Q(assigned_to=my_user)))
-        for status in status_filters:
-            if status == 'none':
-                pass
-            elif status is None:
-                pass
-            elif status == 'no_status':
-                filter_status.append("None")
-                status_list.extend(Issue.objects.filter(Q(status__isnull=True)))
+                sprint_id, sprint_name = "None", "None"
+            if issue.assigned_to:
+                assigned_to_id = issue.assigned_to.id
+                assigned_to_username = issue.assigned_to.username
             else:
-                filter_status.append(status)
-                status_list.extend(Issue.objects.filter(status=status))
-        for meta in meta_filters:
-            if meta == 'none':
-                pass
-            elif meta is None:
-                pass
-            else:
-                filter_meta.append(meta)
-                my_meta = MetaIssue.objects.get(title=meta)
-                meta_list.extend(Issue.objects.filter(Q(meta_issues=my_meta)))
-        # Merging lists so only results that match all filters show up
-        if project_list and not user_list and not status_list and not meta_list:
-            q.extend(project_list)
-        elif user_list and not project_list and not status_list and not meta_list:
-            q.extend(user_list)
-        elif status_list and not project_list and not user_list and not meta_list:
-            q.extend(status_list)
-        elif project_list and user_list and status_list and not meta_list:
-            for item in project_list:
-                if item in user_list and status_list:
-                    q.append(item)
-        elif project_list and user_list and not status_list and not meta_list:
-            for item in project_list:
-                if item in user_list:
-                    q.append(item)
-        elif project_list and not user_list and status_list and not meta_list:
-            for item in project_list:
-                if item in status_list:
-                    q.append(item)
-        elif not project_list and user_list and status_list and not meta_list:
-            for item in user_list:
-                if item in status_list:
-                    q.append(item)
-        elif project_list and user_list and status_list and meta_list:
-            for item in project_list:
-                if item in user_list and status_list and meta_list:
-                    q.append(item)
-        elif meta_list and project_list and user_list and not status_list:
-            for item in meta_list:
-                if item in project_list and user_list:
-                    q.append(item)
-        elif meta_list and project_list and status_list and not user_list:
-            for item in meta_list:
-                if item in project_list and status_list:
-                    q.append(item)
-        elif meta_list and user_list and status_list and not project_list:
-            for item in meta_list:
-                if item in user_list and status_list:
-                    q.append(item)
-        elif meta_list and user_list and not status_list and not project_list:
-            for item in meta_list:
-                if item in user_list:
-                    q.append(item)
-        elif meta_list and status_list and not user_list and not project_list:
-            for item in meta_list:
-                if item in status_list:
-                    q.append(item)
-        elif meta_list and not status_list and not user_list and project_list:
-            for item in meta_list:
-                if item in project_list:
-                    q.append(item)
-        elif meta_list and not status_list and not user_list and not project_list:
-            q.extend(meta_list)
+                assigned_to_id, assigned_to_username = "None", "None"
+            temp = {'id': issue.id,
+                    'summary': issue.summary,
+                    'assigned_to_id': assigned_to_id,
+                    'assigned_to_username': assigned_to_username,
+                    'criticality': issue.criticality,
+                    'status': issue.status,
+                    'project_id': issue.project.id,
+                    'project_name': issue.project.name,
+                    'meta_issue_id': meta_issue_id,
+                    'meta_issue_name': meta_issue_name,
+                    'sprint_id': sprint_id,
+                    'sprint_name': sprint_name,
+                    'created': datetime.strftime(issue.created, "%D %I:%M %p"),
+                    'modified': datetime.strftime(issue.modified, "%D %I:%M %p"),}
+            temp_list.append(temp)
+        to_json = {}
+        to_json["hist"] = return_query
+        to_json["total_filters"] = return_queries
+        to_json["issues"] = temp_list
+        return HttpResponse(json.dumps(to_json))
     else:
-        q.extend(Issue.objects.all())
+        to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status", "Sprint"]}
+        try:
+            projects = Project.objects.all()
+            to_json["Project"] = []
+            for project in projects:
+                to_json["Project"].append(project.name)
+        except Exception, e:
+            print e
+        try:
+            users = Account.objects.filter(assignable=True)
+            to_json["Assigned User"] = []
+            for user in users:
+                to_json["Assigned User"].append(user.user.username)
+        except Exception, e:
+            print e
+        try:
+            meta_issues = MetaIssue.objects.all()
+            to_json["Meta Issue"] = []
+            for meta in meta_issues:
+                to_json["Meta Issue"].append(meta.title)
+        except Exception, e:
+            print e
+        try:
+            sprints = Sprint.objects.all()
+            to_json["Sprint"] = []
+            for sprint in sprints:
+                to_json["Sprint"].append(sprint.name)
+        except Exception, e:
+            print e
+        try:
+            saved_queries = TrackerHash.objects.filter(user=request.user)
+        except Exception, e:
+            print e
+        return render_to_response("issues/overview.html", {'user': request.user, 
+                                                           'issues': q, 
+                                                           'total_filters': return_queries,
+                                                           'saved_queries': saved_queries,
+                                                           'applied_filters': json.dumps(return_query), 
+                                                           'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))
 
-    # Sort list of issues by date of creation
-    for item in q:
-        if not item.created:
-            q.remove(item)
-    q.sort(key=lambda x: x.created, reverse=True)
-
-    return render_to_response("issues/overview.html", {'projects': projects, 
-                                                            'users': users, 
-                                                            'meta_issues': meta_issues,
-                                                            'user': request.user, 
-                                                            'issues': q, 
-                                                            'filter_project': filter_projects, 
-                                                            'filter_assigned': filter_assigned,
-                                                            'filter_status': filter_status,
-                                                            'filter_meta': filter_meta,
-                                                            'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))'''
 
 @login_required
 def overview(request):
@@ -1354,36 +1298,17 @@ def tempTrack(request):
             to_json["Sprint"].append(sprint.name)
     except Exception, e:
         print e
-    if request.method == "POST":
-        max_count = int(request.POST.getlist('filter-count')[0])
-        q = []
-        issues = {}
-        return_queries = 0
-        return_query = {}
-        for x in range(max_count + 1):
-            if str(x) in request.POST:
-                try:
-                    command = request.POST.getlist(str(x))
-                    if command[0] in issues:
-                        issues[command[0]] = list(set(issues[command[0]]) | set(evaluateCommand(command[0], command[1], command[2])))
-                    else:
-                        issues[command[0]] = evaluateCommand(command[0], command[1], command[2])
-                    return_query[str(return_queries)] = command
-                    return_queries = return_queries + 1
-                except:
-                    pass
-        for k in issues:
-            if q:
-                q = list(set(q) & set(issues[k]))
-            else:
-                q = issues[k]
-    else:
-        q = Issue.objects.all()
-        return_queries = 0
-        return_query = {}
+    try:
+        saved_queries = TrackerHash.objects.filter(user=request.user)
+    except Exception, e:
+        print e
+    q = Issue.objects.all()
+    return_queries = 0
+    return_query = {}
     return render_to_response("issues/overview.html", {'user': request.user, 
                                                        'issues': q, 
                                                        'total_filters': return_queries,
+                                                       'saved_queries': saved_queries,
                                                        'applied_filters': json.dumps(return_query), 
                                                        'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))
 
@@ -1399,3 +1324,53 @@ def evaluateCommand(field, op, value):
         return Issue.objects.filter(**kwargs)
     else:
         return Issue.objects.exclude(**kwargs)
+
+
+def convertDictToString(dictionary):
+    dict_string = "total_filters=%s&" % dictionary["total_filters"]
+    count = 0
+    for command in dictionary["hist"]:
+        temp = "%s=" % count
+        for article in command:
+            temp = temp + "%s," % str(article)
+        dict_string = dict_string + "%s&" % temp[:-1]
+        count = count + 1
+    return dict_string[:-1]
+
+
+def convertStringToDict(dict_string):
+    dict_array = dict_string.split("&")
+    total_count = []
+    total_count.append(unicode(dict_array[0].split("=")[1]))
+    my_dict = {"filter_count": total_count}
+    for x in range(0,int(dict_array[0].split("=")[1])):
+        my_dict[str(x)] = dict_array[x+1].split("=")[1].split(",")
+    return my_dict
+
+
+def saveFilterSet(request):
+    if request.method == "POST":
+        max_count = int(request.POST.getlist('filter_count')[0])
+        return_queries = 0
+        return_query = []
+        for x in range(max_count + 1):
+            if str(x) in request.POST:
+                try:
+                    command = request.POST.getlist(str(x))
+                    return_query.append(command)
+                    return_queries = return_queries + 1
+                except:
+                    pass
+        to_json = {}
+        to_json["hist"] = return_query
+        to_json["total_filters"] = return_queries
+        query_string = convertDictToString(to_json) + "&user=" + str(request.user.id)
+        m = hashlib.new('ripemd160')
+        m.update(query_string)
+        hash_string =  m.hexdigest()
+        try:
+            query_hash = TrackerHash(query_string=query_string, query_hash=hash_string, user=request.user, name=request.GET.get("name"))
+            query_hash.save()
+        except Exception, e:
+            print e
+    return redirect('issues.views.tempTrack')

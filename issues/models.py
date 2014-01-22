@@ -335,5 +335,14 @@ class AdvancedSearchHash(models.Model):
     modified = models.DateField(auto_now=True, blank=True, null=True)
 
 
+class TrackerHash(models.Model):
+    name = models.CharField(max_length=255)
+    query_string = models.TextField()
+    query_hash = models.CharField(max_length=255, unique=True)
+    created = models.DateField(auto_now_add=True)
+    modified = models.DateField(auto_now=True, blank=True, null=True)
+    user = models.ForeignKey(User)
+
+
 admin.site.register(IssueScreenshot)
 admin.site.register(AdvancedSearchHash)
