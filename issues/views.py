@@ -1186,35 +1186,6 @@ def trackIssues(request, tracker_hash=0):
         to_json["issues"] = temp_list
         return HttpResponse(json.dumps(to_json))
     else:
-        to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status", "Sprint"]}
-        try:
-            projects = Project.objects.all()
-            to_json["Project"] = []
-            for project in projects:
-                to_json["Project"].append(project.name)
-        except Exception, e:
-            print e
-        try:
-            users = Account.objects.filter(assignable=True)
-            to_json["Assigned User"] = []
-            for user in users:
-                to_json["Assigned User"].append(user.user.username)
-        except Exception, e:
-            print e
-        try:
-            meta_issues = MetaIssue.objects.all()
-            to_json["Meta Issue"] = []
-            for meta in meta_issues:
-                to_json["Meta Issue"].append(meta.title)
-        except Exception, e:
-            print e
-        try:
-            sprints = Sprint.objects.all()
-            to_json["Sprint"] = []
-            for sprint in sprints:
-                to_json["Sprint"].append(sprint.name)
-        except Exception, e:
-            print e
         try:
             saved_queries = TrackerHash.objects.filter(user=request.user)
         except Exception, e:
@@ -1224,7 +1195,40 @@ def trackIssues(request, tracker_hash=0):
                                                            'total_filters': return_queries,
                                                            'saved_queries': saved_queries,
                                                            'applied_filters': json.dumps(return_query), 
-                                                           'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))
+                                                           'json_query': json.dumps(issueTrackerQueryMaker())}, context_instance=RequestContext(request))
+
+
+def issueTrackerQueryMaker():
+    to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status", "Sprint"]}
+    try:
+        projects = Project.objects.all()
+        to_json["Project"] = []
+        for project in projects:
+            to_json["Project"].append(project.name)
+    except Exception, e:
+        print e
+    try:
+        users = Account.objects.filter(assignable=True)
+        to_json["Assigned User"] = []
+        for user in users:
+            to_json["Assigned User"].append(user.user.username)
+    except Exception, e:
+        print e
+    try:
+        meta_issues = MetaIssue.objects.all()
+        to_json["Meta Issue"] = []
+        for meta in meta_issues:
+            to_json["Meta Issue"].append(meta.title)
+    except Exception, e:
+        print e
+    try:
+        sprints = Sprint.objects.all()
+        to_json["Sprint"] = []
+        for sprint in sprints:
+            to_json["Sprint"].append(sprint.name)
+    except Exception, e:
+        print e
+    return to_json
 
 
 @login_required
@@ -1269,40 +1273,14 @@ def assign_to_user(request, user_id, issue_id):
 
 @login_required
 def tempTrack(request):
-    to_json = {"options": ["Project", "Assigned User", "Meta Issue", "Status", "Sprint"]}
-    try:
-        projects = Project.objects.all()
-        to_json["Project"] = []
-        for project in projects:
-            to_json["Project"].append(project.name)
-    except Exception, e:
-        print e
-    try:
-        users = Account.objects.filter(assignable=True)
-        to_json["Assigned User"] = []
-        for user in users:
-            to_json["Assigned User"].append(user.user.username)
-    except Exception, e:
-        print e
-    try:
-        meta_issues = MetaIssue.objects.all()
-        to_json["Meta Issue"] = []
-        for meta in meta_issues:
-            to_json["Meta Issue"].append(meta.title)
-    except Exception, e:
-        print e
-    try:
-        sprints = Sprint.objects.all()
-        to_json["Sprint"] = []
-        for sprint in sprints:
-            to_json["Sprint"].append(sprint.name)
-    except Exception, e:
-        print e
     try:
         saved_queries = TrackerHash.objects.filter(user=request.user)
     except Exception, e:
         print e
-    q = Issue.objects.all()
+    if issues:
+        q = issues
+    else:
+        q = Issue.objects.all()
     return_queries = 0
     return_query = {}
     return render_to_response("issues/overview.html", {'user': request.user, 
@@ -1310,7 +1288,7 @@ def tempTrack(request):
                                                        'total_filters': return_queries,
                                                        'saved_queries': saved_queries,
                                                        'applied_filters': json.dumps(return_query), 
-                                                       'json_query': json.dumps(to_json)}, context_instance=RequestContext(request))
+                                                       'json_query': json.dumps(issueTrackerQueryMaker())}, context_instance=RequestContext(request))
 
 
 def evaluateCommand(field, op, value):

@@ -76,7 +76,7 @@ Issues Overview
 			                <input type="hidden" id="id-filter-count" name="filter_count" value="1">
 							
 							<div class="text-right">
-								<input type="button" value="Clear" class="btn" />
+								<input type="button" value="Clear" class="btn" onclick="reload()" />
 								<a href="#" class="btn filter-save"  rel="popover" data-content="<form class='form-inline span12 save-filter' style='float:none;margin:0;'><input type='text' id='filter-name-input' class='input-medium' placeholder='Name'> <button type='submit' class='btn' onclick='saveForm()'>Save</button></div>" data-html="true" data-placement="left">Save Filter</a>
 								<input type="submit" value="Apply Filters" class="btn btn-primary" />
 							</div>
@@ -301,7 +301,7 @@ $(function(){
 });
 
 function reload(){
-    window.location = '/issue/track';
+    window.location.open('/issue/temp');
 };
 
 function applyFilters(input){
