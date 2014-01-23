@@ -172,7 +172,9 @@ Extends /templates/projects/base.html
                 {{active_issue.modified}}
             </td>
             <td title="assigned to">
+                {% if active_issue.assigned_to %}
                 <a href="{% url 'auth.views.user_overview' active_issue.assigned_to.id %}">{{active_issue.assigned_to}}</a>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}
@@ -189,7 +191,9 @@ Extends /templates/projects/base.html
                 {{active_issue.modified}}
             </td>
             <td title="assigned to">
+                {% if active_issue.assigned_to %}
                 <a href="{% url 'auth.views.user_overview' active_issue.assigned_to.id %}">{{active_issue.assigned_to}}</a>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}
@@ -212,7 +216,9 @@ Extends /templates/projects/base.html
                 {{criticality_issue.modified}}
             </td>
             <td title="assigned to">
+                {% if criticality_issue.assigned_to %}
                 <a href="{% url 'auth.views.user_overview' criticality_issue.assigned_to.id %}">{{criticality_issue.assigned_to}}</a>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}
@@ -232,7 +238,9 @@ Extends /templates/projects/base.html
                 {{bug_for_review.modified}}
             </td>
             <td title="assigned to">
-                <a href="{% url 'auth.views.user_overview' criticality_issue.assigned_to.id %}">{{criticality_issue.assigned_to}}</a>
+                {% if criticality_issue.assigned_to %}
+                <a href="{% url 'auth.views.user_overview' bugs_for_review.assigned_to.id %}">{{bugs_for_review.assigned_to}}</a>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}

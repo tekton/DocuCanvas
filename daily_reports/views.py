@@ -169,8 +169,7 @@ def index(request):
         today_report = UserDailyReport.objects.get(user=request.user, date=now.strftime("%Y-%m-%d"))
         today = False
     except Exception as e:
-        print "Unable to get todays report"
-        print e
+        print "Unable to get todays report :: {}".format(str(e))
         today = True
     return render_to_response("daily_reports/report_index.html", {"reports": reports,
                                                                   "projects": projects,
