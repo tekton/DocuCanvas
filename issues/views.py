@@ -1160,6 +1160,8 @@ def trackIssues(request, tracker_hash=0):
             break
         else:
             q = issues[k]
+    if not issues:
+        q = Issue.objects.all()
     if tracker_hash == 0:
         temp_list = []
         for issue in q:
