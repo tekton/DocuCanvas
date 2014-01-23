@@ -49,6 +49,11 @@ class IssueFullForm(forms.ModelForm):
     class Meta:
         model = Issue
 
+    def __init__(self, *args, **kwargs):
+        super(IssueFullForm, self).__init__(*args, **kwargs)
+        if self.initial is not None:
+            self.fields['meta_issues'] = forms.ModelChoiceField(required=False, queryset=MetaIssue.objects.filter(project=self.initial["project"]))
+
     def save(self, user=None, *args, **kwargs):
         if self.instance.pk:
             if user:
