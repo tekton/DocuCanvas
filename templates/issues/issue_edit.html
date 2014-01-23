@@ -19,7 +19,7 @@ Edit Issue
 {% endblock %}
 
 {% block bodyContent %}
-	<form action="{% url 'issues.views.edit' issue.id %}" method="post" enctype="multipart/form-data" class='form-horizontal'>
+	<form action="{% url 'issues.views.edit' issue.id %}" method="post" enctype="multipart/form-data">
 		{{ form.non_field_errors }}
         {% csrf_token %}
 		
@@ -29,12 +29,13 @@ Edit Issue
 			<div class="span9">
 			
 				<!-- Begin well -->
-				<div class="well">
+				<div class="well clearfix">
 					<label>{{ form.summary.label }}</label>
 					{{ form.summary|addcss:"input-block-level" }}
 				
 					<label>{{ form.description.label }}</label>
 					{{ form.description }}
+					<span class="pull-right formatting-help"><a href="#formatting-help" data-toggle="modal">Formatting Help</a></span>
 				</div>
 				<!-- End well -->
 			
