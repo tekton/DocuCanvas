@@ -205,7 +205,8 @@ function populateOptions(filter_id){
     if(fieldName == "Status"){
         content = "<option value=\"\"></option><option value=\"active\">Active</option><option value=\"duplicate\">Duplicate</option><option value=\"fixed\">Fixed</option><option value=\"not_a_bug\">Not A Bug</option><option value=\"retest\">Retest</option><option value=\"unverified\">Unverified</option><option value=\"wont_fix\">Won't Fix</option><option value=\"None\">No Status (None)</option>";
     }
-    else if(fieldName == "Date Created" || fieldName == "Date Modified"){
+    else if(fieldName == "Date Created" || fieldName == "Date Modified" || fieldName == "Due Date"){
+    	document.getElementById('operator-selector' + filter_id).innerHTML = "";
     	$('#operator-selector' + filter_id).append("<option>is before</option><option>is after</option>");
     	var elem = document.getElementById('filter-options-' + filter_id);
     	elem.parentNode.removeChild(elem);

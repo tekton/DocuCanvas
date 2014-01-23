@@ -1221,9 +1221,8 @@ def issueTrackerQueryMaker():
                            "Sprint", 
                            "Created By",
                            "Date Created",
-                           "Date Modified",]}
-    to_json["Date Created"] = {"Ad_Ops": ["is before", "is after"]}
-    to_json["Date Modified"] = {"Ad_Ops": ["is before", "is after"]}
+                           "Date Modified",
+                           "Due Date",]}
     try:
         projects = Project.objects.all()
         to_json["Project"] = []
@@ -1267,7 +1266,8 @@ def evaluateCommand(field, operator, value):
             "Sprint": "sprint__name", 
             "Created By": "created_by__username",
             "Date Created": "created",
-            "Date Modified": "modified"}
+            "Date Modified": "modified",
+            "Due Date": "due_date"}
     kwargs = {keys[field]: value}
     if field == "Status" and value == "None":
         return Issue.objects.filter(status__isnull=True)
