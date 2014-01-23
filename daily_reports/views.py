@@ -16,6 +16,8 @@ import datetime
 @login_required
 def edit_report(request, year=None, month=None, day=None):
     projects = Project.objects.all()
+    msg = None
+    msg_type = None
     if year is None:
         report_date = date.today()
         # redirect to view with that for simplicity sake and consistency sake
@@ -39,8 +41,12 @@ def edit_report(request, year=None, month=None, day=None):
             form = DailyReportForm(request.POST, instance=report)
             form.user = request.user  # sometimes this wasn't applying above, here as a security measure for now- use admin to edit someone elses for now
             form.save()
+            msg = "Report has been updated!"
+            msg_type = "success"
         except Exception as e:
             print "Unable to save form due to :: {}".format(str(e))
+            msg = "Unable to save report, please contact your administrator"
+            msg_type = 'error'
     else:
         try:
             report = UserDailyReport.objects.get(user=request.user.id, date=report_date)
@@ -52,7 +58,9 @@ def edit_report(request, year=None, month=None, day=None):
                               {'form': form,
                                'projects': projects,
                                'report_date': report_date,
-                               'year': year,'month': month,'day': day,},
+                               'year': year,'month': month,'day': day,
+                               'msg': msg,
+                               'msg_type': msg_type,},
                               context_instance=RequestContext(request)
                              )
 
