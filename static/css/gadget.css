@@ -191,6 +191,21 @@ textarea {
 
 
 
+/* --- General Classes
+-------------------------------------------------------*/
+
+	/* --- | Formatting Help | --- */
+
+	.formatting-help {
+		font-size: 12px;
+	}
+
+	#formatting-help {
+		font-size: 14px;
+	}
+
+
+
 /* --- Notification Styles
 -------------------------------------------------------*/
 

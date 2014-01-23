@@ -179,7 +179,13 @@ Extends /templates/issue/base.html
 							</div>
 						</div>
 						
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<!-- Begin form-bottom -->
+						<div class="form-bottom clearfix">
+							<span class="pull-right formatting-help"><a href="#formatting-help" data-toggle="modal">Formatting Help</a></span>
+							
+							<button type="submit" class="btn btn-primary pull-left">Submit</button>
+						</div>
+						<!-- End form-bottom -->
 					</form>
 				</div>
 				
@@ -532,6 +538,8 @@ Extends /templates/issue/base.html
 {% endblock %}
 
 {% block modalsIncluded %}
+	{{ block.super }}
+
 	<div id="modal-issue-fixed" class="modal fade hide">
 		<header class="modal-header">
 			<button class="close" data-dismiss="modal">×</button>

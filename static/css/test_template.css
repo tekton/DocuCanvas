@@ -40,6 +40,35 @@
 		margin-top: 0;
 	}
 
+/* --- | List group | --- */
+
+.list-group {
+	list-style: none;
+	margin: 0;
+}
+	
+	.list-group a {
+		position: relative;
+		display: block;
+		padding: 5px 15px;
+		margin-bottom: -1px;
+		background-color: #ffffff;
+/*			border: 1px solid #dddddd;*/
+	}
+	
+		.list-group a:hover {
+			text-decoration: none;
+			background-color: #f5f5f5;
+		}
+		
+	.list-group li:first-child a {
+		border-radius: 4px 4px 0 0;
+	}
+	
+	.list-group li:last-child a {
+		border-radius: 0 0 4px 4px;
+	}
+
 
 
 /* --- Dashboard
@@ -226,35 +255,6 @@ body.dashboard {}
 				padding: 5px 0;
 				background: #587c91;
 			}
-	
-	/* --- | Modal - List group | --- */
-	
-	.list-group {
-		list-style: none;
-		margin: 0;
-	}
-		
-		.list-group a {
-			position: relative;
-			display: block;
-			padding: 5px 15px;
-			margin-bottom: -1px;
-			background-color: #ffffff;
-/*			border: 1px solid #dddddd;*/
-		}
-		
-			.list-group a:hover {
-				text-decoration: none;
-				background-color: #f5f5f5;
-			}
-			
-		.list-group li:first-child a {
-			border-radius: 4px 4px 0 0;
-		}
-		
-		.list-group li:last-child a {
-			border-radius: 0 0 4px 4px;
-		}
 
 
 
@@ -330,7 +330,7 @@ body.issue-overview {}
 			
 			body.issue-overview .related-issues table td.text-right { text-align: right; }
 	
-	/* --- | Comments | --- */
+	/* --- | Comment List | --- */
 	
 	body.issue-overview #issue-comments-list {}
 		
