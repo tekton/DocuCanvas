@@ -9,7 +9,6 @@ class ReportForm(forms.Form):
 
 
 class DailyReportForm(forms.ModelForm):
-    date = forms.DateField(widget=forms.HiddenInput)
     class Meta:
         model = DailyReport
 
