@@ -111,6 +111,7 @@ textarea {
 }
 
 #pagetitle {
+	font-size: 27px;
     text-align: center;
     margin: 15px 0 25px;
 }

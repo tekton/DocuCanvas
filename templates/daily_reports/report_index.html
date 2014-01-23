@@ -1,4 +1,5 @@
 {% extends "daily_reports/base.html" %}
+{% load markup %}
 
 {% block contextNav %}
 {% include '_includes/contextnav-daily_reports.html' %}
@@ -13,9 +14,9 @@
 	{% for report in reports %}
 	<div class="user_report_container row-fluid">
 		<div class="user_report_meta span2 text-right">
-			<h4><a href="{% url 'daily_reports.views.edit_report' %}/{{report.date|date:'m/d/Y'}}">{{report.date|date:"D"}}<br />{{report.date|date:"M j, Y"}}</a></h4>
+			<h4><a href="{% url 'daily_reports.views.edit_report' report.date.year report.date.month report.date.day %}">{{report.date|date:"D"}}<br />{{report.date|date:"M j, Y"}}</a></h4>
 		</div>
-		<div class="user_report span10">{{report.description|safe}}</div>
+		<div class="user_report span10">{{report.description|markdown}}</div>
 	</div>
 	{% empty %}
 	<div class="user_report_container row-fluid">

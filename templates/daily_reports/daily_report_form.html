@@ -13,15 +13,39 @@
 {{ form.media }}
 {% endblock %}
 
+{% block pageTitle %}
+Daily Report :: {{report_date}}
+{% endblock %}
+
 {% block bodyContent %}
+{% if msg %}
+	{% if msg_type == 'success' %}
+	<div class="alert alert-success">
+	  <button type="button" class="close" data-dismiss="alert">&times;</button>
+	  {{msg}}
+	</div>
+	{% else %}
+	<div class="alert alert-error">
+	  <button type="button" class="close" data-dismiss="alert">&times;</button>
+	  {{msg}}
+	</div>
+	{% endif %}
+{% endif %}
+
 	<form id="reportForm" action="{% url 'daily_reports.views.edit_report' year month day %}" method="post">
 		{% csrf_token %}
-		<table>
-			{{form.as_table}}
-		</table>
 		
-		<div class="form-actions">
+		{{form.date.as_hidden}}
+		
+		<label>{{form.description.label}}</label>
+		{{form.description}}
+		
+		<!-- Begin form-bottom -->
+		<div class="form-bottom clearfix">
+			<span class="pull-right formatting-help"><a href="#formatting-help" data-toggle="modal">Formatting Help</a></span>
+			
 			<input type="submit" value="Submit" class="btn btn-primary" />
 		</div>
+		<!-- End form-bottom -->
 	</form>
 {% endblock %}
