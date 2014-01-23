@@ -14,12 +14,30 @@ import json
 @login_required
 def home(request):
     try:
-        projects = Project.objects.all()
+        projects = Project.objects.filter(active=True).order_by("priority")
     except Exception, e:
         print e
         projects = []
     #owned_projects = Project.objects.filter(product_owner=request.user)
     return render_to_response("projects/projects_new.html", {'projects': projects, "page_type": "Projects"}, context_instance=RequestContext(request))
+
+
+@login_required
+def saveProjectPriority(request):
+    try:
+        priority_array = request.POST.getlist("priority_order[]")
+    except Exception, e:
+        return HttpResponse(json.dumps({"msg": "could not read data"}), status=403)
+    priority_value = 1
+    for key in priority_array:
+        try:
+            project = Project.objects.get(pk=key)
+            project.priority = priority_value
+            project.save()
+            priority_value = priority_value + 1
+        except Exception, e:
+            print e
+    return HttpResponse(json.dumps({"msg": "success!"}))
 
 
 @login_required

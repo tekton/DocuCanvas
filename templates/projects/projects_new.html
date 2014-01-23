@@ -44,6 +44,7 @@ Used for all templates in /templates/projects
 	<table class="table" style="width:100%;">
 		<thead>
 			<tr>
+				<td></td>
 				<td>Name</td>
 				<td>Code</td>
 				<td>Status</td>
@@ -53,10 +54,11 @@ Used for all templates in /templates/projects
 				<td>Modified</td>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody id="sortable">
 		{% for project in projects %}
 		{% if project.active %}
-			<tr>
+			<tr id="{{project.id}}">
+				<td><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></td>
 				<td><a href="{% url 'projects.views.project_overview' project.id %}>">{{project.name}}</a></td>
 				<td>{{project.code_name}}</td>
 				<td>{{project.get_status_display}}</td>
@@ -70,4 +72,30 @@ Used for all templates in /templates/projects
 		</tbody>
 	</table>
 </div>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script>
+	$(function(){
+		$("#sortable").sortable({
+            placeholder: "ui-state-highlight",
+            cursor: 'crosshair',
+            update: function(event, ui) {
+                var order = $("#sortable").sortable("toArray");
+                // alert(order.join(","));
+                $.ajax({
+					type: "POST",
+					url: "{% url 'projects.views.saveProjectPriority' %}",
+					data: {"priority_order": order},
+					success: function(data) {
+						console.log("success");
+					},
+					error: function(data) {
+						console.log("error");
+					}
+				});
+            }
+    });
+		$("#sortable").disableSelection();
+	});
+</script>
 {% endblock %}

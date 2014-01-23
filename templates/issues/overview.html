@@ -49,10 +49,12 @@ Issues Overview
 								<button class="btn btn-mini pull-right">Edit</button>
 							</div>
 							<ul id="filter-list">
+								<!--
 								<li><a href="#">Issues assigned to me</a> <button class="close">&times;</button></li>
 								<li><a href="#">Duplicates</a> <button class="close">&times;</button></li>
 								<li><a href="#">Created by me</a> <button class="close">&times;</button></li>
 								<li><a href="#">Past due</a> <button class="close">&times;</button></li>
+							-->
 								{% for query in saved_queries %}
 								<li><a href="{% url 'issues.views.trackIssues' query.query_hash %}">{{query.name}}</a> <button class="close">&times;</button></li>
 								{% endfor %}
