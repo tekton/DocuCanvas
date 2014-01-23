@@ -19,4 +19,4 @@ def markdown(txt=None, extras=None):
     else:
         extras = ["nl2br", ]  ## i'm not sure what else right now...
     #
-    return mark_safe(m.markdown(txt, extras, safe_mode=True, enable_attributes=False))
+    return mark_safe(m.markdown(txt, extras, safe_mode=False, enable_attributes=False))  # TODO: find a way to allow safe_mode to be true, fully, and still support legacy items in current installs
