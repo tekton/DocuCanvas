@@ -207,7 +207,7 @@ Extends /templates/projects/base.html
                 {{criticality_issue.criticality}}
             </td>
             <td title="issue">
-                <a href="{% url 'issues.views.issue_overview' active_issue.id %}">{{criticality_issue.summary}}</a>
+                <a href="{% url 'issues.views.issue_overview' criticality_issue.id %}">{{criticality_issue.summary}}</a>
             </td>
             <td title="status">
                 {{criticality_issue.status}}
@@ -229,7 +229,7 @@ Extends /templates/projects/base.html
     {% for bug_for_review in bugs_for_review%}
         <tr>
             <td title="issue">
-                <a href="{% url 'issues.views.issue_overview' active_issue.id %}">{{bug_for_review.summary}}</a>
+                <a href="{% url 'issues.views.issue_overview' bug_for_review.id %}">{{bug_for_review.summary}}</a>
             </td>
             <td title="status">
                 {{bug_for_review.status}}
