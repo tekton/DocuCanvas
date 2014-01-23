@@ -13,7 +13,7 @@
 	{% for report in reports %}
 	<div class="user_report_container row-fluid">
 		<div class="user_report_meta span2 text-right">
-			<h4>{{report.date|date:"D"}}<br />{{report.date|date:"M j, Y"}}</h4>
+			<h4><a href="{% url 'daily_reports.views.edit_report' %}/{{report.date|date:'m/d/Y'}}">{{report.date|date:"D"}}<br />{{report.date|date:"M j, Y"}}</a></h4>
 		</div>
 		<div class="user_report span10">{{report.description|safe}}</div>
 	</div>
