@@ -56,7 +56,7 @@ Issues Overview
 								<li><a href="#">Past due</a> <button class="close">&times;</button></li>
 							-->
 								{% for query in saved_queries %}
-								<li><a href="{% url 'issues.views.trackIssues' query.query_hash %}">{{query.name}}</a> <button class="close">&times;</button></li>
+								<li><a href="{% url 'issues.views.trackIssues' query.query_hash %}">{{query.name}}</a> <button class="close" onclick="addToRemove({{query.id}})">&times;</button></li>
 								{% endfor %}
 							</ul>
 						</div>
@@ -164,6 +164,7 @@ Issues Overview
 var query = JSON.parse('{{json_query|escapejs|safe}}');
 var hist = JSON.parse('{{applied_filters|escapejs|safe}}');
 var filter_count = {{total_filters}};
+var to_remove = [];
 
 $(document).ready(function(){
     var hist_cont = "";
@@ -179,6 +180,11 @@ $(document).ready(function(){
     var to_insert = "<tr id='filter-row-" + filter_count + "'><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select id=\"operator-selector" + filter_count + "\" name=" + filter_count + "><option>is</option><option>is not</option></select></td><td id='filter-option-cell" + filter_count + "'><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\" onclick='removeFilter(" + filter_count + ")'><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
     $('.table-condensed').append(to_insert);
 });
+
+
+function addToRemove(hash_id){
+	to_remove.push(hash_id);
+};
 
 
 function removeFilter(filter_id){
@@ -228,7 +234,23 @@ function addFilter(){
     var to_insert = "<tr id='filter-row-" + filter_count + "'><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select id=\"operator-selector" + filter_count + "\" name=" + filter_count + "><option>is</option><option>is not</option></select></td><td id='filter-option-cell" + filter_count + "'><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\" onclick='removeFilter(" + filter_count + ")'><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
     $('.table-condensed').append(to_insert);
     $('#id-filter-count').val(filter_count);
-}
+};
+
+
+function pushDelete(){
+	$.ajax({
+		type: 'post',
+		url: '{% url "issues.views.deleteFilters" %}',
+		data: {"to_delete": to_remove},
+		success: function(data){
+			return false;
+		},
+		error: function(data){
+			alert("error");
+		}
+	});
+};
+
 
 $(function(){
 	$('#maincontent').removeClass('container');
@@ -243,6 +265,7 @@ $(function(){
 			$('.saved-filters').removeClass('edit');
 			$('.saved-filters ul').sortable('disable');
 			savedFiltersEditMode = false;
+			pushDelete();
 		}
 		else {
 			$(this).text('Done');

@@ -1119,7 +1119,7 @@ def trackIssues(request, tracker_hash=0):
             tracker = TrackerHash.objects.get(query_hash=tracker_hash)
             query_dict = convertStringToDict(tracker.query_string)
         except Exception, e:
-            print e
+            return redirect("issues.views.tempTrack")
     elif request.method == "POST":
         query_dict = request.POST
     else:
@@ -1136,7 +1136,6 @@ def trackIssues(request, tracker_hash=0):
                     command = query_dict.getlist(str(x))
                 else:
                     command = query_dict[str(x)]
-                print command
                 if command[0] in issues:
                     if "Date" in str(command[0]):
                         the_date = datetime.strptime(command[2], "%Y/%m/%d")
@@ -1381,4 +1380,15 @@ def saveFilterSet(request):
         except Exception, e:
             print e
             json_response["success"] = False
-    return HttpResponse(json.dumps(json_response), mimetype="application/json")
+    return HttpResponse(json.dumps(json_response), status=200)
+
+
+def deleteFilters(request):
+    if request.method == "POST":
+        for hash_id in request.POST.getlist("to_delete[]"):
+            try:
+                tracker_hash = TrackerHash.objects.get(pk=hash_id)
+                tracker_hash.delete()
+            except Exception, e:
+                raise e
+    return HttpResponse(json.dumps({}), status=200)
