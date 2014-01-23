@@ -1,9 +1,7 @@
 {% extends "daily_reports/base.html" %}
 
 
-{% block endScripts %}
-<script src="/static/scripts/daily_reports.js"></script>
-{% endblock %}
+{% block endScripts %}{% endblock %}
 
 {% block contextNav %}
 {% include '_includes/contextnav-daily_reports.html' %}
@@ -21,13 +19,13 @@ Daily Report :: {{report_date}}
 {% if msg %}
 	{% if msg_type == 'success' %}
 	<div class="alert alert-success">
-	  <button type="button" class="close" data-dismiss="alert">&times;</button>
-	  {{msg}}
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		{{msg}}
 	</div>
 	{% else %}
 	<div class="alert alert-error">
-	  <button type="button" class="close" data-dismiss="alert">&times;</button>
-	  {{msg}}
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		{{msg}}
 	</div>
 	{% endif %}
 {% endif %}
