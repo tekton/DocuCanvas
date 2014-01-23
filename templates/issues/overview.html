@@ -168,7 +168,7 @@ var filter_count = {{total_filters}};
 $(document).ready(function(){
     var hist_cont = "";
     for(field in hist){
-        hist_cont += "<tr><td><input type='hidden' name='" + field + "' value='" + hist[field][0] + "'>" + hist[field][0] + "</td><td><input type='hidden' name='" + field + "' value='" + hist[field][1] + "'>" + hist[field][1]+ "</td><td><input type='hidden' name='" + field + "' value='" + hist[field][2] + "'>" + hist[field][2] + "</td></tr>";
+        hist_cont += "<tr id='filter-row-" + field + "'><td><input type='hidden' name='" + field + "' value='" + hist[field][0] + "'>" + hist[field][0] + "</td><td><input type='hidden' name='" + field + "' value='" + hist[field][1] + "'>" + hist[field][1]+ "</td><td><input type='hidden' name='" + field + "' value='" + hist[field][2] + "'>" + hist[field][2] + "</td><td><a class=\"btn\" href=\"#\" onclick='removeFilter(" + field + ")'><i class=\"icon-minus\"></i></a></td></tr>";
     }
     $('.table-condensed').append(hist_cont);
 
@@ -176,9 +176,18 @@ $(document).ready(function(){
     for(field in query["options"]){
         content += "<option>" + query["options"][field] + "</option>";
     }
-    var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select id=\"operator-selector" + filter_count + "\" name=" + filter_count + "><option>is</option><option>is not</option></select></td><td id='filter-option-cell" + filter_count + "'><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
+    var to_insert = "<tr id='filter-row-" + filter_count + "'><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select id=\"operator-selector" + filter_count + "\" name=" + filter_count + "><option>is</option><option>is not</option></select></td><td id='filter-option-cell" + filter_count + "'><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\" onclick='removeFilter(" + filter_count + ")'><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
     $('.table-condensed').append(to_insert);
 });
+
+
+function removeFilter(filter_id){
+	var elem = document.getElementById("filter-row-" + filter_id);
+	if(filter_id < filter_count){
+		elem.parentNode.removeChild(elem);
+	}
+	return false;
+};
 
 
 function populateOptions(filter_id){
@@ -216,7 +225,7 @@ function addFilter(){
     for(field in query["options"]){
         content += "<option>" + query["options"][field] + "</option>";
     }
-    var to_insert = "<tr><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select id=\"operator-selector" + filter_count + "\" name=" + filter_count + "><option>is</option><option>is not</option></select></td><td id='filter-option-cell" + filter_count + "'><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
+    var to_insert = "<tr id='filter-row-" + filter_count + "'><td><select name=" + filter_count + " id='"+ filter_count +"-selector' onchange='populateOptions(" + filter_count + ")'><option></option>" + content + "</select></td><td><select id=\"operator-selector" + filter_count + "\" name=" + filter_count + "><option>is</option><option>is not</option></select></td><td id='filter-option-cell" + filter_count + "'><select name=" + filter_count + " id='filter-options-" + filter_count + "'></select></td><td><a class=\"btn\" href=\"#\" onclick='removeFilter(" + filter_count + ")'><i class=\"icon-minus\"></i></a></td><td><a onclick='addFilter()' class=\"btn\ href=\"#\"><i class=\"icon-plus\"></i></a></td></tr>";
     $('.table-condensed').append(to_insert);
     $('#id-filter-count').val(filter_count);
 }
@@ -324,7 +333,7 @@ function applyFilters(input){
 	var hist_cont = "";
 	data = JSON.parse(input);
     for(field in data["hist"]){
-        hist_cont += "<tr><td><input type='hidden' name='" + field + "' value='" + data["hist"][field][0] + "'>" + data["hist"][field][0] + "</td><td><input type='hidden' name='" + field + "' value='" + data["hist"][field][1] + "'>" + data["hist"][field][1]+ "</td><td><input type='hidden' name='" + field + "' value='" + data["hist"][field][2] + "'>" + data["hist"][field][2] + "</td></tr>";
+        hist_cont += "<tr><td><input type='hidden' name='" + field + "' value='" + data["hist"][field][0] + "'>" + data["hist"][field][0] + "</td><td><input type='hidden' name='" + field + "' value='" + data["hist"][field][1] + "'>" + data["hist"][field][1]+ "</td><td><input type='hidden' name='" + field + "' value='" + data["hist"][field][2] + "'>" + data["hist"][field][2] + "</td><td><a class=\"btn\" href=\"#\"><i class=\"icon-minus\"></i></a></td></tr>";
     }
     $(".table-condensed").append(hist_cont);
 	filter_count = data["total_filters"] + 1;
