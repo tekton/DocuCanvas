@@ -1,5 +1,5 @@
 {% extends "daily_reports/base.html" %}
-
+{% load addcss %}
 
 {% block endScripts %}{% endblock %}
 
@@ -36,7 +36,7 @@ Daily Report :: {{report_date}}
 		{{form.date.as_hidden}}
 		
 		<label>{{form.description.label}}</label>
-		{{form.description}}
+		{{form.description|addcss:"input-block-level"}}
 		
 		<!-- Begin form-bottom -->
 		<div class="form-bottom clearfix">

@@ -61,75 +61,128 @@ Extends /templates/projects/base.html
 {% endblock%}
 
 {% block bodyContent %}
-	<article class="row">
-		<div id="project-column-main" class="span9 metainfo-maincolumn">
-			<div id="project-details" class="well">
-				<section class="media">
-					<div class="media-body">
-						{% if project.scope%}
-							<header>
-								<h3 class="media-header">Scope</h3>
-							</header>
-							{{project.scope|markdown:"safe"}}
-						{% else %}
-							{{project.scope}}
-						{% endif %}
-					</div>
-				</section>
-				<section class="media">
-					<div class="media-body">
-						{% if project.description %}
-							<header>
-								<h3 class="media-header">Description</h3>
-							</header>
-							{{project.description|markdown:"safe"}}
-						{% else %}
-							{{project.description}}
-						{% endif %}
-					</div>
-				</section>
-				<section class="media">
-					<div class="media-body">
-						{% if project.assumptions %}
-							<header>
-								<h3 class="media-header">Assumptions</h3>
-							</header>
-							{{project.assumptions|markdown:"safe"}}
-						{% else %}
-							{{project.assumptions}}
-						{% endif %}
-					</div>
-				</section>
-				<section class="media">
-					<div class="media-body">
-						{% if project.internal_requests %}
-							<header>
-								<h3 class="media-header">Internal Requests</h3>
-							</header>
-							{{project.internal_requests|markdown:"safe"}}
-						{% else %}
-							{{project.internal_requests}}
-						{% endif %}
-					</div>
-				</section>
-				<section class="media">
-					<div class="media-body">
-						{% if project.business_case %}
-							<header>
-								<h3 class="media-header">Business Case</h3>
-							</header>
-							{{project.business_case|markdown:"safe"}}
-						{% else %}
-							{{project.business_case}}
-						{% endif %}
-					</div>
-				</section>
+<div class="well">
+	<header>
+		<h3 class="media-header">Scope</h3>
+	</header>
+	{% if project.scope%}
+		{{project.scope|markdown:"safe"}}
+	{% else %}
+	<div class="alert">
+		<strong>No Scope.</strong> Please fill this in!
+	</div>
+	{% endif %}
+</div>
+	
+<!-- Begin row-fluid -->
+<div class="row-fluid">
+	
+	<div class="span9">
+		
+		<!-- Begin well -->
+		<div class="well">
+			
+			<header>
+				<h3 class="media-header">Description</h3>
+			</header>
+			{% if project.description%}
+				{{project.description|markdown:"safe"}}
+			{% else %}
+			<div class="alert">
+				<strong>No Description.</strong> Please fill this in!
 			</div>
+			{% endif %}
+			
+			<header>
+				<h3 class="media-header">Assumptions</h3>
+			</header>
+			{% if project.assumptions%}
+				{{project.assumptions|markdown:"safe"}}
+			{% else %}
+			<div class="alert">
+				<strong>No Assumptions.</strong> Please fill this in!
+			</div>
+			{% endif %}
+			
+			<header>
+				<h3 class="media-header">Internal Requests</h3>
+			</header>
+			{% if project.internal_requests%}
+				{{project.internal_requests|markdown:"safe"}}
+			{% else %}
+			<div class="alert">
+				<strong>No Internal Requests.</strong> Please fill this in!
+			</div>
+			{% endif %}
+			
+			<header>
+				<h3 class="media-header">Business Case</h3>
+			</header>
+			{% if project.business_case%}
+				{{project.business_case|markdown:"safe"}}
+			{% else %}
+			<div class="alert">
+				<strong>No Business Case.</strong> Please fill this in!
+			</div>
+			{% endif %}
+			
+		</div>
+		<!-- End well -->
+		
+	</div>
+	
+	<div class="span3">
+		
+			<aside id="project-metainfo" class="well metainfo metainfo-show">
+				<div class="pull-right">
+					<button id="metainfo-toggle" class="btn btn-mini" type="button"><i class="icon-resize-small"></i></button>
+				</div>
+				<div id="project-metainfo-content" class="metainfo-content">
+					<dl>
+						<dt>Status:</dt>
+						<dd>{{project.status}}</dd>
+						
+						<dt>Current Phase:</dt>
+						<dd>{{project.current_phase}}</dd>
+						
+						<dt>Priority:</dt>
+						<dd>{{project.priority}}</dd>
+							
+						<hr />
+						
+						<dt>Product Owner:</dt>
+						{% if project.product_owner.id %}
+							<dd><a href="{% url 'auth.views.user_overview' project.product_owner.id %}">{{project.product_owner}}</a></dd>
+						{% else %}
+							<dd>{{project.product_owner}}</dd>
+						{% endif %}
+						<dt>Project Manager:</dt>
+						{% if project.project_manager.id %}
+							<dd><a href="{% url 'auth.views.user_overview' project.project_manager.id %}">{{project.project_manager}}</a></dd>
+						{% else %}
+							<dd>{{project.project_manager}}</dd>
+						{% endif %}	
+						<dt>Lead Developer:</dt>
+						{% if project.lead_developer.id %}
+							<dd><a href="{% url 'auth.views.user_overview' project.lead_developer.id %}">{{project.lead_developer}}</a></dd>
+						{% else %}
+							<dd>{{project.lead_developer}}</dd>
+						{% endif %}
+					</dl>
+				</div>
+			</aside>
+		
+	</div>
+	
+</div>
+<!-- End row-fluid -->
+
+		<div id="project-column-main" class="metainfo-maincolumn">
 
 			<div id="project-issues" class="well">
-				<header>
+				<!-- <header>
 						<h3 class="media-header"><a id="issue-view-toggle">Visual View</a></h3>
-				</header>
+				</header> -->
 				<div id="project-issues-text">
 					<section class="media">
 						
@@ -146,11 +199,12 @@ Extends /templates/projects/base.html
 							        </tr>
 							    </thead>
 							    <tbody>
-							        {% for meta in metas %}<tr>
+							        {% for meta in metas %}
+									<tr>
 							            <td><a href="{% url 'issues.views.meta_issue_overview'  meta.id  %}">{{ meta.title }}</a></td>
 							            <td>{{ meta.mi_type }}</td>
 							            <td><a href="{% url 'issues.views.meta_issue_stats' meta.id %}">Stats</a></td>
-							        </tr>{% empty %}<tr><td><em>No meta-issues for this project.</em></td></tr>
+							        </tr>{% empty %}<tr><td colspan="3"><em>No meta-issues for this project.</em></td></tr>
 							        {% endfor %}
 							    </tbody>
 						    </table>
@@ -220,53 +274,6 @@ Extends /templates/projects/base.html
 				</div>
 			</div>
 		</div>
-
-		<div id="project-column-aside" class="span3 metainfo-asidecolumn">
-			<aside id="project-metainfo" class="well metainfo metainfo-show">
-				<div class="pull-right">
-					<button id="metainfo-toggle" class="btn btn-mini" type="button"><i class="icon-resize-small"></i></button>
-				</div>
-				<div id="project-metainfo-content" class="metainfo-content">
-					<dl>
-						<dt>Status:</dt>
-							<dd>{{project.status}}</dd>
-						<dt>Product Owner:</dt>
-						{% if project.product_owner.id %}
-							<dd><a href="{% url 'auth.views.user_overview' project.product_owner.id %}">{{project.product_owner}}</a></dd>
-						{% else %}
-							<dd>{{project.product_owner}}</dd>
-						{% endif %}
-						<dt>Project Manager:</dt>
-						{% if project.project_manager.id %}
-							<dd><a href="{% url 'auth.views.user_overview' project.project_manager.id %}">{{project.project_manager}}</a></dd>
-						{% else %}
-							<dd>{{project.project_manager}}</dd>
-						{% endif %}	
-						<dt>Lead Developer:</dt>
-						{% if project.lead_developer.id %}
-							<dd><a href="{% url 'auth.views.user_overview' project.lead_developer.id %}">{{project.lead_developer}}</a></dd>
-						{% else %}
-							<dd>{{project.lead_developer}}</dd>
-						{% endif %}
-						<dt>Priority:</dt>
-							<dd>{{project.priority}}</dd>
-						<dt>Slug:</dt>
-							<dd>{{project.slug}}</dd>
-						<dt>Logo:</dt>
-							<dd>{{project.logo}}</dd>
-						<dt>Potential End Date:</dt>
-							<dd>{{project.potential_end_date}}</dd>
-						<dt>Current Phase:</dt>
-							<dd>{{project.current_phase}}</dd>
-						<dt>Phase Planning Start:</dt>
-							<dd>{{project.phase_planning_start}}</dd>
-						<dt>Phase Planning End:</dt>
-							<dd>{{project.phase_planning_end}}</dd>
-					</dl>
-				</div>
-			</aside>
-		</div>
-	</article>
 {% endblock %}
 
 
