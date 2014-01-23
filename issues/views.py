@@ -1136,25 +1136,29 @@ def trackIssues(request, tracker_hash=0):
                     command = query_dict.getlist(str(x))
                 else:
                     command = query_dict[str(x)]
+                print command
                 if command[0] in issues:
-                    if "Date" in command[0]:
+                    if "Date" in str(command[0]):
                         the_date = datetime.strptime(command[2], "%Y/%m/%d")
                         issues[command[0]] = list(set(issues[command[0]]) & set(evaluateCommand(command[0], command[1], the_date)))
                     else:
                         issues[command[0]] = list(set(issues[command[0]]) | set(evaluateCommand(command[0], command[1], command[2])))
                 else:
-                    if "Date" in command[0]:
+                    if "Date" in str(command[0]):
                         the_date = datetime.strptime(command[2], "%Y/%m/%d")
                         issues[command[0]] = evaluateCommand(command[0], command[1], the_date)
                     else:
                         issues[command[0]] = evaluateCommand(command[0], command[1], command[2])
                 return_query.append(command)
                 return_queries = return_queries + 1
-            except:
-                pass
+            except Exception as e:
+                print e
     for k in issues:
         if q:
             q = list(set(q) & set(issues[k]))
+        elif not issues[k]:
+            q = []
+            break
         else:
             q = issues[k]
     if tracker_hash == 0:
@@ -1274,20 +1278,12 @@ def evaluateCommand(field, operator, value):
         kwargs = {"%s__lte" % keys[field]: value}
     elif operator == "is after":
         kwargs = {"%s__gte" % keys[field]: value}
-    print kwargs
     return Issue.objects.filter(**kwargs)
 
 
 @login_required
 def overview(request):
-    
-    try:
-        issues = Issue.objects.order_by('-created')
-    except Exception, e:
-        print e
-        issues = []
-    
-    return render_to_response("issues/overview.html", {"issues": issues}, context_instance=RequestContext(request))
+    return redirect("issues.views.tempTrack")
 
 
 @login_required
