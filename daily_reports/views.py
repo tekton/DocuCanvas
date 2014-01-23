@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from datetime import date
 from datetime import datetime as timedate
 
-from forms import ReportForm, GroupForm
+from forms import ReportForm, GroupForm, DailyReportForm
 from projects.models import Project
 from newsfeed.models import NewsFeedItem
 from models import UserDailyReport, DailyReport, ReportGroup, GroupMember
@@ -14,46 +14,47 @@ import datetime
 
 
 @login_required
-def edit_report(request, month=0, day=0, year=0):
+def edit_report(request, year=None, month=None, day=None):
     projects = Project.objects.all()
-    if request.method == 'POST':
-        form = ReportForm(request.POST)
-        if form.is_valid():
-            try:
-                q = UserDailyReport.objects.filter(user=request.user, date=form.cleaned_data['date'])
-                report = q[0] if q else UserDailyReport(user=request.user, date=form.cleaned_data['date'])
-                report.description = form.cleaned_data['personalReport']
-                report.save()
-                return redirect('daily_reports.views.edit_report')
-            except Exception as e:
-                print e
-                return render_to_response('daily_reports/daily_report_form.html', {'form': form}, context_instance=RequestContext(request))
-        else:
-            return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': False, "projects": projects}, context_instance=RequestContext(request))
-
+    if year is None:
+        report_date = date.today()
+        # redirect to view with that for simplicity sake and consistency sake
+        return redirect('daily_reports.views.edit_report', report_date.strftime("%Y"),
+                                                           report_date.strftime("%m"),
+                                                           report_date.strftime("%d"))
     else:
-        d = date.today()
-        if (year != 0):
-            try:
-                d = date(int(year), int(month), int(day))
-            except:
-                return redirect('daily_reports.views.edit_report')
+        report_date = date(int(year), int(month), int(day)).strftime("%Y-%m-%d")
+    print report_date
+    
+    form = DailyReportForm(initial={'date': report_date, 'user': request.user})
 
-            if (d.year < 2013 or d.year > date.today().year + 1):
-                return redirect('daily_reports.views.edit_report')
-
-        q = None
+    if request.method == 'POST':
         try:
-            q = UserDailyReport.objects.filter(user=request.user, date=d)
+            report = UserDailyReport.objects.get(user=request.user, date=report_date)
+        except:
+            # print "Unable to find report; assuming new entry not an edit functionality"  # debug statement as it were
+            report = UserDailyReport()
+            report.user = request.user  # hacky, but will work for now...
+        try:
+            form = DailyReportForm(request.POST, instance=report)
+            form.user = request.user  # sometimes this wasn't applying above, here as a security measure for now- use admin to edit someone elses for now
+            form.save()
         except Exception as e:
-            print "Exception: " + str(e)
-            raise e
-        dir(q)
-        if q:
-            form = ReportForm(initial={"date": d, "personalReport": q[0].description})
-        else:
-            form = ReportForm(initial={"date": d})
-        return render_to_response("daily_reports/daily_report_form.html", {'form': form, 'global': False, "projects": projects}, context_instance=RequestContext(request))
+            print "Unable to save form due to :: {}".format(str(e))
+    else:
+        try:
+            report = UserDailyReport.objects.get(user=request.user.id, date=report_date)
+            form = DailyReportForm(instance=report)
+        except:
+            print "unable to find daily report"
+
+    return render_to_response('daily_reports/daily_report_form.html',
+                              {'form': form,
+                               'projects': projects,
+                               'report_date': report_date,
+                               'year': year,'month': month,'day': day,},
+                              context_instance=RequestContext(request)
+                             )
 
 
 @login_required
