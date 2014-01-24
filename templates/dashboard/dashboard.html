@@ -131,6 +131,7 @@ Dashboard
 		
 		$('.module-container [class^="span"]').sortable({
 			connectWith: '.module-container [class^="span"]',
+			handle: 'header',
 			placeholder: 'placeholder',
 			update: function(e, ui){
 				columns.each(function(){

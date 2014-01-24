@@ -380,6 +380,7 @@ body.dashboard {}
 	
 		body.dashboard .dash-module header {
 			color: #fff;
+			cursor: move;
 			padding: 5px;
 			background: #2B2F32;
 		}
