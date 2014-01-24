@@ -1,8 +1,6 @@
 {% extends "daily_reports/base.html" %}
 {% load addcss %}
 
-{% block endScripts %}{% endblock %}
-
 {% block contextNav %}
 {% include '_includes/contextnav-daily_reports.html' %}
 {% endblock %}
@@ -16,20 +14,6 @@ Daily Report :: {{report_date}}
 {% endblock %}
 
 {% block bodyContent %}
-{% if msg %}
-	{% if msg_type == 'success' %}
-	<div class="alert alert-success">
-		<button type="button" class="close" data-dismiss="alert">&times;</button>
-		{{msg}}
-	</div>
-	{% else %}
-	<div class="alert alert-error">
-		<button type="button" class="close" data-dismiss="alert">&times;</button>
-		{{msg}}
-	</div>
-	{% endif %}
-{% endif %}
-
 	<form id="reportForm" action="{% url 'daily_reports.views.edit_report' year month day %}" method="post">
 		{% csrf_token %}
 		
@@ -46,4 +30,19 @@ Daily Report :: {{report_date}}
 		</div>
 		<!-- End form-bottom -->
 	</form>
+{% endblock %}
+
+{% block endScripts %}
+<script>
+$(function(){
+	{% if msg %}
+		{% if msg_type == 'success' %}
+		AlertMessage.success('{{msg}}');
+		{% else %}
+		AlertMessage.success('{{msg}}');
+		{% endif %}
+	{% endif %}
+	
+})
+</script>
 {% endblock %}

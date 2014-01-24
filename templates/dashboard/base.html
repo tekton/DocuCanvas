@@ -4,13 +4,13 @@
 {% block bodyClass %}page-dashboard{% endblock %}
 {% block baseContent %}
 <div id="maincontent" class="container">
+	<div id="pagemessage"></div>
 	<header id="pageheader">
 		<h1 id="pagetitle" class="page-header">
 			{% block pageTitle %}{% endblock %}
 		</h1>
 		{% block issueSubtitle %}{% endblock %}
 	</header>
-	<div id="pagemessage"></div>
 	{% block bodyContent %}{% endblock %}
 </div>
 {% endblock %}

@@ -211,19 +211,13 @@ Dashboard
 </div>
 <!-- End dashboard-options -->
 
-    {% if notifications %}
-    <section class="alert alert-block alert-success" id="notification_section">
-	    <ul>
-            {% for notification in notifications %}
-            <li>
-	           <button type="button" class="close" data-dismiss="alert" onClick="mark_notification_as_read({{notification.id}})">&times;</button>
-               <p>{{notification.notification.message}}</p>
-               <p class="meta text-right">From <a href="{% url 'auth.views.user_overview' notification.notification.creator.id %}">{{notification.notification.creator}}</a> on {{notification.created}}</p>
-	       </li>
-	       {% endfor %}
-	    </ul>
-    </section>
-    {% endif %}
+	{% for notification in notifications %}
+	<div class="alert alert-block alert-success" id="notification_section">
+		<button type="button" class="close" data-dismiss="alert" onClick="mark_notification_as_read({{notification.id}})">&times;</button>
+		<p>{{notification.notification.message}}</p>
+		<p class="meta text-right">From <a href="{% url 'auth.views.user_overview' notification.notification.creator.id %}">{{notification.notification.creator}}</a> on {{notification.created}}</p>
+	</div>
+	{% endfor %}
 	
 	<!-- Begin row-fluid -->
 	<div class="row-fluid module-container">

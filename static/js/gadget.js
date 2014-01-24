@@ -26,7 +26,7 @@ var AlertMessage = (function(){
             console.log(arguments);
             targetEl = targetEl || AlertMessage.msgContainer;
             targetEl.prepend(alertEl);
-            alertEl.delay(15000).slideUp('normal',function(){
+            alertEl.delay(3000).fadeOut('normal',function(){
                 $(this).remove();
             });
         },

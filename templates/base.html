@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
 {% load staticfiles %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% filter striptags %}{% block pageTitle %}{% endblock %}{% block pageDescription %}{% endblock%}{% endfilter %} - Gadget</title>
+	<title>{% filter striptags %}{% block pageTitle %}{% endblock %}{% block pageDescription %}{% endblock%}{% endfilter %} - Gadget</title>
 
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap-lightbox.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
-    <link rel="stylesheet" href="{% static 'css/gadget.css' %}">
-    {% block additionalHead %}{% endblock %}
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap-lightbox.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+	<link rel="stylesheet" href="{% static 'css/gadget.css' %}">
+	{% block additionalHead %}{% endblock %}
 </head>
 <body class="{% block bodyClass %}{% endblock %}" {% block bodyAttributes %}{% endblock %}>
     <div id="globalwrap">
