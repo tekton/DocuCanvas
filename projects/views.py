@@ -304,7 +304,7 @@ def CodeNames(request):
 
 def getProjectList(request):
     rtn_dict = {}
-    projects = Project.objects.all()  # filter(active=True)
+    projects = Project.objects.filter(active=True)
     for project in projects:
         rtn_dict[project.name] = {}
         rtn_dict[project.name]["order"] = project.priority
