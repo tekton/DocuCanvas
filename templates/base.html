@@ -30,15 +30,8 @@
                                 <li class="dropdown">
                                     <a href="{% url 'projects.views.home' %}" class="dropdown-toggle {% if page_type == 'Project' %}active{% elif page_type == 'Projects' %}active{% elif page_type == 'Issue' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
                                     </a>
-                                    <ul class="dropdown-menu">
-                                        {% if projects.count > 0 %}
-                                            <li class="nav-header"><a href="{% url 'projects.views.home' %}">All Projects</a></li>
-                                            {% for project in projects%}
-                                                <li><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></li>
-                                            {% endfor %}
-                                        {% endif %}
-                                        <li class="nav-header">New</li>
-                                        <li><a href="{% url 'projects.views.project_form' %}">Project</a></li>
+                                    <ul class="dropdown-menu" id="project_dropdown_menu">
+                                        <li class="nav-header"><a href="{% url 'projects.views.home' %}">All Projects</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="{% url 'daily_reports.views.index' %}" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
@@ -158,6 +151,22 @@
     });
     </script>
     <script src="{% static 'js/gadget.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            console.log("Document ready...");
+            var dropdown = $("#project_dropdown_menu");
+            var items = [];
+            $.getJSON("/project/get/list", function(result) {
+                $.each(result, function(item, dict) {
+                    items.push("<li><a href='"+dict["url"]+"'>"+dict["name"]+"</li>");
+                });
+                items.push('<li class="nav-header">New</li>');
+                items.push('<li><a href="{% url 'projects.views.project_form' %}">Project</a></li>');
+                dropdown.append(items);
+            });
+
+        });
+    </script>
     {% block sharedScripts %}{% endblock %}
     {% block endScripts %}{% endblock %}
 </body>

@@ -304,10 +304,13 @@ def CodeNames(request):
 
 def getProjectList(request):
     rtn_dict = {}
-    projects = Project.objects.filter(active=True)
+    projects = Project.objects.filter(active=True).order_by("priority")
+    i = 0
     for project in projects:
-        rtn_dict[project.name] = {}
-        rtn_dict[project.name]["order"] = project.priority
-        rtn_dict[project.name]["url"] = "/project/{}".format(project.id)
+        i += 1
+        rtn_dict[i] = {}
+        rtn_dict[i]["name"] = project.name
+        rtn_dict[i]["order"] = project.priority
+        rtn_dict[i]["url"] = "/project/{}".format(project.id)
 
     return HttpResponse(json.dumps(rtn_dict), content_type='application/json')
