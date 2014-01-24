@@ -205,9 +205,13 @@ def set_bug_state(request):
         issue = Issue.objects.get(pk=request.POST['issue'])
         old_status = issue.status
         issue.status = request.POST['status']
-        if issue.sprint is None:
+        if issue.status == 'fixed' or issue.sprint is None:
             # check system settings to see if there's a default
-            def_sprint = SystemSetting.objects.get(name="sprint")
+            def_sprint = None
+            try:
+                def_sprint = SystemSetting.objects.get(name="sprint")
+            except:
+                pass
             if def_sprint:
                 sprint = Sprint.objects.get(pk=def_sprint.value)
                 issue.sprint = sprint
