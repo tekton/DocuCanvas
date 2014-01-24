@@ -122,6 +122,10 @@ body {
     display: none;
 }
 
+/* --- | No Wrap | --- */
+
+.no-wrap { white-space: nowrap; }
+
 /* --- | Random - Delete? | --- */
 
 /*Remove*/
@@ -429,7 +433,8 @@ body.dashboard {}
 			}*/
 		
 			body.dashboard .newsfeed .media blockquote {
-				margin-bottom: 0;
+				margin: 5px 0;
+				color: #777;
 			}
 		
 			body.dashboard .newsfeed .media .footer {
@@ -607,6 +612,17 @@ body.issue-overview {}
 	.issue-comment.show-editbutton .comment-markbutton {
 	    display: block;
 	}
+
+
+
+/* --- Unassigned Issues
+-------------------------------------------------------*/
+	
+table.unassigned-issues {
+	font-size: 14px;
+}
+
+
 
 /* --- Search Results
 -------------------------------------------------------*/

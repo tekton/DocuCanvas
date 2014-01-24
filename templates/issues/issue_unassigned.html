@@ -1,5 +1,12 @@
 {% extends "issues/base.html" %}
 {% load set_var %}
+{% load static %}
+
+{% block additionalHead %}
+    {{ form.media }}
+	<link rel="stylesheet" href="{% static 'css/theme.bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/test_template.css' %}">
+{% endblock %}
 
 {% block contextNav %}
     <li><a href="{% url 'issues.views.issue_form' %}">New Issue</a></li>
@@ -11,49 +18,71 @@
 
 {% block bodyContent %}
     {% if issues.count > 0 %}
-        <div class="well">
-            <table class="table">
-                {% for issue in issues reversed %}
-                    {% if newest_unassigned != issue.created %}
-                        {% set newest_unassigned = issue.created %}
-                        <tr>
-                            <td colspan="4">{{issue.created}}</td>
-                        </tr>
-                    {% endif %}
-                    <tr>
-                        <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</td>
-                        <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</td>
-                        <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.due_date}}</td>
-                        <td><a href="{% url 'issues.views.assign' issue.id %}" class="assign_issue">Take</a></td>
-                    </tr>
-                {% endfor%}
-            </table>
-        </div>
+	<table class="table-condensed table-striped unassigned-issues">
+		<thead>
+			<tr>
+				<th>Summary</th>
+				<th>Project</th>
+				<th>Created</th>
+				<th class="action">Action</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for issue in issues reversed %}
+			<tr>
+				<td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
+				<td class="no-wrap"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</td>
+				<td class="no-wrap">{{issue.created|date:"M j o"}}</td>
+				<!-- <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.due_date}}</a></td> -->
+				<td class="action"><a href="{% url 'issues.views.assign' issue.id %}" class="assign_issue btn btn-small">Take</a></td>
+			</tr>
+		{% endfor%}
+		</tbody>
+	</table>
     {% else %}
-        <p>Woohoo! All issues are currently assigned!</p>
+	<p>Woohoo! All issues are currently assigned!</p>
     {% endif %}
 {% endblock %}
 
 {% block endScripts %}
-    <script>
-        $('a.assign_issue').asAjax(function(data) {
-            if ( data.success ) {
-                if ( data.assigned_to == "self" ) {
-                    $(this).text( "Unassign" );
-                    AlertMessage.success( "Issue now assigned to you." );
-                }
-                else if ( data.assigned_to == "none" ) {
-                    $(this).text( "Take" );
-                    AlertMessage.success( "Issue unassigned." );
-                }
-                else if ( data.assigned_to == "user" ) {
-                    $(this).text( "Take" );
-                    AlertMessage.success( "Issue successfully assigned." );
-                }
+<script>
+    $('a.assign_issue').asAjax(function(data) {
+        if ( data.success ) {
+            if ( data.assigned_to == "self" ) {
+                $(this).text( "Unassign" );
+                AlertMessage.success( "Issue now assigned to you." );
             }
-            else {
-                AlertMessage.error( "<strong>Assigning error:</strong> " + data.error );
+            else if ( data.assigned_to == "none" ) {
+                $(this).text( "Take" );
+                AlertMessage.success( "Issue unassigned." );
             }
-        }, AlertMessage.genericUnknownError);
-    </script>
+            else if ( data.assigned_to == "user" ) {
+                $(this).text( "Take" );
+                AlertMessage.success( "Issue successfully assigned." );
+            }
+        }
+        else {
+            AlertMessage.error( "<strong>Assigning error:</strong> " + data.error );
+        }
+    }, AlertMessage.genericUnknownError);
+	
+	$(function(){
+		$.extend($.tablesorter.themes.bootstrap, {
+			// these classes are added to the table. To see other table classes available,
+			// look here: http://twitter.github.com/bootstrap/base-css.html#tables
+			table      : 'table table-bordered',
+			sortNone   : 'bootstrap-icon-unsorted',
+			sortAsc    : 'icon-chevron-up glyphicon glyphicon-chevron-up',     // includes classes for Bootstrap v2 & v3
+			sortDesc   : 'icon-chevron-down glyphicon glyphicon-chevron-down' // includes classes for Bootstrap v2 & v3
+		});
+		
+		$('table.unassigned-issues').tablesorter({
+			theme: 'bootstrap',
+			showProcessing: true,
+			headerTemplate: '{content} {icon}',
+			widgets : ['uitheme', 'zebra'],
+			headers: { 3: { sorter: false }}
+		})
+	});
+</script>
 {% endblock %}

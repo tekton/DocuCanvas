@@ -251,7 +251,7 @@ Dashboard
 			                <tr>
 								<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
 			                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
-								<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+								<td class="issue-project no-wrap"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
 								<td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
 			                </tr>
 			            {% endfor%}
@@ -281,7 +281,7 @@ Dashboard
 		                <tr>
 							<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
 		                    <td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
-							<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+							<td class="issue-project no-wrap"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
 		                    <td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}Unassigned{% endif %}</td>
 		                    <td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
 		                </tr>
@@ -310,7 +310,7 @@ Dashboard
 						<tr>
 							<td class="issue-id"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
 							<td class="issue-name"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a></td>
-							<td class="issue-project"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
+							<td class="issue-project no-wrap"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a></td>
 							<td>{% if issue.assigned_to %}<a href="{% url 'auth.views.user_overview' issue.assigned_to.id %}">{{issue.assigned_to}}</a>{% else %}Unassigned{% endif %}</td>
 							<td class="issue-status"><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
 						</tr>
@@ -387,7 +387,7 @@ Dashboard
 						<a class="pull-left" href="{% url 'auth.views.user_overview' newsfeed.user.id %}"></a>
 						<div class="media-body">
 							<a href="{% url 'auth.views.user_overview' newsfeed.user.id %}">{{newsfeed.user}}</a> <strong>commented</strong> on <a href="{% url 'issues.views.issue_overview' newsfeed.issue.id %}" title="{{newsfeed.issue.description|striptags}}">{{newsfeed.issue.summary|truncatechars:40}}:</a><br />
-							<blockquote>{{newsfeed.comment|truncatechars:40}}</blockquote>
+							<blockquote>{{newsfeed.comment|truncatechars:140}}</blockquote>
 							<p class="footer">Project: <a href="{% url 'projects.views.project_overview' newsfeed.project.id %}" title="{{newsfeed.project.description}}">{{newsfeed.project.name}}</a> | {{newsfeed.timestamp}}</p>
 						</div>
 					</div>
