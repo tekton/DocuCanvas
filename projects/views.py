@@ -300,3 +300,14 @@ def CodeNames(request):
     cn_projects = Project.objects.all()
     cn_meta = MetaIssue.objects.all()
     return render_to_response("projects/code_names.html", {"cn_projects": cn_projects, "cn_meta": cn_meta, "page_type": "Project", "page_value": "Code Names"}, context_instance=RequestContext(request))
+
+
+def getProjectList(request):
+    rtn_dict = {}
+    projects = Project.objects.all()  # filter(active=True)
+    for project in projects:
+        rtn_dict[project.name] = {}
+        rtn_dict[project.name]["order"] = project.priority
+        rtn_dict[project.name]["url"] = "/project/{}".format(project.id)
+
+    return HttpResponse(json.dumps(rtn_dict), content_type='application/json')
