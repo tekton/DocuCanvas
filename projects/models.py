@@ -12,7 +12,7 @@ class Project(models.Model):
     description = models.TextField(blank=True, null=True)
     scope = models.TextField(blank=True, null=True)
     business_case = models.TextField(blank=True, null=True)
-    priority = models.IntegerField(default=0)
+    priority = models.IntegerField(default=0, blank=True, null=True)
     assumptions = models.TextField(blank=True, null=True)
     internal_requests = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=255, blank=True, null=True, choices=PROJECT_STATUS)

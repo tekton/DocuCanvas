@@ -168,7 +168,8 @@ INSTALLED_APPS += (### Add project specifics apps here
     'search',
     'communications',
     'taxes',
-    'sprints',)
+    'sprints',
+    'system_settings',)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

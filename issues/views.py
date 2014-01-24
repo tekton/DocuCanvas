@@ -31,6 +31,8 @@ from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
 from communications.views import prepMail
 from sprints.models import Sprint
+from system_settings.models import SystemSetting
+
 
 import celery
 import traceback
@@ -203,6 +205,12 @@ def set_bug_state(request):
         issue = Issue.objects.get(pk=request.POST['issue'])
         old_status = issue.status
         issue.status = request.POST['status']
+        if issue.sprint is None:
+            # check system settings to see if there's a default
+            def_sprint = SystemSetting.objects.get(name="sprint")
+            if def_sprint:
+                sprint = Sprint.objects.get(pk=def_sprint.value)
+                issue.sprint = sprint
         issue.save(request.user)
         to_json["status"] = "Bug status set"
         if request.POST['status'] == 'fixed':
@@ -480,12 +488,23 @@ def issue_form(request):
                 print e
                 print form.errors
 
+            if issue.sprint is None:
+            # check system settings to see if there's a default
+                def_sprint = None
+                try:
+                    def_sprint = SystemSetting.objects.get(name="default_sprint")
+                except Exception as e:
+                    # if it can't be had we don't care too much really...
+                    pass
+                if def_sprint:
+                    sprint = Sprint.objects.get(pk=def_sprint.value)
+                    issue.sprint = sprint
+
             try:
                 issue.created_by = request.user
                 issue.save(request.user)
                 print "item saved; now try to mail on it"
                 prepMail.delay(issue, update_type='created')  # communications/views.py
-                # msg.send()  # commented out to avoid spamy spam spam
             except Exception, e:
                 print e
 
