@@ -142,14 +142,12 @@ def project_stats(request, project_id):
         retest_count = retest_issues.count()
         unverified_count = unverified_issues.count()
 
-        criticality_issues = Issue.objects.filter(Q(project=project) & (Q(status='active') | Q(status='unverified') | Q(status='duplicate'))).order_by('-criticality')
-        bugs_for_review = Issue.objects.filter(Q(project=project) & (Q(status='wont_fix') | Q(status='not_a_bug') | Q(status='retest') | Q(status='duplicate')))
+        bugs_for_review = Issue.objects.filter(Q(project=project) & (Q(status='wont_fix') | Q(status='not_a_bug') | Q(status='retest')))
     except Exception, e:
         print e
 
     return render_to_response("projects/project_stats.html", {"project": project,
                                                               "projects": projects,
-                                                              "criticality_issues": criticality_issues,
                                                               "bugs_for_review": bugs_for_review,
                                                               "blank_issues": blank_issues,
                                                               "not_a_bug_issues": not_a_bug_issues,

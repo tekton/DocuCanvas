@@ -1,4 +1,5 @@
 {% extends "projects/base.html" %}
+{% load static %}
 
 {% comment %}
 Extends /templates/projects/base.html
@@ -27,6 +28,13 @@ Extends /templates/projects/base.html
         **NOTE: made available by baseContent - if baseContent is defined within the template, bodyContent will not be displayed unless contained within baseContent**
 {% endcomment %}
 
+{% block additionalHead %}
+    {{ form.media }}
+	<link rel="stylesheet" href="{% static 'css/theme.bootstrap.css' %}">
+{% endblock %}
+
+{% block bodyClass %}project-stats{% endblock %}
+
 {% block contextNav %}
     <li><a href="{% url 'issues.views.issue_form_project' project.id %}">New Issue</a></li>
     <li><a href="{% url 'issues.views.issue_form_project' project.id %}">New Risk</a></li>
@@ -36,144 +44,300 @@ Extends /templates/projects/base.html
     <li><a href="{% url 'projects.views.edit' project.id %}">Edit Project</a></li>
 {% endblock%}
 
-{% block bodyContent %}
-<h3>Issues</h3>
-<table class="tbl-generic">
-        <tr>
-            <th>Status</th>
-            <th>Count</th>
-        </tr>
+{% block pageDescription %}
+{{project.name}}
+{% endblock %}
 
-        <tr>
-            <td>None</td>
-            <td id="blank_count" class="project-status-count">{{blank_count}}</td>
-        </tr>
-            {% for issue in blank_issues%}
-                <tr class="tbl-project-status-count tbl-project-blank-count">
-                    <td>
-                        <a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project.name}}</a>
-                    </td>
+{% block bodyContent %}
+<h3>Issues by Status</h3>
+
+<div class="accordion-heading row-fluid">
+	<a class="accordion-toggle clearfix" data-toggle="collapse" href="#collapse1">
+		<span class="span2">None</span> <span class="span10"><span class="badge {% if blank_count != 0 %}badge-info{% endif %}">{{blank_count}}</span></span>
+	</a>
+</div>
+<div id="collapse1" class="accordion-body collapse">
+	<div class="accordion-inner">
+		
+		{% if blank_issues %}
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Summary</th>
+				</tr>
+			</thead>
+			<tbody>
+		        {% for issue in blank_issues%}
+	            <tr class="tbl-project-status-count tbl-project-blank-count">
+	                <td>
+	                    <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
+	                </td>
+	            </tr>
+		        {% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		No issues with this status
+		{% endif %}
+		
+	</div>
+</div>
+
+<div class="accordion-heading row-fluid">
+	<a class="accordion-toggle clearfix" data-toggle="collapse" href="#collapse2">
+		<span class="span2">Not a Bug</span> <span class="span10"><span class="badge {% if not_a_bug_count != 0 %}badge-info{% endif %}">{{not_a_bug_count}}</span></span>
+	</a>
+</div>
+<div id="collapse2" class="accordion-body collapse">
+	<div class="accordion-inner">
+		
+		{% if not_a_bug_issues %}
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Summary</th>
+				</tr>
+			</thead>
+			<tbody>
+		        {% for issue in not_a_bug_issues %}
+	            <tr>
+	                <td>
+	                    <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
+	                </td>
+	            </tr>
+		        {% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		No issues with this status
+		{% endif %}
+		
+	</div>
+</div>
+
+<div class="accordion-heading row-fluid">
+	<a class="accordion-toggle clearfix" data-toggle="collapse" href="#collapse3">
+		<span class="span2">Won't Fix</span> <span class="span10"><span class="badge {% if wont_fix_count != 0 %}badge-info{% endif %}">{{wont_fix_count}}</span></span>
+	</a>
+</div>
+<div id="collapse3" class="accordion-body collapse">
+	<div class="accordion-inner">
+		
+		{% if wont_fix_issues %}
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Summary</th>
+				</tr>
+			</thead>
+			<tbody>
+		        {% for issue in wont_fix_issues %}
+                <tr>
                     <td>
                         <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
                     </td>
                 </tr>
-            {% endfor %}
+		        {% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		No issues with this status
+		{% endif %}
+		
+	</div>
+</div>
 
-        <tr>
-            <td>Not a Bug</td>
-            <td id="not_a_bug_count" class="project-status-count">{{not_a_bug_count}}</td>
-        </tr>
-                {% for issue in bugs_for_review%}
-                    <tr class="tbl-project-status-count tbl-project-not-a-bug-count">
-                        <td>
-                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
-                        </td>
-                    </tr>
-                {% endfor %}
+<div class="accordion-heading row-fluid">
+	<a class="accordion-toggle clearfix" data-toggle="collapse" href="#collapse4">
+		<span class="span2">Duplicate</span> <span class="span10"><span class="badge {% if duplicate_count != 0 %}badge-info{% endif %}">{{duplicate_count}}</span></span>
+	</a>
+</div>
+<div id="collapse4" class="accordion-body collapse">
+	<div class="accordion-inner">
+		
+		{% if duplicate_issues %}
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Summary</th>
+				</tr>
+			</thead>
+			<tbody>
+	            {% for issue in duplicate_issues %}
+				<tr>
+					<td>
+						<a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
+					</td>
+				</tr>
+	            {% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		No issues with this status
+		{% endif %}
+		
+	</div>
+</div>
 
-        <tr>
-            <td>Won't Fix</td>
-            <td id="wont_fix_count" class="project-status-count">{{wont_fix_count}}</td>
-        </tr>
-                {% for issue in bugs_for_review %}
-                    {% if issue.status = "wont_fix" %}
-                    <tr class="tbl-project-status-count tbl-project-wont-fix-count">
-                        <td>
-                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
-                        </td>
-                    </tr>
-                    {% endif %}
-                {% endfor %}
+<div class="accordion-heading row-fluid">
+	<a class="accordion-toggle clearfix" data-toggle="collapse" href="#collapse5">
+		<span class="span2">Active</span> <span class="span10"><span class="badge {% if active_count != 0 %}badge-info{% endif %}">{{active_count}}</span></span>
+	</a>
+</div>
+<div id="collapse5" class="accordion-body collapse">
+	<div class="accordion-inner">
+		
+		{% if active_issues %}
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Summary</th>
+				</tr>
+			</thead>
+			<tbody>
+	            {% for issue in active_issues %}
+				<tr>
+					<td>
+						<a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
+					</td>
+				</tr>
+	            {% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		No issues with this status
+		{% endif %}
+		
+	</div>
+</div>
 
+<div class="accordion-heading row-fluid">
+	<a class="accordion-toggle clearfix" data-toggle="collapse" href="#collapse6">
+		<span class="span2">Fixed</span> <span class="span10"><span class="badge {% if fixed_count != 0 %}badge-info{% endif %}">{{fixed_count}}</span></span>
+	</a>
+</div>
+<div id="collapse6" class="accordion-body collapse">
+	<div class="accordion-inner">
+		
+		{% if fixed_issues %}
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Summary</th>
+				</tr>
+			</thead>
+			<tbody>
+		        {% for issue in fixed_issues%}
+	            <tr class="tbl-project-status-count tbl-project-blank-count">
+	                <td>
+	                    <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
+	                </td>
+	            </tr>
+		        {% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		No issues with this status
+		{% endif %}
+		
+	</div>
+</div>
 
-        <tr>
-            <td>Duplicate</td>
-            <td id="duplicate_count" class="project-status-count">{{duplicate_count}}</td>
-        </tr>
-                {% for issue in active_issues%}
-                    {% if issue.status = "duplicate" %}
-                    <tr class=" tbl-project-status-count tbl-project-duplicate-count">
-                        <td>
-                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
-                        </td>
-                    </tr>
-                    {% endif %}
-                {% endfor %}
+<div class="accordion-heading row-fluid">
+	<a class="accordion-toggle clearfix" data-toggle="collapse" href="#collapse7">
+		<span class="span2">Retest</span> <span class="span10"><span class="badge {% if retest_count != 0 %}badge-info{% endif %}">{{retest_count}}</span></span>
+	</a>
+</div>
+<div id="collapse7" class="accordion-body collapse">
+	<div class="accordion-inner">
+		
+		{% if retest_issues %}
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Summary</th>
+				</tr>
+			</thead>
+			<tbody>
+		        {% for issue in retest_issues%}
+                <tr>
+                    <td>
+                        <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
+                    </td>
+                </tr>
+		        {% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		No issues with this status
+		{% endif %}
+		
+	</div>
+</div>
 
-        <tr>
-            <td>Active</td>
-            <td id="active_count" class="project-status-count">{{active_count}}</td>
-        </tr>
-                {% for issue in active_issues%}
-                    {% if issue.status = "active" %}
-                    <tr class="tbl-project-status-count tbl-project-active-count">
-                        <td>
-                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
-                        </td>
-                    </tr>
-                    {% endif %}
-                {% endfor %}
-
-        <tr>
-            <td>Fixed</td>
-            <td id="fixed_count" class="project-status-count">{{fixed_count}}</td>
-        </tr>
-                {% for issue in fixed_issues%}
-
-                    <tr class="tbl-project-status-count  tbl-project-fixed-count">
-                        <td>
-                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-
-        <tr>
-            <td>Retest</td>
-            <td id="retest_count" class="project-status-count">{{retest_count}}</td>
-        </tr>
-                {% for issue in bugs_for_review%}
-                    {% if issue.status = "retest" %}
-                    <tr class="tbl-project-status-count  tbl-project-retest-count">
-                        <td>
-                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
-                        </td>
-                    </tr>
-                    {% endif %}
-                {% endfor %}
-
-
-        <tr>
-            <td>Unverified</td>
-            <td id="unverified_count" class="project-status-count">{{unverified_count}}</td>
-        </tr>
-                {% for issue in active_issues %}
-                    {% if issue.status = "unverified" %}
-                    <tr class="tbl-project-status-count  tbl-project-unverified-count">
-                        <td>
-                            <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
-                        </td>
-                    </tr>
-                    {% endif %}
-                {% endfor %}
-    </table>
+<div class="accordion-heading row-fluid">
+	<a class="accordion-toggle clearfix" data-toggle="collapse" href="#collapse8">
+		<span class="span2">Unverified</span> <span class="span10"><span class="badge {% if unverified_count != 0 %}badge-info{% endif %}">{{unverified_count}}</span></span>
+	</a>
+</div>
+<div id="collapse8" class="accordion-body collapse">
+	<div class="accordion-inner">
+		
+		{% if unverified_issues %}
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Summary</th>
+				</tr>
+			</thead>
+			<tbody>
+	            {% for issue in unverified_issues %}
+                <tr>
+                    <td>
+                        <a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary}}</a>
+                    </td>
+                </tr>
+	            {% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		No issues with this status
+		{% endif %}
+		
+	</div>
+</div>
 
 <h3>Still Active</h3>
-<table class="tbl-generic">
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>Summary</th>
+			<th>Status</th>
+			<th>Criticality</th>
+			<th>Modified</th>
+			<th class="no-wrap">Assigned To</th>
+		</tr>
+	</thead>
+	<tbody>
     {% for active_issue in active_issues%}
         <tr>
             <td title="issue">
                 <a href="{% url 'issues.views.issue_overview' active_issue.id %}">{{active_issue.summary}}</a>
             </td>
             <td title="status">
-                {{active_issue.status}}
+				<span class="title-issuestatus label {{active_issue.status}}">{{active_issue.get_status_display}}</span>
             </td>
-            
-            <td title="modified date">
-                {{active_issue.modified}}
+            <td>
+            	{{active_issue.criticality}}
+            </td>
+            <td class="no-wrap">
+                {{active_issue.modified|date:"M j o"}}
             </td>
             <td title="assigned to">
                 {% if active_issue.assigned_to %}
                 <a href="{% url 'auth.views.user_overview' active_issue.assigned_to.id %}">{{active_issue.assigned_to}}</a>
+				{% else %}
+				None
                 {% endif %}
             </td>
         </tr>
@@ -184,96 +348,80 @@ Extends /templates/projects/base.html
                 <a href="{% url 'issues.views.issue_overview' active_issue.id %}">{{active_issue.summary}}</a>
             </td>
             <td title="status">
-                {{active_issue.status}}
+				<span class="title-issuestatus label {{active_issue.status}}">{{active_issue.get_status_display}}</span>
             </td>
-            
+            <td>
+            	{{active_issue.criticality}}
+            </td>
             <td title="modified time">
-                {{active_issue.modified}}
+                {{active_issue.modified|date:"M j o"}}
             </td>
             <td title="assigned to">
                 {% if active_issue.assigned_to %}
                 <a href="{% url 'auth.views.user_overview' active_issue.assigned_to.id %}">{{active_issue.assigned_to}}</a>
+				{% else %}
+				None
                 {% endif %}
             </td>
         </tr>
     {% endfor %}
-</table><br><br>
-
-<h3>Still Active by criticality</h3>
-<table class="tbl-generic">
-    {% for criticality_issue in criticality_issues%}
-        <tr>
-            <td title="criticality">
-                {{criticality_issue.criticality}}
-            </td>
-            <td title="issue">
-                <a href="{% url 'issues.views.issue_overview' criticality_issue.id %}">{{criticality_issue.summary}}</a>
-            </td>
-            <td title="status">
-                {{criticality_issue.status}}
-            </td>
-            <td title="modified time">
-                {{criticality_issue.modified}}
-            </td>
-            <td title="assigned to">
-                {% if criticality_issue.assigned_to %}
-                <a href="{% url 'auth.views.user_overview' criticality_issue.assigned_to.id %}">{{criticality_issue.assigned_to}}</a>
-                {% endif %}
-            </td>
-        </tr>
-    {% endfor %}
-</table><br><br>
+	</tbody>
+</table>
 
 <h3>For Review</h3>
-<table class="tbl-generic">
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>Summary</th>
+			<th>Status</th>
+			<th>Criticality</th>
+			<th>Modified</th>
+			<th class="no-wrap">Assigned To</th>
+		</tr>
+	</thead>
+	<tbody>
     {% for bug_for_review in bugs_for_review%}
         <tr>
             <td title="issue">
                 <a href="{% url 'issues.views.issue_overview' bug_for_review.id %}">{{bug_for_review.summary}}</a>
             </td>
             <td title="status">
-                {{bug_for_review.status}}
+				<span class="title-issuestatus label {{bug_for_review.status}}">{{bug_for_review.get_status_display}}</span>
             </td>
-            <td title="modified time">
-                {{bug_for_review.modified}}
+            <td class="no-wrap">
+                {{bug_for_review.modified|date:"M j o"}}
             </td>
             <td title="assigned to">
                 {% if criticality_issue.assigned_to %}
                 <a href="{% url 'auth.views.user_overview' bugs_for_review.assigned_to.id %}">{{bugs_for_review.assigned_to}}</a>
+				{% else %}
+				None
                 {% endif %}
             </td>
         </tr>
     {% endfor %}
-</table><br><br>
+	</tbody>
+</table>
 {% endblock %}
 
 {% block endScripts %}
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#blank_count').click(function(){
-                $('.tbl-project-blank-count').fadeToggle('slow', function(){});
-            });
-            $('#active_count').click(function(){
-                $('.tbl-project-active-count').fadeToggle('slow', function(){});
-            });
-            $('#not_a_bug_count').click(function(){
-                $('.tbl-project-not-a-bug-count').fadeToggle('slow', function(){});
-            });
-            $('#wont_fix_count').click(function(){
-                $('.tbl-project-wont-fix-count').fadeToggle('slow', function(){});
-            });
-            $('#duplicate_count').click(function(){
-                $('.tbl-project-duplicate-count').fadeToggle('slow', function(){});
-            });
-            $('#fixed_count').click(function(){
-                $('.tbl-project-fixed-count').fadeToggle('slow', function(){});
-            });
-            $('#retest_count').click(function(){
-                $('.tbl-project-retest-count').fadeToggle('slow', function(){});
-            });
-            $('#unverified_count').click(function(){
-                $('.tbl-project-unverified-count').fadeToggle('slow', function(){});
-            });
-        });
-    </script>
+<script>
+$(function(){
+	$.extend($.tablesorter.themes.bootstrap, {
+		// these classes are added to the table. To see other table classes available,
+		// look here: http://twitter.github.com/bootstrap/base-css.html#tables
+		table      : 'table table-bordered',
+		sortNone   : 'bootstrap-icon-unsorted',
+		sortAsc    : 'icon-chevron-up glyphicon glyphicon-chevron-up',     // includes classes for Bootstrap v2 & v3
+		sortDesc   : 'icon-chevron-down glyphicon glyphicon-chevron-down' // includes classes for Bootstrap v2 & v3
+	});
+	
+	$('table.table').tablesorter({
+		theme: 'bootstrap',
+		showProcessing: true,
+		headerTemplate: '{content} {icon}',
+		widgets : ['uitheme', 'zebra']
+	})
+});
+</script>
 {% endblock %}

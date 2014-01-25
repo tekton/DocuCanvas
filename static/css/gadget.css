@@ -624,6 +624,19 @@ table.unassigned-issues {
 
 
 
+/* --- Project Stats
+-------------------------------------------------------*/
+
+body.project-stats {}
+	
+	body.project-stats .accordion-heading {
+		border-top: 1px solid #ddd;
+	}
+		
+		body.project-stats .accordion-heading a:hover {
+			background: #f5f5f5;
+		}
+
 /* --- Search Results
 -------------------------------------------------------*/
 
