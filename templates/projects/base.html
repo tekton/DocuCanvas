@@ -35,12 +35,12 @@ Used for all templates in /templates/projects
 {% block bodyClass %}page-projects{% endblock %}
 {% block baseContent %}
 <div id="maincontent" class="container">
+	<div id="pagemessage"></div>
 	<header id="pageheader">
 		<h1 id="pagetitle" class="page-header">
 			{% block pageTitle %}Projects{% endblock %}: {% block pageDescription %}{% endblock%}
 		</h1>
 	</header>
-	<div id="pagemessage"></div>
 	{% block bodyContent %}{% endblock %}
 </div>
 {% endblock %}
