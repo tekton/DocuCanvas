@@ -4,11 +4,11 @@
 {% block bodyClass %}page-feedback{% endblock %}
 {% block baseContent %}
 <div id="maincontent" class="container">
-	<header id="pageheader">
-		<h1 id="pagetitle" class="page-header">
+	<div class="page-header">
+		<h1>
 			{% block pageTitle %}{% endblock %}
 		</h1>
-	</header>
+	</div>
 	<div id="pagemessage"></div>
 	{% block bodyContent %}{% endblock %}
 </div>

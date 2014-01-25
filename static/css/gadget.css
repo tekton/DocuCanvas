@@ -77,20 +77,19 @@ body {
 
 /* --- | Page Header | --- */
 
-#pageheader {
-	margin: 1em 0;
+.page-header {
 }
 
-	#pageheader h1 {
+	.page-header h1 {
 		font-size: 27px;
 		line-height: 1.25em;
 		text-align: center;
-		margin: 0;
+/*		margin: 0;*/
 /*		padding: 0;*/
 /*		border: 0;*/
 	}
 
-	#pagetitle .title-separator {
+	.page-header .title-separator {
 	    display: none;
 	}
 
@@ -289,23 +288,22 @@ body.dashboard {}
 
 	/* --- | Pageheader | --- */
 
-	body.dashboard #pageheader {
+	body.dashboard .page-header {
 		margin: 15px 0;
+		border: 0;
 	}
 
-		body.dashboard #pageheader h1 {
+		body.dashboard .page-header h1 {
 			font-weight: normal;
 			text-align: left;
 			margin: 0;
-			padding: 0;
-			border: 0;
 		}
 		
-			body.dashboard-v2 #pageheader h1 {
+			body.dashboard-v2 .page-header h1 {
 				text-align: center;
 			}
 	
-		body.dashboard #pageheader h2 {
+		body.dashboard .page-header h2 {
 			font-size: 24px;
 			font-weight: normal;
 			margin: 0;
@@ -509,7 +507,7 @@ body.issue-overview {}
 
 	/* --- | Pageheader | --- */
 	
-	#pagehader {}
+	.page-header {}
 	
 		/*body.issue-overview #pageheader ul.issue-subtitle {
 			font-size: 14px;
@@ -530,7 +528,7 @@ body.issue-overview {}
 				border: 0;
 			}*/
 		
-		body.issue-overview #pageheader h1 {
+		body.issue-overview .page-header h1 {
 			text-align: left;
 		}
 		

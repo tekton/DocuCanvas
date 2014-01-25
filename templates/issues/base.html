@@ -58,12 +58,14 @@ Used for all templates in /templates/issues
 
 <div id="maincontent" class="container">
 	<div id="pagemessage"></div>
-	<header id="pageheader">
+	
+	<div class="page-header">
 		{% block issueSubtitle %}{% endblock %}
-		<h1 id="pagetitle" class="page-header">
+		<h1>
 			{% block pageTitle %}Issues{% endblock %}
 		</h1>
-	</header>
+	</div>
+
 	{% block bodyContent %}{% endblock %}
 </div>
 
