@@ -35,7 +35,10 @@ def saveProjectPriority(request):
         return HttpResponse(json.dumps({"msg": "could not read data"}), status=403)
     priority_value = 1
     for key in priority_array:
+        if int(key) == 0:
+            break
         try:
+            print key
             project = Project.objects.get(pk=key)
             project.priority = priority_value
             project.save()
