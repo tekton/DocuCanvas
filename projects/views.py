@@ -18,8 +18,13 @@ def home(request):
     except Exception, e:
         print e
         projects = []
+    try:
+        inactive = Project.objects.exclude(active=True)
+    except Exception, e:
+        print e
+        inactive = []
     #owned_projects = Project.objects.filter(product_owner=request.user)
-    return render_to_response("projects/projects_new.html", {'projects': projects, "page_type": "Projects"}, context_instance=RequestContext(request))
+    return render_to_response("projects/projects_new.html", {'projects': projects, "inactive": inactive, "page_type": "Projects"}, context_instance=RequestContext(request))
 
 
 @login_required

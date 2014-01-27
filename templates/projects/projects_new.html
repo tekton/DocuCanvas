@@ -69,8 +69,21 @@ Used for all templates in /templates/projects
 			</tr>
 		{% endif %}
 		{% endfor%}
+		{% for project in inactive %}
+			<tr class="hidden-project" style="display:none;" id="{{project.id}}">
+				<td><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></td>
+				<td><a href="{% url 'projects.views.project_overview' project.id %}>">{{project.name}}</a></td>
+				<td>{{project.code_name}}</td>
+				<td>{{project.get_status_display}}</td>
+				<td>{{project.get_current_phase_display}}</td>
+				<td>{{project.deployment_server}}</td>
+				<td>{{project.deployment_url}}</td>
+				<td>{{project.modified}}</td>
+			</tr>
+		{% endfor %}
 		</tbody>
 	</table>
+	<button id="show-button">Show Hidden</button>
 </div>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
@@ -94,8 +107,28 @@ Used for all templates in /templates/projects
 					}
 				});
             }
-    });
+    	});
 		$("#sortable").disableSelection();
+
+		$("#show-button").on('click', function(e){
+			var rows = $("#sortable tr.hidden-project");
+			rows.each(function(){
+				this.style.display = 'inline';
+			});
+			$(this).id = "hide-button";
+			$(this).text = "Hide Hidden";
+			return false;
+		});
+
+		$("#hide-button").on('click', function(e){
+			var rows = $("#sortable tr.hidden-project");
+			rows.each(function(){
+				this.style.display = 'none';
+			});
+			$(this).id = "show-button";
+			$(this).text = "Show Hidden";
+			return false;
+		})
 	});
 </script>
 {% endblock %}
