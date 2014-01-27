@@ -22,7 +22,7 @@
 	{% for project in projects %}
 	<tr>
 		<td style="text-align:left;"><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></td>
-		<td style="text-align:left;">{{project.phase}}</td>
+		<td style="text-align:left;">{{project.current_phase}}</td>
 		<td style="text-align:left;">{{project.potential_end_date}}</td>
 		<td style="text-align:left;">{{project.status}}</td>
 	</tr>
