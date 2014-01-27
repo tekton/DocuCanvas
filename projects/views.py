@@ -38,8 +38,9 @@ def saveProjectPriority(request):
         if int(key) == 0:
             break
         try:
-            print key
             project = Project.objects.get(pk=key)
+            if not project.active:
+                project.active = True
             project.priority = priority_value
             project.save()
             priority_value = priority_value + 1

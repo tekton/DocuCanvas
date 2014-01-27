@@ -111,25 +111,24 @@ Used for all templates in /templates/projects
     	});
 		$("#sortable").disableSelection();
 
+		var hidden = true;
+
 		$("#show-button").on('click', function(e){
 			var rows = $("#sortable tr.hidden-project");
-			rows.each(function(){
-				this.style.display = 'table-row';
-			});
-			var elem = document.getElementById("show-button");
-			$("#maincontent").append("<button id='hide-button'>Hide Inactive</button>");
-			elem.parentNode.removeChild(elem);
-			return false;
-		});
-
-		$("#hide-button").on('click', function(e){
-			var rows = $("#sortable tr.hidden-project");
-			rows.each(function(){
-				this.style.display = 'none';
-			});
-			var elem = document.getElementById("hide-button");
-			$("#maincontent").append("<button id='show-button'>Show Inactive</button>");
-			elem.parentNode.removeChild(elem);
+			if(hidden){
+				rows.each(function(){
+					this.style.display = 'table-row';
+				});
+				$(this).text("Hide Inactive");
+				hidden = false;
+			}
+			else{
+				rows.each(function(){
+					this.style.display = 'none';
+				});
+				$(this).text("Show Inactive");
+				hidden = true;
+			}
 			return false;
 		});
 	});
