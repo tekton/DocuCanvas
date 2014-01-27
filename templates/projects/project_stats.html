@@ -388,12 +388,15 @@ Extends /templates/projects/base.html
             <td title="status">
 				<span class="title-issuestatus label {{bug_for_review.status}}">{{bug_for_review.get_status_display}}</span>
             </td>
+            <td>
+            	{{bug_for_review.criticality}}
+            </td>
             <td class="no-wrap">
                 {{bug_for_review.modified|date:"M j o"}}
             </td>
-            <td title="assigned to">
-                {% if criticality_issue.assigned_to %}
-                <a href="{% url 'auth.views.user_overview' bugs_for_review.assigned_to.id %}">{{bugs_for_review.assigned_to}}</a>
+            <td>
+                {% if bug_for_review.assigned_to %}
+                <a href="{% url 'auth.views.user_overview' bugs_for_review.assigned_to.id %}">{{bug_for_review.assigned_to}}</a>
 				{% else %}
 				None
                 {% endif %}
