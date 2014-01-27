@@ -83,7 +83,7 @@ Used for all templates in /templates/projects
 		{% endfor %}
 		</tbody>
 	</table>
-	<button id="show-button">Show Hidden</button>
+	<button id="show-button">Show Active</button>
 </div>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
@@ -115,8 +115,9 @@ Used for all templates in /templates/projects
 			rows.each(function(){
 				this.style.display = 'table-row';
 			});
-			$(this).id = "hide-button";
-			$(this).text = "Hide Hidden";
+			var button = $("#show-button");
+			$(this).text("Hide Inactive");
+			this.id = "hide-button";
 			return false;
 		});
 
@@ -125,10 +126,11 @@ Used for all templates in /templates/projects
 			rows.each(function(){
 				this.style.display = 'none';
 			});
-			$(this).id = "show-button";
-			$(this).text = "Show Hidden";
+			var button = $("#hide-button");
+			$(this).text("Show Inactive");
+			this.id = "show-button";
 			return false;
-		})
+		});
 	});
 </script>
 {% endblock %}
