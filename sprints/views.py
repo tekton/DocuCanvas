@@ -46,7 +46,7 @@ def viewSprint(request, sprint_id):
 	except Exception as e:
 		return HttpResponse(status=403)
 	try:
-		issues = Issue.objects.filter(sprint=sprint).order_by("project").order_by("-modified")
+		issues = Issue.objects.filter(sprint=sprint).order_by("-modified").order_by("project")
 	except Exception as e:
 		print e
 	return render_to_response('sprints/sprint_overview.html', {'sprint': sprint, 
