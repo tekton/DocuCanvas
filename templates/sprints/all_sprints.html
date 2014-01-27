@@ -28,7 +28,7 @@ All Sprints
 	var sprints = JSON.parse("{{sprints|escapejs|safe}}");
 	$(document).ready(function(){
 		for(sprint in sprints){
-			$("tbody").append("<tr><td><a href=\"sprints/" + sprints[sprint]['id'] + "\">" + sprints[sprint]["name"] + "</a></td><td>" + sprints[sprint]["completed"] + "/" + sprints[sprint]["total"] + "</td></tr>");
+			$("tbody").append("<tr><td><a href=\"" + sprints[sprint]['id'] + "\">" + sprints[sprint]["name"] + "</a></td><td>" + sprints[sprint]["completed"] + "/" + sprints[sprint]["total"] + "</td></tr>");
 		}
 	});
 </script>

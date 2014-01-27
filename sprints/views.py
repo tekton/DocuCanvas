@@ -44,7 +44,7 @@ def viewSprint(request, sprint_id):
 	try:
 		sprint = Sprint.objects.get(pk=sprint_id)
 	except Exception as e:
-		print e
+		return HttpResponse(status=403)
 	try:
 		issues = Issue.objects.filter(sprint=sprint).order_by("project").order_by("-modified")
 	except Exception as e:
