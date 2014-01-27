@@ -113,7 +113,7 @@ Used for all templates in /templates/projects
 		$("#show-button").on('click', function(e){
 			var rows = $("#sortable tr.hidden-project");
 			rows.each(function(){
-				this.style.display = 'inline';
+				this.style.display = 'table-row';
 			});
 			$(this).id = "hide-button";
 			$(this).text = "Hide Hidden";
