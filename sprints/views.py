@@ -49,7 +49,9 @@ def viewSprint(request, sprint_id):
 		issues = Issue.objects.filter(sprint=sprint).order_by("project").order_by("-modified")
 	except Exception as e:
 		print e
-	return render_to_response('sprints/sprint_overview.html', {'sprint': sprint, 'issues': issues, 'projects': projects}, context_instance=RequestContext(request))
+	return render_to_response('sprints/sprint_overview.html', {'sprint': sprint, 
+		                                                       'issues': issues, 
+		                                                       'projects': projects}, context_instance=RequestContext(request))
 
 
 def viewAll(request):
@@ -61,7 +63,16 @@ def viewAll(request):
 		sprints = Sprint.objects.all()
 	except Exception as e:
 		print e
-	return render_to_response('sprints/all_sprints.html', {'sprints':sprints, 'projects': projects}, context_instance=RequestContext(request))
+	to_json = {}
+	for sprint in sprints:
+		try:
+			issues = Issue.objects.filter(sprint=sprint).exclude(status='active').exclude(status='retest').exclude(status='unverified').exclude(status=None)
+			total = Issue.objects.filter(sprint=sprint)
+		except Exception, e:
+			print e
+		to_json[str(sprint.id)] = {"id": sprint.id, "name": sprint.name, "completed": issues.count(), "total": total.count()}
+	return render_to_response('sprints/all_sprints.html', {'sprints':json.dumps(to_json),
+		                                                   'projects': projects}, context_instance=RequestContext(request))
 
 
 def autoCreateSprints(request):

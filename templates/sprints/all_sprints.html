@@ -9,7 +9,29 @@ All Sprints
 {% endblock %}
 
 {% block bodyContent %}
+<table class="table">
+	<thead>
+		<tr>
+			<td>Name</td>
+			<td>Fixed/Total</td>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
 {% for sprint in sprints %}
-<a href="{% url 'sprints.views.viewSprint' sprint.id %}">{{sprint.name}}</a></br>
 {% endfor %}
+{% endblock %}
+
+{% block endScripts %}
+<script type="text/javascript">
+	var sprints = JSON.parse("{{sprints|escapejs|safe}}");
+
+	$(document).ready(function(){
+		for(sprint in sprints){
+			console.log(sprints[sprint]['name']);
+			$("tbody").append("<tr><td><a href=\"sprints/" + sprints[sprint]['id'] + "\">" + sprints[sprint]["name"] + "</a></td><td>" + sprints[sprint]["completed"] + "/" + sprints[sprint]["total"] + "</td></tr>");
+		}
+	});
+</script>
 {% endblock %}
