@@ -26,10 +26,8 @@ All Sprints
 {% block endScripts %}
 <script type="text/javascript">
 	var sprints = JSON.parse("{{sprints|escapejs|safe}}");
-
 	$(document).ready(function(){
 		for(sprint in sprints){
-			console.log(sprints[sprint]['name']);
 			$("tbody").append("<tr><td><a href=\"sprints/" + sprints[sprint]['id'] + "\">" + sprints[sprint]["name"] + "</a></td><td>" + sprints[sprint]["completed"] + "/" + sprints[sprint]["total"] + "</td></tr>");
 		}
 	});
