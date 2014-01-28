@@ -391,7 +391,7 @@ def export_user(request, user_id):
 # Structure for adding new holidays to Holiday Calendar Date Generator
 # k,v pair...
 # k = Holiday_Name (how it will be displayed)
-# v = [int(WEEK_NUMBER_HOLIDAY_LIES_IN), str(DAY_OF_THE_WEEK (full day name ie. Monday, Tuesday, etc)), int(MONTH_NUMBER 1-12), OPTIONAL(int(OFFSET (for thins like 'day after thanksgiving', enter data for thanksgiving, but insert a 1 here to get the next day)))]
+# v = [int(WEEK_NUMBER_HOLIDAY_LIES_IN), str(DAY_OF_THE_WEEK (full day name ie. Monday, Tuesday, etc)), int(MONTH_NUMBER 1-12), OPTIONAL(int(OFFSET (for things like 'day after thanksgiving', enter data for thanksgiving, but insert a 1 here to get the next day)))]
 holiday_formulas = {"Memorial Day": [-1, "Monday", 5],
                    "Presidents Day": [3, "Monday", 2],
                    "Thanksgiving Day": [4, "Thursday", 11],
