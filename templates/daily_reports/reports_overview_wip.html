@@ -1,12 +1,18 @@
 {% extends 'daily_reports/base.html' %}
 {% load set_var %}
+{% load static %}
 {% load humanize %}
+
+{% block additionalHead %}
+	<link rel="stylesheet" href="{% static 'css/nv.d3.css' %}" type="text/css">
+{% endblock %}
 
 {% block contextNav %}
 {% include '_includes/contextnav-daily_reports.html' %}
 {% endblock %}
 
 {% block bodyContent %}
+
 <table class="table table-swimline dailyreports-all">
 	<tbody>
 		{% for user in users %}
@@ -41,10 +47,10 @@
                     </div>
 	    		</td>
 	    		<td class="swimline-column3">
-                    <div id="chart-status-{{user|slugify|lower}}" class="dailyreport-chart"></div>
+					<svg id="chart-status-{{user|slugify|lower}}" class="mypiechart" width="300"></svg>
 	    		</td>
                 <td class="swimline-column4">
-                    <div id="chart-project-{{user|slugify|lower}}" class="dailyreport-chart"></div>
+					<svg id="chart-project-{{user|slugify|lower}}" class="mypiechart" width="300"></svg>
                 </td>
 	    	</tr>
     	{% endfor %}
@@ -53,175 +59,93 @@
 {% endblock %}
 
 {% block endScripts %}
-<script src="//cdn.sencha.com/ext/gpl/4.2.0/ext-all.js"></script>
+<script src="{% static 'js/d3.v3.js' %}"></script>
+<script src="{% static 'js/nv.d3.min.js' %}"></script>
 
 {% regroup newsfeeditems by user as NewsfeedItemsByUser %}
 <script>
     var data = {};
-    {% for newsfeeditem in NewsfeedItemsByUser %}
-        data['{{newsfeeditem.grouper|slugify|lower}}'] = {
-            "status": [
+    
+	{% for newsfeeditem in NewsfeedItemsByUser %}
+
+    data['{{newsfeeditem.grouper|slugify|lower}}'] = {
+        "status": [
+			{
+				key: "Status",
+				values: [
                 {% regroup newsfeeditem.list|dictsort:"new_value" by field_change as NewsfeedItemsByUserByFieldChange %}
                 {% for itembyfieldchange in NewsfeedItemsByUserByFieldChange %}
                     {% if itembyfieldchange.grouper == 'status' %}
                         {% regroup itembyfieldchange.list by new_value as NewsfeedItemsByUserByFieldChangeByNewValue %}
                         {% for item in NewsfeedItemsByUserByFieldChangeByNewValue %}
                             {
-                                "name": "{{item.grouper|escapejs}}",
-                                "count": {{item.list|length}}
+                                "label": "{{item.grouper|escapejs}}",
+                                "value": {{item.list|length}}
                             }{% if not forloop.last or not forloop.parentloop.last %},{% endif %}
                         {% endfor %}
                     {% endif %}
                 {% endfor %}
-            ],
-            "project": [
-                {% regroup newsfeeditem.list by project as IssuesUpdatedByUserByProject %}
-                {% for issue in IssuesUpdatedByUserByProject %}
-                    {
-                        "name": "{{issue.grouper|escapejs}}",
-                        "count": {{issue.list|length}}
-                    }{% if not forloop.last %},{% endif %}
-                {% endfor %}
-            ]
-        };
+				]
+			}
+        ],
+        "project": [
+            {% regroup newsfeeditem.list by project as IssuesUpdatedByUserByProject %}
+            {% for issue in IssuesUpdatedByUserByProject %}
+                {
+                    "key": "{{issue.grouper|escapejs}}",
+                    "y": {{issue.list|length}}
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]
+    };
+
+	nv.addGraph(function() {
+		var chart = nv.models.pieChart()
+			.x(function(d) { return d.key })
+			.y(function(d) { return d.y })
+			.color(d3.scale.category10().range())
+			.showLabels(false)
+
+		chart.tooltipContent(function(key, y, e, graph){
+			return '<p>' + key + '</p>' + '<p>' + y + '</p>'
+		})
+
+		d3.select("#chart-project-{{newsfeeditem.grouper|slugify|lower}}")
+			.datum(data['{{newsfeeditem.grouper|slugify|lower}}'].project)
+			.transition().duration(1200)
+			.call(chart);
+
+		chart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+
+		return chart;
+	});
+
+	nv.addGraph(function() {
+		var chart = nv.models.discreteBarChart()
+			.x(function(d) { return d.label })
+			.y(function(d) { return d.value })
+			.staggerLabels(true)
+			.tooltips(false)
+			.showValues(true)
+			
+			chart.valueFormat(d3.format('d'));
+			
+			chart.yAxis
+			.tickFormat(d3.format('d'));
+			
+			chart.margin({
+				left: 25
+			})
+		
+		d3.select('#chart-status-{{newsfeeditem.grouper|slugify|lower}}')
+			.datum(data['{{newsfeeditem.grouper|slugify|lower}}'].status)
+			.transition().duration(500)
+			.call(chart);
+		
+		nv.utils.windowResize(chart.update);
+
+		return chart;
+	});
     {% endfor %}
-
-    Ext.onReady(function(){
-        var chartWidth = 300,
-            chartHeight = 300;
-
-        Ext.Object.each(data,function(user,dataSet,allData){
-
-            /* Issues by Status - Column Chart */
-            new Ext.Panel({
-                width: chartWidth,
-                height: chartHeight,
-                layout: 'fit',
-                items: new Ext.chart.Chart({
-                    animate: true,
-                    store: new Ext.data.JsonStore({
-                        fields: ['name','count'],
-                        data: dataSet.status
-                    }),
-                    shadow: true,
-                    legend: false,
-                    insetPadding: 20,
-                    axes: [
-                        {
-                            type: 'Numeric',
-                            position: 'bottom',
-                            fields: 'count',
-                            grid: true,
-                            minimum: 0
-                        },
-                        {
-                            type: 'Category',
-                            position: 'left',
-                            fields: 'name',
-                            label: {
-                                renderer: function(label){
-                                    var text = '';
-                                    switch (label) {
-                                        case 'active':
-                                            text = 'Active';
-                                            break;
-                                        case 'duplicate':
-                                            text = 'Duplicate';
-                                            break;
-                                        case 'fixed':
-                                            text = 'Fixed';
-                                            break;
-                                        case 'not_a_bug':
-                                            text = 'Not a Bug';
-                                            break;
-                                        case 'unverified':
-                                            text = 'Unverified';
-                                            break;
-                                        case 'wont_fix':
-                                            text = 'Won\'t Fix';
-                                            break;
-                                        case 'retest':
-                                            text = 'Retest';
-                                            break;
-                                        default:
-                                            text = label;
-                                            break;
-                                    }
-                                    return text;
-                                }
-                            }
-                        }
-                    ],
-                    series: [
-                        {
-                            type: 'bar',
-                            axis: 'left',
-                            hightlight: false,
-                            xField: 'name',
-                            yField: 'count',
-                            renderer: function(sprite,record,attributes,index,store) {
-                                var color = '#999999';
-
-                                switch (record.get('name')) {
-                                    case 'not_a_bug':
-                                    case 'wont_fix':
-                                    case 'duplicate':
-                                        color = '#3A87AD';
-                                        break;
-
-                                    case 'active':
-                                    case 'retest':
-                                        color = '#F89406';
-                                        break;
-
-                                    case 'fixed':
-                                        color = '#468847';
-                                        break;
-                                }
-
-                                return Ext.apply(attributes,{
-                                    fill: color
-                                })
-                            }
-                        }
-                    ]
-                }),
-                renderTo: Ext.get('chart-status-'+user)
-            });
-        
-            /* Issues by Project - Pie Chart */
-            new Ext.Panel({
-                width: chartWidth,
-                height: chartHeight,
-                layout: 'fit',
-                items: new Ext.chart.Chart({
-                    animate: true,
-                    store: new Ext.data.JsonStore({
-                        fields: ['name','count'],
-                        data: dataSet.project
-                    }),
-                    shadow: true,
-                    legend: false,
-                    insetPadding: 20,
-                    series: [
-                        {
-                            type: 'pie',
-                            field: 'count',
-                            showInLegend: true,
-                            highlight: false,
-                            donut: false,
-                            label: {
-                                field: 'name',
-                                display: 'rotate',
-                                contrast: true,
-                                font: '14px Arial'
-                            }
-                        }
-                    ]
-                }),
-                renderTo: Ext.get('chart-project-'+user)
-            });
-        });
-    });
 </script>
 {% endblock %}
