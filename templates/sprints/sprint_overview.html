@@ -1,7 +1,12 @@
 {% extends "sprints/base.html" %}
+{% load static %}
 
 {% block pageTitle %}
 {{sprint.name}}
+{% endblock %}
+
+{% block additionalHead %}
+	<link rel="stylesheet" href="{% static 'css/theme.bootstrap.css' %}">
 {% endblock %}
 
 {% block contextNav %}
@@ -38,34 +43,60 @@
 	{% endfor %}
 </table>
 -->
-<article class="row">
-    <div id="issue-column-main" class="span12 metainfo-maincolumn">
-        <div id="issue-details" class="well">
-			<table id="sprint-issue-table" width='100%'>
+<!-- <article class="row"> -->
+    <!-- <div id="issue-column-main" class="span12 metainfo-maincolumn"> -->
+        <!-- <div id="issue-details" class="well"> -->
+			<table id="sprint-issue-table" class="table table-bordered table-striped">
+				<thead>
 	                <tr>
-	                    <th style="text-align: left;" onclick="sortTable('project')">Project</th>
-	                    <th style="text-align: left;">Meta Issue</th>
-	                    <th style="text-align: left;">Developer</th>
-	                    <th style="text-align: left;">Status</th>
-	                    <th style="text-align: left;">Description</th>
-	                    <th style="text-align: left;" onclick="sortTable('modified')">Modified</th>
+	                    <th>Project</th>
+						<th>Summary</th>
+	                    <th>Meta Issue</th>
+	                    <th>Developer</th>
+	                    <th>Status</th>
+	                    <th>Modified</th>
 	                </tr>
-                {% for issue in issues %}
-                <tr>
-                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
-                    {% if issue.meta_issues %}
-                    <td><a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues}}</td>
-                    {% else %}
-                    <td>{{issue.meta_issues}}</td>
-                    {% endif %}
-                    <td>{{issue.assigned_to}}</td>
-                    <td>{{issue.status}}</td>
-                    <td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary|truncatechars:80}}</a></td>
-                    <td>{{issue.modified}}</td>
-                </tr>
-                {% endfor %}
+				</thead>
+				<tbody>
+	                {% for issue in issues %}
+	                <tr>
+	                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
+						<td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary|truncatechars:80}}</a></td>
+	                    {% if issue.meta_issues %}
+	                    <td><a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues}}</td>
+	                    {% else %}
+	                    <td>{{issue.meta_issues}}</td>
+	                    {% endif %}
+	                    <td>{{issue.assigned_to}}</td>
+	                    <td><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
+	                    <td>{{issue.modified|date:"M j o"}}</td>
+	                </tr>
+	                {% endfor %}
+				</tbody>
             </table>
-		</div>
-	</div>
-</article>
+		<!-- </div> -->
+	<!-- </div> -->
+<!-- </article> -->
+{% endblock %}
+
+{% block endScripts %}
+<script>
+$(function(){
+	$.extend($.tablesorter.themes.bootstrap, {
+		// these classes are added to the table. To see other table classes available,
+		// look here: http://twitter.github.com/bootstrap/base-css.html#tables
+		table      : 'table table-bordered',
+		sortNone   : 'bootstrap-icon-unsorted',
+		sortAsc    : 'icon-chevron-up glyphicon glyphicon-chevron-up',     // includes classes for Bootstrap v2 & v3
+		sortDesc   : 'icon-chevron-down glyphicon glyphicon-chevron-down' // includes classes for Bootstrap v2 & v3
+	});
+	
+	$('table.table').tablesorter({
+		theme: 'bootstrap',
+		showProcessing: true,
+		headerTemplate: '{content} {icon}',
+		widgets : ['uitheme', 'zebra']
+	})
+});
+</script>
 {% endblock %}
