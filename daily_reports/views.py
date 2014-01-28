@@ -350,23 +350,27 @@ def export_user(request, user_id):
         print e
     if account.assignable:
         data = []
+        temp = ["Date", "Account", "Estimated Hours", "Holidays/Events", "Report Description"]
+        data.append(temp)
         date_format = "%Y-%m-%d"
         date_obj = timedate.strptime(str(year) + "-01-01", date_format)
         one_day = datetime.timedelta(days=1)
         while int(date_obj.strftime(date_format)[0:4]) < 2014:
             temp = []
-            temp.append(date_obj)
+            temp.append(date_obj.strftime(date_format))
             if date_obj.strftime("%A") not in weekend:
                 try:
                     report = UserDailyReport.objects.filter(date__range=[date_obj.strftime(date_format), date_obj.strftime(date_format)]).filter(user=user)
                 except Exception, e:
                     print e
                 temp.append(user.username)
-                temp.append("7")
+                temp.append("6")
+                if date_obj.strftime(date_format) in holidays:
+                    temp.append(holidays[date_obj.strftime(date_format)])
+                else:
+                    temp.append("")
                 if report:
                     temp.append(report[0].description)
-                elif date_obj.strftime(date_format) in holidays:
-                    temp.append(holidays[date_obj.strftime(date_format)])
                 data.append(temp)
             date_obj = date_obj + one_day
         csvtemplate = loader.get_template('daily_reports/csv_template.html')
@@ -397,7 +401,8 @@ def HolidayDateByYear(year):
     holidays = {str(year) + "-01-01": "New Year's Day",
                 str(year) + "-12-24": "Christmas Eve", 
                 str(year) + "-12-25": "Christmas Day",
-                str(year) + "-12-31": "New Year's Eve",}
+                str(year) + "-12-31": "New Year's Eve",
+                str(year) + "-07-04": "Independence Day",}
     for k in holiday_formulas:
         temp_date = None
         if holiday_formulas[k][0] < 0:
