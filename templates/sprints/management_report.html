@@ -1,0 +1,119 @@
+{% extends "sprints/base.html" %}
+
+{% block pageTitle %}
+{% endblock %}
+
+{% block contextNav %}
+{% include '_includes/contextnav-sprints.html' %}
+{% endblock %}
+
+{% block bodyContent %}
+<h3>Monthly Milestone Progress</h3>
+<table style="width:100%;">
+	<thead>
+	<tr>
+		<th style="text-align:left;">Project</th>
+		<th style="text-align:left;">Phase</th>
+		<th style="text-align:left;">Projected Date</th>
+		<th style="text-align:left;">Status</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for project in projects %}
+	<tr>
+		<td style="text-align:left;"><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></td>
+		<td style="text-align:left;">{{project.current_phase}}</td>
+		<td style="text-align:left;">{{project.potential_end_date}}</td>
+		<td style="text-align:left;">{{project.status}}</td>
+	</tr>
+	{% endfor %}
+</tbody>
+</table>
+
+<h3>Glossary</h3>
+<table style="width:100%;">
+	<tr>
+		<td>Define</td>
+		<td>Product Specs/Pre Implementation.</td>
+	</tr>
+	<tr>
+		<td>Design</td>
+		<td>Implementing given task is in progress.</td>
+	</tr>
+	<tr>
+		<td>Sustain</td>
+		<td>Project complete and is now in maintenance.</td>
+	</tr>
+	<tr>
+		<td>On Time</td>
+		<td>Project is on time.</td>
+	</tr>
+	<tr>
+		<td>Pending</td>
+		<td>Project is awaiting initiation</td>
+	</tr>
+	<tr>
+		<td>At Risk</td>
+		<td>Things have not been mitigated yet that could cause project to slip past projected date.</td>
+	</tr>
+	<tr>
+		<td>Completed</td>
+		<td>Project is finished</td>
+	</tr>
+	<tr>
+		<td>Canceled</td>
+		<td>Project has been canceled.</td>
+	</tr>
+</table>
+
+</br>
+
+<h3>Last Week :: {{sprint.name}}</h3>
+<table style="width:100%;">
+	<thead>
+	<tr>
+		<th style="text-align:left;">Gadget ID</th>
+		<th style="text-align:left;">Project</th>
+		<th style="text-align:left;">Status</th>
+		<th style="text-align:left;">Description</th>
+	</tr>
+</thead>
+<tbody>
+	{% for issue in issues %}
+	<tr>
+		<td style="text-align:left;"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
+		<td style="text-align:left;">{{issue.project}}</td>
+		<td style="text-align:left;">{{issue.status}}</td>
+		<td style="text-align:left;">{{issue.summary}}</td>
+	</tr>
+	{% endfor %}
+</tbody>
+</table>
+
+<h3>This Week :: {{current.name}}</h3>
+<table style="width:100%;">
+	<thead>
+	<tr>
+		<th style="text-align:left;">Gadget ID</th>
+		<th style="text-align:left;">Project</th>
+		<th style="text-align:left;">Status</th>
+		<th style="text-align:left;">Description</th>
+	</tr>
+</thead>
+<tbody>
+	{% for issue in current_issues %}
+	<tr>
+		<td style="text-align:left;"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
+		<td style="text-align:left;">{{issue.project}}</td>
+		<td style="text-align:left;">{{issue.status}}</td>
+		<td style="text-align:left;">{{issue.summary}}</td>
+	</tr>
+	{% endfor %}
+</tbody>
+</table>
+{% for sprint in sprints %}
+{% endfor %}
+{% endblock %}
+
+{% block endScripts %}
+{% endblock %}

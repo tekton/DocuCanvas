@@ -12,4 +12,5 @@ urlpatterns = patterns('',
     (r'^assign/(\d+)/(\d+)$', 'sprints.views.assignSprint'),
     (r'^auto$', 'sprints.views.autoCreateSprints'),
     (r'^widget$', 'sprints.views.loadWidget'),
+    (r'^management_report$', 'sprints.views.createLastWeekManagementReport'),
 )

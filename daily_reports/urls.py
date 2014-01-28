@@ -20,4 +20,5 @@ urlpatterns = patterns('',
                        url(r'^edit_group/([A-Za-z0-9_\.-]+)/$', 'daily_reports.views.edit_group'),
                        url(r'^request_summary$', 'daily_reports.views.request_report_summary'),
                        url(r'^report_redirect$', 'daily_reports.views.reportRedirect'),
+                       url(r'^export/(\d+)$', 'daily_reports.views.export_user'),
                        )
