@@ -780,7 +780,7 @@ body.page-polls {}
 
 /* --- | WIP | --- */
 
-.dailyreports-all {}
+/*.dailyreports-all {}
 .dailyreports-all td,
 .dailyreports-all .dailyreport-list,
 .dailyreports-all .swimline-rotate,
@@ -810,31 +810,31 @@ body.page-polls {}
 }
 .dailyreport-list .accordion .accordion-heading.collapsed a {
     background-color: transparent;
-}
+}*/
 
 
 
 /* --- Swimline Shit
 -------------------------------------------------------*/
 
-.table-swimline {
+/*.table-swimline {
     width: auto;
     max-width: none;
     overflow: auto;
     display: block;
     height: auto;
     padding: 0;
-}
-.table-swimline td {
+}*/
+/*.table-swimline td {
     border: 1px solid gray;
     vertical-align: top;
     padding: 0;
     height: 330px;
-}
+}*/
 .table-swimline .swimline-rowhead {
-    min-width: 0;
     width: 25px;
     padding: 0;
+	border-right: 1px solid #ddd;
 }
 .table-swimline .swimline-rotatewrapper {
     display: block;
@@ -853,11 +853,31 @@ body.page-polls {}
     vertical-align: top;
     text-align: center;
 }
-.table-swimline table {}
+/*.table-swimline table {}
 .table-swimline table td {
     height: auto;
     width: auto;
+}*/
+
+/* --- | Daily Report List | --- */
+
+.table-swimline .dailyreport-list {
+    width: 480px;
+    padding: 10px 15px 10px 10px;
+    overflow: auto;
 }
+	
+	/* --- | Accordion | --- */
+	
+	.table-swimline .dailyreport-list .accordion {}
+
+		.table-swimline .dailyreport-list .accordion .accordion-heading a {
+		    background-color: #f7f7f9;
+		    outline: none;
+		}
+		.table-swimline .dailyreport-list .accordion .accordion-heading.collapsed a {
+		    background-color: transparent;
+		}
 
 
 
