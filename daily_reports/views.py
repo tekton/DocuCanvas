@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
+from django.template import RequestContext, loader, Context
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from datetime import date
@@ -8,9 +9,11 @@ from datetime import datetime as timedate
 from forms import ReportForm, GroupForm, DailyReportForm
 from projects.models import Project
 from newsfeed.models import NewsFeedItem
+from accounts.models import Account
 from models import UserDailyReport, DailyReport, ReportGroup, GroupMember
 
 import datetime
+import time
 
 
 @login_required
@@ -326,7 +329,52 @@ def view_reports_wip(request, year_start, month_start, day_start, year_end,  mon
 
     return render_to_response('daily_reports/reports_overview_wip.html', {'users': users, 'newsfeeditems':newsfeeditems, 'reports': reports, 'projects':projects}, context_instance=RequestContext(request))
 
+
 @user_passes_test(lambda u: u.is_superuser)
 def report_selection(request):
     projects = Project.objects.all()
     return render_to_response('daily_reports/report_selection.html',{'projects':projects}, context_instance=RequestContext(request))
+
+
+def export_user(request, user_id):
+    weekend = ["Saturday", "Sunday"]
+    try:
+        user = User.objects.get(pk=user_id)
+    except Exception, e:
+        print e
+    try:
+        account = Account.objects.get(user=user)
+    except Exception, e:
+        print e
+    if account.assignable:
+        data = []
+        date_format = "%Y-%m-%d"
+        date_obj = timedate.strptime("2013-01-01", date_format)
+        one_day = datetime.timedelta(days=1)
+        while int(date_obj.strftime(date_format)[0:4]) < 2014:
+            temp = []
+            temp.append(date_obj)
+            if date_obj.strftime("%A") not in weekend:
+                try:
+                    report = UserDailyReport.objects.filter(date__range=[date_obj.strftime(date_format), date_obj.strftime(date_format)]).filter(user=user)
+                except Exception, e:
+                    print e
+                temp.append(user.username)
+                temp.append("7")
+                if report:
+                    temp.append(report[0].description)
+                data.append(temp)
+            date_obj = date_obj + one_day
+            print temp
+        csvtemplate = loader.get_template('daily_reports/csv_template.html')
+        csvcontent = Context({
+                'data':data
+            })
+
+        response = HttpResponse(content_type='text/csv')
+        
+        response['Content-Disposition'] = 'attachment; filename="'+user.username+'-daily-reports.csv"'
+        response.write(csvtemplate.render(csvcontent))
+
+        return response
+    return HttpResponse(json.dumps({"msg": "couldn't create CSV"}), mimetype="application/json")
