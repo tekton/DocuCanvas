@@ -105,6 +105,8 @@
 			.y(function(d) { return d.y })
 			.color(d3.scale.category10().range())
 			.showLabels(false)
+		
+		chart.legend.align(false);
 
 		chart.tooltipContent(function(key, y, e, graph){
 			return '<p>' + key + '</p>' + '<p>' + y + '</p>'
