@@ -60,7 +60,7 @@
 				<tbody>
 	                {% for issue in issues %}
 	                <tr>
-	                    <td><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
+	                    <td class="no-wrap"><a href="{% url 'projects.views.project_overview' issue.project.id %}">{{issue.project}}</a></td>
 						<td><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.summary|truncatechars:80}}</a></td>
 	                    {% if issue.meta_issues %}
 	                    <td><a href="{% url 'issues.views.meta_issue_overview' issue.meta_issues.id %}">{{issue.meta_issues}}</td>
@@ -69,7 +69,7 @@
 	                    {% endif %}
 	                    <td>{{issue.assigned_to}}</td>
 	                    <td><span class="title-issuestatus label {{issue.status}}">{{issue.get_status_display}}</span></td>
-	                    <td>{{issue.modified|date:"M j o"}}</td>
+	                    <td class="no-wrap">{{issue.modified|date:"M j o"}}</td>
 	                </tr>
 	                {% endfor %}
 				</tbody>
