@@ -355,7 +355,7 @@ def export_user(request, user_id):
         date_format = "%Y-%m-%d"
         date_obj = timedate.strptime(str(year) + "-01-01", date_format)
         one_day = datetime.timedelta(days=1)
-        while int(date_obj.strftime(date_format)[0:4]) < 2014:
+        while int(date_obj.strftime(date_format)[0:4]) < year + 1:
             temp = []
             temp.append(date_obj.strftime(date_format))
             if date_obj.strftime("%A") not in weekend:
@@ -364,10 +364,11 @@ def export_user(request, user_id):
                 except Exception, e:
                     print e
                 temp.append(user.username)
-                temp.append("6")
                 if date_obj.strftime(date_format) in holidays:
+                    temp.append("0")
                     temp.append(holidays[date_obj.strftime(date_format)])
                 else:
+                    temp.append("6")
                     temp.append("")
                 if report:
                     temp.append(report[0].description)
@@ -390,7 +391,7 @@ def export_user(request, user_id):
 # Structure for adding new holidays to Holiday Calendar Date Generator
 # k,v pair...
 # k = Holiday_Name (how it will be displayed)
-# v = [int(WEEK_NUMBER_HOLIDAY_LIES_IN), str(DAY_OF_THE_WEEK (full day name ie. Monday, Tuesday, etc)), int(MONTH_NUMBER 1-12), OPTIONAL(int(OFFSET (for thins like 'day after thanksgiving', enter data for thanksgiving, but insert a 1 here to get the next day)))]
+# v = [int(WEEK_NUMBER_HOLIDAY_LIES_IN), str(DAY_OF_THE_WEEK (full day name ie. Monday, Tuesday, etc)), int(MONTH_NUMBER 1-12), OPTIONAL(int(OFFSET (for things like 'day after thanksgiving', enter data for thanksgiving, but insert a 1 here to get the next day)))]
 holiday_formulas = {"Memorial Day": [-1, "Monday", 5],
                    "Presidents Day": [3, "Monday", 2],
                    "Thanksgiving Day": [4, "Thursday", 11],
