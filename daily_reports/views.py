@@ -3,7 +3,7 @@ from django.template import RequestContext, loader, Context
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from datetime import date
+from datetime import date, timedelta
 from datetime import datetime as timedate
 
 from forms import ReportForm, GroupForm, DailyReportForm
@@ -337,7 +337,9 @@ def report_selection(request):
 
 
 def export_user(request, user_id):
+    year = 2013
     weekend = ["Saturday", "Sunday"]
+    holidays = HolidayDateByYear(year)
     try:
         user = User.objects.get(pk=user_id)
     except Exception, e:
@@ -348,24 +350,29 @@ def export_user(request, user_id):
         print e
     if account.assignable:
         data = []
+        temp = ["Date", "Account", "Estimated Hours", "Holidays/Events", "Report Description"]
+        data.append(temp)
         date_format = "%Y-%m-%d"
-        date_obj = timedate.strptime("2013-01-01", date_format)
+        date_obj = timedate.strptime(str(year) + "-01-01", date_format)
         one_day = datetime.timedelta(days=1)
         while int(date_obj.strftime(date_format)[0:4]) < 2014:
             temp = []
-            temp.append(date_obj)
+            temp.append(date_obj.strftime(date_format))
             if date_obj.strftime("%A") not in weekend:
                 try:
                     report = UserDailyReport.objects.filter(date__range=[date_obj.strftime(date_format), date_obj.strftime(date_format)]).filter(user=user)
                 except Exception, e:
                     print e
                 temp.append(user.username)
-                temp.append("7")
+                temp.append("6")
+                if date_obj.strftime(date_format) in holidays:
+                    temp.append(holidays[date_obj.strftime(date_format)])
+                else:
+                    temp.append("")
                 if report:
                     temp.append(report[0].description)
                 data.append(temp)
             date_obj = date_obj + one_day
-            print temp
         csvtemplate = loader.get_template('daily_reports/csv_template.html')
         csvcontent = Context({
                 'data':data
@@ -377,4 +384,45 @@ def export_user(request, user_id):
         response.write(csvtemplate.render(csvcontent))
 
         return response
-    return HttpResponse(json.dumps({"msg": "couldn't create CSV"}), mimetype="application/json")
+    return HttpResponse(json.dumps({"msg": "Failed to create CSV"}), mimetype="application/json")
+
+
+# Structure for adding new holidays to Holiday Calendar Date Generator
+# k,v pair...
+# k = Holiday_Name (how it will be displayed)
+# v = [int(WEEK_NUMBER_HOLIDAY_LIES_IN), str(DAY_OF_THE_WEEK (full day name ie. Monday, Tuesday, etc)), int(MONTH_NUMBER 1-12), OPTIONAL(int(OFFSET (for thins like 'day after thanksgiving', enter data for thanksgiving, but insert a 1 here to get the next day)))]
+holiday_formulas = {"Memorial Day": [-1, "Monday", 5],
+                   "Presidents Day": [3, "Monday", 2],
+                   "Thanksgiving Day": [4, "Thursday", 11],
+                   "Day After Thanksgiving": [4, "Thursday", 11, 1],
+                   "Labor Day": [1, "Monday", 9],}
+
+def HolidayDateByYear(year):
+    holidays = {str(year) + "-01-01": "New Year's Day",
+                str(year) + "-12-24": "Christmas Eve", 
+                str(year) + "-12-25": "Christmas Day",
+                str(year) + "-12-31": "New Year's Eve",
+                str(year) + "-07-04": "Independence Day",}
+    for k in holiday_formulas:
+        temp_date = None
+        if holiday_formulas[k][0] < 0:
+            if holiday_formulas[k][2] > 11:
+                days = 31
+            else:
+                days = ((date(int(year), holiday_formulas[k][2] + 1, 1) - date(int(year), holiday_formulas[k][2], 1))).days
+            temp_date = date(int(year), holiday_formulas[k][2], days)
+            delta = -timedelta(days=1)
+        else:
+            start_day = (7 * (holiday_formulas[k][0] - 1))
+            if start_day == 0:
+                start_day = 1
+            temp_date = date(int(year), holiday_formulas[k][2], start_day)
+            delta = timedelta(days=1)
+        while not temp_date.strftime("%A") == holiday_formulas[k][1]:
+            temp_date = temp_date + delta
+            if not temp_date.month == holiday_formulas[k][2]:
+                continue
+        if len(holiday_formulas[k]) > 3:
+            temp_date = temp_date + timedelta(days=holiday_formulas[k][3])
+        holidays[str(year) + "-" + str(holiday_formulas[k][2]).zfill(2) + "-" + str(temp_date.day).zfill(2)] = k
+    return holidays
