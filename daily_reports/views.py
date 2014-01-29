@@ -3,6 +3,7 @@ from django.template import RequestContext, loader, Context
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.utils.html import strip_tags
 from datetime import date, timedelta
 from datetime import datetime as timedate
 
@@ -371,7 +372,13 @@ def export_user(request, user_id):
                     temp.append("6")
                     temp.append("")
                 if report:
-                    temp.append(report[0].description)
+                    temp_desc = ""
+                    for char in report[0].description:
+                        if char == '"':
+                            temp_desc = temp_desc + "'"
+                        else:
+                            temp_desc = temp_desc + char
+                    temp.append(strip_tags(report[0].description))
                 data.append(temp)
             date_obj = date_obj + one_day
         csvtemplate = loader.get_template('daily_reports/csv_template.html')
