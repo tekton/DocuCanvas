@@ -1,756 +1,538 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-    {% load staticfiles %}
-        <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-        <link rel="stylesheet" href="{% static 'css/bootstrap-lightbox.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
-    <style>
-         body{
-            margin: 0px;
-            padding: 0px;
-        }
-        #container{
-            overflow:scroll;
-            overflow-y:hidden;
-            margin-right: 202px;
-        }
-        #bugList{
-            position: fixed;
-            width: 190px;
-            height: 98%;
-            top: 0px;
-            right: 0px;
-            margin-top: 5px;
-            visibility: visible;
-            overflow: scroll;
-            overflow-x: hidden;
-            border: 1px solid #F2F2F2;
-            box-shadow: 0 1px 4px #5A5A5A;
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-        div[id^='noteNo']{
-            position: absolute;
-            visibility: visible;
-            border-radius: 12px;
-            padding: 10px;
-            background-color: white;
-            border: 1px solid #F2F2F2;
-            box-shadow: 0 1px 4px #5A5A5A;
-            z-index: 2;
-        }
-        div[id^='bugNote']{
-            z-index: 2;
-            position: absolute;
-            background-color: white;
-            border: 1px solid #F2F2F2;
-            box-shadow: 0 1px 4px #5A5A5A;
-            visibility: hidden;
-            border-radius: 12px;
-            padding: 10px;
-        }
-        #id_nodeLink_label{
-            display:none;
-        }
-        #id_nodeLink{
-            display:none;
-        }
-        #id_title_label{
-            display:block;
-        }
-        #id_title{
-            display:block;
-        }
-        #id_description_label{
-            display:block;
-        }
-        #id_description{
-            display:block;
-            resize:none;
-        }
-        textarea{
-            width: 250px;
-        }
-        input[type='text']{
-            width: 250px;
-        }
-        th{
-            text-align: left;
-        }
-        form[id^='submitForm']{
-            visibility: visible;
-        }
-        #bugListButton{
-                margin-top: 15px;
-                margin-left: 5px;
-        }
-        div[id^='triangle']{
-                position: absolute;
-                width: 0;
-                height: 0;
-                border-right: 10px solid white;
-                border-bottom: 10px solid transparent;
-                border-top: 10px solid transparent;
-                visibility: hidden;
-                z-index: 0;
-            }
-        #triangleForm{
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-right: 10px solid white;
-            border-bottom: 10px solid transparent;
-            border-top: 10px solid transparent;
-            visibility: visible;
-            z-index: 0;
-        }
-            div[id^='triangleBorder']{
-                position: absolute;
-                width: 0;
-                height: 0;
-                border-right: 12px solid black;
-                border-bottom: 12px thin transparent;
-                border-top: 12px thin transparent;
-                z-index: 0;
-            }
-            #triangleBorderForm{
-                position: absolute;
-                width: 0;
-                height: 0;
-                border-right: 12px solid black;
-                border-bottom: 12px thin transparent;
-                border-top: 12px thin transparent;
-                visibility: visible;
-                z-index: 0;
-            }
-            #buttonContainer{
-                min-height: 60px;
-            }
-            #sitenav{
-                position: fixed;
-                display: none;
-                z-index: 4;
-            }
-            .brand { 
-            position: absolute;
-            right: 6px;
-            padding: 0 5px;
-            background-color: #587C91;
-            width: 50px;
-            height: 50px;
-            display: inline-block;
-            z-index: 5;
-        }
-        #bugList .brand{
-            display: inline-block;
-            padding-top: 5;
-        }
-        .brand .logo {
+{% extends "boards/base.html" %}
+{% load markup %}
+{% load staticfiles %}
 
-            display: block;
-            text-indent: -9999px;
-            width: 50px;
-            height: 50px;
-            background-image: url({% static 'theme/assets/img/logo-gadget-sitenav.png' %});
-            background-repeat: no-repeat;
-            background-position: center;
-        }
-        #bugList .brand img{
-            margin-top: 5px;
-        }
-        #sitenav .navbar-inner {
-            min-height: 60px;
-            border-bottom: 0;
-            box-shadow: 0 1px 5px #5A5A5A;
-            background-color: #2B2F32;
-            background-image: none;
-        }
-        #sitenav #mainnav li {
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        #sitenav #mainnav .dropdown-menu li {
-            text-transform: none;
-        }
-        #sitenav form {
-            margin-bottom: 0;
-        }
-        #sitenav .navbar-search .search-query {
-            width: 145px;
-            height: 18px;
-            color: #ffffff;
-            background-color: #515151;
-            border-color: #111111;
-            -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
-            -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
-            -webkit-transition: none;
-            -moz-transition: none;
-            -o-transition: none;
-            transition: none;
-        }
-        #sitenav .navbar-search .search-query:-moz-placeholder {
-            color: #cccccc;
-        }
-        #sitenav .navbar-search .search-query:-ms-input-placeholder {
-            color: #cccccc;
-        }
-        #sitenav .navbar-search .search-query::-webkit-input-placeholder {
-            color: #cccccc;
-        }
-        #sitenav .navbar-search .search-query:focus,
-        #sitenav .navbar-search .search-query.focused {
-            padding: 5px 15px;
-            color: #333333;
-            text-shadow: 0 1px 0 #ffffff;
-            background-color: #ffffff;
-            border: 0;
-            -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
-            -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
-            outline: 0;
-        }
-        #sitenav #mainnav .nav > li > a {
-            padding-bottom: 10px;
-            border-bottom: 5px solid transparent;
-        }
-        #sitenav #mainnav .nav > li > a.active {
-            border-color: #587C91;
-        }
+{% block additionalHead%}
+<style type="text/css">
 
-        .panel,
-        .well {
-            border: 1px solid #F2F2F2;
-            box-shadow: 0 1px 4px #5A5A5A;
-            background-color: #FFF;
-        }
+/* --- | Structure | --- */
 
-        .well.span6 {
-            width: 530px;
-        }
+body {
+	padding: 0;
+}
 
-        #pagetitle {
-            text-align: center;
-            margin: 15px 0 25px;
-        }
+#container {
+    overflow:scroll;
+    overflow-y:hidden;
+    margin-right: 190px;
+}
 
-        #pagetitle .title-separator {
-            display: none;
-        }
+/* --- | Sitenav | --- */
 
-        .metainfo-hide .metainfo-content  {
-            display: none;
-        }
+#sitenav{
+    position: fixed;
+    display: none;
+    z-index: 4;
+}
 
-        .issue-comment {
-            min-height: 45px;
-        }
-        .issue-comment .comment-markbutton,
-        .issue-comment .comment-editbutton {
-            display: none;
-        }
-        .issue-comment.show-editbutton .comment-editbutton,
-        .issue-comment.show-editbutton .comment-markbutton {
-            display: block;
-        }
+/* --- | Buglist | --- */
 
-        .mark_notification_as_read{
-            cursor:pointer;
-        }
+#bugList {
+	box-sizing: border-box;
+	position: fixed;
+	width: 190px;
+	height: 100%;
+	top: 0;
+	right: 0;
+	padding: 0 10px;
+/*	margin-top: 5px;*/
+	overflow: scroll;
+	overflow-x: hidden;
+	background: #fff;
+	border: 1px solid #F2F2F2;
+	box-shadow: 0 1px 4px #5A5A5A;
+/*	border-top-left-radius: 10px;*/
+/*	border-bottom-left-radius: 10px;*/
+}
+	
+	#buttonContainer{
+		min-height: 60px;
+	}
+	
+		#bugListButton{
+			margin-top: 15px;
+			margin-left: 5px;
+		}
+	
+		#bugList .brand {
+			display: inline-block;
+			position: absolute;
+			right: 6px;
+			padding: 0 5px;
+			background-color: #587C91;
+			width: 50px;
+			height: 50px;
+			display: inline-block;
+			z-index: 5;
+		}
+		
+			#bugList .brand .logo {
+				display: block;
+				text-indent: -9999px;
+				width: 50px;
+				height: 50px;
+				background-image: url({% static 'theme/assets/img/logo-gadget-sitenav.png' %});
+				background-repeat: no-repeat;
+				background-position: center;
+			}
+	
+	/* --- | Notes | --- */
+	
+	div[id^='noteNo']{
+	    position: absolute;
+	    visibility: visible;
+	    border-radius: 12px;
+	    padding: 10px;
+	    background-color: white;
+	    border: 1px solid #F2F2F2;
+	    box-shadow: 0 1px 4px #5A5A5A;
+	    z-index: 2;
+	}
 
-        .comment aside {
-            padding: .5em 0;
-            margin: .5em 0;
-            border-color: #CCC;
-            border-style: solid;
-            border-width: 1px 0 0;
-        }
+	div[id^='bugNote']{
+	    z-index: 2;
+	    position: absolute;
+	    background-color: white;
+	    border: 1px solid #F2F2F2;
+	    box-shadow: 0 1px 4px #5A5A5A;
+	    visibility: hidden;
+	    border-radius: 12px;
+	    padding: 10px;
+	}
 
-        #maincontent {
-            -o-animation: fadein .7s;
-            -moz-animation: fadein .7s;
-            -webkit-animation: fadein .7s;
-            animation: fadein .7s;
-        }
+	div[id^='triangle']{
+		position: absolute;
+		width: 0;
+		height: 0;
+		border-right: 10px solid white;
+		border-bottom: 10px solid transparent;
+		border-top: 10px solid transparent;
+		visibility: hidden;
+		z-index: 0;
+	}
+		
+	#triangleForm{
+	    position: absolute;
+	    width: 0;
+	    height: 0;
+	    border-right: 10px solid white;
+	    border-bottom: 10px solid transparent;
+	    border-top: 10px solid transparent;
+	    visibility: visible;
+	    z-index: 0;
+	}
+	
+	    div[id^='triangleBorder']{
+	        position: absolute;
+	        width: 0;
+	        height: 0;
+	        border-right: 12px solid black;
+	        border-bottom: 12px thin transparent;
+	        border-top: 12px thin transparent;
+	        z-index: 0;
+	    }
+		
+	    #triangleBorderForm{
+	        position: absolute;
+	        width: 0;
+	        height: 0;
+	        border-right: 12px solid black;
+	        border-bottom: 12px thin transparent;
+	        border-top: 12px thin transparent;
+	        visibility: visible;
+	        z-index: 0;
+	    }
 
-        @-o-keyframes fadein {
-            from {
-                opacity:0;
-            }
-            to {
-                opacity: 1;
-            }
-        }​
-        @-moz-keyframes fadein {
-            from {
-                opacity:0;
-            }
-            to {
-                opacity:1;
-            }
-        }
-        @-webkit-keyframes fadein {
-            from {
-                opacity:0;
-            }
-            to {
-                opacity:1;
-            }
-        }
-        @keyframes fadein {
-            from {
-                opacity:0;
-            }
-            to {
-                opacity:1;
-            }
-        }
+#id_nodeLink_label{
+    display:none;
+}
+#id_nodeLink{
+    display:none;
+}
+#id_title_label{
+    display:block;
+}
+#id_title{
+    display:block;
+}
+#id_description_label{
+    display:block;
+}
+#id_description{
+    display:block;
+    resize:none;
+}
+textarea{
+    width: 250px;
+}
+input[type='text']{
+    width: 250px;
+}
+th{
+    text-align: left;
+}
+form[id^='submitForm']{
+    visibility: visible;
+}
+</style>
+{% endblock %}
 
-        @media (min-width: 980px) {
-            #globalwrap {
-            }
-        }
+{% block baseContent %}
+<div id="container"></div>
 
-        /* Large Desktop */
-        @media (min-width: 1200px) {
-            
-        }
-        
-        /* Portrait tablet to landscape and desktop */
-        @media (min-width: 768px) and (max-width: 979px) {
+<div id="bugList">
+	<div id="buttonContainer">
+		<input id="bugListButton" type="button" class="btn btn-primary" value='Done' onClick='window.location.href="/board/board_display/{{board.id}}"' />
+		<a class="brand" onClick='toggleHeader()'>
+			<span class="logo">Gadget</span>
+		</a>
+	</div>
+</div>
+{% endblock %}
 
-        }
-        
-        /* Landscape phone to portrait tablet */
-        @media (max-width: 767px) {
+{% block endScripts %}
+<script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
+<script>
 
-        }
-        
-        /* Landscape phones and down */
-        @media (max-width: 480px) {
-            
-        }
-    </style>
-<body>
-    <div id="globalwrap">
-        <div id="sitenav" class="navbar navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <div class="nav-collapse collapse">
-                        <nav id="mainnav">
-                            <ul class="nav">
-                                <li><a href="{% url 'dashboard.views.dashboard' %}" class="{% if page_type == 'Dashboard' %}active{% endif %}">Dashboard</a></li>
-                                <li class="dropdown">
-                                    <a href="{% url 'projects.views.home' %}" class="dropdown-toggle {% if page_type == 'Project' %}active{% elif page_type == 'Projects' %}active{% elif page_type == 'Issue' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        {% if projects.count > 0 %}
-                                        <li class="nav-header">All Projects</li>
-                                        {% for project in projects%}
-                                            <li><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></li>
-                                        {% endfor %}
-                                        {% endif %}
-                                        <li class="nav-header">New</li>
-                                        <li><a href="{% url 'projects.views.project_form' %}">Project</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="{% url 'daily_reports.views.index' %}" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
-                            </ul>
-                        </nav>
-                        <div id="searchform">
-                            <form class="navbar-search pull-right" action="{% url 'issues.views.issue_search_simple' %}" method="POST">
-                                {% csrf_token %}
-                                <div class="input-prepend input-append">
-                                    <a class="btn btn-inverse" href="{% url 'issues.views.issue_search_advanced' %}" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
-                                    <input type="text" name="searchText" class="search-query" placeholder="Search">
-                                    <button type="submit" class="btn btn-inverse">Go</button>
-                                </div>
-                            </form>
-                        </div>
-                        <div id="userbar">
-                            <ul class="nav pull-right">
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Context <b class="caret"></b></a>
-                                    <ul class="dropdown-menu">
-                                        {% block contextNav %}
-                                        <li><a href="{% url 'boards.views.boards' %}"> Board Overview</a></li>
-                                        {% endblock %}
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user}} <b class="caret"></b></a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="{% url 'auth.views.account_settings' %}">Settings</a></li>
-                                        <li><a href="/accounts/logout/?next=/">Logout</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% block baseContent %}{% endblock %}
-    </div>
-    <div id = 'container'> </div>
-    <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
-          <script src="{% static 'js/jquery.min.js' %}"></script>
-        <script src="{% static 'js/jquery-ui.min.js' %}"></script>
-        <script src="{% static 'js/ajax_tools.js' %}"></script>
-        <script src="{% static 'js/bootstrap.js' %}"></script>
-        <script src="{% static 'js/bootstrap-lightbox.min.js' %}"></script>
-        <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
-     <script>
+	var imageWidth = {{board.width}};
+	var imageHeight = {{board.height}};
+	var noteCounter = 1
+	var placementLock = false
+	var updateLock = true
+	var divToUpdate = ""
+	var circleId = 0;
+	// Create Background image
+	var imageObj = new Image();
 
-            var imageWidth = {{board.width}};
-            var imageHeight = {{board.height}};
-            var noteCounter = 1
-            var placementLock = false
-            var updateLock = true
-            var divToUpdate = ""
-            var circleId = 0;
-            // Create Background image
-            var imageObj = new Image();
+	// Most everything occurs inside the image onload function
+	imageObj.onload = function() {
+	    // Create and size background image
+	    var bgImage = new Kinetic.Image({
+	        image: imageObj,
+	        width: imageWidth,
+	        height: imageHeight,
+	        id: 'backgroundImage',
+	      });
 
-            // Most everything occurs inside the image onload function
-            imageObj.onload = function() {
-                // Create and size background image
-                var bgImage = new Kinetic.Image({
-                    image: imageObj,
-                    width: imageWidth,
-                    height: imageHeight,
-                    id: 'backgroundImage',
-                  });
+	    bgImage.on('mousedown', function(){
+	        createNoteForm(noteCounter);
+	        updateNoteForm();
+	    });
 
-                bgImage.on('mousedown', function(){
-                    createNoteForm(noteCounter);
-                    updateNoteForm();
-                });
+	    var stage = new Kinetic.Stage({
+	        container: 'container',
+	        width: imageWidth,
+	        height: imageHeight,
+	    });
+	    var shapesLayer = new Kinetic.Layer();
+	    var messageLayer = new Kinetic.Layer();
+	    shapesLayer.add(bgImage);
+	    // check to see if there are any board_node objects
+	    {% if board_nodes %}
+	        /* Loops through board node objects and only pulls the nodes that match the board.
+	        Checks the type of the node and creates a circle button and bugNote which is formatted slightly differently depending on type.
+	        */
+	        {% for i in board_nodes %}
+	            if("{{i.board}}" == "{{board.title}}"){
+	                if("{{i.nodeType}}" == 'issue'){
+	                    var issueSummary = ""
+	                    {% for issue in issues %}
+	                        if({{issue.id}}=={{i.nodeLink}}){
+	                            issueSummary='{{issue.summary}}'
+	                        };
+	                    {% endfor %}
+	                    var newCircle = "circle" + circleId;
+	                    newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", issueSummary, "", circleId, {{i.id}});
+	                    circleId ++;
+	                }else if("{{i.nodeType}}" == 'note'){
+	                    {% for x in board_notes %}
+	                        if("{{x.id}}" == "{{i.nodeLink}}"){
+	                            var newCircle = "circle" + circleId;
+	                            newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", "{{x.title}}", "{{x.description|safe}}", circleId, {{i.id}});
+	                            circleId ++;
+	                        };
+	                    {% endfor %}
+	                };
 
-                var stage = new Kinetic.Stage({
-                    container: 'container',
-                    width: imageWidth,
-                    height: imageHeight,
-                });
-                var shapesLayer = new Kinetic.Layer();
-                var messageLayer = new Kinetic.Layer();
-                shapesLayer.add(bgImage);
-                // check to see if there are any board_node objects
-                {% if board_nodes %}
-                    /* Loops through board node objects and only pulls the nodes that match the board.
-                    Checks the type of the node and creates a circle button and bugNote which is formatted slightly differently depending on type.
-                    */
-                    {% for i in board_nodes %}
-                        if("{{i.board}}" == "{{board.title}}"){
-                            if("{{i.nodeType}}" == 'issue'){
-                                var issueSummary = ""
-                                {% for issue in issues %}
-                                    if({{issue.id}}=={{i.nodeLink}}){
-                                        issueSummary='{{issue.summary}}'
-                                    };
-                                {% endfor %}
-                                var newCircle = "circle" + circleId;
-                                newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", issueSummary, "", circleId, {{i.id}});
-                                circleId ++;
-                            }else if("{{i.nodeType}}" == 'note'){
-                                {% for x in board_notes %}
-                                    if("{{x.id}}" == "{{i.nodeLink}}"){
-                                        var newCircle = "circle" + circleId;
-                                        newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", "{{x.title}}", "{{x.description|safe}}", circleId, {{i.id}});
-                                        circleId ++;
-                                    };
-                                {% endfor %}
-                            };
+	            };
+	    {% endfor %}
+	    {% endif %}
 
-                        };
-                {% endfor %}
-                {% endif %}
+	    stage.add(shapesLayer);
 
-                stage.add(shapesLayer);
-
-                //used for creating new nodes
-                function createNoteForm(counter){
-                    if(placementLock == false){
-                        var mousePos = stage.getMousePosition();
-                        var x = mousePos.x ;
-                        var y = mousePos.y ;
-                        var noteDivWidth = 400;
-                        var noteDivY = y - 4;
-                        if(imageWidth - x <= noteDivWidth){
-                            var noteDivX = x - 305;
-                        }else{
-                            var noteDivX = x + 29;
-                        };
-                        if(imageHeight - y <= 70){
-                            var noteDivY = y - 70;
-                        }else if(y < 10){
-                            var noteDivY = y + 10;
-                        }else{
-                            var noteDivY = y - 20;
-                        };
-                        placementLock = true;
-                            $('body').append("<div id = 'noteNo" + counter + "' style = 'top: " + noteDivY + "px; left: " + noteDivX + "px; width: " + noteDivWidth + "px;'><form id = 'submitForm'" + counter + "' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink'/></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' resize: none;' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
-                            $('body').append("<div id = 'triangleBorderForm'; style = 'top:" + (y-9) + "px; left: " + (x+21) + "px;'></div><div id = 'triangleForm'; style = 'top:" + (y-10) + "px; left: " + (x+21) + "px;'></div> ");
+	    //used for creating new nodes
+	    function createNoteForm(counter){
+	        if(placementLock == false){
+	            var mousePos = stage.getMousePosition();
+	            var x = mousePos.x ;
+	            var y = mousePos.y ;
+	            var noteDivWidth = 400;
+	            var noteDivY = y - 4;
+	            if(imageWidth - x <= noteDivWidth){
+	                var noteDivX = x - 305;
+	            }else{
+	                var noteDivX = x + 29;
+	            };
+	            if(imageHeight - y <= 70){
+	                var noteDivY = y - 70;
+	            }else if(y < 10){
+	                var noteDivY = y + 10;
+	            }else{
+	                var noteDivY = y - 20;
+	            };
+	            placementLock = true;
+	                $('body').append("<div id='noteNo" + counter + "' style='top: " + noteDivY + "px; left: " + noteDivX + "px; width: " + noteDivWidth + "px;'><form id = 'submitForm'" + counter + "' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink'/></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' resize: none;' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+	                $('body').append("<div id='triangleBorderForm' style='top:" + (y-9) + "px; left: " + (x+21) + "px;'></div><div id = 'triangleForm'; style = 'top:" + (y-10) + "px; left: " + (x+21) + "px;'></div> ");
 
 
-                            var circle = new Kinetic.Circle({
-                                x: x,
-                                y: y,
-                                radius: 8,
-                                fill: '#00d2ff',
-                                stroke: 'black',
-                                strokeWidth: 4,
-                                opacity: 0.7,
-                             });
+	                var circle = new Kinetic.Circle({
+	                    x: x,
+	                    y: y,
+	                    radius: 8,
+	                    fill: '#00d2ff',
+	                    stroke: 'black',
+	                    strokeWidth: 4,
+	                    opacity: 0.7,
+	                 });
 
-                            circle.on('mouseover', function(){
-                                document.body.style.cursor = 'pointer';
-                            });
-                            circle.on('mouseout', function(){
-                                document.body.style.cursor = 'default';
-                            });
+	                circle.on('mouseover', function(){
+	                    document.body.style.cursor = 'pointer';
+	                });
+	                circle.on('mouseout', function(){
+	                    document.body.style.cursor = 'default';
+	                });
 
-                            circle.on('mousedown', function(){
-                                if(placementLock == false){
-                                    toggleNoteForm(counter);
-                                };
-                            });
+	                circle.on('mousedown', function(){
+	                    if(placementLock == false){
+	                        toggleNoteForm(counter);
+	                    };
+	                });
 
-                            shapesLayer.add(circle);
-                            shapesLayer.draw();
-                            noteCounter += 1;
-                    };
+	                shapesLayer.add(circle);
+	                shapesLayer.draw();
+	                noteCounter += 1;
+	        };
 
-                };
+	    };
 
-                //used for updating position of node
-                function updateNoteForm(){
-                    if(updateLock == false){
-                        var formToUpdateX = divToUpdate + " #id_x";
-                        var formToUpdateY = divToUpdate + " #id_y";
-                        var mousePos = stage.getMousePosition();
-                        var x = mousePos.x ;
-                        var y = mousePos.y ;
-                        var noteDivWidth = 400;
-                        var noteDivY = y - 4;
-                        if(imageWidth - x <= noteDivWidth){
-                            var noteDivX = x - 305;
-                        }else{
-                            var noteDivX = x + 20;
-                        };
-                        if(imageHeight - y <= 70){
-                            var noteDivY = y - 70;
-                        }else if(y < 10){
-                            var noteDivY = y + 10;
-                        }else{
-                            var noteDivY = y - 4;
-                        };
+	    //used for updating position of node
+	    function updateNoteForm(){
+	        if(updateLock == false){
+	            var formToUpdateX = divToUpdate + " #id_x";
+	            var formToUpdateY = divToUpdate + " #id_y";
+	            var mousePos = stage.getMousePosition();
+	            var x = mousePos.x ;
+	            var y = mousePos.y ;
+	            var noteDivWidth = 400;
+	            var noteDivY = y - 4;
+	            if(imageWidth - x <= noteDivWidth){
+	                var noteDivX = x - 305;
+	            }else{
+	                var noteDivX = x + 20;
+	            };
+	            if(imageHeight - y <= 70){
+	                var noteDivY = y - 70;
+	            }else if(y < 10){
+	                var noteDivY = y + 10;
+	            }else{
+	                var noteDivY = y - 4;
+	            };
 
 
-                            $(divToUpdate).css({left:x+24,top:y-20});
-                            $(formToUpdateX).val(x);
-                            $(formToUpdateY).val(y);
-                            updateLock = true
-                            var circle = new Kinetic.Circle({
-                                x: x,
-                                y: y,
-                                radius: 8,
-                                fill: '#00d2ff',
-                                stroke: 'black',
-                                strokeWidth: 4,
-                                opacity: 0.7,
-                             });
+	                $(divToUpdate).css({left:x+24,top:y-20});
+	                $(formToUpdateX).val(x);
+	                $(formToUpdateY).val(y);
+	                updateLock = true
+	                var circle = new Kinetic.Circle({
+	                    x: x,
+	                    y: y,
+	                    radius: 8,
+	                    fill: '#00d2ff',
+	                    stroke: 'black',
+	                    strokeWidth: 4,
+	                    opacity: 0.7,
+	                 });
 
-                            circle.on('mouseover', function(){
-                                document.body.style.cursor = 'pointer';
-                            });
-                            circle.on('mouseout', function(){
-                                document.body.style.cursor = 'default';
-                            });
+	                circle.on('mouseover', function(){
+	                    document.body.style.cursor = 'pointer';
+	                });
+	                circle.on('mouseout', function(){
+	                    document.body.style.cursor = 'default';
+	                });
 
-                            circle.on('mousedown', function(){
-                                if(placementLock == false){
-                                };
-                            });
+	                circle.on('mousedown', function(){
+	                    if(placementLock == false){
+	                    };
+	                });
 
-                            shapesLayer.add(circle);
-                            shapesLayer.draw();
-                            noteCounter += 1;
-                    };
+	                shapesLayer.add(circle);
+	                shapesLayer.draw();
+	                noteCounter += 1;
+	        };
 
-                };
+	    };
 
-                // used for displaying nodes
-                function bugNote(x, y, nodeLink, nodeType, noteTitle, noteDescription, divId, Id){
-                    var tooltipId = "#" + divId;
-                    var bugListId = "#bugListNo" + divId;
-                    var noteDivWidth = 400;
-                    var issueSelected = ""
-                    var noteSelected = ""
-                    var noteDivY = y - 4;
-                        if(imageWidth - x <= noteDivWidth){
-                            var noteDivX = x - 305;
-                        }else{
-                            var noteDivX = x + 29;
-                        };
-                        if(imageHeight - y <= 70){
-                            var noteDivY = y - 70;
-                        }else if(y < 10){
-                            var noteDivY = y + 10;
-                        }else{
-                            var noteDivY = y - 20;
-                        };
-                    //if checks to determine what nodeLink type is selected in edit div below
-                    if(nodeType=='note'){
-                        noteSelected = "selected"
-                    };
-                    if(nodeType=='issue'){
-                        issueSelected = "selected"
-                    };
+	    // used for displaying nodes
+	    function bugNote(x, y, nodeLink, nodeType, noteTitle, noteDescription, divId, Id){
+	        var tooltipId = "#" + divId;
+	        var bugListId = "#bugListNo" + divId;
+	        var noteDivWidth = 400;
+	        var issueSelected = ""
+	        var noteSelected = ""
+	        var noteDivY = y - 4;
+	            if(imageWidth - x <= noteDivWidth){
+	                var noteDivX = x - 305;
+	            }else{
+	                var noteDivX = x + 29;
+	            };
+	            if(imageHeight - y <= 70){
+	                var noteDivY = y - 70;
+	            }else if(y < 10){
+	                var noteDivY = y + 10;
+	            }else{
+	                var noteDivY = y - 20;
+	            };
+	        //if checks to determine what nodeLink type is selected in edit div below
+	        if(nodeType=='note'){
+	            noteSelected = "selected"
+	        };
+	        if(nodeType=='issue'){
+	            issueSelected = "selected"
+	        };
 
-                    var circle = new Kinetic.Circle({
-                        x: x,
-                        y: y,
-                        radius: 8,
-                        fill: '#00d2ff',
-                        stroke: 'black',
-                        strokeWidth: 4,
-                        name: divId,
-                        opacity: 0.7,
-                    });
+	        var circle = new Kinetic.Circle({
+	            x: x,
+	            y: y,
+	            radius: 8,
+	            fill: '#00d2ff',
+	            stroke: 'black',
+	            strokeWidth: 4,
+	            name: divId,
+	            opacity: 0.7,
+	        });
 
-                    circle.on('mouseover', function(){
-                            document.body.style.cursor = 'pointer';
-                    });
-                    circle.on('mouseout', function(){
-                        document.body.style.cursor = 'default';
-                    });
+	        circle.on('mouseover', function(){
+	                document.body.style.cursor = 'pointer';
+	        });
+	        circle.on('mouseout', function(){
+	            document.body.style.cursor = 'default';
+	        });
 
-                    circle.on('mousedown', function(){
-                        toggleInfoBox(divId);
-                        updateFormFields('#bugNote' +divId);
-                    });
-                    shapesLayer.add(circle);
-                    // edit div for updating nodes
-                    $('body').append("<div id = 'bugNote" + divId + "' style = 'width: " + noteDivWidth +"px; top: " + noteDivY + "px; left: " + noteDivX + "px;'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(bugNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' cols='30' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
-                    $('body').append("<div id = 'triangleBorder" + divId + "'; style = 'top:" + (y-9) + "px; left: " + (x+20) + "px;'></div><div id = 'triangle" + divId + "'; style = 'top:" + (y-10) + "px; left: " + (x+20) + "px;'></div> ");
-                    $('#bugList').append("<div id = 'bugListNo" + divId + "' >" + noteTitle + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><div id = 'bugListLink" + divId + "'>Show</div></a>");
-                //};
-                };
+	        circle.on('mousedown', function(){
+	            toggleInfoBox(divId);
+	            updateFormFields('#bugNote' +divId);
+	        });
+	        shapesLayer.add(circle);
+	        // edit div for updating nodes
+	        $('body').append("<div id = 'bugNote" + divId + "' style = 'width: " + noteDivWidth +"px; top: " + noteDivY + "px; left: " + noteDivX + "px;'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(bugNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' cols='30' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+	        $('body').append("<div id = 'triangleBorder" + divId + "'; style = 'top:" + (y-9) + "px; left: " + (x+20) + "px;'></div><div id = 'triangle" + divId + "'; style = 'top:" + (y-10) + "px; left: " + (x+20) + "px;'></div> ");
+	        $('#bugList').append("<div id = 'bugListNo" + divId + "' >" + noteTitle + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><div id = 'bugListLink" + divId + "'>Show</div></a>");
+	    //};
+	    };
 
-                //used for toggling node divs and "triangle" attachments
+	    //used for toggling node divs and "triangle" attachments
 
 
 
-            };
-            imageObj.src = '/static/{{board.image}}';
+	};
+	imageObj.src = '/static/{{board.image}}';
 
-            // used for toggling visibility of existing node forms
-            function toggleNoteForm(divId){
-                var noteFormNo = "noteNo" + divId;
-                var toggleNoteFormDiv = document.getElementById(noteFormNo);
-                    if(toggleNoteFormDiv.style.visibility == 'visible'){
-                        toggleNoteFormDiv.style.visibility = 'hidden';
-                        placementLock = false;
-                    }else{
-                        toggleNoteFormDiv.style.visibility = 'visible';
-                        placementLock = true;
-                    };
-            };
+	// used for toggling visibility of existing node forms
+	function toggleNoteForm(divId){
+	    var noteFormNo = "noteNo" + divId;
+	    var toggleNoteFormDiv = document.getElementById(noteFormNo);
+	        if(toggleNoteFormDiv.style.visibility == 'visible'){
+	            toggleNoteFormDiv.style.visibility = 'hidden';
+	            placementLock = false;
+	        }else{
+	            toggleNoteFormDiv.style.visibility = 'visible';
+	            placementLock = true;
+	        };
+	};
 
-            function toggleInfoBox(divId){
-                    var toggleTooltipDiv = document.getElementById('bugNote' + divId);
-                    var tooltipId = "#bugNote" + divId;
-                    var bugListId = "#bugListNo" + divId;
-                    var triangleId = "#triangle" + divId;
-                    var triangleBorderId = "#triangleBorder" + divId;
-                    var bugListLinkId = "#bugListLink" + divId;
-                    var toggleTriangleDiv = document.getElementById(triangleId);
-                        if(toggleTooltipDiv.style.visibility == 'visible'){
-                            placementLock = false;
-                            toggleTooltipDiv.style.visibility = 'hidden';
-                            $(tooltipId).css('visibility', 'hidden');
-                            $(triangleId).css('visibility', 'hidden');
-                            $(triangleBorderId).css('visibility', 'hidden');
-                            $(bugListId).css('background-color', 'white');
-                            $(bugListLinkId).text("Show");
+	function toggleInfoBox(divId){
+	        var toggleTooltipDiv = document.getElementById('bugNote' + divId);
+	        var tooltipId = "#bugNote" + divId;
+	        var bugListId = "#bugListNo" + divId;
+	        var triangleId = "#triangle" + divId;
+	        var triangleBorderId = "#triangleBorder" + divId;
+	        var bugListLinkId = "#bugListLink" + divId;
+	        var toggleTriangleDiv = document.getElementById(triangleId);
+	            if(toggleTooltipDiv.style.visibility == 'visible'){
+	                placementLock = false;
+	                toggleTooltipDiv.style.visibility = 'hidden';
+	                $(tooltipId).css('visibility', 'hidden');
+	                $(triangleId).css('visibility', 'hidden');
+	                $(triangleBorderId).css('visibility', 'hidden');
+	                $(bugListId).css('background-color', 'white');
+	                $(bugListLinkId).text("Show");
 
-                        }else{
-                            placementLock = true;
-                            toggleTooltipDiv.style.visibility = 'visible';
-                            $(tooltipId).css('visibility', 'visible');
-                            $(triangleId).css('visibility', 'visible');
-                            $(triangleBorderId).css('visibility', 'visible');
-                            $(bugListId).css('background-color', '#ddd');
-                            $(bugListLinkId).text("Hide");
-                        };
-                };
+	            }else{
+	                placementLock = true;
+	                toggleTooltipDiv.style.visibility = 'visible';
+	                $(tooltipId).css('visibility', 'visible');
+	                $(triangleId).css('visibility', 'visible');
+	                $(triangleBorderId).css('visibility', 'visible');
+	                $(bugListId).css('background-color', '#ddd');
+	                $(bugListLinkId).text("Hide");
+	            };
+	    };
 
-            // used for toggling which form fields are visible depending on nodeType
-            function updateFormFields(divId){
-                console.log(divId);
-                if ($(divId).find('#id_nodeType').val() == 'note'){
-                    $(divId).find('#id_nodeLink_label').css('display', 'none');
-                    $(divId).find('#id_nodeLink').css('display', 'none');
-                    $(divId).find('#id_title_label').css('display', 'block');
-                    $(divId).find('#id_title').css('display', 'block');
-                    $(divId).find('#id_description_label').css('display', 'block');
-                    $(divId).find('#id_description').css('display', 'block');
-                    console.log('NOTE');
-                }else if ($(divId).find('#id_nodeType').val() == 'issue'){
-                    $(divId).find('#id_nodeLink_label').css('display', 'block');
-                    $(divId).find('#id_nodeLink').css('display', 'block');
-                    $(divId).find('#id_title_label').css('display', 'none');
-                    $(divId).find('#id_title').css('display', 'none');
-                    $(divId).find('#id_description_label').css('display', 'none');
-                    $(divId).find('#id_description').css('display', 'none');
-                    console.log('ISSUE');
-                };
-            };
+	// used for toggling which form fields are visible depending on nodeType
+	function updateFormFields(divId){
+	    console.log(divId);
+	    if ($(divId).find('#id_nodeType').val() == 'note'){
+	        $(divId).find('#id_nodeLink_label').css('display', 'none');
+	        $(divId).find('#id_nodeLink').css('display', 'none');
+	        $(divId).find('#id_title_label').css('display', 'block');
+	        $(divId).find('#id_title').css('display', 'block');
+	        $(divId).find('#id_description_label').css('display', 'block');
+	        $(divId).find('#id_description').css('display', 'block');
+	        console.log('NOTE');
+	    }else if ($(divId).find('#id_nodeType').val() == 'issue'){
+	        $(divId).find('#id_nodeLink_label').css('display', 'block');
+	        $(divId).find('#id_nodeLink').css('display', 'block');
+	        $(divId).find('#id_title_label').css('display', 'none');
+	        $(divId).find('#id_title').css('display', 'none');
+	        $(divId).find('#id_description_label').css('display', 'none');
+	        $(divId).find('#id_description').css('display', 'none');
+	        console.log('ISSUE');
+	    };
+	};
 
-            // used for checking that form fields are not over the maximum length
-            function checkFormData(divId){
-                titleCheck = ""
-                descriptionCheck = ""
-                if($(divId).find('#id_title').val().length > 255 || $(divId).find('#id_description').val().length > 255){
-                    if($(divId).find('#id_title').val().length > 255){
-                        titleCheck = "Title cannot be more than 255 characters."
-                    };
-                    if($(divId).find('#id_description').val().length > 255){
-                        descriptionCheck = "Description cannot be more than 255 characters."
-                    };
-                alert(titleCheck + " " + descriptionCheck);
-                return false;
-                }else{
-                    return true;
-                };
-            };
+	// used for checking that form fields are not over the maximum length
+	function checkFormData(divId){
+	    titleCheck = ""
+	    descriptionCheck = ""
+	    if($(divId).find('#id_title').val().length > 255 || $(divId).find('#id_description').val().length > 255){
+	        if($(divId).find('#id_title').val().length > 255){
+	            titleCheck = "Title cannot be more than 255 characters."
+	        };
+	        if($(divId).find('#id_description').val().length > 255){
+	            descriptionCheck = "Description cannot be more than 255 characters."
+	        };
+	    alert(titleCheck + " " + descriptionCheck);
+	    return false;
+	    }else{
+	        return true;
+	    };
+	};
 
-            // helper function for updating node location
-            function updateParams(div){
-                updateLock = false;
-                placementLock = true;
-                divToUpdate = "#bugNote" + div;
-                console.log(divToUpdate);
-            };
-            function toggleHeader(){
-                console.log('hi');
-                console.log($('#sitenav').css('display'));
-                if($('#sitenav').css('display') == 'none'){
-                    $('#sitenav').css('display', 'block');
-                }else if($('#sitenav').css('display') == 'block'){
-                    $('#sitenav').css('display', 'none');
-                };
-            };
-         </script>
-
-             <div id = 'bugList'><div id='buttonContainer'><input id='bugListButton' type='button' value='Done' onClick='window.location.href="/board/board_display/{{board.id}}"' /><a class="brand" onClick='toggleHeader()'><span class="logo">Gadget</span></a></div></div>
-
-</body>
-</html>
+	// helper function for updating node location
+	function updateParams(div){
+	    updateLock = false;
+	    placementLock = true;
+	    divToUpdate = "#bugNote" + div;
+	    console.log(divToUpdate);
+	};
+	function toggleHeader(){
+	    console.log('hi');
+	    console.log($('#sitenav').css('display'));
+	    if($('#sitenav').css('display') == 'none'){
+	        $('#sitenav').css('display', 'block');
+	    }else if($('#sitenav').css('display') == 'block'){
+	        $('#sitenav').css('display', 'none');
+	    };
+	};
+</script>
+{% endblock %}
