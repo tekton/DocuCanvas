@@ -1,6 +1,7 @@
 {% extends "sprints/base.html" %}
 
 {% block pageTitle %}
+Management Report :: {{current.start}} - {{current.end}}
 {% endblock %}
 
 {% block contextNav %}
@@ -12,19 +13,19 @@
 <table style="width:100%;">
 	<thead>
 	<tr>
-		<th style="text-align:left;">Project</th>
-		<th style="text-align:left;">Phase</th>
-		<th style="text-align:left;">Projected Date</th>
-		<th style="text-align:left;">Status</th>
+		<th style="text-align:left;width:20%;">Project</th>
+		<th style="text-align:left;width:20%;">Phase</th>
+		<th style="text-align:left;width:20%;">Projected Date</th>
+		<th style="text-align:left;width:40%;">Status</th>
 	</tr>
 	</thead>
 	<tbody>
 	{% for project in projects %}
 	<tr>
-		<td style="text-align:left;"><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></td>
-		<td style="text-align:left;">{{project.current_phase}}</td>
-		<td style="text-align:left;">{{project.potential_end_date}}</td>
-		<td style="text-align:left;">{{project.status}}</td>
+		<td style="text-align:left;width:20%;"><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></td>
+		<td style="text-align:left;width:20%;">{{project.get_current_phase_display}}</td>
+		<td style="text-align:left;width:20%;">{{project.potential_end_date}}</td>
+		<td style="text-align:left;width:40%;">{{project.get_status_display}}</td>
 	</tr>
 	{% endfor %}
 </tbody>
@@ -34,35 +35,35 @@
 <table style="width:100%;">
 	<tr>
 		<td>Define</td>
-		<td>Product Specs/Pre Implementation.</td>
+		<td><i>Product Specs/Pre Implementation.</i></td>
 	</tr>
 	<tr>
 		<td>Design</td>
-		<td>Implementing given task is in progress.</td>
+		<td><i>Implementing given task is in progress.</i></td>
 	</tr>
 	<tr>
 		<td>Sustain</td>
-		<td>Project complete and is now in maintenance.</td>
+		<td><i>Project complete and is now in maintenance.</i></td>
 	</tr>
 	<tr>
 		<td>On Time</td>
-		<td>Project is on time.</td>
+		<td><i>Project is on time.</i></td>
 	</tr>
 	<tr>
 		<td>Pending</td>
-		<td>Project is awaiting initiation</td>
+		<td><i>Project is awaiting initiation</i></td>
 	</tr>
 	<tr>
 		<td>At Risk</td>
-		<td>Things have not been mitigated yet that could cause project to slip past projected date.</td>
+		<td><i>Things have not been mitigated yet that could cause project to slip past projected date.</i></td>
 	</tr>
 	<tr>
 		<td>Completed</td>
-		<td>Project is finished</td>
+		<td><i>Project is finished</i></td>
 	</tr>
 	<tr>
 		<td>Canceled</td>
-		<td>Project has been canceled.</td>
+		<td><i>Project has been canceled.</i></td>
 	</tr>
 </table>
 
@@ -72,19 +73,19 @@
 <table style="width:100%;">
 	<thead>
 	<tr>
-		<th style="text-align:left;">Gadget ID</th>
-		<th style="text-align:left;">Project</th>
-		<th style="text-align:left;">Status</th>
-		<th style="text-align:left;">Description</th>
+		<th style="text-align:left;width:20%;">Gadget ID</th>
+		<th style="text-align:left;width:20%;">Project</th>
+		<th style="text-align:left;width:20%;">Status</th>
+		<th style="text-align:left;width:40%;">Description</th>
 	</tr>
 </thead>
 <tbody>
 	{% for issue in issues %}
 	<tr>
-		<td style="text-align:left;"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
-		<td style="text-align:left;">{{issue.project}}</td>
-		<td style="text-align:left;">{{issue.status}}</td>
-		<td style="text-align:left;">{{issue.summary}}</td>
+		<td style="text-align:left;width:20%;"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
+		<td style="text-align:left;width:20%;">{{issue.project}}</td>
+		<td style="text-align:left;width:20%;">{{issue.get_status_display}}</td>
+		<td style="text-align:left;width:40%;">{{issue.summary}}</td>
 	</tr>
 	{% endfor %}
 </tbody>
@@ -94,19 +95,19 @@
 <table style="width:100%;">
 	<thead>
 	<tr>
-		<th style="text-align:left;">Gadget ID</th>
-		<th style="text-align:left;">Project</th>
-		<th style="text-align:left;">Status</th>
-		<th style="text-align:left;">Description</th>
+		<th style="text-align:left;width:20%;">Gadget ID</th>
+		<th style="text-align:left;width:20%;">Project</th>
+		<th style="text-align:left;width:20%;">Status</th>
+		<th style="text-align:left;width:40%;">Description</th>
 	</tr>
 </thead>
 <tbody>
 	{% for issue in current_issues %}
 	<tr>
-		<td style="text-align:left;"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
-		<td style="text-align:left;">{{issue.project}}</td>
-		<td style="text-align:left;">{{issue.status}}</td>
-		<td style="text-align:left;">{{issue.summary}}</td>
+		<td style="text-align:left;width:20%;"><a href="{% url 'issues.views.issue_overview' issue.id %}">{{issue.id}}</a></td>
+		<td style="text-align:left;width:20%;">{{issue.project}}</td>
+		<td style="text-align:left;width:20%;">{{issue.get_status_display}}</td>
+		<td style="text-align:left;width:40%;">{{issue.summary}}</td>
 	</tr>
 	{% endfor %}
 </tbody>
