@@ -2,6 +2,7 @@
 {% load set_var %}
 {% load static %}
 {% load humanize %}
+{% load markup %}
 
 {% block additionalHead %}
 	<link rel="stylesheet" href="{% static 'css/nv.d3.css' %}" type="text/css">
@@ -13,7 +14,7 @@
 
 {% block bodyContent %}
 
-<table class="table table-swimline dailyreports-all">
+<table class="table table-swimline">
 	<tbody>
 		{% for user in users %}
 	    	<tr>
@@ -37,7 +38,7 @@
                                         </div>
                                         <div id="dailyreport-{{user|slugify|lower}}-{{report.date|date:'c'|slugify}}" class="accordion-body collapse">
                                             <div class="accordion-inner">
-                                                {{report.description|safe}}
+                                                {{report.description|markdown}}
                                             </div>
                                         </div>
                                     </div>
