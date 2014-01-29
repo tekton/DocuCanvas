@@ -421,7 +421,7 @@ def HolidayDateByYear(year):
             temp_date = date(int(year), holiday_formulas[k][2], days)
             delta = -timedelta(days=1)
         else:
-            start_day = (7 * (holiday_formulas[k][0] - 1))
+            start_day = (7 * (holiday_formulas[k][0] + 1))
             if start_day == 0:
                 start_day = 1
             temp_date = date(int(year), holiday_formulas[k][2], start_day)
