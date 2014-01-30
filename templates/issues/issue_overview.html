@@ -107,12 +107,21 @@ Extends /templates/issue/base.html
 					<div class="media-body">
 						<h3 class="media-header">Attached Images</h3>
 						<ul class="thumbnails">
-							{% for image in images %}							
-							<li class="span2">
+							{% for image in images %}
+							{% if image.extension == '.jpg' or image.extension == '.gif' or image.extension == '.png' %}
+							<li class="span2 text-center">
 								<a class="thumbnail" href="#{{image.screenshot|slugify}}" data-toggle="lightbox">
 									<img src="/static/{{image.screenshot}}">
+									<p>{{image.file_name}}</p>
 								</a>
 							</li>
+							{% else %}
+							<li class="span2 text-center">
+								<a class="thumbnail" href="/static/{{image.screenshot}}">
+									<p><i class="icon-file"></i> {{image.file_name}}</p>
+								</a>
+							</li>
+							{% endif %}
 							{% endfor %}
 						</ul>
 					</div>
