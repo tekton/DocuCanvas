@@ -7,6 +7,7 @@ from django.forms.models import model_to_dict
 from newsfeed.models import *
 from tinymce.widgets import TinyMCE
 from accounts.models import Account
+from sprints.models import Sprint
 
 
 '''
@@ -42,6 +43,7 @@ class IssueForm(forms.ModelForm):
                 if self.initial["project"] is not None:
                     self.fields['meta_issues'] = forms.ModelChoiceField(required=False, queryset=MetaIssue.objects.filter(project=self.initial["project"]))
             self.fields["assigned_to"] = forms.ModelChoiceField(required=False, queryset=User.objects.select_related().exclude(account__assignable=None))
+            self.fields["sprint"] = forms.ModelChoiceField(required=False, queryset=Sprint.objects.filter(validAssignable=True))
 
 class IssueFullForm(forms.ModelForm):
     # description = forms.CharField(widget=TinyMCE(attrs={'cols': 50, 'rows': 20, 'id': 'something'}))
