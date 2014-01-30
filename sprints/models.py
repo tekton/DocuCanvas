@@ -8,6 +8,7 @@ class Sprint(models.Model):
 	start = models.DateField()
 	created = models.DateField(auto_now_add=True)
 	modified = models.DateField(auto_now=True)
+	validAssignable = models.NullBooleanField(default=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return self.name
