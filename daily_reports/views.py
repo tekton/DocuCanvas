@@ -400,10 +400,10 @@ def export_user(request, user_id):
 # k = Holiday_Name (how it will be displayed)
 # v = [int(WEEK_NUMBER_HOLIDAY_LIES_IN), str(DAY_OF_THE_WEEK (full day name ie. Monday, Tuesday, etc)), int(MONTH_NUMBER 1-12), OPTIONAL(int(OFFSET (for things like 'day after thanksgiving', enter data for thanksgiving, but insert a 1 here to get the next day)))]
 holiday_formulas = {"Memorial Day": [-1, "Monday", 5],
-                   "Presidents Day": [3, "Monday", 2],
-                   "Thanksgiving Day": [4, "Thursday", 11],
-                   "Day After Thanksgiving": [4, "Thursday", 11, 1],
-                   "Labor Day": [1, "Monday", 9],}
+                   "Presidents Day": [2, "Monday", 2],
+                   "Thanksgiving Day": [3, "Thursday", 11],
+                   "Day After Thanksgiving": [3, "Thursday", 11, 1],
+                   "Labor Day": [0, "Monday", 9],}
 
 def HolidayDateByYear(year):
     holidays = {str(year) + "-01-01": "New Year's Day",
@@ -421,7 +421,7 @@ def HolidayDateByYear(year):
             temp_date = date(int(year), holiday_formulas[k][2], days)
             delta = -timedelta(days=1)
         else:
-            start_day = (7 * (holiday_formulas[k][0] - 1))
+            start_day = (7 * holiday_formulas[k][0]) + 1
             if start_day == 0:
                 start_day = 1
             temp_date = date(int(year), holiday_formulas[k][2], start_day)
