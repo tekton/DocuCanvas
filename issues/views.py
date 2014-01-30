@@ -765,7 +765,7 @@ def issue_search_simple(request):
     search = request.POST['searchText']
     print search
 
-    q = Issue.objects.filter(Q(summary__contains=search) | Q(description__contains=search))
+    q = Issue.objects.filter(Q(summary__icontains=search) | Q(description__icontains=search))
     return render_to_response("issues/issue_search_results.html", {'results': q, "projects": projects}, context_instance=RequestContext(request))
 
 
