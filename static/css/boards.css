@@ -1,0 +1,193 @@
+/* ------------------------------------------------------
+	Boards
+	
+	Last updated: 2014.01.29
+-------------------------------------------------------*/
+
+
+
+/* --- | Structure | --- */
+
+body {
+	padding: 0;
+}
+
+#container {
+	overflow: scroll;
+	position: relative;
+/*    overflow-y:hidden;*/
+	margin-right: 190px;
+}
+
+/* --- | Sitenav | --- */
+
+#sitenav{
+    position: fixed;
+    display: none;
+    z-index: 4;
+}
+
+/* --- | Buglist | --- */
+
+#bugList {
+	box-sizing: border-box;
+	position: fixed;
+	width: 190px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	padding: 0 10px;
+	overflow: scroll;
+	overflow-x: hidden;
+	background: #fff;
+	border: 1px solid #F2F2F2;
+	box-shadow: 0 1px 4px #5A5A5A;
+/*	border-top-left-radius: 10px;*/
+/*	border-bottom-left-radius: 10px;*/
+}
+	
+	/* --- | Top Area | --- */
+	
+	#buttonContainer{
+		min-height: 60px;
+	}
+	
+		#bugListButton{
+			margin-top: 15px;
+			margin-left: 5px;
+		}
+	
+		#bugList .brand {
+			display: inline-block;
+			position: absolute;
+			right: 6px;
+			padding: 0 5px;
+			background-color: #587C91;
+			width: 50px;
+			height: 50px;
+			display: inline-block;
+			z-index: 5;
+		}
+		
+			#bugList .brand .logo {
+				display: block;
+				text-indent: -9999px;
+				width: 50px;
+				height: 50px;
+				background: url(/static/theme/assets/img/logo-gadget-sitenav.png) no-repeat center;
+			}
+	
+	/* --- | Notes | --- */
+	
+	#bugList .notes {
+		font-size: 14px;
+	}
+		
+		#bugList .notes div {
+			margin: 0 -10px;
+			padding: 5px 10px;
+			border-top: 1px solid #ddd;
+		}
+			
+			#bugList .notes div a {
+				display: block;
+			}
+	
+	/* --- | Notes | --- */
+	
+	div[id^='noteNo']{
+	    position: absolute;
+	    visibility: visible;
+	    border-radius: 12px;
+	    padding: 10px;
+	    background-color: white;
+	    border: 1px solid #F2F2F2;
+	    box-shadow: 0 1px 4px #5A5A5A;
+	    z-index: 2;
+	}
+
+	div[id^='bugNote']{
+	    z-index: 2;
+	    position: absolute;
+	    background-color: white;
+	    border: 1px solid #F2F2F2;
+	    box-shadow: 0 1px 4px #5A5A5A;
+	    visibility: hidden;
+	    border-radius: 12px;
+	    padding: 10px;
+	}
+
+	div[id^='triangle']{
+		position: absolute;
+		width: 0;
+		height: 0;
+		border-right: 10px solid white;
+		border-bottom: 10px solid transparent;
+		border-top: 10px solid transparent;
+		visibility: hidden;
+		z-index: 0;
+	}
+		
+	#triangleForm{
+	    position: absolute;
+	    width: 0;
+	    height: 0;
+	    border-right: 10px solid white;
+	    border-bottom: 10px solid transparent;
+	    border-top: 10px solid transparent;
+	    visibility: visible;
+	    z-index: 0;
+	}
+	
+	    div[id^='triangleBorder']{
+	        position: absolute;
+	        width: 0;
+	        height: 0;
+	        border-right: 12px solid black;
+	        border-bottom: 12px thin transparent;
+	        border-top: 12px thin transparent;
+	        z-index: 0;
+	    }
+		
+	    #triangleBorderForm{
+	        position: absolute;
+	        width: 0;
+	        height: 0;
+	        border-right: 12px solid black;
+	        border-bottom: 12px thin transparent;
+	        border-top: 12px thin transparent;
+	        visibility: visible;
+	        z-index: 0;
+	    }
+
+#id_nodeLink_label{
+    display:none;
+}
+#id_nodeLink{
+    display:none;
+}
+#id_title_label{
+    display:block;
+}
+#id_title{
+    display:block;
+}
+#id_description_label{
+    display:block;
+}
+#id_description{
+    display:block;
+    resize:none;
+}
+textarea{
+    width: 250px;
+}
+input[type='text']{
+    width: 250px;
+}
+th{
+    text-align: left;
+}
+form[id^='submitForm']{
+    visibility: visible;
+}

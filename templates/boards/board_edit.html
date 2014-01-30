@@ -3,178 +3,7 @@
 {% load staticfiles %}
 
 {% block additionalHead%}
-<style type="text/css">
-
-/* --- | Structure | --- */
-
-body {
-	padding: 0;
-}
-
-#container {
-    overflow:scroll;
-    overflow-y:hidden;
-    margin-right: 190px;
-}
-
-/* --- | Sitenav | --- */
-
-#sitenav{
-    position: fixed;
-    display: none;
-    z-index: 4;
-}
-
-/* --- | Buglist | --- */
-
-#bugList {
-	box-sizing: border-box;
-	position: fixed;
-	width: 190px;
-	height: 100%;
-	top: 0;
-	right: 0;
-	padding: 0 10px;
-/*	margin-top: 5px;*/
-	overflow: scroll;
-	overflow-x: hidden;
-	background: #fff;
-	border: 1px solid #F2F2F2;
-	box-shadow: 0 1px 4px #5A5A5A;
-/*	border-top-left-radius: 10px;*/
-/*	border-bottom-left-radius: 10px;*/
-}
-	
-	#buttonContainer{
-		min-height: 60px;
-	}
-	
-		#bugListButton{
-			margin-top: 15px;
-			margin-left: 5px;
-		}
-	
-		#bugList .brand {
-			display: inline-block;
-			position: absolute;
-			right: 6px;
-			padding: 0 5px;
-			background-color: #587C91;
-			width: 50px;
-			height: 50px;
-			display: inline-block;
-			z-index: 5;
-		}
-		
-			#bugList .brand .logo {
-				display: block;
-				text-indent: -9999px;
-				width: 50px;
-				height: 50px;
-				background-image: url({% static 'theme/assets/img/logo-gadget-sitenav.png' %});
-				background-repeat: no-repeat;
-				background-position: center;
-			}
-	
-	/* --- | Notes | --- */
-	
-	div[id^='noteNo']{
-	    position: absolute;
-	    visibility: visible;
-	    border-radius: 12px;
-	    padding: 10px;
-	    background-color: white;
-	    border: 1px solid #F2F2F2;
-	    box-shadow: 0 1px 4px #5A5A5A;
-	    z-index: 2;
-	}
-
-	div[id^='bugNote']{
-	    z-index: 2;
-	    position: absolute;
-	    background-color: white;
-	    border: 1px solid #F2F2F2;
-	    box-shadow: 0 1px 4px #5A5A5A;
-	    visibility: hidden;
-	    border-radius: 12px;
-	    padding: 10px;
-	}
-
-	div[id^='triangle']{
-		position: absolute;
-		width: 0;
-		height: 0;
-		border-right: 10px solid white;
-		border-bottom: 10px solid transparent;
-		border-top: 10px solid transparent;
-		visibility: hidden;
-		z-index: 0;
-	}
-		
-	#triangleForm{
-	    position: absolute;
-	    width: 0;
-	    height: 0;
-	    border-right: 10px solid white;
-	    border-bottom: 10px solid transparent;
-	    border-top: 10px solid transparent;
-	    visibility: visible;
-	    z-index: 0;
-	}
-	
-	    div[id^='triangleBorder']{
-	        position: absolute;
-	        width: 0;
-	        height: 0;
-	        border-right: 12px solid black;
-	        border-bottom: 12px thin transparent;
-	        border-top: 12px thin transparent;
-	        z-index: 0;
-	    }
-		
-	    #triangleBorderForm{
-	        position: absolute;
-	        width: 0;
-	        height: 0;
-	        border-right: 12px solid black;
-	        border-bottom: 12px thin transparent;
-	        border-top: 12px thin transparent;
-	        visibility: visible;
-	        z-index: 0;
-	    }
-
-#id_nodeLink_label{
-    display:none;
-}
-#id_nodeLink{
-    display:none;
-}
-#id_title_label{
-    display:block;
-}
-#id_title{
-    display:block;
-}
-#id_description_label{
-    display:block;
-}
-#id_description{
-    display:block;
-    resize:none;
-}
-textarea{
-    width: 250px;
-}
-input[type='text']{
-    width: 250px;
-}
-th{
-    text-align: left;
-}
-form[id^='submitForm']{
-    visibility: visible;
-}
-</style>
+<link rel="stylesheet" href="{% static 'css/boards.css' %}">
 {% endblock %}
 
 {% block baseContent %}
@@ -186,6 +15,9 @@ form[id^='submitForm']{
 		<a class="brand" onClick='toggleHeader()'>
 			<span class="logo">Gadget</span>
 		</a>
+	</div>
+	
+	<div class="notes">
 	</div>
 </div>
 {% endblock %}
@@ -281,8 +113,8 @@ form[id^='submitForm']{
 	                var noteDivY = y - 20;
 	            };
 	            placementLock = true;
-	                $('body').append("<div id='noteNo" + counter + "' style='top: " + noteDivY + "px; left: " + noteDivX + "px; width: " + noteDivWidth + "px;'><form id = 'submitForm'" + counter + "' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink'/></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' resize: none;' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
-	                $('body').append("<div id='triangleBorderForm' style='top:" + (y-9) + "px; left: " + (x+21) + "px;'></div><div id = 'triangleForm'; style = 'top:" + (y-10) + "px; left: " + (x+21) + "px;'></div> ");
+	                $('#container').append("<div id='noteNo" + counter + "' style='top: " + noteDivY + "px; left: " + noteDivX + "px; width: " + noteDivWidth + "px;'><form id = 'submitForm'" + counter + "' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink'/></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' resize: none;' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+	                $('#container').append("<div id='triangleBorderForm' style='top:" + (y-9) + "px; left: " + (x+21) + "px;'></div><div id = 'triangleForm'; style = 'top:" + (y-10) + "px; left: " + (x+21) + "px;'></div> ");
 
 
 	                var circle = new Kinetic.Circle({
@@ -424,9 +256,9 @@ form[id^='submitForm']{
 	        });
 	        shapesLayer.add(circle);
 	        // edit div for updating nodes
-	        $('body').append("<div id = 'bugNote" + divId + "' style = 'width: " + noteDivWidth +"px; top: " + noteDivY + "px; left: " + noteDivX + "px;'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(bugNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' cols='30' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
-	        $('body').append("<div id = 'triangleBorder" + divId + "'; style = 'top:" + (y-9) + "px; left: " + (x+20) + "px;'></div><div id = 'triangle" + divId + "'; style = 'top:" + (y-10) + "px; left: " + (x+20) + "px;'></div> ");
-	        $('#bugList').append("<div id = 'bugListNo" + divId + "' >" + noteTitle + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><div id = 'bugListLink" + divId + "'>Show</div></a>");
+	        $('#container').append("<div id = 'bugNote" + divId + "' style = 'width: " + noteDivWidth +"px; top: " + noteDivY + "px; left: " + noteDivX + "px;'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(bugNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' cols='30' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+	        $('#container').append("<div id = 'triangleBorder" + divId + "'; style = 'top:" + (y-9) + "px; left: " + (x+20) + "px;'></div><div id = 'triangle" + divId + "'; style = 'top:" + (y-10) + "px; left: " + (x+20) + "px;'></div> ");
+	        $('.notes').append("<div id = 'bugListNo" + divId + "' ><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'>" + noteTitle + "</a></div>");
 	    //};
 	    };
 
@@ -534,5 +366,15 @@ form[id^='submitForm']{
 	        $('#sitenav').css('display', 'none');
 	    };
 	};
+	
+	$(function(){
+		// Set layout on page load
+		$('#container').height($(window).height());
+		
+		// Adjust layout when window is resized
+		$(window).resize(function(){
+			$('#container').height($(window).height());
+		});
+	});
 </script>
 {% endblock %}
