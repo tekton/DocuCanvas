@@ -175,8 +175,8 @@ class AdvSearchForm(forms.Form):
     # screen_shot = forms.CharField(required=False)
     # wireframe = forms.CharField(required=False)
     # uri_to_test = forms.CharField(required=False)
-    assigned_to = forms.ModelMultipleChoiceField(required=False, queryset=Account.objects.filter(assignable=True))
-    created_by = forms.ModelMultipleChoiceField(required=False, queryset=Account.objects.filter(assignable=True))
+    assigned_to = forms.ModelMultipleChoiceField(required=False, queryset=User.objects.select_related().exclude(account__assignable=None))
+    created_by = forms.ModelMultipleChoiceField(required=False, queryset=User.objects.select_related().exclude(account__assignable=None))
     issue_type = forms.MultipleChoiceField(required=False, choices=ISSUETYPE)
 
     title = MultipleTextField(required=False)
@@ -195,11 +195,6 @@ class AdvSearchForm(forms.Form):
     os_version = MultipleTextField(label="OS Version", required=False)
     browser = MultipleTextField(required=False)
     browser_version = MultipleTextField(required=False)
-    
-    created_start = forms.DateField(required=False)
-    created_stop = forms.DateField(required=False)
-    modified_start = forms.DateField(required=False)
-    modified_stop = forms.DateField(required=False)
 
 
 class TestForm(forms.ModelForm):
