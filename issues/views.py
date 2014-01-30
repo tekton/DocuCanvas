@@ -765,7 +765,7 @@ def issue_search_simple(request):
     search = request.POST['searchText']
     print search
 
-    q = Issue.objects.filter(Q(summary__contains=search) | Q(description__contains=search))
+    q = Issue.objects.filter(Q(summary__icontains=search) | Q(description__icontains=search))
     return render_to_response("issues/issue_search_results.html", {'results': q, "projects": projects}, context_instance=RequestContext(request))
 
 
@@ -777,6 +777,7 @@ def issue_search_advanced(request):
         print e
     if request.method == "GET":
         return render_to_response("issues/issue_adv_search.html", {'form': AdvSearchForm(), "projects": projects}, context_instance=RequestContext(request))
+    print request.POST
     form = AdvSearchForm(request.POST)
     if not form.is_valid():
         raise Exception("Invalid adv search form values")
@@ -802,80 +803,20 @@ def issue_search_advanced(request):
 
 
 def returnQuery(field_name, field_value):
-    if field_name == 'project':
-        return Issue.objects.filter(project=field_value), field_value.name
-    elif field_name == 'meta_issues':
-        return Issue.objects.filter(meta_issues=field_value), field_value.title
-    elif field_name == 'assigned_to':
-        return Issue.objects.filter(assigned_to=field_value.user), field_value.user.username
-    elif field_name == 'created_by':
-        return Issue.objects.filter(created_by=field_value.user), field_value.user.username
-    elif field_name == 'issue_type':
-        return Issue.objects.filter(issue_type=field_value), field_value
-    elif field_name == 'status':
-        return Issue.objects.filter(status=field_value), field_value
-    elif field_name == 'title':
-        return Issue.objects.filter(Q(title__contains=field_value)), field_value
-    elif field_name == 'summary':
-        return Issue.objects.filter(Q(summary__contains=field_value)), field_value
-    elif field_name == 'description':
-        return Issue.objects.filter(Q(description__contains=field_value)), field_value
-    elif field_name == 'os':
-        return Issue.objects.filter(Q(os__contains=field_value)), field_value
-    elif field_name == 'os_version':
-        return Issue.objects.filter(Q(os_version__contains=field_value)), field_value
-    elif field_name == 'browser':
-        return Issue.objects.filter(Q(browser__contains=field_value)), field_value
-    elif field_name == 'browser_version':
-        return Issue.objects.filter(Q(browser_version__contains=field_value)), field_value
-    elif field_name == 'criticality':
-        return Issue.objects.filter(criticality=field_value), field_value
-    elif field_name == 'priority':
-        return Issue.objects.filter(priority=field_value), field_value
-    elif field_name == 'fixability':
-        return Issue.objects.filter(fixability=field_value), field_value
+    exact = ['project', 'meta_issues', 'assigned_to', 'created_by', 'issue_type', 'status', 'criticality', 'priority', 'fixability']
+    contains = ['title', 'summary', 'description', 'os', 'os_version', 'browser', 'browser_version']
+    if field_name in exact:
+        kwargs = {field_name: field_value}
+        return Issue.objects.filter(**kwargs)
+    elif field_name in contains:
+        kwargs = {field_name + "__icontains": field_value}
+        return Issue.objects.filter(**kwargs)
     return [],""
 
 
 query_fields = {'project': 'Projects', 'meta_issues': 'Meta Issues', 'assigned_to': 'Assigned To', 'created_by': 'Created By', 'issue_type': 'Issue Type',
                 'status': 'Status', 'title': 'Title', 'summary': 'Summary', 'description': 'Description', 'os': 'OS', 'os_version': 'OS Version', 'browser': 'Browser',
                 'browser_version': 'Browser Version', 'criticality': 'Criticality', 'priority': 'Priority', 'fixability': 'Fixability'}
-
-
-def returnDateQuery(start, end, field):
-    # function called by loadSearchResults()... returns Issue Queryset based on dates created (or modified)
-    start_yr = start.strftime('%Y')
-    start_mo = start.strftime('%m')
-    start_da = start.strftime('%d')
-    date_range_start = str(start_yr) + '-' + str(start_mo) + '-' + str(start_da)
-    stop_yr = end.strftime('%Y')
-    stop_mo = end.strftime('%m')
-    stop_da = end.strftime('%d')
-    date_range_end = str(stop_yr) + '-' + str(stop_mo) + '-' + str(stop_da)
-    if field == 'created':
-        if start <= end:
-            return Issue.objects.filter(created__range=[date_range_start, date_range_end])
-        else:
-            return Issue.objects.filter(created__range=[date_range_end, date_range_start])
-    elif field == 'modified':
-        if start <= end:
-            return Issue.objects.filter(modified__range=[date_range_start, date_range_end])
-        else:
-            return Issue.objects.filter(modified__range=[date_range_end, date_range_start])
-    return []
-
-
-def returnDayQuery(date, field):
-    # returns Issue Queryset created (or modified) on a specific date
-    yr = date.strftime('%Y')
-    mo = date.strftime('%m')
-    da = date.strftime('%d')
-    date_range = str(yr) + '-' + str(mo) + '-' + str(da)
-    if field == 'created':
-        return Issue.objects.filter(created__range=[date_range, date_range])
-    elif field == 'modified':
-        return Issue.objects.filter(modified__range=[date_range, date_range])
-    return []
 
 
 def loadSearchResults(request, search_hash_id):
@@ -894,76 +835,21 @@ def loadSearchResults(request, search_hash_id):
         # params is passed as a JSON object to be displayed on the page
         params = {}
         return_params = {}
-        by_created = False
-        by_modified = False
         for field in query.cleaned_data.keys():
             temp = []
-            if field == 'created_start' or field == 'created_stop':
-                # Search by date created requires special handling
-                if not by_created:
-                    start = None
-                    query_stop = None
-                    if query.cleaned_data['created_start'] and query.cleaned_data['created_stop']:
-                        start = query.cleaned_data['created_start']
-                        query_stop = query.cleaned_data['created_stop']
-                        temp.extend(returnDateQuery(start, query_stop, 'created'))
-                    elif query.cleaned_data['created_start']:
-                        start = query.cleaned_data['created_start']
-                        temp.extend(returnDayQuery(start, 'created'))
-                    elif query.cleaned_data['created_stop']:
-                        start = query.cleaned_data['created_stop']
-                        temp.extend(returnDayQuery(start, 'created'))
-                    if query.cleaned_data['created_stop']:
-                        params['Date Range (Created)'] = [[start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y"), 'skip']]
-                        return_params['created_stop'] = [[query_stop.strftime("%b %d %Y"), 'skip']]
-                        return_params['created_start'] = [[start.strftime("%b %d %Y"), 'skip']]
-                    elif start:
-                        params['Date (Created)'] = [[start.strftime("%b %d %Y"), 'skip']]
-                        return_params['created_start'] = [[start.strftime("%b %d %Y"), 'skip']]
-                    if temp:
-                        if q:
-                            q = list(set(q) & set(temp))
-                        else:
-                            q.extend(temp)
-                    by_created = True
-            elif field == 'modified_start' or field == 'modified_stop':
-                # Search by date modified requires special handling
-                if not by_modified:
-                    start = None
-                    query_stop = None
-                    if query.cleaned_data['modified_start'] and query.cleaned_data['modified_stop']:
-                        start = query.cleaned_data['modified_start']
-                        query_stop = query.cleaned_data['modified_stop']
-                        temp.extend(returnDateQuery(start, query_stop, 'modified'))
-                    elif query.cleaned_data['modified_start']:
-                        start = query.cleaned_data['created_start']
-                        temp.extend(returnDayQuery(start, 'modified'))
-                    elif query.cleaned_data['modified_stop']:
-                        start = query.cleaned_data['modified_stop']
-                        temp.extend(returnDayQuery(start, 'modified'))
-                    if query.cleaned_data['modified_stop']:
-                        params['Date Range (Modified)'] = [[start.strftime("%b %d %Y") + " - " + query_stop.strftime("%b %d %Y"), 'skip']]
-                        return_params['modified_start'] = [[start.strftime("%b %d %Y"), 'skip']]
-                        return_params['modified_stop'] = [[query_stop.strftime("%b %d %Y"), 'skip']]
-                    elif start:
-                        params['Date (Modified)'] = [[start.strftime("%b %d %Y"), 'skip']]
-                        return_params['modified_start'] = [[start.strftime("%b %d %Y"), 'skip']]
-                    if temp:
-                        if q:
-                            q = list(set(q) & set(temp))
-                        else:
-                            q.extend(temp)
-                    by_modified = True
-            elif query.cleaned_data[field]:
+            if query.cleaned_data[field]:
                 # All non-Date related fields are handled by this code
                 params[query_fields[field]] = []
                 return_params[field] = []
                 completed_values = []
                 for value in query.cleaned_data[field]:
                     if value not in completed_values:
-                        temp2, param_value = returnQuery(field, value)
-                        params[query_fields[field]].append([param_value, field])
-                        return_params[field].append(value.id)
+                        temp2 = returnQuery(field, value)
+                        params[query_fields[field]].append([unicode(value), field])
+                        if type(value) == unicode:
+                            return_params[field].append(value)
+                        else:
+                            return_params[field].append(value.id)
                         completed_values.append(value)
                         if temp:
                             temp = temp | temp2
@@ -975,7 +861,6 @@ def loadSearchResults(request, search_hash_id):
                     q.extend(temp)
     except Exception, e:
         print e
-        return redirect('issues.views.issue_search_advanced')
     return render_to_response("issues/adv_search_results.html", {'projects': projects,
                                                                  'issues': q,
                                                                  'query': json.dumps(params),
