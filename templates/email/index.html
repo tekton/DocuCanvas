@@ -1,3 +1,5 @@
+{% load markup %}
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -135,13 +137,13 @@
 										<h2 class="secondary"><strong><a href="{{url_base}}{% url 'issues.views.issue_overview' issue.id %}">Issue {{issue.id}}: {{issue.summary}}</a></strong>{% if comment %}<br />has a new comment{% endif %}</h2>
 										{% if comment %}
 										<div class="description">
-											Comment : {{comment|safe}}
+											Comment : {{comment|markdown}}
 										</div>
 										
 										<h2 class="secondary">Issue Description:</h2>
 										{% endif %}
 										<div class="description">
-											{{issue.description|safe}}
+											{{issue.description|markdown}}
 										</div>
 										<p class="meta"><em>{{timestamp}}</em> in <a href="{{url_base}}{% url 'projects.views.project_overview' issue.project.id %}"><strong>{{project_name}}</strong></a></p>
 									</td>
