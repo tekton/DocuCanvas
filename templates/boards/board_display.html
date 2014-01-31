@@ -1,516 +1,124 @@
-<!DOCTYPE HTML>
-<html>
-    <head>
-        {% load staticfiles %}
-        <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-        <link rel="stylesheet" href="{% static 'css/bootstrap-lightbox.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
-        <style>
-            body{
-                margin: 0px;
-                padding: 0px;
-            }
-            #bodyContainer{
-                top: 0;
-                left: 0;
-                overflow:scroll;
-                overflow-y:hidden;
-                margin-right: 202px;
-            }
-            #bugList{
-                position: fixed;
-                width: 190px;
-                height: 98%;
-                margin-top: 5px;
-                top: 0px;
-                right: 0px;
-                visibility: visible;
-                overflow: scroll;
-                overflow-x: hidden;
-                border: 1px solid #F2F2F2;
-                box-shadow: 0 1px 4px #5A5A5A;
-                border-top-left-radius: 10px;
-                border-bottom-left-radius: 10px;
-            }
-            div[id^='issueNote']{
-                background-color: white;
-                position: absolute;
-                z-index: 2;
-                visibility: hidden;
-                border: 1px solid #F2F2F2;
-                box-shadow: 0 1px 4px #5A5A5A;
-                border-radius: 12px;
-                width: 200px;
-            }
-            div[id^='triangle']{
-                position: absolute;
-                width: 0;
-                height: 0;
-                border-right: 10px solid white;
-                border-bottom: 10px solid transparent;
-                border-top: 10px solid transparent;
-                visibility: hidden;
-                z-index: 3;
-            }
-            div[id^='triangleBorder']{
-                position: absolute;
-                width: 0;
-                height: 0;
-                border-right: 12px solid black;
-                border-bottom: 12px thin transparent;
-                border-top: 12px thin transparent;
-                visibility: hidden;
-                z-index: 0;
-            }
-            input[type='button']{
-                margin-top: 15px;
-                margin-left: 5px;
-            }
-            #buttonContainer{
-                min-height: 60px;
-            }
-            #noteHeader{
-                border-top-left-radius: 12px;
-                border-top-right-radius: 12px;
-                background-color: #ddd;
-                text-align: left;
-                padding-left: 5px;
-                position: relative;
+{% extends "boards/base.html" %}
+{% load markup %}
+{% load staticfiles %}
 
-            }
-            #noteDescription{
+{% block additionalHead%}
+<link rel="stylesheet" href="{% static 'css/boards.css' %}">
+{% endblock %}
 
-                text-align: left;
-                border-bottom-left-radius: 12px;
-                border-bottom-right-radius: 12px;
-                padding: 5px;
-            }
-            #issueLink{
-                text-align: right;
-                padding: 5px;
-            }
-            div[id^='bugListNo']{
-                padding: 5px;
-            }
-            #sitenav{
-                position: fixed;
-                display: none;
-                z-index: 4;
-            }
-            .brand { 
-            position: absolute;
-            right: 6px;
-            padding: 0 5px;
-            background-color: #587C91;
-            width: 50px;
-            height: 50px;
-            display: inline-block;
-            z-index: 5;
-        }
-        #bugList .brand{
-            display: inline-block;
-            padding-top: 5;
-        }
-        .brand .logo {
+{% block baseContent %}
+<div id="container"></div>
 
-            display: block;
-            text-indent: -9999px;
-            width: 50px;
-            height: 50px;
-            background-image: url({% static 'theme/assets/img/logo-gadget-sitenav.png' %});
-            background-repeat: no-repeat;
-            background-position: center;
-        }
-        #bugList .brand img{
-            margin-top: 5px;
-        }
-        #sitenav .navbar-inner {
-            min-height: 60px;
-            border-bottom: 0;
-            box-shadow: 0 1px 5px #5A5A5A;
-            background-color: #2B2F32;
-            background-image: none;
-        }
-        #sitenav #mainnav li {
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        #sitenav #mainnav .dropdown-menu li {
-            text-transform: none;
-        }
-        #sitenav form {
-            margin-bottom: 0;
-        }
-        #sitenav .navbar-search .search-query {
-            width: 145px;
-            height: 18px;
-            color: #ffffff;
-            background-color: #515151;
-            border-color: #111111;
-            -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
-            -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
-            -webkit-transition: none;
-            -moz-transition: none;
-            -o-transition: none;
-            transition: none;
-        }
-        #sitenav .navbar-search .search-query:-moz-placeholder {
-            color: #cccccc;
-        }
-        #sitenav .navbar-search .search-query:-ms-input-placeholder {
-            color: #cccccc;
-        }
-        #sitenav .navbar-search .search-query::-webkit-input-placeholder {
-            color: #cccccc;
-        }
-        #sitenav .navbar-search .search-query:focus,
-        #sitenav .navbar-search .search-query.focused {
-            padding: 5px 15px;
-            color: #333333;
-            text-shadow: 0 1px 0 #ffffff;
-            background-color: #ffffff;
-            border: 0;
-            -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
-            -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
-            outline: 0;
-        }
-        #sitenav #mainnav .nav > li > a {
-            padding-bottom: 10px;
-            border-bottom: 5px solid transparent;
-        }
-        #sitenav #mainnav .nav > li > a.active {
-            border-color: #587C91;
-        }
+<div id="bugList">
+	<div id="buttonContainer">
+		<input id="bugListButton" type="button" class="btn btn-primary" value='Done' onClick='window.location.href="/board/board_edit/{{board.id}}"' />
+		<a class="brand" onClick='toggleHeader()'>
+			<span class="logo">Gadget</span>
+		</a>
+	</div>
+	
+	<div class="notes">
+	</div>
+</div>
+{% endblock %}
 
-        .panel,
-        .well {
-            border: 1px solid #F2F2F2;
-            box-shadow: 0 1px 4px #5A5A5A;
-            background-color: #FFF;
-        }
+{% block endScripts %}
+<script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
+<script src="{% static 'scripts/boards.js' %}"></script>
+<script>
 
-        .well.span6 {
-            width: 530px;
-        }
+//Test variables for placing notes, most will be contained in database when finished
+var imageWidth = {{board.width}};
+var imageHeight = {{board.height}};
+var tooltipWidth = 200;
+var tooltipHeight = 200;
 
-        #pagetitle {
-            text-align: center;
-            margin: 15px 0 25px;
-        }
+// Create Background image
+var imageObj = new Image();
 
-        #pagetitle .title-separator {
-            display: none;
-        }
-
-        .metainfo-hide .metainfo-content  {
-            display: none;
-        }
-
-        .issue-comment {
-            min-height: 45px;
-        }
-        .issue-comment .comment-markbutton,
-        .issue-comment .comment-editbutton {
-            display: none;
-        }
-        .issue-comment.show-editbutton .comment-editbutton,
-        .issue-comment.show-editbutton .comment-markbutton {
-            display: block;
-        }
-
-        .mark_notification_as_read{
-            cursor:pointer;
-        }
-
-        .comment aside {
-            padding: .5em 0;
-            margin: .5em 0;
-            border-color: #CCC;
-            border-style: solid;
-            border-width: 1px 0 0;
-        }
-
-        #maincontent {
-            -o-animation: fadein .7s;
-            -moz-animation: fadein .7s;
-            -webkit-animation: fadein .7s;
-            animation: fadein .7s;
-        }
-
-        @-o-keyframes fadein {
-            from {
-                opacity:0;
-            }
-            to {
-                opacity: 1;
-            }
-        }​
-        @-moz-keyframes fadein {
-            from {
-                opacity:0;
-            }
-            to {
-                opacity:1;
-            }
-        }
-        @-webkit-keyframes fadein {
-            from {
-                opacity:0;
-            }
-            to {
-                opacity:1;
-            }
-        }
-        @keyframes fadein {
-            from {
-                opacity:0;
-            }
-            to {
-                opacity:1;
-            }
-        }
-
-        @media (min-width: 980px) {
-            #globalwrap {
-            }
-        }
-
-        /* Large Desktop */
-        @media (min-width: 1200px) {
-            
-        }
-        
-        /* Portrait tablet to landscape and desktop */
-        @media (min-width: 768px) and (max-width: 979px) {
-
-        }
-        
-        /* Landscape phone to portrait tablet */
-        @media (max-width: 767px) {
-
-        }
-        
-        /* Landscape phones and down */
-        @media (max-width: 480px) {
-            
-        }
-        </style>
-    </head>
-    <body>
-        
-        <div id="globalwrap">
-        <div id="sitenav" class="navbar navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <div class="nav-collapse collapse">
-                        <nav id="mainnav">
-                            <ul class="nav">
-                                <li><a href="{% url 'dashboard.views.dashboard' %}" class="{% if page_type == 'Dashboard' %}active{% endif %}">Dashboard</a></li>
-                                <li class="dropdown">
-                                    <a href="{% url 'projects.views.home' %}" class="dropdown-toggle {% if page_type == 'Project' %}active{% elif page_type == 'Projects' %}active{% elif page_type == 'Issue' %}active{% endif %}" data-toggle="dropdown">Projects <b class="caret"></b>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        {% if projects.count > 0 %}
-                                        <li class="nav-header">All Projects</li>
-                                        {% for project in projects%}
-                                            <li><a href="{% url 'projects.views.project_overview' project.id %}">{{project.name}}</a></li>
-                                        {% endfor %}
-                                        {% endif %}
-                                        <li class="nav-header">New</li>
-                                        <li><a href="{% url 'projects.views.project_form' %}">Project</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="{% url 'daily_reports.views.index' %}" class="{% if page_type == 'Report' %}active{% endif %}">Reports</a></li>
-                            </ul>
-                        </nav>
-                        <div id="searchform">
-                            <form class="navbar-search pull-right" action="{% url 'issues.views.issue_search_simple' %}" method="POST">
-                                {% csrf_token %}
-                                <div class="input-prepend input-append">
-                                    <a class="btn btn-inverse" href="{% url 'issues.views.issue_search_advanced' %}" id="search-icon-advanced" title="Advanced Search"><i class="icon-search icon-white"></i></a>
-                                    <input type="text" name="searchText" class="search-query" placeholder="Search">
-                                    <button type="submit" class="btn btn-inverse">Go</button>
-                                </div>
-                            </form>
-                        </div>
-                        <div id="userbar">
-                            <ul class="nav pull-right">
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Context <b class="caret"></b></a>
-                                    <ul class="dropdown-menu">
-                                        {% block contextNav %}
-                                            <li><a href="{% url 'boards.views.boards' %}"> Board Overview</a></li>
-                                        {% endblock %}
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user}} <b class="caret"></b></a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="{% url 'auth.views.account_settings' %}">Settings</a></li>
-                                        <li><a href="/accounts/logout/?next=/">Logout</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% block basecontent %}{% endblock %}
-    </div>
-        <div id = "bodyContainer"> </div>
-         <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
-          <script src="{% static 'js/jquery.min.js' %}"></script>
-        <script src="{% static 'js/jquery-ui.min.js' %}"></script>
-        <script src="{% static 'js/ajax_tools.js' %}"></script>
-        <script src="{% static 'js/bootstrap.js' %}"></script>
-        <script src="{% static 'js/bootstrap-lightbox.min.js' %}"></script>
-        <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
-           <script>
-
-            //Test variables for placing notes, most will be contained in database when finished
-            var imageWidth = {{board.width}};
-            var imageHeight = {{board.height}};
-            var tooltipWidth = 200;
-            var tooltipHeight = 200;
-
-            // Create Background image
-            var imageObj = new Image();
-
-            // Most everything occurs inside the image onload function
-            imageObj.onload = function() {
-                var bgImage = new Kinetic.Image({
-                    image: imageObj,
-                    width: imageWidth,
-                    height: imageHeight,
-                    id: 'backgroundImage',
-                  });
+// Most everything occurs inside the image onload function
+imageObj.onload = function() {
+	var bgImage = new Kinetic.Image({
+		image: imageObj,
+		width: imageWidth,
+		height: imageHeight,
+		id: 'backgroundImage',
+	});
 
 
-                var stage = new Kinetic.Stage({
-                    container: 'bodyContainer',
-                    width: imageWidth,
-                    height: imageHeight,
-                });
-                var shapesLayer = new Kinetic.Layer();
-                var messageLayer = new Kinetic.Layer();
-                shapesLayer.add(bgImage);
+	var stage = new Kinetic.Stage({
+		container: 'container',
+		width: imageWidth,
+		height: imageHeight,
+	});
+	var shapesLayer = new Kinetic.Layer();
+	var messageLayer = new Kinetic.Layer();
+	shapesLayer.add(bgImage);
 
-                function issueNote(x, y, summary, description, link, divId){
-                    var tooltipId = "#" + divId;
-                    var bugListId = "#bugListNo" + divId;
-                    issueLink = link;
-                    if(issueLink != ""){
-                        issueLink = "<div id='issueLink'><a href = '" + link + "' target = '_blank'>View Issue</a></div>"
-                    };
-                    var circle = new Kinetic.Circle({
-                        x: x,
-                        y: y,
-                        radius: 8,
-                        fill: '#00d2ff',
-                        stroke: 'black',
-                        strokeWidth: 4,
-                    });
+	function issueNote(x, y, summary, description, link, divId){
+		var tooltipId = "#" + divId;
+		var bugListId = "#bugListNo" + divId;
+		issueLink = link;
+		if(issueLink != ""){
+			issueLink = "<div id='issueLink'><a href = '" + link + "' target = '_blank'>View Issue</a></div>"
+		};
+		var circle = new Kinetic.Circle({
+			x: x,
+			y: y,
+			radius: 8,
+			fill: '#00d2ff',
+			stroke: 'black',
+			strokeWidth: 4,
+		});
 
-                    circle.on('mouseover', function(){
-                        document.body.style.cursor = 'pointer';
-                    });
-                    circle.on('mouseout', function(){
-                        document.body.style.cursor = 'default';
-                    });
+		circle.on('mouseover', function(){
+			document.body.style.cursor = 'pointer';
+		});
+		circle.on('mouseout', function(){
+			document.body.style.cursor = 'default';
+		});
 
-                    circle.on('mousedown', function(){
-                        toggleInfoBox(divId);
-                    });
+		circle.on('mousedown', function(){
+			toggleInfoBox(divId);
+		});
 
-                    shapesLayer.add(circle);
-                    $('body').append("<div id = 'issueNote" + divId + "' style = 'top: " + (y - 30) + "px; left: " + (x + 24) + "px; '><div id='noteHeader'><strong>" + summary + "</strong></div><div id='noteDescription' >" + description + "</div>" + issueLink + "</div>");
-                    $('body').append("<div id = 'triangleBorder" + divId + "'; style = 'top:" + (y-9) + "px; left: " + (x+15) + "px;'></div><div id = 'triangle" + divId + "'; style = 'top:" + (y-10) + "px; left: " + (x+15) + "px;'></div> ");
-                    $('#bugList').append("<div id = 'bugListNo" + divId + "' >" + summary + "<br /><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'><div id = 'bugListLink" + divId + "'>Show</div></a>");
-                };
-                {% if board_nodes %}
-                var circleId = 0;
-					{% for i in board_nodes %}
-                        if("{{i.board}}" == "{{board.title}}"){
-    						var newCircle = "circle" + circleId;
-                            if("{{i.nodeType}}" == "issue"){
-                                {% for x in issues %}
-                                    if({{x.id}} == {{i.nodeLink}}){
-                                        newCircle = new issueNote({{i.x}}, {{i.y}}, "{{x.summary|linebreaksbr}}", '{{x.description|striptags|linebreaksbr}}',"/issue/"+{{i.nodeLink}}, circleId);
-                                    };
-                                {% endfor %}
-                             }else if('{{i.nodeType}}' == 'note'){
-                                {% for y in board_notes %}
-                                    if("{{y.id}}" == "{{i.nodeLink}}"){
-    						          newCircle = new issueNote({{i.x}}, {{i.y}},"{{y.title|linebreaksbr}}", "{{y.description|linebreaksbr}}","", circleId);
-                                  };
-                                {% endfor %}
-                            };
-    						circleId ++;
+		shapesLayer.add(circle);
+		$('#container').append("<div id = 'issueNote" + divId + "' style = 'top: " + (y - 30) + "px; left: " + (x + 24) + "px; '><div class = 'triangle'></div><div id='noteHeader'><strong>" + summary + "</strong></div><div id='noteDescription' >" + description + "</div>" + issueLink + "</div>");
+		$('.notes').append("<div id = 'bugListNo" + divId + "' ><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'>" + summary + "</a></div>");
+    };
+	
+    {% if board_nodes %}
+    var circleId = 0;
+		{% for i in board_nodes %}
+            if("{{i.board}}" == "{{board.title}}"){
+				var newCircle = "circle" + circleId;
+                if("{{i.nodeType}}" == "issue"){
+                    {% for x in issues %}
+                        if({{x.id}} == {{i.nodeLink}}){
+                            newCircle = new issueNote({{i.x}}, {{i.y}}, "{{x.summary|linebreaksbr}}", '{{x.description|striptags|linebreaksbr}}',"/issue/"+{{i.nodeLink}}, circleId);
                         };
-				    {% endfor %}
-				{% endif %}
-                stage.add(shapesLayer);
-             };
-            imageObj.src = '/static/{{board.image}}';
-
-            function toggleInfoBox(divId){
-                var toggleTooltipDiv = document.getElementById('issueNote'+divId);
-                var tooltipId = "#issueNote" + divId;
-                var bugListId = "#bugListNo" + divId;
-                var triangleId = "triangle" + divId;
-                var triangleBorderId = "triangleBorder" + divId;
-                var bugListLinkId = "#bugListLink" + divId;
-                var toggleTriangleDiv = document.getElementById(triangleId);
-                var toggleTriangleBorderDiv = document.getElementById(triangleBorderId);
-                    if(toggleTooltipDiv.style.visibility == 'visible'){
-                        toggleTooltipDiv.style.visibility = 'hidden';
-                        toggleTriangleDiv.style.visibility = 'hidden';
-                        toggleTriangleBorderDiv.style.visibility = 'hidden';
-                        $(tooltipId).css('visibility', 'hidden');
-                        $(bugListId).css('background-color', 'white');
-                        $(bugListLinkId).text("Show");
-
-                    }else{
-                        toggleTooltipDiv.style.visibility = 'visible';
-                        toggleTriangleBorderDiv.style.visibility = 'visible';
-                        toggleTriangleDiv.style.visibility = 'visible';
-                        $(tooltipId).css('visibility', 'visible');
-                        $(bugListId).css('background-color', '#ddd');
-                        $(bugListLinkId).text("Hide");
-                    };
-            };
-
-            function toggleBugListDiv(){
-                var toggleDiv = document.getElementById('bugList');
-                if(toggleDiv.style.visibility == 'visible'){
-                    toggleDiv.style.visibility = 'hidden'
-                    $('#toggler').text("Show");
-                }else{
-                    toggleDiv.style.visibility = 'visible'
-                    $('#toggler').text("Hide");
+                    {% endfor %}
+                 }else if('{{i.nodeType}}' == 'note'){
+                    {% for y in board_notes %}
+                        if("{{y.id}}" == "{{i.nodeLink}}"){
+				          newCircle = new issueNote({{i.x}}, {{i.y}},"{{y.title|linebreaksbr}}", "{{y.description|linebreaksbr}}","", circleId);
+                      };
+                    {% endfor %}
                 };
+				circleId ++;
             };
+	    {% endfor %}
+	{% endif %}
+    stage.add(shapesLayer);
+ };
+imageObj.src = '/static/{{board.image}}';
 
-            function toggleHeader(){
-                console.log('hi');
-                console.log($('#sitenav').css('display'));
-                if($('#sitenav').css('display') == 'none'){
-                    $('#sitenav').css('display', 'block');
-                }else if($('#sitenav').css('display') == 'block'){
-                    $('#sitenav').css('display', 'none');
-                };
-            };
-         </script>
-
-        <div id = 'bugList'><div id='buttonContainer'><input type='button' value='Edit' onClick='window.location.href="/board/board_edit/{{board.id}}"' /><a class="brand" onClick='toggleHeader()'><span class="logo">Gadget</span></a></div></div>
-
-    </body>
-</html>
+function toggleInfoBox(divId){
+	var tooltipId = $('#issueNote' + divId);
+	var bugListId = $('#bugListNo' + divId);
+	
+	tooltipId.toggle();
+	bugListId.toggleClass('active');
+};
+</script>
+{% endblock %}

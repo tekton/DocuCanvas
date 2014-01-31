@@ -24,6 +24,7 @@
 
 {% block endScripts %}
 <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
+<script src="{% static 'scripts/boards.js' %}"></script>
 <script>
 
 	var imageWidth = {{board.width}};
@@ -62,7 +63,7 @@
 	    // check to see if there are any board_node objects
 	    {% if board_nodes %}
 	        /* Loops through board node objects and only pulls the nodes that match the board.
-	        Checks the type of the node and creates a circle button and bugNote which is formatted slightly differently depending on type.
+	        Checks the type of the node and creates a circle button and issueNote which is formatted slightly differently depending on type.
 	        */
 	        {% for i in board_nodes %}
 	            if("{{i.board}}" == "{{board.title}}"){
@@ -74,13 +75,13 @@
 	                        };
 	                    {% endfor %}
 	                    var newCircle = "circle" + circleId;
-	                    newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", issueSummary, "", circleId, {{i.id}});
+	                    newCircle = new issueNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", issueSummary, "", circleId, {{i.id}});
 	                    circleId ++;
 	                }else if("{{i.nodeType}}" == 'note'){
 	                    {% for x in board_notes %}
 	                        if("{{x.id}}" == "{{i.nodeLink}}"){
 	                            var newCircle = "circle" + circleId;
-	                            newCircle = new bugNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", "{{x.title}}", "{{x.description|safe}}", circleId, {{i.id}});
+	                            newCircle = new issueNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", "{{x.title}}", "{{x.description|safe}}", circleId, {{i.id}});
 	                            circleId ++;
 	                        };
 	                    {% endfor %}
@@ -205,7 +206,7 @@
 	    };
 
 	    // used for displaying nodes
-	    function bugNote(x, y, nodeLink, nodeType, noteTitle, noteDescription, divId, Id){
+	    function issueNote(x, y, nodeLink, nodeType, noteTitle, noteDescription, divId, Id){
 	        var tooltipId = "#" + divId;
 	        var bugListId = "#bugListNo" + divId;
 	        var noteDivWidth = 400;
@@ -222,7 +223,7 @@
 	            }else if(y < 10){
 	                var noteDivY = y + 10;
 	            }else{
-	                var noteDivY = y - 20;
+	                var noteDivY = y - 25;
 	            };
 	        //if checks to determine what nodeLink type is selected in edit div below
 	        if(nodeType=='note'){
@@ -252,12 +253,11 @@
 
 	        circle.on('mousedown', function(){
 	            toggleInfoBox(divId);
-	            updateFormFields('#bugNote' +divId);
+	            updateFormFields('#issueNote' +divId);
 	        });
 	        shapesLayer.add(circle);
 	        // edit div for updating nodes
-	        $('#container').append("<div id = 'bugNote" + divId + "' style = 'width: " + noteDivWidth +"px; top: " + noteDivY + "px; left: " + noteDivX + "px;'><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(bugNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(bugNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' cols='30' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
-	        $('#container').append("<div id = 'triangleBorder" + divId + "'; style = 'top:" + (y-9) + "px; left: " + (x+20) + "px;'></div><div id = 'triangle" + divId + "'; style = 'top:" + (y-10) + "px; left: " + (x+20) + "px;'></div> ");
+	        $('#container').append("<div id = 'issueNote" + divId + "' style = 'width: " + noteDivWidth +"px; top: " + noteDivY + "px; left: " + noteDivX + "px;'><div class='triangle'></div><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(issueNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(issueNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' cols='30' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
 	        $('.notes').append("<div id = 'bugListNo" + divId + "' ><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'>" + noteTitle + "</a></div>");
 	    //};
 	    };
@@ -283,32 +283,19 @@
 	};
 
 	function toggleInfoBox(divId){
-	        var toggleTooltipDiv = document.getElementById('bugNote' + divId);
-	        var tooltipId = "#bugNote" + divId;
-	        var bugListId = "#bugListNo" + divId;
-	        var triangleId = "#triangle" + divId;
-	        var triangleBorderId = "#triangleBorder" + divId;
-	        var bugListLinkId = "#bugListLink" + divId;
-	        var toggleTriangleDiv = document.getElementById(triangleId);
-	            if(toggleTooltipDiv.style.visibility == 'visible'){
-	                placementLock = false;
-	                toggleTooltipDiv.style.visibility = 'hidden';
-	                $(tooltipId).css('visibility', 'hidden');
-	                $(triangleId).css('visibility', 'hidden');
-	                $(triangleBorderId).css('visibility', 'hidden');
-	                $(bugListId).css('background-color', 'white');
-	                $(bugListLinkId).text("Show");
-
-	            }else{
-	                placementLock = true;
-	                toggleTooltipDiv.style.visibility = 'visible';
-	                $(tooltipId).css('visibility', 'visible');
-	                $(triangleId).css('visibility', 'visible');
-	                $(triangleBorderId).css('visibility', 'visible');
-	                $(bugListId).css('background-color', '#ddd');
-	                $(bugListLinkId).text("Hide");
-	            };
-	    };
+		var tooltipId = $('#issueNote' + divId);
+		var bugListId = $('#bugListNo' + divId);
+	
+		tooltipId.toggle();
+		bugListId.toggleClass('active');
+		
+		if (tooltipId.is(":visible")){
+			placementLock = false;
+		}
+		else {
+			placementLock = true;
+		}
+	};
 
 	// used for toggling which form fields are visible depending on nodeType
 	function updateFormFields(divId){
@@ -354,27 +341,8 @@
 	function updateParams(div){
 	    updateLock = false;
 	    placementLock = true;
-	    divToUpdate = "#bugNote" + div;
+	    divToUpdate = "#issueNote" + div;
 	    console.log(divToUpdate);
 	};
-	function toggleHeader(){
-	    console.log('hi');
-	    console.log($('#sitenav').css('display'));
-	    if($('#sitenav').css('display') == 'none'){
-	        $('#sitenav').css('display', 'block');
-	    }else if($('#sitenav').css('display') == 'block'){
-	        $('#sitenav').css('display', 'none');
-	    };
-	};
-	
-	$(function(){
-		// Set layout on page load
-		$('#container').height($(window).height());
-		
-		// Adjust layout when window is resized
-		$(window).resize(function(){
-			$('#container').height($(window).height());
-		});
-	});
 </script>
 {% endblock %}

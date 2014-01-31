@@ -92,6 +92,10 @@ body {
 			#bugList .notes div a {
 				display: block;
 			}
+			
+			#bugList .notes div.active {
+				background: #eee;
+			}
 	
 	/* --- | Notes | --- */
 	
@@ -106,25 +110,27 @@ body {
 	    z-index: 2;
 	}
 
-	div[id^='bugNote']{
+	div[id^='issueNote']{
 	    z-index: 2;
 	    position: absolute;
 	    background-color: white;
 	    border: 1px solid #F2F2F2;
 	    box-shadow: 0 1px 4px #5A5A5A;
-	    visibility: hidden;
+/*	    visibility: hidden;*/
+		display: none;
 	    border-radius: 12px;
 	    padding: 10px;
 	}
 
-	div[id^='triangle']{
+	.triangle {
 		position: absolute;
+		left: -10px;
+		top: 15px;
 		width: 0;
 		height: 0;
 		border-right: 10px solid white;
 		border-bottom: 10px solid transparent;
 		border-top: 10px solid transparent;
-		visibility: hidden;
 		z-index: 0;
 	}
 		
