@@ -58,7 +58,7 @@ def prepFacebookList():
     pass
 
 
-def prepBodyOfMail(issue, update_type="update", comment=False):
+def prepBodyOfMail(issue, update_type="update", comment=False, comment_user=False):
     '''
         Depending on the nature of the communication the body will change very slightly
 
@@ -76,6 +76,7 @@ def prepBodyOfMail(issue, update_type="update", comment=False):
     rtn_dict["site_title"] = settings.INSTALL_NAME
     if comment:
         rtn_dict["comment"] = comment
+        rtn_dict["comment_user"] = comment_user
     return rtn_dict
 
 
@@ -112,7 +113,7 @@ def prepSubjectOfMail(issue, update_type="update", item="Issue"):
 
 #TODO - convert to celery task
 @celery.task
-def prepMail(issue, update_type='update', comment=False):
+def prepMail(issue, update_type='update', comment=False, comment_user=False):
     '''
         Called from the issue save function
 
@@ -127,7 +128,7 @@ def prepMail(issue, update_type='update', comment=False):
     '''
     # get mail ID
     subject = prepSubjectOfMail(issue, update_type)
-    body = prepBodyOfMail(issue, update_type, comment)
+    body = prepBodyOfMail(issue, update_type, comment, comment_user)
     mail_to = prepMailingList(issue, update_type)
     html_content = get_template('email/index-inline.html').render(Context(body))
     mail_from = settings.EMAIL_SENDER

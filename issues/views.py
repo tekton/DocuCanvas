@@ -844,7 +844,6 @@ def loadSearchResults(request, search_hash_id):
                 completed_values = []
                 for value in query.cleaned_data[field]:
                     if value not in completed_values:
-                        temp2 = returnQuery(field, value)
                         params[query_fields[field]].append([unicode(value), field])
                         if type(value) == unicode:
                             return_params[field].append(value)
@@ -852,9 +851,9 @@ def loadSearchResults(request, search_hash_id):
                             return_params[field].append(value.id)
                         completed_values.append(value)
                         if temp:
-                            temp = temp | temp2
+                            temp = temp | returnQuery(field, value)
                         else:
-                            temp = temp2
+                            temp = returnQuery(field, value)
                 if q:
                     q = list(set(q) & set(temp))
                 else:
@@ -958,7 +957,7 @@ def submit_comment(request, issue_id):
             if form.is_valid():
                 try:
                     comment = form.save(request.user)  # save the modelform's model!
-                    prepMail.delay(issue, "comment", comment.description)
+                    prepMail.delay(issue, "comment", comment.description, comment.user)
                 except Exception, e:
                     print "Error saving form"
                     print e
