@@ -1,6 +1,7 @@
 
 import json
 import os
+import urllib
 
 from httplib2 import Http
 
@@ -229,3 +230,18 @@ def save_settings(request):
                 except Exception, e:
                     print e
     return redirect("auth.views.account_settings")
+
+
+def addAvatar(request):
+    if request.method == "POST":
+        if request.POST["img_url"]:
+            try:
+                account = Account.objects.get(user=request.user)
+                resp = urllib.urlopen(request.POST["img_url"])
+                if resp:
+                    account.avatar = request.POST["img_url"]
+                    account.save()
+                    return HttpResponse(json.dumps({"success": True, "img_src": request.POST["img_url"]}))
+            except Exception as e:
+                print e
+    return HttpResponse(json.dumps({"success": False}), content_type="application/json", status=200)
