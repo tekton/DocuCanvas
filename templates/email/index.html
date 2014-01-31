@@ -134,10 +134,10 @@
 								<tr>
 									<td bgcolor="#ffffff" class="contentblock">
 
-										<h2 class="secondary"><strong><a href="{{url_base}}{% url 'issues.views.issue_overview' issue.id %}">Issue {{issue.id}}: {{issue.summary}}</a></strong>{% if comment %}<br />has a new comment{% endif %}</h2>
+										<h2 class="secondary"><strong><a href="{{url_base}}{% url 'issues.views.issue_overview' issue.id %}">Issue {{issue.id}}: {{issue.summary}}</a></strong>{% if comment %}<br />has a new comment from {{comment_user}}{% endif %}</h2>
 										{% if comment %}
 										<div class="description">
-											Comment : {{comment|markdown}}
+											{{comment|markdown}}
 										</div>
 										
 										<h2 class="secondary">Issue Description:</h2>

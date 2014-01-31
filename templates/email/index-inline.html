@@ -48,10 +48,10 @@
 								<tr>
 									<td bgcolor="#ffffff" class="contentblock">
 
-										<h2 class="secondary" style="font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;margin-top: 0;margin-bottom: 10px;padding-top: 0;padding-bottom: 0;font-weight: normal;color: #333333;"><strong><a href="{{url_base}}{% url 'issues.views.issue_overview' issue.id %}" style="color: #3ca7dd;">Issue {{issue.id}}: {{issue.summary}}</a></strong>{% if comment %}<br>has a new comment{% endif %}</h2>
+										<h2 class="secondary" style="font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;margin-top: 0;margin-bottom: 10px;padding-top: 0;padding-bottom: 0;font-weight: normal;color: #333333;"><strong><a href="{{url_base}}{% url 'issues.views.issue_overview' issue.id %}" style="color: #3ca7dd;">Issue {{issue.id}}: {{issue.summary}}</a></strong>{% if comment %}<br>has a new comment from {{comment_user}}{% endif %}</h2>
 										{% if comment %}
 										<div class="description" style="margin-bottom: 12px;padding: 12px 25px;border-top: 1px solid #dddddd;border-bottom: 1px solid #dddddd;">
-											Comment : {{comment|markdown}}
+											{{comment|markdown}}
 										</div>
 										
 										<h2 class="secondary" style="font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;margin-top: 0;margin-bottom: 10px;padding-top: 0;padding-bottom: 0;font-weight: normal;color: #333333;">Issue Description:</h2>
