@@ -4,7 +4,7 @@ from django.core.mail import EmailMessage  #, send_mail
 from django.template import Context
 from django.template.loader import get_template
 # /mail
-from issues.models import SubscriptionToIssue, Issue, IssueComment
+from issues.models import SubscriptionToIssue, Issue  #, IssueComment
 
 import datetime
 import celery
@@ -75,8 +75,7 @@ def prepBodyOfMail(issue, update_type="update", comment=False):
     rtn_dict["project_name"] = issue.project.name
     rtn_dict["site_title"] = settings.INSTALL_NAME
     if comment:
-        rtn_dict["comment"] = comment.description
-        rtn_dict["comment_user"] = comment.user
+        rtn_dict["comment"] = comment
     return rtn_dict
 
 
