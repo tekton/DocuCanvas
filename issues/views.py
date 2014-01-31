@@ -957,7 +957,7 @@ def submit_comment(request, issue_id):
             if form.is_valid():
                 try:
                     comment = form.save(request.user)  # save the modelform's model!
-                    prepMail.delay(issue, "comment", comment.description, comment.user)
+                    prepMail.delay(issue, "comment", comment)
                 except Exception, e:
                     print "Error saving form"
                     print e

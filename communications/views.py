@@ -4,7 +4,7 @@ from django.core.mail import EmailMessage  #, send_mail
 from django.template import Context
 from django.template.loader import get_template
 # /mail
-from issues.models import SubscriptionToIssue, Issue  #, IssueComment
+from issues.models import SubscriptionToIssue, Issue, IssueComment
 
 import datetime
 import celery
@@ -58,7 +58,7 @@ def prepFacebookList():
     pass
 
 
-def prepBodyOfMail(issue, update_type="update", comment=False, comment_user=False):
+def prepBodyOfMail(issue, update_type="update", comment=False):
     '''
         Depending on the nature of the communication the body will change very slightly
 
@@ -75,8 +75,8 @@ def prepBodyOfMail(issue, update_type="update", comment=False, comment_user=Fals
     rtn_dict["project_name"] = issue.project.name
     rtn_dict["site_title"] = settings.INSTALL_NAME
     if comment:
-        rtn_dict["comment"] = comment
-        rtn_dict["comment_user"] = comment_user
+        rtn_dict["comment"] = comment.description
+        rtn_dict["comment_user"] = comment.user
     return rtn_dict
 
 
@@ -113,7 +113,7 @@ def prepSubjectOfMail(issue, update_type="update", item="Issue"):
 
 #TODO - convert to celery task
 @celery.task
-def prepMail(issue, update_type='update', comment=False, comment_user=False):
+def prepMail(issue, update_type='update', comment=False):
     '''
         Called from the issue save function
 
@@ -128,7 +128,7 @@ def prepMail(issue, update_type='update', comment=False, comment_user=False):
     '''
     # get mail ID
     subject = prepSubjectOfMail(issue, update_type)
-    body = prepBodyOfMail(issue, update_type, comment, comment_user)
+    body = prepBodyOfMail(issue, update_type, comment)
     mail_to = prepMailingList(issue, update_type)
     html_content = get_template('email/index-inline.html').render(Context(body))
     mail_from = settings.EMAIL_SENDER
