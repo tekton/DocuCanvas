@@ -10,4 +10,5 @@ urlpatterns = patterns('accounts.views',
     (r'template', 'assignTemplateForView'),
     (r'settings/toggle/(.*)/(.*)', 'settings_update'),
     (r'settings/(.*)', 'settings_update'),
+    (r'^avatar$', 'addAvatar'),
 )

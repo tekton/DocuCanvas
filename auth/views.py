@@ -119,7 +119,11 @@ def account_settings(request):
     except Exception as e:
         fb = FacebookProfile()
         print e
-    return render_to_response("registration/account_settings.html", {"projects": projects, "tw": twat, "fb": fb}, context_instance=RequestContext(request))
+    try:
+        account = Account.objects.get(user=request.user)
+    except Exception, e:
+        print e
+    return render_to_response("registration/account_settings.html", {"projects": projects, "tw": twat, "fb": fb, "account": account,}, context_instance=RequestContext(request))
 
 @login_required
 def change_password(request):

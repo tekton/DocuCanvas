@@ -53,7 +53,28 @@ Account Settings
 		</div>
 		<input type="submit" value="Save" />
 		<hr />
-		
+
+		<div class="social-settings">	
+			<h3>Avatar</h3>
+			<div class="control-group">
+				<div class="controls">
+					<img src="{{account.avatar}}" height="50" width="50" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="inputImgURL">Image URL</label>
+				<div class="controls">
+					<input type="text" id="id_img_url" name="img_url" />
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<button class="img_save_btn">Save Dis Biatch</button>
+				</div>
+			</div>
+		</div>
+		<hr />
+
 		<div class="social-settings">
 			<h3>Social</h3>
 		
@@ -153,6 +174,24 @@ $('.change-password').on('click', function(e){
 	e.preventDefault();
 	
 	$('.password-hide').fadeIn();
+});
+
+$(".img_save_btn").on('click', function(e){
+	e.preventDefault();
+	var value = $("#id_img_url").val();
+	console.log($("#id_img_url").val());
+	$.ajax({
+		type: "POST",
+		url: "{% url 'accounts.views.addAvatar' %}",
+		data: {'img_url': value},
+		success: function(data) {
+			console.log("success");
+			$("img").attr('src', data["img_src"]);
+		},
+		error: function(data) {
+			console.log("error");
+		}
+	});
 });
 /*
 $('form').submit(function(){
