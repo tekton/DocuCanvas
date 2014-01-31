@@ -76,7 +76,7 @@ def prepBodyOfMail(issue, update_type="update", comment=False):
     rtn_dict["site_title"] = settings.INSTALL_NAME
     if comment:
         rtn_dict["comment"] = comment.description
-        rtn_dict["comment_user"] = comment.user
+        rtn_dict["comment_user"] = comment.user.username
     return rtn_dict
 
 
