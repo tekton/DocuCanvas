@@ -26,7 +26,6 @@
 <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.4.0.min.js"></script>
 <script src="{% static 'scripts/boards.js' %}"></script>
 <script>
-
 	var imageWidth = {{board.width}};
 	var imageHeight = {{board.height}};
 	var noteCounter = 1
@@ -41,55 +40,55 @@
 	imageObj.onload = function() {
 	    // Create and size background image
 	    var bgImage = new Kinetic.Image({
-	        image: imageObj,
-	        width: imageWidth,
-	        height: imageHeight,
-	        id: 'backgroundImage',
-	      });
+			image: imageObj,
+			width: imageWidth,
+			height: imageHeight,
+			id: 'backgroundImage',
+		});
 
-	    bgImage.on('mousedown', function(){
-	        createNoteForm(noteCounter);
-	        updateNoteForm();
-	    });
+		bgImage.on('mousedown', function(){
+			createNoteForm(noteCounter);
+			updateNoteForm();
+		});
 
-	    var stage = new Kinetic.Stage({
-	        container: 'container',
-	        width: imageWidth,
-	        height: imageHeight,
-	    });
-	    var shapesLayer = new Kinetic.Layer();
+		var stage = new Kinetic.Stage({
+			container: 'container',
+			width: imageWidth,
+			height: imageHeight,
+		});
+    
+		var shapesLayer = new Kinetic.Layer();
 	    var messageLayer = new Kinetic.Layer();
 	    shapesLayer.add(bgImage);
 	    // check to see if there are any board_node objects
-	    {% if board_nodes %}
-	        /* Loops through board node objects and only pulls the nodes that match the board.
-	        Checks the type of the node and creates a circle button and issueNote which is formatted slightly differently depending on type.
-	        */
-	        {% for i in board_nodes %}
-	            if("{{i.board}}" == "{{board.title}}"){
-	                if("{{i.nodeType}}" == 'issue'){
-	                    var issueSummary = ""
-	                    {% for issue in issues %}
-	                        if({{issue.id}}=={{i.nodeLink}}){
-	                            issueSummary='{{issue.summary}}'
-	                        };
-	                    {% endfor %}
-	                    var newCircle = "circle" + circleId;
-	                    newCircle = new issueNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", issueSummary, "", circleId, {{i.id}});
-	                    circleId ++;
-	                }else if("{{i.nodeType}}" == 'note'){
-	                    {% for x in board_notes %}
-	                        if("{{x.id}}" == "{{i.nodeLink}}"){
-	                            var newCircle = "circle" + circleId;
-	                            newCircle = new issueNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", "{{x.title}}", "{{x.description|safe}}", circleId, {{i.id}});
-	                            circleId ++;
-	                        };
-	                    {% endfor %}
-	                };
-
-	            };
-	    {% endfor %}
-	    {% endif %}
+		{% if board_nodes %}
+			/* Loops through board node objects and only pulls the nodes that match the board.
+			Checks the type of the node and creates a circle button and issueNote which is formatted slightly differently depending on type.
+			*/
+			{% for i in board_nodes %}
+			if("{{i.board}}" == "{{board.title}}"){
+				if("{{i.nodeType}}" == 'issue'){
+					var issueSummary = ""
+					{% for issue in issues %}
+					if({{issue.id}}=={{i.nodeLink}}){
+						issueSummary='{{issue.summary}}'
+					};
+					{% endfor %}
+					var newCircle = "circle" + circleId;
+					newCircle = new issueNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", issueSummary, "", circleId, {{i.id}});
+					circleId ++;
+				}else if("{{i.nodeType}}" == 'note'){
+					{% for x in board_notes %}
+					if("{{x.id}}" == "{{i.nodeLink}}"){
+						var newCircle = "circle" + circleId;
+						newCircle = new issueNote({{i.x}}, {{i.y}}, "{{i.nodeLink}}", "{{i.nodeType}}", "{{x.title}}", "{{x.description|safe}}", circleId, {{i.id}});
+						circleId ++;
+					};
+					{% endfor %}
+				};
+			};
+			{% endfor %}
+		{% endif %}
 
 	    stage.add(shapesLayer);
 
@@ -99,7 +98,7 @@
 	            var mousePos = stage.getMousePosition();
 	            var x = mousePos.x ;
 	            var y = mousePos.y ;
-	            var noteDivWidth = 400;
+	            var noteDivWidth = 265;
 	            var noteDivY = y - 4;
 	            if(imageWidth - x <= noteDivWidth){
 	                var noteDivX = x - 305;
@@ -111,39 +110,37 @@
 	            }else if(y < 10){
 	                var noteDivY = y + 10;
 	            }else{
-	                var noteDivY = y - 20;
+	                var noteDivY = y - 25;
 	            };
-	            placementLock = true;
-	                $('#container').append("<div id='noteNo" + counter + "' style='top: " + noteDivY + "px; left: " + noteDivX + "px; width: " + noteDivWidth + "px;'><form id = 'submitForm'" + counter + "' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink'/></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' resize: none;' name='description' id='id_description' /></td></tr> </table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
-	                $('#container').append("<div id='triangleBorderForm' style='top:" + (y-9) + "px; left: " + (x+21) + "px;'></div><div id = 'triangleForm'; style = 'top:" + (y-10) + "px; left: " + (x+21) + "px;'></div> ");
+	            placementLock = true; 
+	            $('#container').append("<div class=\"issue-note\" id='noteNo" + counter + "' style='top: " + noteDivY + "px; left: " + noteDivX + "px; width: " + noteDivWidth + "px; display: block;'><div class='triangle'></div><form id = 'submitForm'" + counter + "' action='' method='post' enctype='multipart/form-data' onsubmit = 'return checkFormData(noteNo" + counter + ")'>{% csrf_token %}<div class='control-group'><label class='control-label' for='id_nodeType'>NodeType:</label><div class='controls'><select id='id_nodeType' name='nodeType' onchange = 'updateFormFields(noteNo" + counter + ")'><option value = 'note'>Note</option><option value = 'issue'>Issue</option></select></div></div><div class='control-group'><label class='control-label' for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label><div class='controls'><input type='text' name='nodeLink' id='id_nodeLink'/></div></div><div class='control-group'><label class='control-label' for='id_title' id='id_title_label'>Title:</label><div class='controls'><input type='text' name='title' id='id_title' /></div></div><div class='control-group'><label class='control-label' for='id_description' id='id_description_label'>Description:</label><div class='controls'><textarea rows = '5' resize: none;' name='description' id='id_description' /></div></div><div class='text-right'><input type='submit' value='Submit' class='btn btn-primary' /> <input type = 'button' value = 'Cancel' class='btn' onclick = 'window.location.reload()' /></div><input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
 
+	            var circle = new Kinetic.Circle({
+	                x: x,
+	                y: y,
+	                radius: 8,
+	                fill: '#00d2ff',
+	                stroke: 'black',
+	                strokeWidth: 4,
+	                opacity: 0.7,
+	             });
 
-	                var circle = new Kinetic.Circle({
-	                    x: x,
-	                    y: y,
-	                    radius: 8,
-	                    fill: '#00d2ff',
-	                    stroke: 'black',
-	                    strokeWidth: 4,
-	                    opacity: 0.7,
-	                 });
+	            circle.on('mouseover', function(){
+	                document.body.style.cursor = 'pointer';
+	            });
+	            circle.on('mouseout', function(){
+	                document.body.style.cursor = 'default';
+	            });
 
-	                circle.on('mouseover', function(){
-	                    document.body.style.cursor = 'pointer';
-	                });
-	                circle.on('mouseout', function(){
-	                    document.body.style.cursor = 'default';
-	                });
+	            circle.on('mousedown', function(){
+	                if(placementLock == false){
+	                    toggleNoteForm(counter);
+	                };
+	            });
 
-	                circle.on('mousedown', function(){
-	                    if(placementLock == false){
-	                        toggleNoteForm(counter);
-	                    };
-	                });
-
-	                shapesLayer.add(circle);
-	                shapesLayer.draw();
-	                noteCounter += 1;
+	            shapesLayer.add(circle);
+	            shapesLayer.draw();
+	            noteCounter += 1;
 	        };
 
 	    };
@@ -172,35 +169,35 @@
 	            };
 
 
-	                $(divToUpdate).css({left:x+24,top:y-20});
-	                $(formToUpdateX).val(x);
-	                $(formToUpdateY).val(y);
-	                updateLock = true
-	                var circle = new Kinetic.Circle({
-	                    x: x,
-	                    y: y,
-	                    radius: 8,
-	                    fill: '#00d2ff',
-	                    stroke: 'black',
-	                    strokeWidth: 4,
-	                    opacity: 0.7,
-	                 });
+				$(divToUpdate).css({left:x+24,top:y-20});
+				$(formToUpdateX).val(x);
+				$(formToUpdateY).val(y);
+				updateLock = true
+				var circle = new Kinetic.Circle({
+					x: x,
+					y: y,
+					radius: 8,
+					fill: '#00d2ff',
+					stroke: 'black',
+					strokeWidth: 4,
+					opacity: 0.7,
+				});
 
-	                circle.on('mouseover', function(){
-	                    document.body.style.cursor = 'pointer';
-	                });
-	                circle.on('mouseout', function(){
-	                    document.body.style.cursor = 'default';
-	                });
+				circle.on('mouseover', function(){
+					document.body.style.cursor = 'pointer';
+				});
+				circle.on('mouseout', function(){
+					document.body.style.cursor = 'default';
+				});
 
-	                circle.on('mousedown', function(){
-	                    if(placementLock == false){
-	                    };
-	                });
+				circle.on('mousedown', function(){
+					if(placementLock == false){
+					};
+				});
 
-	                shapesLayer.add(circle);
-	                shapesLayer.draw();
-	                noteCounter += 1;
+				shapesLayer.add(circle);
+				shapesLayer.draw();
+				noteCounter += 1;
 	        };
 
 	    };
@@ -209,22 +206,24 @@
 	    function issueNote(x, y, nodeLink, nodeType, noteTitle, noteDescription, divId, Id){
 	        var tooltipId = "#" + divId;
 	        var bugListId = "#bugListNo" + divId;
-	        var noteDivWidth = 400;
+	        var noteDivWidth = 265;
 	        var issueSelected = ""
 	        var noteSelected = ""
 	        var noteDivY = y - 4;
-	            if(imageWidth - x <= noteDivWidth){
-	                var noteDivX = x - 305;
-	            }else{
-	                var noteDivX = x + 29;
-	            };
-	            if(imageHeight - y <= 70){
-	                var noteDivY = y - 70;
-	            }else if(y < 10){
-	                var noteDivY = y + 10;
-	            }else{
-	                var noteDivY = y - 25;
-	            };
+        
+			if(imageWidth - x <= noteDivWidth){
+	            var noteDivX = x - 305;
+	        }else{
+	            var noteDivX = x + 29;
+	        };
+		
+	        if(imageHeight - y <= 70){
+	            var noteDivY = y - 70;
+	        }else if(y < 10){
+	            var noteDivY = y + 10;
+	        }else{
+	            var noteDivY = y - 25;
+	        };
 	        //if checks to determine what nodeLink type is selected in edit div below
 	        if(nodeType=='note'){
 	            noteSelected = "selected"
@@ -245,7 +244,7 @@
 	        });
 
 	        circle.on('mouseover', function(){
-	                document.body.style.cursor = 'pointer';
+				document.body.style.cursor = 'pointer';
 	        });
 	        circle.on('mouseout', function(){
 	            document.body.style.cursor = 'default';
@@ -257,29 +256,28 @@
 	        });
 	        shapesLayer.add(circle);
 	        // edit div for updating nodes
-	        $('#container').append("<div id = 'issueNote" + divId + "' style = 'width: " + noteDivWidth +"px; top: " + noteDivY + "px; left: " + noteDivX + "px;'><div class='triangle'></div><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(issueNote"+ divId + ")'>{% csrf_token %} <table><tr><th><label for='id_nodeType'>NodeType:</label></th><td><select id='id_nodeType' name='nodeType' onchange='updateFormFields(issueNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select></td></tr><tr><th><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label></th><td><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /></td></tr><tr><th><label for='id_title' id='id_title_label'>Title:</label></th><td><input type='text' name='title' id='id_title' value = '"+ noteTitle + "' /></td></tr><tr><th><label for='id_description' id='id_description_label'>Description:</label></th><td><textarea rows = '5' cols='30' name='description' id='id_description'>" + noteDescription + "</textarea> </td></tr><input id='id_id' type='hidden' name='id' value='" + Id + "' /></table><input type='submit' value='Submit'/><input type = 'button' value = 'Cancel' onclick = 'window.location.reload()' /><input type='button' value='Update' onclick='updateParams(" + divId + ")' /> <input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
+			$('#container').append("<div class=\"issue-note\" id = 'issueNote" + divId + "' style = 'width: " + noteDivWidth +"px; top: " + noteDivY + "px; left: " + noteDivX + "px;'><div class='triangle'></div><form id = 'form" + divId + "' action='' method='post' enctype='multipart/form-data' onsubmit='return checkFormData(issueNote"+ divId + ")'>{% csrf_token %}<label for='id_nodeType'>NodeType:</label><select id='id_nodeType' name='nodeType' onchange='updateFormFields(issueNote" + divId + ")'><option value = 'note' " + noteSelected + ">Note</option><option value = 'issue' " + issueSelected + ">Issue</option></select><label for='id_nodeLink' id = 'id_nodeLink_label'>NodeLink:</label><input type='text' name='nodeLink' id='id_nodeLink' value = " + nodeLink + " /><label for='id_title' id='id_title_label'>Title:</label><input type='text' name='title' id='id_title' value = '"+ noteTitle + "' /><label for='id_description' id='id_description_label'>Description:</label><textarea rows = '5' cols='30' name='description' id='id_description'>" + noteDescription + "</textarea><input id='id_id' type='hidden' name='id' value='" + Id + "' /><div class='text-right'><input type='submit' value='Submit' class='btn btn-primary'/> <input type = 'button' value = 'Cancel' class='btn onclick = 'window.location.reload()' /> <input type='button' value='Update' class='btn' onclick='updateParams(" + divId + ")' /></div><input type = 'hidden' id ='id_board' name = 'board' value ='{{board.id}}' /><input type = 'hidden' id ='id_y' name = 'y' value =" + y + " /><input type = 'hidden' id ='id_x' name = 'x' value =" + x + " /></form></div>");
 	        $('.notes').append("<div id = 'bugListNo" + divId + "' ><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'>" + noteTitle + "</a></div>");
 	    //};
 	    };
 
 	    //used for toggling node divs and "triangle" attachments
-
-
-
 	};
+	
 	imageObj.src = '/static/{{board.image}}';
 
 	// used for toggling visibility of existing node forms
 	function toggleNoteForm(divId){
 	    var noteFormNo = "noteNo" + divId;
 	    var toggleNoteFormDiv = document.getElementById(noteFormNo);
-	        if(toggleNoteFormDiv.style.visibility == 'visible'){
-	            toggleNoteFormDiv.style.visibility = 'hidden';
-	            placementLock = false;
-	        }else{
-	            toggleNoteFormDiv.style.visibility = 'visible';
-	            placementLock = true;
-	        };
+
+        if(toggleNoteFormDiv.style.visibility == 'visible'){
+            toggleNoteFormDiv.style.visibility = 'hidden';
+            placementLock = false;
+        }else{
+            toggleNoteFormDiv.style.visibility = 'visible';
+            placementLock = true;
+        };
 	};
 
 	function toggleInfoBox(divId){

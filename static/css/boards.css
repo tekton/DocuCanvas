@@ -42,8 +42,6 @@ body {
 	background: #fff;
 	border: 1px solid #F2F2F2;
 	box-shadow: 0 1px 4px #5A5A5A;
-/*	border-top-left-radius: 10px;*/
-/*	border-bottom-left-radius: 10px;*/
 }
 	
 	/* --- | Top Area | --- */
@@ -98,73 +96,37 @@ body {
 			}
 	
 	/* --- | Notes | --- */
-	
-	div[id^='noteNo']{
-	    position: absolute;
-	    visibility: visible;
-	    border-radius: 12px;
-	    padding: 10px;
-	    background-color: white;
-	    border: 1px solid #F2F2F2;
-	    box-shadow: 0 1px 4px #5A5A5A;
-	    z-index: 2;
-	}
 
-	div[id^='issueNote']{
+	.issue-note {
 	    z-index: 2;
 	    position: absolute;
-	    background-color: white;
+	    background: #fff;
 	    border: 1px solid #F2F2F2;
 	    box-shadow: 0 1px 4px #5A5A5A;
-/*	    visibility: hidden;*/
 		display: none;
-	    border-radius: 12px;
+	    border-radius: 4px;
 	    padding: 10px;
 	}
 
-	.triangle {
-		position: absolute;
-		left: -10px;
-		top: 15px;
-		width: 0;
-		height: 0;
-		border-right: 10px solid white;
-		border-bottom: 10px solid transparent;
-		border-top: 10px solid transparent;
-		z-index: 0;
-	}
-		
-	#triangleForm{
-	    position: absolute;
-	    width: 0;
-	    height: 0;
-	    border-right: 10px solid white;
-	    border-bottom: 10px solid transparent;
-	    border-top: 10px solid transparent;
-	    visibility: visible;
-	    z-index: 0;
-	}
+		/* --- | Note pointer thingy | --- */
 	
-	    div[id^='triangleBorder']{
-	        position: absolute;
-	        width: 0;
-	        height: 0;
-	        border-right: 12px solid black;
-	        border-bottom: 12px thin transparent;
-	        border-top: 12px thin transparent;
-	        z-index: 0;
-	    }
+		.triangle {
+			position: absolute;
+			left: -10px;
+			top: 15px;
+			width: 0;
+			height: 0;
+			border-right: 10px solid white;
+			border-bottom: 10px solid transparent;
+			border-top: 10px solid transparent;
+			z-index: 0;
+		}
 		
-	    #triangleBorderForm{
-	        position: absolute;
-	        width: 0;
-	        height: 0;
-	        border-right: 12px solid black;
-	        border-bottom: 12px thin transparent;
-	        border-top: 12px thin transparent;
-	        visibility: visible;
-	        z-index: 0;
-	    }
+		/* --- | Form | --- */
+		
+		.issue-note form {
+			margin-bottom: 0;
+		}
 
 #id_nodeLink_label{
     display:none;

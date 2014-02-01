@@ -11,7 +11,7 @@
 
 <div id="bugList">
 	<div id="buttonContainer">
-		<input id="bugListButton" type="button" class="btn btn-primary" value='Done' onClick='window.location.href="/board/board_edit/{{board.id}}"' />
+		<input id="bugListButton" type="button" class="btn btn-primary" value='Edit' onClick='window.location.href="/board/board_edit/{{board.id}}"' />
 		<a class="brand" onClick='toggleHeader()'>
 			<span class="logo">Gadget</span>
 		</a>
@@ -59,9 +59,11 @@ imageObj.onload = function() {
 		var tooltipId = "#" + divId;
 		var bugListId = "#bugListNo" + divId;
 		issueLink = link;
+		
 		if(issueLink != ""){
 			issueLink = "<div id='issueLink'><a href = '" + link + "' target = '_blank'>View Issue</a></div>"
 		};
+		
 		var circle = new Kinetic.Circle({
 			x: x,
 			y: y,
@@ -83,34 +85,35 @@ imageObj.onload = function() {
 		});
 
 		shapesLayer.add(circle);
-		$('#container').append("<div id = 'issueNote" + divId + "' style = 'top: " + (y - 30) + "px; left: " + (x + 24) + "px; '><div class = 'triangle'></div><div id='noteHeader'><strong>" + summary + "</strong></div><div id='noteDescription' >" + description + "</div>" + issueLink + "</div>");
+		$('#container').append("<div class=\"issue-note\" id = 'issueNote" + divId + "' style = 'top: " + (y - 30) + "px; left: " + (x + 24) + "px; '><div class = 'triangle'></div><div id='noteHeader'><strong>" + summary + "</strong></div><div id='noteDescription' >" + description + "</div>" + issueLink + "</div>");
 		$('.notes').append("<div id = 'bugListNo" + divId + "' ><a href = '#' onClick = 'toggleInfoBox(" + divId + ")'>" + summary + "</a></div>");
     };
 	
     {% if board_nodes %}
     var circleId = 0;
-		{% for i in board_nodes %}
-            if("{{i.board}}" == "{{board.title}}"){
-				var newCircle = "circle" + circleId;
-                if("{{i.nodeType}}" == "issue"){
-                    {% for x in issues %}
-                        if({{x.id}} == {{i.nodeLink}}){
-                            newCircle = new issueNote({{i.x}}, {{i.y}}, "{{x.summary|linebreaksbr}}", '{{x.description|striptags|linebreaksbr}}',"/issue/"+{{i.nodeLink}}, circleId);
-                        };
-                    {% endfor %}
-                 }else if('{{i.nodeType}}' == 'note'){
-                    {% for y in board_notes %}
-                        if("{{y.id}}" == "{{i.nodeLink}}"){
-				          newCircle = new issueNote({{i.x}}, {{i.y}},"{{y.title|linebreaksbr}}", "{{y.description|linebreaksbr}}","", circleId);
-                      };
-                    {% endfor %}
-                };
-				circleId ++;
-            };
-	    {% endfor %}
+	{% for i in board_nodes %}
+	if("{{i.board}}" == "{{board.title}}"){
+		var newCircle = "circle" + circleId;
+		if("{{i.nodeType}}" == "issue"){
+			{% for x in issues %}
+			if({{x.id}} == {{i.nodeLink}}){
+				newCircle = new issueNote({{i.x}}, {{i.y}}, "{{x.summary|linebreaksbr}}", '{{x.description|striptags|linebreaksbr}}',"/issue/"+{{i.nodeLink}}, circleId);
+			};
+			{% endfor %}
+		}else if('{{i.nodeType}}' == 'note'){
+			{% for y in board_notes %}
+			if("{{y.id}}" == "{{i.nodeLink}}"){
+				newCircle = new issueNote({{i.x}}, {{i.y}},"{{y.title|linebreaksbr}}", "{{y.description|linebreaksbr}}","", circleId);
+			};
+			{% endfor %}
+		};
+		circleId ++;
+	};
+	{% endfor %}
 	{% endif %}
     stage.add(shapesLayer);
- };
+};
+
 imageObj.src = '/static/{{board.image}}';
 
 function toggleInfoBox(divId){
