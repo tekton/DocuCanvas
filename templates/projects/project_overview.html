@@ -123,10 +123,10 @@ Extends /templates/projects/base.html
 			<div id="project-metainfo-content" class="metainfo-content">
 				<dl>
 					<dt>Status:</dt>
-					<dd>{{project.status}}</dd>
+					<dd>{{project.get_status_display}}</dd>
 					
 					<dt>Current Phase:</dt>
-					<dd>{{project.current_phase}}</dd>
+					<dd>{{project.get_current_phase_display}}</dd>
 					
 					<dt>Priority:</dt>
 					<dd>{{project.priority}}</dd>
@@ -183,7 +183,7 @@ Extends /templates/projects/base.html
 		        {% for meta in metas %}
 				<tr>
 		            <td><a href="{% url 'issues.views.meta_issue_overview'  meta.id  %}">{{ meta.title }}</a></td>
-		            <td>{{ meta.mi_type }}</td>
+		            <td>{{ meta.get_mi_type_display }}</td>
 		            <td><a href="{% url 'issues.views.meta_issue_stats' meta.id %}">Stats</a></td>
 		        </tr>
 		        {% endfor %}
@@ -226,9 +226,6 @@ Extends /templates/projects/base.html
 		<h3>Completed Issues</h3>
 		{% if fixed_issues %}
 		<table class="table table-striped table-condensed">
-			<caption>
-				Completed
-			</caption>
 			<thead>
 				<tr>
 					<th>Summary</th>
