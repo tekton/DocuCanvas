@@ -1,21 +1,37 @@
-{% extends 'base.html' %}
-{% block baseContent %}
-	<h2>New Board</h2>
-	<form action="{% url 'boards.views.boards_form' %}" method="post" onsubmit = 'return checkFormData()' enctype="multipart/form-data">
+{% extends 'boards/base.html' %}
+{% load addcss %}
+
+{% block pageTitle %}New Board{% endblock %}
+
+{% block bodyContent %}
+	<form action="{% url 'boards.views.boards_form' %}" method="post" onsubmit = 'return checkFormData()' class="form-horizontal" enctype="multipart/form-data">
 		{% csrf_token %}
-		<table>
-		{{form.as_table}}
-		</table>
-		<input type="submit" value="Submit"/>
+		
+		<div class="control-group">
+			<label class="control-label">{{form.title.label}}</label>
+			<div class="controls">
+				{{form.title}}
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label">{{form.image.label}}</label>
+			<div class="controls">
+				{{form.image}}
+			</div>
+		</div>
+		
+		<div class="form-actions">
+			<input type="submit" class="btn btn-primary" value="Submit"/>
+		</div>
 	</form>
 	<script>
 	function checkFormData(div){
-		console.log($('#id_image').val().split('.')[1]);
+		// console.log($('#id_image').val().split('.')[1]);
 		if($('#id_image').val().split('.')[1].toLowerCase() != 'jpg' && $('#id_image').val().split('.')[1].toLowerCase() != 'jpeg' && $('#id_image').val().split('.')[1].toLowerCase() != 'png' ){
 			alert('Please submit an image with an extension of jpeg, jpg or png.')
 			return false;
-		}
-		
+		}	
 	} ;
 	</script>
 {% endblock %}
