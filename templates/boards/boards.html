@@ -1,44 +1,33 @@
-{% extends 'base.html' %}
+{% extends 'boards/base.html' %}
+{% load markup %}
+{% load staticfiles %}
+
 {% block additionalHead %}
-<style>
-img{
-	width: 30%;
-	height: 30%;
-}
-#row{
-	position: relative;
-	display: inline-block;
-	margin-left: auto;
-	margin-right: auto;
-}
-#titleContainer{
-	position: relative;
-	display: inline-block;
-	vertical-align: middle;
-	width: 200px;
-}
-#imageContainer{
-	width: 300px;
-	height: auto;
-	position: relative;
-	display: inline-block;
-	margin-bottom: 5px;
-}
-</style>
 {% endblock %}
-{% block baseContent %}
-{% if boards %}
-	<div id='maincontainer' class='container'>
-	{% for i in boards %}
-	<div id='row'>
-		<div id='titleContainer'>Title: {{i.title}}</div> <a href="{% url 'boards.views.board_display' i.id %}"><div id='imageContainer'><img src = '/static/{{i.image}}' /></a></div><br />
-	</div>
-	{% endfor %}
-	</div>
-{% else %}
-	<p>No Boards</p>
-{% endif %}
-{% endblock %}
+
+{% block bodyClass %}boards-landing{% endblock %}
+
 {% block contextNav %}
 <li><a href="{% url 'boards.views.boards_form' %}">New Board</a></li>
+{% endblock %}
+
+{% block bodyContent %}	
+	{% if boards %}
+		{% for i in boards %}
+		{% if forloop.counter == 1 or forloop.counter|divisibleby:4 %}<div class="row">{% endif %}
+			<div class="span3">
+				<a href="{% url 'boards.views.board_display' i.id %}" class="thumbnail">
+					<div class="image-container">
+						<img src = '/static/{{i.image}}' />
+					</div>
+					<div class="caption">
+						<h3><span>{{i.title}}</span></h3>
+					</div>
+				</a>
+			</div>
+		{% if forloop.counter|divisibleby:4 or forloop.last %}</div>{% endif %}
+		{% endfor %}
+	{% else %}
+	<p>No Boards</p>
+	{% endif %}
 {% endblock %}
