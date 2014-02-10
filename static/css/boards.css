@@ -127,35 +127,12 @@ body {
 		.issue-note form {
 			margin-bottom: 0;
 		}
-
-#id_nodeLink_label{
-    display:none;
-}
-#id_nodeLink{
-    display:none;
-}
-#id_title_label{
-    display:block;
-}
-#id_title{
-    display:block;
-}
-#id_description_label{
-    display:block;
-}
-#id_description{
-    display:block;
-    resize:none;
-}
-textarea{
-    width: 250px;
-}
-input[type='text']{
-    width: 250px;
-}
-th{
-    text-align: left;
-}
-form[id^='submitForm']{
-    visibility: visible;
-}
+		
+		.issue-note textarea {
+			width: 250px;
+			resize: none;
+		}
+		
+		.issue-note input[type="text"] {
+			width: 250px;
+		}

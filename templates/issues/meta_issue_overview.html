@@ -10,111 +10,118 @@
 {% endblock%}
 
 {% block pageTitle %}
-{{metaissue.project}} <span class="title-separator title-seperator-pagevalue">::</span> Meta Issue
+{{metaissue.project}} :: Meta Issue
 {% endblock %}
 
 {% block bodyContent %}
-    <article class="row">
-        <div id="metaissue-column-main" class="span9 metainfo-maincolumn">
-            <div id="metaissue-details" class="well">
-                <div class="media">
-                    <div class="media-body">
-                        <h3 class="media-header">Title</h3>
-                        {{metaissue.title}}
-                    </div>
-                </div>
-                <div class="media">
-                    <div class="media-body">
-                        <h3 class="media-header">Description</h3>
-                        {{metaissue.description|safe}}
-                    </div>
-                </div>
-                <div class="media">
-                    <div class="media-body">
-                        <h3 class="media-header">User Story</h3>
-                        {{metaissue.user_story|markdown:"safe"}}
-                    </div>
-                </div>
-            </div>
-            
-            <div id="project-issues" class="well">
-                <div id="project-issues-text">
-                    <section class="media">
-                        <div class="media-body">
-                            <header>
-                                <h3 class="media-header">Active Issues</h3>
-                            </header>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Summary</th>
-                                        <th>Status</th>
-                                        <th>Assigned To</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for issue in issues %}
-                                    <tr>
-                                        <td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
-                                        <td>{{issue.status}}</td>
-                                        <td>{{issue.assigned_to}}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                            <header>
-                                <h3 class="media-header">Resolved and Inactive Issues</h3>
-                            </header>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Summary</th>
-                                        <th>Status</th>
-                                        <th>Assigned To</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for issue in issues_non_active%}
-                                    <tr>
-                                        <td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
-                                        <td>{{issue.status}}</td>
-                                        <td>{{issue.assigned_to}}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-                </div>
-            </div>
+<!-- Begin row-fluid -->
+<div class="row-fluid">
+	
+	<!-- Begin span9 -->
+    <div class="span9">
+		
+		<!-- Begin well -->
+        <div class="well">
+			<h3>Title</h3>
+			{{metaissue.title}}
+			
+			<h3>Description</h3>
+			{{metaissue.description|safe}}
+			
+			<h3>User Story</h3>
+			{{metaissue.user_story|markdown:"safe"}}
         </div>
+		<!-- End well -->
+		
+        <div class="well">
+            <h3>Issue Count by Status</h3>
+			{% if issue_counts %}
+            <table class="table table-condensed">
+                {% for item in issue_counts %}
+                    <tr>
+						<td><span class="label {{item.status}}">{{item.status}}</span></td>
+						<td>{{item.id__count}}</td>
+					</tr>
+                {% endfor %}
+            </table>
+			{% else %}
+			<p class="muted">No Issues</p>
+			{% endif %}
+			
+			<h3>Active Issues</h3>
+			
+			{% if issues %}
+			
+			<table class="table table-striped table-condensed">
+				<thead>
+					<tr>
+						<th>Summary</th>
+						<th>Status</th>
+						<th>Assigned To</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for issue in issues %}
+					<tr>
+						<td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
+						<td><span class="label {{issue.status}}">{{issue.get_status_display}}</span></td>
+						<td>{{issue.assigned_to}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% else %}
+			<p class="muted">None</p>
+			{% endif %}
 
-        <div id="metaissue-column-aside" class="span3 metainfo-asidecolumn">
-            <aside id="metaissue-metainfo" class="well metainfo metainfo-show">
-                <div class="pull-right">
-                    <button id="metainfo-toggle" class="btn btn-mini" type="button"><i class="icon-resize-small"></i></button>
-                </div>
-                <div id="metaissue-metainfo-content" class="metainfo-content">
-                    <dl>
-                        <dt>Code Name:</dt>
-                            <dd>{{metaissue.code_name}}</dd>
-
-                        <dt>Meta Issue Type:</dt>
-                            <dd>{{metaissue.mi_type}}</dd>
-
-                        <dt>Priority:</dt>
-                            <dd>{{metaissue.priority}}</dd>
-                    </dl>
-                </div>
-                <div id="metaissue-metainfo-content-stats" class="metainfo-content">
-                    <h4>Issue Count by Status</h4>
-                    <table>
-                        {% for item in issue_counts %}
-                            <tr><td>{{item.status}}</td><td>{{item.id__count}}</td></tr>
-                        {% endfor %}
-                    </table>
-                </div>
-            </aside>
+			<h3>Resolved and Inactive Issues</h3>
+			
+			{% if issues_non_active %}
+			
+			<table class="table table-striped table-condensed">
+				<thead>
+					<tr>
+						<th>Summary</th>
+						<th>Status</th>
+						<th>Assigned To</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for issue in issues_non_active%}
+					<tr>
+						<td><a href="{% url 'issues.views.issue_overview' issue.id %}" title="{{issue.description}}">{{issue.summary}}</a></td>
+						<td><span class="label {{issue.status}}">{{issue.get_status_display}}</span></td>
+						<td>{{issue.assigned_to}}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			{% else %}
+			<p class="muted">None</p>
+			{% endif %}
         </div>
-    </article>
+		
+    </div>
+	<!-- End span9 -->
+
+    <div class="span3">
+        <aside class="well metainfo metainfo-show">
+            <div class="pull-right">
+                <button id="metainfo-toggle" class="btn btn-mini" type="button"><i class="icon-resize-small"></i></button>
+            </div>
+            <dl>
+                <dt>Code Name:</dt>
+                    <dd>{{metaissue.code_name}}</dd>
+
+                <dt>Meta Issue Type:</dt>
+                    <dd>{{metaissue.mi_type}}</dd>
+
+                <dt>Priority:</dt>
+                    <dd>{{metaissue.priority}}</dd>
+            </dl>
+        </aside>
+    </div>
+	
+</div>
+<!-- End row-fluid -->
 {% endblock %}

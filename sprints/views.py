@@ -4,6 +4,7 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
+from django.db.models import Q
 
 from accounts.models import Account
 from sprints.models import Sprint
@@ -11,6 +12,7 @@ from sprints.forms import SprintForm
 from projects.models import Project
 from issues.models import Issue
 from daily_reports.models import ReportGroup, GroupMember
+from system_settings.models import SystemSetting
 
 import datetime
 import json
@@ -220,3 +222,25 @@ def createLastWeekManagementReport(request):
                                                                  'current': current,
                                                                  'current_issues': current_issues,
                                                                  'projects': projects}, context_instance=RequestContext(request))
+
+
+def massMoveToNewSprint(request, old_sprint_id):
+    issues = Issue.objects.filter(Q(sprint=old_sprint_id), Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True))
+
+    try:
+        new_sprint_id = SystemSetting.objects.get(name="sprint")
+    except Exception as e:
+        print e
+        return False
+
+    try:
+        sprint = Sprint.objects.get(pk=new_sprint_id.value)
+    except Exception as e:
+        print e
+        return False
+
+    for issue in issues:
+        issue.sprint = sprint
+        issue.save()
+
+    return True

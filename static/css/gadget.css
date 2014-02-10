@@ -90,7 +90,7 @@ body {
 	}
 
 	.page-header .title-separator {
-	    display: none;
+/*	    display: none;*/
 	}
 
 /* --- | Formatting Help | --- */
@@ -881,10 +881,44 @@ body.page-polls {}
 
 
 
+/* --- Boards - Landing
+-------------------------------------------------------*/
+		
+body.boards-landing {}
+	
+	body.boards-landing .thumbnail {}
+		
+		body.boards-landing .thumbnail .image-container {
+			text-align: center;
+			height: 146px;
+			background: #eee;
+		}
+		
+		body.boards-landing .thumbnail img {
+			max-height: 146px;
+		}
+		
+		body.boards-landing .thumbnail h3 {
+			font-size: 16px;
+			font-weight: normal;
+			line-height: 20px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			margin: 0;
+		}
+			
+			body.boards-landing .thumbnail h3 span {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				width: 140px;
+			}
+
+
 /* --- Gantt Charts
 -------------------------------------------------------*/
 
-    /* --- |  | --- */
 .chart-container{
     min-height:400px
 }
