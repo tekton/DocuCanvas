@@ -201,18 +201,17 @@ def createLastWeekManagementReport(request):
     except Exception, e:
         print e
     try:
-        print current_end.strftime(date_format)[0:10]
         currents = Sprint.objects.filter(end__range=[current_end.strftime(date_format)[0:10], current_end.strftime(date_format)[0:10]])
         current = currents[0]
     except Exception, e:
         print e
     try:
-        issues = Issue.objects.filter(sprint=sprint)
+        issues = Issue.objects.filter(sprint=sprint).order_by("project")
     except Exception, e:
         print e
         issues = []
     try:
-        current_issues = Issue.objects.filter(sprint=current)
+        current_issues = Issue.objects.filter(sprint=current).order_by("project")
     except Exception, e:
         print e
         current_issues = []
