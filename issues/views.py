@@ -31,6 +31,7 @@ from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
 from communications.views import prepMail
 from sprints.models import Sprint
+from sprints.views import currentSprint
 from system_settings.models import SystemSetting
 
 
@@ -213,7 +214,11 @@ def set_bug_state(request):
             except:
                 pass
             if def_sprint:
-                sprint = Sprint.objects.get(pk=def_sprint.value)
+                # sprint = Sprint.objects.get(pk=def_sprint.value)
+                sprint = currentSprint()
+                issue.sprint = sprint
+            else:
+                sprint = currentSprint()
                 issue.sprint = sprint
         issue.save(request.user)
         to_json["status"] = "Bug status set"

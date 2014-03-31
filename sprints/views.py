@@ -244,3 +244,26 @@ def massMoveToNewSprint(request, old_sprint_id):
         issue.save()
 
     return True
+
+
+def currentSprint():
+    today = datetime.datetime.today().weekday()
+    date_format = "%Y-%m-%d"
+    if today == 4:
+        days_since_friday = 0
+        days_till_friday = 7
+    elif today > 4:
+        days_since_friday = today - 4
+        days_till_friday = 10 - today
+    elif today < 4:
+        days_since_friday = today + 3
+        days_till_friday = 4 - today
+    end_date = datetime.datetime.today() - datetime.timedelta(days=days_since_friday)
+    current_end = datetime.datetime.today() + datetime.timedelta(days=days_till_friday)
+    try:
+        sprints = Sprint.objects.filter(end__range=[current_end.strftime(date_format)[0:10], current_end.strftime(date_format)[0:10]])
+        sprint = sprints[0]
+    except Exception, e:
+        sprint = None
+    return sprint
+    
