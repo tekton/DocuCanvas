@@ -214,11 +214,7 @@ def set_bug_state(request):
             except:
                 pass
             if def_sprint:
-                # sprint = Sprint.objects.get(pk=def_sprint.value)
-                sprint = currentSprint()
-                issue.sprint = sprint
-            else:
-                sprint = currentSprint()
+                sprint = Sprint.objects.get(pk=def_sprint.value)
                 issue.sprint = sprint
         issue.save(request.user)
         to_json["status"] = "Bug status set"
