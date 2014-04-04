@@ -31,6 +31,7 @@ from projects.models import Project
 from issues.forms import IssueForm, IssueFullForm, CommentForm, AdvSearchForm, MetaIssueForm, TestForm
 from communications.views import prepMail
 from sprints.models import Sprint
+from sprints.views import currentSprint
 from system_settings.models import SystemSetting
 
 
