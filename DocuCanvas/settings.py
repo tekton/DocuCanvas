@@ -169,7 +169,9 @@ INSTALLED_APPS += (### Add project specifics apps here
     'communications',
     'taxes',
     'sprints',
-    'system_settings',)
+    'system_settings',
+    'gitHooks',
+)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

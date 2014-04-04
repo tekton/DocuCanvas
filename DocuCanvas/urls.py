@@ -44,4 +44,5 @@ urlpatterns = patterns('',
     url(r'^sitesearch', include('search.urls')),
     url(r'^research/', include('taxes.urls')),
     url(r'^sprints/', include('sprints.urls')),
+    url(r'^git/', include('gitHooks.urls')),
 )
