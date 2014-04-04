@@ -123,24 +123,30 @@ def hookPush(request):
     '''
 
     try:
-        event_type = request.META['X-GitHub-Event']
-        delivery_type = request.META["X-GitHub-Delivery"]
+        rtn_dict["delivery_type"] = request.META["X-GitHub-Delivery"]
+        rtn_dict["event_type"] = request.META['X-GitHub-Event']
     except:
-        rtn_dict["message"] = "not from github"
-        return HttpResponse(json.dumps(rtn_dict), mimetype='application/json', status=200)
+        rtn_dict["github_message"] = "possibly not from github"
+        for m in request.META:
+            print request.META[m]
+        # return HttpResponse(json.dumps(rtn_dict), mimetype='application/json', status=200)
 
     try:
         info = json.loads(request.body)
         ### check to see which project is linked to this repository, if any
         rep = info["repository"]  # ie DocuCanvas is 8282652
-        print event_type, delivery_type, rep
+        rtn_dict["repository"] = rep
     except:
-        rtn_dict["message"] = "Missing some things from the commits"
-        return HttpResponse(json.dumps(rtn_dict), mimetype='application/json', status=200)
+        rtn_dict["content_error_message"] = "Missing some things from the commits"
+        # return HttpResponse(json.dumps(rtn_dict), mimetype='application/json', status=200)
 
-    for commit in info["commits"]:
-        # check this commit for a fixed in the message
-        # no fixed? see if there's an issue id at all... :: \#(\d+?)\s 
-        print commit["message"]
+    try:
+        for commit in info["commits"]:
+            # check this commit for a fixed in the message
+            # no fixed? see if there's an issue id at all... :: \#(\d+?)\s 
+            print commit["message"]
+    except:
+        rtn_dict["commits_error_message"] = "Missing commits and nothing in commit"
 
     return HttpResponse(json.dumps(rtn_dict), mimetype='application/json', status=200)
+
