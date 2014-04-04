@@ -1,4 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 from django.shortcuts import render
 
 import json
@@ -121,19 +122,25 @@ def hookPush(request):
     }
     '''
 
+    try:
+        event_type = request.META['X-GitHub-Event']
+        delivery_type = request.META["X-GitHub-Delivery"]
+    except:
+        rtn_dict["message"] = "not from github"
+        return HttpResponse(json.dumps(rtn_dict), mimetype='application/json', status=200)
 
-    event_type = request.META['X-GitHub-Event']
-    delivery_type = request.META["X-GitHub-Delivery"]
-
-    info = json.loads(request.body)
-
-    ### check to see which project is linked to this repository, if any
-    rep = info["repository"]  # ie DocuCanvas is 8282652
-
-    print event_type, delivery_type, rep
+    try:
+        info = json.loads(request.body)
+        ### check to see which project is linked to this repository, if any
+        rep = info["repository"]  # ie DocuCanvas is 8282652
+        print event_type, delivery_type, rep
+    except:
+        rtn_dict["message"] = "Missing some things from the commits"
+        return HttpResponse(json.dumps(rtn_dict), mimetype='application/json', status=200)
 
     for commit in info["commits"]:
         # check this commit for a fixed in the message
         # no fixed? see if there's an issue id at all... :: \#(\d+?)\s 
         print commit["message"]
-        pass
+
+    return HttpResponse(json.dumps(rtn_dict), mimetype='application/json', status=200)
