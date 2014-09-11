@@ -15,11 +15,11 @@ def viewAllForms(request):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         tax_years = TaxYearForms.objects.all()
     except Exception, e:
-        print e
+        print(e)
     count = 0
     json_files = []
     for year in tax_years:
@@ -32,7 +32,7 @@ def viewAllForms(request):
                     temp[k] = unicode(v)
                 temp_proj.append(temp)
         except Exception, e:
-            print e
+            print(e)
         try:
             supply_analysis = SupplyAnalysis.objects.filter(tax_year=year)
             temp_supp = []
@@ -42,7 +42,7 @@ def viewAllForms(request):
                     temp[k] = unicode(v)
                 temp_supp.append(temp)
         except Exception, e:
-            print e
+            print(e)
         try:
             contract_analysis = ContractAnalysis.objects.filter(tax_year=year)
             temp_cont = []
@@ -52,14 +52,14 @@ def viewAllForms(request):
                     temp[k] = unicode(v)
                 temp_cont.append(temp)
         except Exception, e:
-            print e
+            print(e)
         try:
             info_checklist = InformationChecklist.objects.get(tax_year=year)
             temp_info = model_to_dict(info_checklist)
             for k, v in temp_info.items():
                 temp_info[k] = unicode(v)
         except Exception, e:
-            print e
+            print(e)
         temp_year = model_to_dict(year)
         for k,v in temp_year.items():
             temp_year[k] = unicode(v)
@@ -87,7 +87,7 @@ def createTaxForm(request):
             tax_year = tax_form.save()
             return redirect('taxes.views.viewAllForms')
         else:
-            print tax_form.errors
+            print(tax_form.errors)
     else:
         tax_form = TaxForm(instance=tax_year)
 
@@ -98,7 +98,7 @@ def submitProjectForm(request):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         tax_forms = TaxYearForms.objects.all()
     except Exception, e:
@@ -116,10 +116,10 @@ def submitProjectForm(request):
                 project_formset.save()
                 return redirect('taxes.views.submitProjectForm')
             except Exception, e:
-                print e
+                print(e)
         else:
-            print project_form.errors
-            print project_formset.errors
+            print(project_form.errors)
+            print(project_formset.errors)
     project_formset = project_item_formset(instance=project_analysis)
 
     project_form = ProjectAnalysisForm(instance=project_analysis)
@@ -135,7 +135,7 @@ def submitSupplyForm(request):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         tax_forms = TaxYearForms.objects.all()
     except Exception, e:
@@ -153,8 +153,8 @@ def submitSupplyForm(request):
             except Exception, e:
                 raise e
         else:
-            print supply_form.errors
-            print supply_formset.errors
+            print(supply_form.errors)
+            print(supply_formset.errors)
     supply_formset = supply_item_formset(instance=supply_analysis)
     supply_form = SupplyAnalysisForm(instance=supply_analysis)
 
@@ -187,8 +187,8 @@ def submitContractForm(request):
             except Exception, e:
                 raise e
         else:
-            print contract_form.errors
-            print contract_formset.errors
+            print(contract_form.errors)
+            print(contract_formset.errors)
     contract_formset = contract_item_formset(instance=contract_analysis)
     contract_form = ContractAnalysisForm(instance=contract_analysis)
     return render_to_response("taxes/contract_tax_form.html", {'projects': projects,
@@ -202,22 +202,22 @@ def editProjectForm(request, project_analysis_id):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         project_analysis = ProjectAnalysis.objects.get(pk=project_analysis_id)
     except Exception, e:
-        print e
+        print(e)
     try:
         project_list = ProjectListAnalysis.objects.filter(report=project_analysis)
     except Exception, e:
-        print e
+        print(e)
     try:
         tax_forms = TaxYearForms.objects.all()
     except Exception, e:
         raise e
 
     if request.method == 'POST':
-        print request.POST
+        print(request.POST)
         project_item_formset = inlineformset_factory(ProjectAnalysis, ProjectListAnalysis, can_delete=False, extra=1)
         project_formset = project_item_formset(request.POST, instance=project_analysis)
         if request.POST.getlist('client')[0] != project_analysis.client:
@@ -233,7 +233,7 @@ def editProjectForm(request, project_analysis_id):
             except Exception, e:
                 raise e
         else:
-            print project_formset.errors
+            print(project_formset.errors)
     return render_to_response("taxes/project_form_edit.html", {'projects': projects,
                                                                'project_analysis': project_analysis,
                                                                'project_list': project_list,
@@ -246,7 +246,7 @@ def deleteProjectListInstance(request, project_list_id):
         project_analysis = project_list.report
         project_list.delete()
     except Exception, e:
-        print e
+        print(e)
     return redirect('taxes.views.editProjectForm', project_analysis.id)
 
 
@@ -277,7 +277,7 @@ def editSupplyForm(request, supply_analysis_id):
             except Exception, e:
                 raise e
         else:
-            print supply_formset.errors
+            print(supply_formset.errors)
     return render_to_response('taxes/supply_form_edit.html', {'projects': projects,
                                                               'supply_analysis': supply_analysis,
                                                               'supply_list': supply_list,
@@ -311,7 +311,7 @@ def editContractForm(request, contract_analysis_id):
             except Exception, e:
                 raise e
         else:
-            print contract_formset.errors
+            print(contract_formset.errors)
     return render_to_response('taxes/contract_form_edit.html', {'projects': projects,
                                                                 'contract_analysis': contract_analysis,
                                                                 'contract_list': contract_list,
@@ -322,7 +322,7 @@ def createChecklist(request, info_checklist_id=-1):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         users = User.objects.all()
     except Exception, e:
@@ -341,11 +341,11 @@ def createChecklist(request, info_checklist_id=-1):
                     info_checklist = info_checklist_form.save()
                     return redirect('taxes.views.createChecklist', info_checklist.id)
                 else:
-                    print info_checklist_form.errors
+                    print(info_checklist_form.errors)
             else:
                 info_checklist_form = InformationChecklistForm(instance=info_checklist)
         except Exception, e:
-            print e
+            print(e)
             return redirect('taxes.views.createChecklist')
     else:
         editing = False
@@ -356,7 +356,7 @@ def createChecklist(request, info_checklist_id=-1):
                 info_checklist = info_checklist_form.save()
                 return redirect('taxes.views.createChecklist', info_checklist.id)
             else:
-                print info_checklist_form.errors
+                print(info_checklist_form.errors)
         else:
             info_checklist_form = InformationChecklistForm(instance=info_checklist)
     return render_to_response('taxes/information_checklist_form.html', {'projects': projects,
@@ -371,7 +371,7 @@ def viewInfoChecklist(request, info_checklist_id):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         info_checklist = InformationChecklist.objects.get(pk=info_checklist_id)
     except Exception, e:

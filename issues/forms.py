@@ -22,7 +22,7 @@ class IssueForm(forms.ModelForm):
         fields = ('project', 'summary', 'description', 'meta_issues', 'projected_start','projected_end', 'assigned_to', 'sprint')
 
     def save(self, user=None, *args, **kwargs):
-        print "form save"
+        print("form save")
         super(IssueForm, self).save(*args, **kwargs)
         if user:
             try:
@@ -33,12 +33,12 @@ class IssueForm(forms.ModelForm):
                 news_feed_item.newsfeed_type = 'create_issue'
                 news_feed_item.save()
             except Exception, e:
-                print e
+                print(e)
         return self.instance
     def __init__(self, *args, **kwargs):
         super(IssueForm, self).__init__(*args, **kwargs)
         if self.initial is not None:
-            # print "there were initial values"
+            # print("there were initial values")
             if "project" in self.initial:
                 if self.initial["project"] is not None:
                     self.fields['meta_issues'] = forms.ModelChoiceField(required=False, queryset=MetaIssue.objects.filter(project=self.initial["project"]))
@@ -73,8 +73,8 @@ class IssueFullForm(forms.ModelForm):
                                 issue_field_update.new_value = getattr(self.instance, field.attname)
                                 issue_field_update.save()
                             except Exception, e:
-                                print 'couldnt save status update'
-                                print e
+                                print('couldnt save status update')
+                                print(e)
 
                             ### create issue status update object if status changed
                             if field.attname == 'status':
@@ -87,8 +87,8 @@ class IssueFullForm(forms.ModelForm):
                                         issue_status_update.new_status = self.instance.status
                                         issue_status_update.save()
                                     except Exception, e:
-                                        print 'couldnt save status update'
-                                        print e
+                                        print('couldnt save status update')
+                                        print(e)
 
                             if getattr(self.instance, field.attname) != '' and getattr(old_issue, field.attname) != '':
                                 try:
@@ -102,10 +102,10 @@ class IssueFullForm(forms.ModelForm):
                                     news_feed_item.newsfeed_type = 'update_issue'
                                     news_feed_item.save()
                                 except Exception, e:
-                                    print e
+                                    print(e)
                 except Exception, e:
-                    print 'couldnt get old issue'
-                    print e
+                    print('couldnt get old issue')
+                    print(e)
 
             ### create historical issue object based on this new change
             try:
@@ -117,7 +117,7 @@ class IssueFullForm(forms.ModelForm):
                 issue_historical.save()
             except Exception, e:
                 'couldnt save historical issue'
-                print e
+                print(e)
 
         super(IssueFullForm, self).save(*args, **kwargs)
         return self.instance
@@ -140,7 +140,7 @@ class CommentForm(forms.ModelForm):
                 news_feed_item.newsfeed_type = 'comment'
                 news_feed_item.save()
             except Exception, e:
-                print e
+                print(e)
         super(CommentForm, self).save(*args, **kwargs)
         return self.instance
 

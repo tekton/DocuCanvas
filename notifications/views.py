@@ -24,7 +24,7 @@ def notification_form(request):
         try:
             projects = Project.objects.all()
         except Exception, e:
-            print e
+            print(e)
             projects = []
 
         try:
@@ -34,7 +34,7 @@ def notification_form(request):
                 users_dict[user_dict['id']] = user_dict['username']
                 num_users += 1
         except Exception, e:
-            print e
+            print(e)
             users = []
 
         NotificationRecipientsFormset = inlineformset_factory(Notification, NotificationRecipient, can_delete=False, extra=1)
@@ -47,7 +47,7 @@ def notification_form(request):
             if notification_form.is_valid() and formset.is_valid():
                 n = notification_form.save()
                 formset.save()
-                print 'saving form'
+                print('saving form')
                 if 'facebook' in request.POST:
                     n.facebook = True
                 if 'twitter' in request.POST:
@@ -55,8 +55,8 @@ def notification_form(request):
                 n.save()
                 return redirect('socialplatform.views.access_for_broadcast', n.id)
             else:
-                print notification_form.errors
-                print formset.errors
+                print(notification_form.errors)
+                print(formset.errors)
         else:
             formset = NotificationRecipientsFormset(instance=notification, initial=[
             {'read': False}])
@@ -73,13 +73,13 @@ def notifications(request):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
         projects = []
 
     try:
         notifications = NotificationRecipient.objects.select_related().filter(user=request.user,read=True)
     except Exception, e:
-        print e
+        print(e)
     return render_to_response("notifications/notifications.html", {"notifications": notifications, "projects": projects, "page_type": "Notification", "page_value": "Past"}, context_instance=RequestContext(request))
 
 
@@ -94,6 +94,6 @@ def mark_as_read(request):
             notification_recipient.save()
             to_json['success'] = True
         except Exception, e:
-            print e
+            print(e)
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 

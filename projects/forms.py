@@ -28,7 +28,7 @@ class ProjectForm(forms.ModelForm):
                     news_feed_item.newsfeed_type = 'create_project'
                     news_feed_item.save()
                 except Exception, e:
-                    print e
+                    print(e)
             else:
                 try:
                     news_feed_item = NewsFeedItem()
@@ -37,5 +37,5 @@ class ProjectForm(forms.ModelForm):
                     news_feed_item.newsfeed_type = 'update_project'
                     news_feed_item.save()
                 except Exception, e:
-                    print e
+                    print(e)
         return self.instance

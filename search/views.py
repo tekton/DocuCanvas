@@ -25,7 +25,7 @@ def searchGlobal(request):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
 
     message = None
     search = request.POST["searchText"]
@@ -36,13 +36,13 @@ def searchGlobal(request):
             issue = Issue.objects.get(pk=temp[6:])
             return redirect('issues.views.issue_overview', issue.id)
         except Exception, e:
-            print e
+            print(e)
     elif temp.isdigit():
         try:
             issue = Issue.objects.get(pk=temp)
             message = issue.id
         except Exception, e:
-            print e
+            print(e)
 
     
     q_issues = Issue.objects.filter(Q(summary__icontains=search) | Q(description__icontains=search))

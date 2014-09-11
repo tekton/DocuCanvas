@@ -26,7 +26,7 @@ class HelpRequest(models.Model):
         return self.user.username
 
     def update_status(self, n):
-        print "updating status"
+        print("updating status")
         if n == 1:
             self.status = self.help_state[1]
         elif n ==3:
@@ -40,7 +40,7 @@ class HelpRequest(models.Model):
             self.status = self.help_state[5]
         else:
             self.status = self.help_state[1]
-        print "status updated"
+        print("status updated")
 
     def question_is_edit(self):
         self.edit_status_bool = True
@@ -66,11 +66,11 @@ class HelpResponse(models.Model):
 
     def mark_answer(self):
         self.value = self.response_value[1]
-        print "response set as answer"
+        print("response set as answer")
 
     def mark_input(self):
         self.value = self.response_value[0]
-        print "response set as input"
+        print("response set as input")
 
     def save(self, *args, **kwargs):
         super(HelpResponse, self).save()

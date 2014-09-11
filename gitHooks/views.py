@@ -128,7 +128,7 @@ def hookPush(request):
     except:
         rtn_dict["github_message"] = "possibly not from github"
         for m in request.META:
-            print request.META[m]
+            print(request.META[m])
         # return HttpResponse(json.dumps(rtn_dict), mimetype='application/json', status=200)
 
     try:
@@ -144,7 +144,7 @@ def hookPush(request):
         for commit in info["commits"]:
             # check this commit for a fixed in the message
             # no fixed? see if there's an issue id at all... :: \#(\d+?)\s 
-            print commit["message"]
+            print(commit["message"])
     except:
         rtn_dict["commits_error_message"] = "Missing commits and nothing in commit"
 

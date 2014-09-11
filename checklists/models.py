@@ -21,9 +21,9 @@ class CheckListLayoutItems(models.Model):
     '''
     def save(self, user=None, commit=True, *args, **kwargs):
         if user:
-            print "attempting to save layout item"
-            # print dir(self)
-            print "Title {0} and Order {1}".format(self.title, self.order)
+            print("attempting to save layout item")
+            # print(dir(self))
+            print("Title {0} and Order {1}".format(self.title, self.order))
             if not self.pk:  # for new items being created
                 super(CheckListLayoutItems, self).save(*args, **kwargs)
                 try:
@@ -35,7 +35,7 @@ class CheckListLayoutItems(models.Model):
                     news_feed_item.comment = 'new field ' + str(self.title)
                     news_feed_item.save()
                 except Exception, e:
-                    print e
+                    print(e)
             else:  # for updates to items
                 try:
                     old_checklist_item = CheckListLayoutItems.objects.get(pk=self.pk)
@@ -62,13 +62,13 @@ class CheckListLayoutItems(models.Model):
                                 news_feed_item.new_value = self.order
                             news_feed_item.save()
                         except Exception, e:  # exception for the try to save news_feed_item
-                            print e
+                            print(e)
                     except Exception, e:  # exception for the creation of news_feed_item
-                        print e
+                        print(e)
                 except Exception, e:  # exception for the get and save lines
-                    print e
+                    print(e)
         else:
-            print 'user was not given!'
+            print('user was not given!')
             super(CheckListLayoutItems, self).save(*args, **kwargs)
 
         return self
@@ -120,11 +120,11 @@ class ChecklistInstance(models.Model):
                             news_feed_item.comment = self.pk
                             news_feed_item.save()
                     except Exception, e:
-                        print 'problem with old vs new checklist code'
-                        print e
+                        print('problem with old vs new checklist code')
+                        print(e)
             except Exception, e:
-                print 'problem with news feed item'
-                print e
+                print('problem with news feed item')
+                print(e)
         return self
     '''
 
@@ -171,13 +171,13 @@ class ChecklistTag(models.Model):
                                 news_feed_item.description = self.checklist_instance.pk
                             news_feed_item.save()
                         except Exception, e:
-                            print e
+                            print(e)
                     except Exception, e:
-                        print e
+                        print(e)
                 except Exception, e:
-                    print e
+                    print(e)
         else:
-            print 'user was not given!'
+            print('user was not given!')
             super(ChecklistTag, self).save(*args, **kwargs)
 
         return self

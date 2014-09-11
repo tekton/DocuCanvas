@@ -15,9 +15,9 @@ def new_poll(request):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     if request.method == 'POST':
-        print request.POST
+        print(request.POST)
         poll_form = PollForm(request.POST, instance=poll)
         formset = PollItemFormset(request.POST, instance=poll)
         if poll_form.is_valid() and formset.is_valid():
@@ -33,14 +33,14 @@ def new_poll(request):
                 try:
                     item.save()
                 except Exception, e:
-                    print e
+                    print(e)
             poll.total_items = b
             poll.save()
-            print 'saving form'
+            print('saving form')
             return redirect('socialplatform.views.notify_new_poll', p.id)
         else:
-            print poll_form.errors
-            print formset.errors
+            print(poll_form.errors)
+            print(formset.errors)
     else:
         formset = PollItemFormset(instance=poll)
 
@@ -57,7 +57,7 @@ def poll_overview(request, poll_id):
     try:
         poll = Poll.objects.get(pk=poll_id)
     except Exception, e:
-        print e
+        print(e)
     
     after = True
     time_difference = date.today() - poll.end_date
@@ -93,11 +93,11 @@ def poll_overview(request, poll_id):
         try:
             items = PollItem.objects.filter(poll=poll).order_by('id')
         except Exception, e:
-            print e
+            print(e)
         try:
             uservoteitems = UserVoteItem.objects.filter(poll=poll).filter(user=request.user).filter(voted=True)
         except Exception, e:
-            print e
+            print(e)
 
         votes_allowed = poll.max_votes - uservoteitems.count()
         
@@ -108,7 +108,7 @@ def poll_overview(request, poll_id):
             try:
                 user_item = UserVoteItem.objects.filter(user=request.user).filter(item=item)
             except Exception, e:
-                print e
+                print(e)
             if user_item.count() > 0:
                 for myitem in user_item:
                     usernotvoteitems.append(myitem)
@@ -138,13 +138,13 @@ def end_poll(request, poll_id):
         try:
             mypoll = Poll.objects.get(pk=poll_id)
         except Exception, e:
-            print e
+            print(e)
         try:
             mypoll.end_date = date.today()-timedelta(days=1)
-            print mypoll.end_date
+            print(mypoll.end_date)
             mypoll.save()
         except Exception, e:
-            print e
+            print(e)
     return redirect('polls.views.poll_overview', poll_id)
 
 
@@ -153,14 +153,14 @@ def extend_poll(request, poll_id):
     try:
         mypoll = Poll.objects.get(pk=poll_id)
     except Exception, e:
-        print e
+        print(e)
     if request.method == 'POST':
         try:
             mypoll.end_date = request.POST['end_date']
-            print mypoll.end_date
+            print(mypoll.end_date)
             mypoll.save()
         except Exception, e:
-            print e
+            print(e)
         return redirect('polls.views.poll_overview', poll_id)
     return render_to_response("polls/extend_poll.html", {'poll': mypoll}, context_instance=RequestContext(request))
 
@@ -170,7 +170,7 @@ def poll_results(request, poll_id):
     try:
         poll = Poll.objects.get(pk=poll_id)
     except Exception, e:
-        print e
+        print(e)
     try:
         projects = Project.objects.all()
     except Exception, e:
@@ -178,11 +178,11 @@ def poll_results(request, poll_id):
     try:
         items = PollItem.objects.filter(poll=poll).order_by('-votes')
     except Exception, e:
-        print e
+        print(e)
     try:
         myuser = PollUser.objects.filter(poll=poll).filter(user=request.user)
     except Exception, e:
-        print e
+        print(e)
     sup = True
     if uservoteitems.count() <= mypoll.max_votes:
     #if myuser.count() != 0:
@@ -201,7 +201,7 @@ def add_items(request, poll_id):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         poll = Poll.objects.get(pk=poll_id)
     except Exception, e:
@@ -220,14 +220,14 @@ def add_items(request, poll_id):
                 try:
                     item.save()
                 except Exception, e:
-                    print e
+                    print(e)
             poll.total_items = b
             poll.save()
-            print 'saving form'
+            print('saving form')
             return redirect('polls.views.poll_overview', poll_id)
         else:
-            print poll_form.errors
-            print formset.errors
+            print(poll_form.errors)
+            print(formset.errors)
     else:
         formset = PollItemFormset(instance=poll)
 
@@ -238,12 +238,12 @@ def undo_vote(request, poll_id):
     try:
         mypoll = Poll.objects.get(pk=poll_id)
     except Exception, e:
-        print e
+        print(e)
     try:
         items = UserVoteItem.objects.filter(poll=mypoll).filter(user=request.user).filter(voted=True)
     except Exception, e:
-        print e
-    print items.count()
+        print(e)
+    print(items.count())
     if items.count() > 0:
         try:
             for item in items:
@@ -255,7 +255,7 @@ def undo_vote(request, poll_id):
                     item.save()
                     item.item.save()
         except Exception,e :
-            print e
+            print(e)
     return redirect('polls.views.poll_overview', poll_id)       
     
 
@@ -263,14 +263,14 @@ def undo_vote(request, poll_id):
 
 @login_required
 def vote(request, poll_id):
-    print request.POST
+    print(request.POST)
     if request.method == 'POST':
         item_id = request.POST['item']
         try:
             mypoll = Poll.objects.get(pk=poll_id) 
             uservoteitems = UserVoteItem.objects.filter(poll=mypoll).filter(user=request.user).filter(voted=True)       
         except Exception, e:
-            print e
+            print(e)
         
         if uservoteitems.count() <= mypoll.max_votes:
 
@@ -289,7 +289,7 @@ def vote(request, poll_id):
                                 item.save()
                 newuser.save()   
             except Exception, e:
-                print e
+                print(e)
 
     
 
@@ -303,7 +303,7 @@ def all_polls(request):
     try:
         polls = Poll.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         projects = Project.objects.all()
     except Exception, e:

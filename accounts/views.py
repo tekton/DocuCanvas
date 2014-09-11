@@ -61,7 +61,7 @@ def oauth_revoke_auth(request):
             try:
                 acct.credentials.revoke(Http())
             except TokenRevokeError as e:
-                print e
+                print(e)
             else:
                 acct.save()
     return redirect('accounts.views.oauth_start')
@@ -79,7 +79,7 @@ def oauth_callback(request):
         acct.credentials = credentials
         acct.save()
 
-    print credentials.to_json()
+    print(credentials.to_json())
 
     return redirect('accounts.views.oauth_start')
 
@@ -104,14 +104,14 @@ def setAssignable(account_q):
     try:
         account = Account.objects.get(pk=account_q)
     except Exception as e:
-        print "Unable to get account"
-        print e
+        print("Unable to get account")
+        print(e)
     account.assignable = True
     try:
         account.save()
     except Exception as e:
-        print "Unable to save account update"
-        print e
+        print("Unable to save account update")
+        print(e)
 
 
 @login_required
@@ -121,29 +121,29 @@ def assignTemplateForView(request):
     """
     if request.method == "POST":
         try:
-            print request.POST["viewName"]
+            print(request.POST["viewName"])
             temp = UserTemplates.objects.get(user=request.user, viewName=request.POST["viewName"])
         except:
             temp = UserTemplates()
         form = UserTemplatesForm(request.POST, instance=temp)
-        # print dir(form)
+        # print(dir(form))
         try:
             form.full_clean()
             itm = form.save()
             redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')  # this is for the heroku install!
             r = redis.from_url(redis_url)
             try:
-                print "{0} - {1} - {2}".format("user.settings.{}.hash".format(itm.user.id), itm.viewName, itm.pathToTemplate)
+                print("{0} - {1} - {2}".format("user.settings.{}.hash".format(itm.user.id), itm.viewName, itm.pathToTemplate))
                 x = r.hset("user.settings.{}.hash".format(itm.user.id), itm.viewName, itm.pathToTemplate)
-                print x
+                print(x)
             except Exception as e:
-                print "post set..."
-                print e
-                print "...post e"
+                print("post set...")
+                print(e)
+                print("...post e")
         except Exception as e:
-            print "Clean or save failed..."
-            print e
-            print form.errors
+            print("Clean or save failed...")
+            print(e)
+            print(form.errors)
     else:
         form = UserTemplatesForm(initial={"user": request.user})
     return render_to_response("user/user_template_form.html", {'form': form}, RequestContext(request))
@@ -158,7 +158,7 @@ def cache_checkUserTemplate(user, view_name):
     r = redis.from_url(redis_url)
     template_in_redis = r.hget("user.settings.{}.hash".format(user.id), view_name)
     if template_in_redis:
-        print template_in_redis
+        print(template_in_redis)
         return template_in_redis
     else:
         return False
@@ -175,7 +175,7 @@ def cache_populateUserTemplates(single=None):
         try:
             templates = UserTemplates.objects.get(pk=single)
         except Exception as e:
-            print str(e)
+            print(str(e))
             return False
     else:
         templates = UserTemplates.objects.all()
@@ -183,7 +183,7 @@ def cache_populateUserTemplates(single=None):
         try:
             r.hset("user.settings.{}.hash".format(template.user.id), template.viewName, template.pathToTemplate)
         except Exception as e:
-            print "Unable to set template in cache: {}".format(str(e))
+            print("Unable to set template in cache: {}".format(str(e)))
     return True
 
 
@@ -196,11 +196,11 @@ def settings_update(request, setting_to_set, new_value=None):
         if setting.setting_value == new_value:
             return HttpResponse(json.dumps({"msg": "no change"}), content_type='application/json', status=200)
     except Exception as e:
-        print "Hoping it just didn't exit yes, just in case :: {}".format(e)
+        print("Hoping it just didn't exit yes, just in case :: {}".format(e))
         setting = AccountSetting()
         setting.user = request.user
         setting.setting_name = setting_to_set
-    print setting_to_set, new_value
+    print(setting_to_set, new_value)
     if setting.setting_value == new_value:
         pass
     else:
@@ -211,7 +211,7 @@ def settings_update(request, setting_to_set, new_value=None):
             r = redis.from_url(os.getenv('REDISTOGO_URL', 'redis://localhost:6379'))
             r.hset("user.settings.{}.hash".format(request.user.id), setting_to_set, new_value)
         except Exception as e:
-            print e
+            print(e)
     return HttpResponse(json.dumps({"msg": "I'm not a useful return..."}), content_type='application/json', status=200)
 
 
@@ -228,7 +228,7 @@ def save_settings(request):
                 try:
                     form.save()
                 except Exception, e:
-                    print e
+                    print(e)
     return redirect("auth.views.account_settings")
 
 
@@ -243,5 +243,5 @@ def addAvatar(request):
                     account.save()
                     return HttpResponse(json.dumps({"success": True, "img_src": request.POST["img_url"]}))
             except Exception as e:
-                print e
+                print(e)
     return HttpResponse(json.dumps({"success": False}), content_type="application/json", status=200)

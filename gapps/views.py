@@ -14,7 +14,7 @@ def create_user(request):
         try:
             userForm = form.save()
         except Exception, e:
-            print e
+            print(e)
 
         domain_name = userForm.domain_name
         admin_user = userForm.admin_user + "@" + domain_name
@@ -79,17 +79,17 @@ def create_user(request):
 
         emailClient.UpdateSignature(username=email_address, signature=email_signature)
         if d_bug:
-            print admin_user
-            print first_name
-            print last_name
-            print email_address
-            print temp_pass
-            print job_title
-            print extension
-            print mobile_number
-            print add_to_groups
+            print(admin_user)
+            print(first_name)
+            print(last_name)
+            print(email_address)
+            print(temp_pass)
+            print(job_title)
+            print(extension)
+            print(mobile_number)
+            print(add_to_groups)
             for i in add_to_groups:
-                print i
+                print(i)
         else:
             pass
     else:

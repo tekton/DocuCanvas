@@ -25,11 +25,11 @@ def prepMailingList(issue, update_type="update"):
     subs = None
     # get people that are subscribed to the issue
     try:
-        print issue.id
+        print(issue.id)
         subs = SubscriptionToIssue.objects.filter(issue=issue.id)
     except Exception as e:
-        print "Unable to find subscriptions..."
-        print e
+        print("Unable to find subscriptions...")
+        print(e)
         # should do more, but it's alpha...
     if subs is not None:
         for sub in subs:
@@ -88,8 +88,8 @@ def prepSubjectOfMail(issue, update_type="update", item="Issue"):
     try:
         Issue.objects.get(pd=issue.id)
     except Exception as e:
-        print "Item doesn't exist yet...oh well, prep mail anyway!"
-        print e
+        print("Item doesn't exist yet...oh well, prep mail anyway!")
+        print(e)
     #
     if update_type == "update":
         msg = "Updated"
@@ -108,7 +108,7 @@ def prepSubjectOfMail(issue, update_type="update", item="Issue"):
     # if assigned?
     ## [<install name>] Issue <ID> Assigned To You
     rtn_str = "[{0}] {1} {2} {3}".format(settings.INSTALL_NAME, item, issue.id, msg)
-    print rtn_str
+    print(rtn_str)
     return rtn_str
 
 #TODO - convert to celery task
@@ -135,9 +135,9 @@ def prepMail(issue, update_type='update', comment=False):
     msg = EmailMessage(subject, html_content, mail_from, mail_to)
     msg.content_subtype = "html"  # Main content is now text/html; needs to be called after context is set
     try:
-        print "Attempting to send message"
+        print("Attempting to send message")
         msg.send()
     except Exception as e:
-        print "Unable to send mail"
-        print e
-        print mail_to, mail_from, subject
+        print("Unable to send mail")
+        print(e)
+        print(mail_to, mail_from, subject)

@@ -49,9 +49,9 @@ class ChecklistForm(forms.ModelForm):
                             news_feed_item.new_value = self.instance.project
                             news_feed_item.save()
                     except Exception, e:
-                        print e
+                        print(e)
             except Exception, e:
-                print e
+                print(e)
         return self.instance
     '''
     def __unicode__(self):

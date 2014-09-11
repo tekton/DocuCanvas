@@ -25,10 +25,10 @@ def boards_form(request):
         if form.is_valid():
             try:
                 board = form.save()
-                print 'saving board'
+                print('saving board')
                 return redirect('/board/board_edit/' + str(board.id))
             except Exception, e:
-                print e
+                print(e)
     else:
         form = BoardForm()
 
@@ -46,7 +46,7 @@ def boards_note_form(request):
                 boardNote = form.save()
                 return HttpResponseRedirect('boards/new_node')
             except:
-                print 'unable to save note'
+                print('unable to save note')
 
     else:
         form = BoardNoteForm()
@@ -65,7 +65,7 @@ def boards_node_form(request):
                 boardNode = form.save()
                 return HttpResponseRedirect('boards/new_node')
             except:
-                print 'unable to save node'
+                print('unable to save node')
 
     else:
         form = BoardNodeForm()
@@ -94,10 +94,10 @@ def board_edit(request, board_id):
     board_nodes = BoardNode.objects.all()
     board_notes = BoardNote.objects.all()
     issues = Issue.objects.all()
-    print "Submitting board..."
+    print("Submitting board...")
     nodeId = request.POST.get('id', "")
     nodeType = request.POST.get('nodeType', "")
-    print nodeType
+    print(nodeType)
     if nodeType == 'note':
         if request.method == 'POST':
             # check for nodeId to see if a node is being updated
@@ -112,7 +112,7 @@ def board_edit(request, board_id):
                     boardNote.user = request.user
                     boardNote = form.save()
                     nodeLinkId = boardNote.id
-                    print nodeLinkId
+                    print(nodeLinkId)
                     boardNode.x = request.POST.get('x', '')
                     boardNode.y = request.POST.get('y', '')
                     boardNode.nodeLink = nodeLinkId
@@ -121,11 +121,11 @@ def board_edit(request, board_id):
                     boardNode.save()
 
                 except Exception, e:
-                    print e
-                    print 'unable to save node'
-                    print form.errors
+                    print(e)
+                    print('unable to save node')
+                    print(form.errors)
             else:
-                print form.errors
+                print(form.errors)
 
         else:
             form = BoardNoteForm()
@@ -141,11 +141,11 @@ def board_edit(request, board_id):
                 try:
                     boardNode = form.save()
                 except Exception, e:
-                    print e
-                    print 'unable to save node'
-                    print form.errors
+                    print(e)
+                    print('unable to save node')
+                    print(form.errors)
             else:
-                print form.errors
+                print(form.errors)
 
         else:
             form = BoardNodeForm()

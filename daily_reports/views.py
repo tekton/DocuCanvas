@@ -30,7 +30,7 @@ def edit_report(request, year=None, month=None, day=None):
                                                            report_date.strftime("%d"))
     else:
         report_date = date(int(year), int(month), int(day)).strftime("%Y-%m-%d")
-    print report_date
+    print(report_date)
     
     form = DailyReportForm(initial={'date': report_date, 'user': request.user})
 
@@ -38,7 +38,7 @@ def edit_report(request, year=None, month=None, day=None):
         try:
             report = UserDailyReport.objects.get(user=request.user, date=report_date)
         except:
-            # print "Unable to find report; assuming new entry not an edit functionality"  # debug statement as it were
+            # print("Unable to find report; assuming new entry not an edit functionality"  # debug statement as it were)
             report = UserDailyReport()
             report.user = request.user  # hacky, but will work for now...
         try:
@@ -48,7 +48,7 @@ def edit_report(request, year=None, month=None, day=None):
             msg = "Report has been updated!"
             msg_type = "success"
         except Exception as e:
-            print "Unable to save form due to :: {}".format(str(e))
+            print("Unable to save form due to :: {}".format(str(e)))
             msg = "Unable to save report, please contact your administrator"
             msg_type = 'error'
     else:
@@ -56,7 +56,7 @@ def edit_report(request, year=None, month=None, day=None):
             report = UserDailyReport.objects.get(user=request.user.id, date=report_date)
             form = DailyReportForm(instance=report)
         except:
-            print "unable to find daily report"
+            print("unable to find daily report")
 
     return render_to_response('daily_reports/daily_report_form.html',
                               {'form': form,
@@ -82,7 +82,7 @@ def edit_global_report(request, month=0, day=0, year=0):
                 report.save()
                 return redirect('daily_reports.views.edit_global_report')
             except Exception as e:
-                print e
+                print(e)
                 return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': True, "projects": projects}, context_instance=RequestContext(request))
         else:
             return render_to_response('daily_reports/daily_report_form.html', {'form': form, 'global': True, "projects": projects}, context_instance=RequestContext(request))
@@ -102,7 +102,7 @@ def edit_global_report(request, month=0, day=0, year=0):
         try:
             q = DailyReport.objects.filter(date=d)
         except Exception as e:
-            print "Exception: " + str(e)
+            print("Exception: " + str(e))
             raise e
         if q:
             form = ReportForm(initial={"date": d, "personalReport": q[0].description})
@@ -125,7 +125,7 @@ def view_reports(request, month=0, day=0, year=0):
         q = UserDailyReport.objects.filter(date=d)
         qg = DailyReport.objects.filter(date=d)
     except Exception as e:
-        print "Exception: " + str(e)
+        print("Exception: " + str(e))
         raise e
 
     if qg:
@@ -141,7 +141,7 @@ def mail_report():
         q = UserDailyReport.objects.filter(date=d)
         qg = DailyReport.objects.filter(date=d)
     except Exception as e:
-        print "Exception: " + str(e)
+        print("Exception: " + str(e))
         raise e
     return render_to_response("daily_reports/daily_report_overview.html", {'globalReport': qg[0], 'reports': q, 'date': d, "projects": projects}, context_instance=RequestContext(request))
 
@@ -173,7 +173,7 @@ def index(request):
         today_report = UserDailyReport.objects.get(user=request.user, date=now.strftime("%Y-%m-%d"))
         today = False
     except Exception as e:
-        print "Unable to get todays report :: {}".format(str(e))
+        print("Unable to get todays report :: {}".format(str(e)))
         today = True
     return render_to_response("daily_reports/report_index.html", {"reports": reports,
                                                                   "projects": projects,
@@ -198,7 +198,7 @@ def setup_report_group(request):
                     new_member.save()
                 return redirect('daily_reports.views.request_report_summary')
         except Exception as e:
-            print "Exception: " + str(e)
+            print("Exception: " + str(e))
     else:
         form = GroupForm()
     return render_to_response('daily_reports/report_group_form.html', {'users': users, 'projects': projects, 'form': form}, context_instance=RequestContext(request))
@@ -207,15 +207,15 @@ def setup_report_group(request):
 @user_passes_test(lambda u: u.is_superuser)
 def edit_group(request, group_id):
     projects = Project.objects.all()
-    print request.POST
+    print(request.POST)
     try:
         group = ReportGroup.objects.get(pk=group_id)
     except Exception as e:
-        print "Exception: " + str(e)
+        print("Exception: " + str(e))
     try:
         members = GroupMember.objects.filter(group=group)
     except Exception as e:
-        print "Exception: " + str(e)
+        print("Exception: " + str(e))
     try:
         users = User.objects.all()
         user_list = []
@@ -228,7 +228,7 @@ def edit_group(request, group_id):
                 user_list.append(user)
 
     except Exception as e:
-        print "Exception: " + str(e)
+        print("Exception: " + str(e))
     if request.method == 'POST':
         try:
             form = GroupForm(request.POST, instance=group)
@@ -246,7 +246,7 @@ def edit_group(request, group_id):
                     old_member.delete()
                 return redirect('daily_reports.views.request_report_summary')
         except Exception as e:
-            print e
+            print(e)
     else:
         form = GroupForm(instance=group)
     return render_to_response('daily_reports/edit_report_group.html', {'members': members, 'users': user_list, 'form': form, 'projects': projects, 'group': group}, context_instance=RequestContext(request))
@@ -322,7 +322,7 @@ def view_reports_wip(request, year_start, month_start, day_start, year_end,  mon
     projects = Project.objects.all()
     date_range_start = str(year_start) + '-' + str(month_start) + '-' + str(day_start)
     date_range_end = str(year_end) + '-' + str(month_end) + '-' + str(day_end)
-    print date_range_start
+    print(date_range_start)
     users = User.objects.all()
 
     reports = UserDailyReport.objects.filter(date__range=[date_range_start, date_range_end]).order_by('date')
@@ -344,11 +344,11 @@ def export_user(request, user_id):
     try:
         user = User.objects.get(pk=user_id)
     except Exception, e:
-        print e
+        print(e)
     try:
         account = Account.objects.get(user=user)
     except Exception, e:
-        print e
+        print(e)
     if account.assignable:
         data = []
         temp = ["Date", "Account", "Estimated Hours", "Holidays/Events", "Report Description"]
@@ -363,7 +363,7 @@ def export_user(request, user_id):
                 try:
                     report = UserDailyReport.objects.filter(date__range=[date_obj.strftime(date_format), date_obj.strftime(date_format)]).filter(user=user)
                 except Exception, e:
-                    print e
+                    print(e)
                 temp.append(user.username)
                 if date_obj.strftime(date_format) in holidays:
                     temp.append("0")

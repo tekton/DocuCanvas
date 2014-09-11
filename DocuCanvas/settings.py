@@ -213,6 +213,7 @@ BROKER_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 # CELERY_RESULT_BACKEND = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 CELERY_IMPORTS = ("communications.views", "accounts.views", "search.views")  # Uncomment line to add where the tasks are! A suggest default is in there
 CELERYBEAT_SCHEDULE = {}
+CELERY_TASK_SERIALIZER = "json"
 ### /CELERY ###
 
 TINYMCE_DEFAULT_CONFIG ={
@@ -229,4 +230,4 @@ TINYMCE_DEFAULT_CONFIG ={
 try:
     from local_settings import *
 except ImportError:
-    print "Can't import local settings for some reason..."
+    print("Can't import local settings for some reason...")

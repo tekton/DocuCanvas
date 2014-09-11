@@ -19,7 +19,7 @@ def help_form(request):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     if request.method == 'POST':
         if 'submit' in request.POST:
             helpForm = HelpForm(request.POST, instance=helpRequest)
@@ -27,7 +27,7 @@ def help_form(request):
                 try:
                     helpRequest.facebook = FacebookProfile.objects.get(user=request.user)
                 except Exception, e:
-                    print e
+                    print(e)
                 try:
                     helpRequest = helpForm.save()
                 except:
@@ -48,7 +48,7 @@ def get_help(request, help_id):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         help = HelpRequest.objects.get(pk=help_id)
     except Exception as e:
@@ -69,7 +69,7 @@ def get_help(request, help_id):
         help_response = HelpFormResponse(instance=HelpResponse(helprequest=help))
         help_form = HelpForm(instance=help)
     except Exception as e:
-        print e
+        print(e)
     return render_to_response('helpdesknew/help_view.html', {'help': help, 'form': help_form, 'help_response': help_response, 'comments': comments, 'answer': answer, 'images': images, 'projects': projects}, context_instance=RequestContext(request))
 
 
@@ -104,7 +104,7 @@ def get_pending(request):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         requests_pending = HelpRequest.objects.exclude(status="('resolved', 'Resolved')").exclude(status="('closed', 'Closed')").exclude(status="('suggestion', 'Suggestion')").order_by("-id")
     except Exception as e:
@@ -117,7 +117,7 @@ def get_resolved(request):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         resolved = HelpRequest.objects.filter(status="('resolved', 'Resolved')").order_by('-id')
     except Exception as e:
@@ -138,7 +138,7 @@ def user_help(request):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         requests_from_user = HelpRequest.objects.filter(user=request.user)
     except Exception as e:
@@ -167,7 +167,7 @@ def close_question(request, help_id):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         help = HelpRequest.objects.get(pk=help_id)
     except Exception as e:
@@ -256,7 +256,7 @@ def edit_question(request, help_id):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     if request.user.id == helpdeez.user.id:
         if helpdeez.status == "('closed', 'Closed')":
             return render_to_response('helpdesknew/error_page.html', {'error_id': '5'}, context_instance=RequestContext(request))
@@ -290,7 +290,7 @@ def edit_comment(request, response_id):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     if request.user.id == respondeez.user.id:
         if respondeez.value == "('answer', 'Answer')":
             return render_to_response('helpdesknew/error_page.html', {'error_id': '4'}, context_instance=RequestContext(request))
@@ -316,7 +316,7 @@ def ack_answer(request, response_id):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     answer = HelpResponse.objects.get(pk=response_id)
     if request.user.id == answer.helprequest.user.id:
         answer = HelpResponse.objects.get(pk=response_id)

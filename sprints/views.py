@@ -22,10 +22,10 @@ def createSprint(request):
     try:
         projects = Project.objects.all()
     except Exception as e:
-        print e
+        print(e)
     sprint = Sprint()
     if request.method == 'POST':
-        print request.POST
+        print(request.POST)
         try:
             sprint.name = request.POST["name"]
             sprint.start = datetime.datetime.strptime(request.POST["start"], "%Y/%m/%d")
@@ -33,7 +33,7 @@ def createSprint(request):
             sprint.save()
             return redirect('sprints.views.viewSprint', sprint.id)
         except Exception as e:
-            print e
+            print(e)
     form = SprintForm(instance=sprint)
     return render_to_response('sprints/create_sprint.html', {'sprint': sprint, 'form': form, 'projects': projects}, context_instance=RequestContext(request))
 
@@ -42,7 +42,7 @@ def viewSprint(request, sprint_id):
     try:
         projects = Project.objects.all()
     except Exception as e:
-        print e
+        print(e)
     try:
         sprint = Sprint.objects.get(pk=sprint_id)
     except Exception as e:
@@ -50,7 +50,7 @@ def viewSprint(request, sprint_id):
     try:
         issues = Issue.objects.filter(sprint=sprint).order_by("-modified").order_by("project")
     except Exception as e:
-        print e
+        print(e)
     return render_to_response('sprints/sprint_overview.html', {'sprint': sprint, 
                                                                'issues': issues, 
                                                                'projects': projects}, context_instance=RequestContext(request))
@@ -60,18 +60,18 @@ def viewAll(request):
     try:
         projects = Project.objects.all()
     except Exception as e:
-        print e
+        print(e)
     try:
         sprints = Sprint.objects.all()
     except Exception as e:
-        print e
+        print(e)
     to_json = {}
     for sprint in sprints:
         try:
             issues = Issue.objects.filter(sprint=sprint).exclude(status='active').exclude(status='retest').exclude(status='unverified').exclude(status=None)
             total = Issue.objects.filter(sprint=sprint)
         except Exception, e:
-            print e
+            print(e)
         to_json[str(sprint.id)] = {"id": sprint.id, "name": sprint.name, "completed": issues.count(), "total": total.count()}
     return render_to_response('sprints/all_sprints.html', {'sprints':json.dumps(to_json),
                                                            'projects': projects}, context_instance=RequestContext(request))
@@ -121,15 +121,15 @@ def selectGroup(request, sprint_id):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         sprint = Sprint.objects.get(pk=sprint_id)
     except Exception, e:
-        print e
+        print(e)
     try:
         groups = ReportGroup.objects.all()
     except Exception, e:
-        print e
+        print(e)
     return render_to_response('sprints/select_group.html', {'projects': projects,
                                                             'sprint': sprint,
                                                             'groups': groups}, context_instance=RequestContext(request))
@@ -139,27 +139,27 @@ def assignSprint(request, sprint_id, group_id=0):
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     try:
         sprint = Sprint.objects.get(pk=sprint_id)
     except Exception, e:
-        print e
+        print(e)
     try:
         issues = Issue.objects.filter(sprint=sprint)
     except Exception, e:
-        print e
+        print(e)
     if not group_id == 0:   
         try:
             group = ReportGroup.objects.get(pk=group_id)
         except Exception, e:
-            print e
+            print(e)
         try:
             users = GroupMember.objects.filter(group=group)
             user = []
             for thing in users:
                 user.append(thing.user)
         except Exception, e:
-            print e
+            print(e)
             user = User.objects.all()
     else:
         try:
@@ -183,7 +183,7 @@ def createLastWeekManagementReport(request):
     try:
         projects = Project.objects.filter(active=True)
     except Exception, e:
-        print e
+        print(e)
     today = datetime.datetime.today().weekday()
     date_format = "%Y-%m-%d"
     if today == 4:
@@ -201,21 +201,21 @@ def createLastWeekManagementReport(request):
         sprints = Sprint.objects.filter(end__range=[end_date.strftime(date_format)[0:10], end_date.strftime(date_format)[0:10]])
         sprint = sprints[0]
     except Exception, e:
-        print e
+        print(e)
     try:
         currents = Sprint.objects.filter(end__range=[current_end.strftime(date_format)[0:10], current_end.strftime(date_format)[0:10]])
         current = currents[0]
     except Exception, e:
-        print e
+        print(e)
     try:
         issues = Issue.objects.filter(sprint=sprint).order_by("project")
     except Exception, e:
-        print e
+        print(e)
         issues = []
     try:
         current_issues = Issue.objects.filter(sprint=current).order_by("project")
     except Exception, e:
-        print e
+        print(e)
         current_issues = []
     return render_to_response("sprints/management_report.html", {'issues': issues,
                                                                  'sprint': sprint,
@@ -230,13 +230,13 @@ def massMoveToNewSprint(request, old_sprint_id):
     try:
         new_sprint_id = SystemSetting.objects.get(name="sprint")
     except Exception as e:
-        print e
+        print(e)
         return False
 
     try:
         sprint = Sprint.objects.get(pk=new_sprint_id.value)
     except Exception as e:
-        print e
+        print(e)
         return False
 
     for issue in issues:

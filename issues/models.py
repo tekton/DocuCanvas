@@ -118,10 +118,10 @@ class Issue(models.Model):
                                     news_feed_item.newsfeed_type = "update_issue"
                                     news_feed_item.save()
                                 except e:
-                                    print e
+                                    print(e)
                             except Exception, e:
-                                print 'couldnt save status update'
-                                print e
+                                print('couldnt save status update')
+                                print(e)
 
                             if field.attname == 'status':
                                 if self.status != old_issue.status:
@@ -134,16 +134,16 @@ class Issue(models.Model):
                                         issue_status_update.new_status = self.status
                                         issue_status_update.save()
                                     except Exception, e:
-                                        print 'couldnt save status update'
-                                        print e
+                                        print('couldnt save status update')
+                                        print(e)
 
                     if self.status == 'fixed':
                         self.actual_end = datetime.date.today()
                     if self.status == 'active':
                         self.actual_start = datetime.date.today()
                 except Exception, e:
-                    print 'couldnt get old issue'
-                    print e
+                    print('couldnt get old issue')
+                    print(e)
 
             ### create historical issue object based on this new change
             try:
@@ -155,13 +155,13 @@ class Issue(models.Model):
                 issue_historical.save()
             except Exception, e:
                 'couldnt save historical issue'
-                print e
+                print(e)
 
             #try:
             #    update_index.Command().handle()
             #except Exception, e:
-            #    print 'unable to update index'
-            #    print e
+            #    print('unable to update index')
+            #    print(e)
         # go through list of assign/subscribed and put in a dictionary, loop through dictionary and queue an e-mail in celery
         super(Issue, self).save()
 
@@ -294,7 +294,7 @@ class IssueComment(models.Model):
                 news_feed_item.newsfeed_type = 'comment'
                 news_feed_item.save()
             except Exception, e:
-                print e
+                print(e)
         super(IssueComment, self).save(*args, **kwargs)
 
 

@@ -16,12 +16,12 @@ def home(request):
     try:
         projects = Project.objects.filter(active=True).order_by("priority")
     except Exception, e:
-        print e
+        print(e)
         projects = []
     try:
         inactive = Project.objects.exclude(active=True)
     except Exception, e:
-        print e
+        print(e)
         inactive = []
     #owned_projects = Project.objects.filter(product_owner=request.user)
     return render_to_response("projects/projects_new.html", {'projects': projects, "inactive": inactive, "page_type": "Projects"}, context_instance=RequestContext(request))
@@ -49,7 +49,7 @@ def saveProjectPriority(request):
             project.save()
             priority_value = priority_value + 1
         except Exception, e:
-            print e
+            print(e)
     return HttpResponse(json.dumps({"msg": "success!"}))
 
 
@@ -65,21 +65,21 @@ def project_form(request):
                 try:
                     project = form.save(request.user)
                 except:
-                    print 'unable to save project'
+                    print('unable to save project')
                 if project.id:
                     return redirect('projects.views.project_overview', project.id)
                 else:
                     return render_to_response("projects/project_form.html", {'form': form}, context_instance=RequestContext(request))
         except Exception, e:
-            print "Error validating project fields"
-            print e
+            print("Error validating project fields")
+            print(e)
     else:
         form = ProjectForm()
 
     try:
         projects = Project.objects.all()
     except:
-        print 'Unable to grab all projects'
+        print('Unable to grab all projects')
 
     return render_to_response("projects/project_wizard.html", {'form': form, "projects": projects, "page_type": "Project", "page_value": "New"}, context_instance=RequestContext(request))
 
@@ -103,15 +103,15 @@ def project_overview(request, project_id):
                     project_planner_item.save()
                     project_planner_items.append(project_planner_item)
             except Exception, e:
-                print e
+                print(e)
     except:
-        print 'project not found'
+        print('project not found')
 
     try:
         # NEED TO CHANGE TO FILTER PROJECTS VIEABLE BY USER
         projects = Project.objects.all().order_by('-created')
     except:
-        print 'Unable to load projects'
+        print('Unable to load projects')
         projects = []
 
     try:
@@ -123,7 +123,7 @@ def project_overview(request, project_id):
             to_append['target'] = connection.target.meta_issue.id
             to_json_connections.append(to_append)
     except:
-        print 'Unable to load project planner item connections'
+        print('Unable to load project planner item connections')
         connections = []
 
     return render_to_response("projects/project_overview.html", {'project': project, "project_planner_items": project_planner_items, "connections": json.dumps(to_json_connections), "metas": metas, "incomplete_issues": incomplete_issues, "fixed_issues":fixed_issues, "projects": projects, "page_value": project.name}, context_instance=RequestContext(request))
@@ -157,7 +157,7 @@ def project_stats(request, project_id):
 
         bugs_for_review = Issue.objects.filter(Q(project=project) & (Q(status='wont_fix') | Q(status='not_a_bug') | Q(status='retest')))
     except Exception, e:
-        print e
+        print(e)
 
     return render_to_response("projects/project_stats.html", {"project": project,
                                                               "projects": projects,
@@ -206,12 +206,12 @@ def save_project_planner_item(request):
                     project_planner_item.y_coordinate = request.POST['y_coordinate']
                     project_planner_item.save()
                 except:
-                    print 'Project does not exist'
+                    print('Project does not exist')
                     to_json['success'] = False
 
         except Exception, e:
-            print e
-            print 'Meta Issue does not exist'
+            print(e)
+            print('Meta Issue does not exist')
             to_json['success'] = False
 
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
@@ -240,18 +240,18 @@ def save_project_planner_item_connection(request):
                             project_planner_item_connection.target = target
                             project_planner_item_connection.save()
                         except Exception, e:
-                            print 'Project Planner item does not exist'
-                            print e
+                            print('Project Planner item does not exist')
+                            print(e)
                             to_json['success'] = False
                     except Exception, e:
-                        print e
-                        print 'Project does not exist'
+                        print(e)
+                        print('Project does not exist')
             except Exception, e:
-                print e
-                print 'Project Planner Item does not exist'
+                print(e)
+                print('Project Planner Item does not exist')
         except:
-            print 'Meta Issue does not exist'
-            print e
+            print('Meta Issue does not exist')
+            print(e)
             to_json['success'] = False
 
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
@@ -272,14 +272,14 @@ def remove_project_planner_item_connection(request):
                     connection = ProjectPlannerItemConnection.objects.get(source=source_item, target=target_item)
                     connection.delete()
                 except Exception, e:
-                    print e
-                    print 'Could not find Project Planner Item Connection with given project planner Items'
+                    print(e)
+                    print('Could not find Project Planner Item Connection with given project planner Items')
             except Exception, e:
-                print e
-                print 'Could not find Project Planner Items with given Meta Issues'
+                print(e)
+                print('Could not find Project Planner Items with given Meta Issues')
         except Exception, e:
-            print e
-            print 'Could not load Meta Issues with given ids'
+            print(e)
+            print('Could not load Meta Issues with given ids')
 
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
 
@@ -294,8 +294,8 @@ def edit(request, project_id):
             try:
                 project = form.save(request.user)
             except Exception, e:
-                print e
-                print form.errors
+                print(e)
+                print(form.errors)
             if project.id:
                 return redirect('projects.views.project_overview', project.id)
             else:

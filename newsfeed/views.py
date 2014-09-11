@@ -25,7 +25,7 @@ def get_next_newsfeeds(request):
             for newsfeed in next_newsfeeds:
                 results.append(model_to_dict(newsfeed))
         except Exception, e:
-            print e
+            print(e)
 
     to_json['results'] = results
     return HttpResponse(json.dumps(to_json), mimetype='application/json')
@@ -36,12 +36,12 @@ def newsfeeds(request):
     try:
         newsfeeds = NewsFeedItem.objects.all().order_by('-id')[:50]
     except Exception, e:
-        print e
+        print(e)
 
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
     return render_to_response("newsfeed/newsfeeds.html", {"newsfeeds": newsfeeds, "projects": projects, "page_type": "Newsfeed", "page_value": "Past"}, context_instance=RequestContext(request))
 
 
@@ -50,11 +50,11 @@ def newsfeed_action(request, newsfeed_type):
     try:
         newsfeeds = NewsFeedItem.objects.filter(newsfeed_type=newsfeed_type)
     except Exception, e:
-        print e
+        print(e)
 
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
 
     return render_to_response("newsfeed/newsfeed_type_log.html", {"newsfeeds": newsfeeds, "projects": projects, "page_type": "Newsfeed Type", "page_value": newsfeed_type}, context_instance=RequestContext(request))

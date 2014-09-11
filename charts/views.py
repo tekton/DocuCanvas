@@ -31,12 +31,12 @@ def home(request):
         for user in users:
             users_dict[user.id] = user.username
     except:
-        print "Can't get users"
+        print("Can't get users")
 
     try:
         projects = Project.objects.all()
     except:
-        print 'Unable to grab all projects'
+        print('Unable to grab all projects')
         projects = []
 
     try:
@@ -51,13 +51,13 @@ def home(request):
                 try:
                     json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
                 except Exception as e:
-                    print e
+                    print(e)
             for k, v in json_issue.items():
                 json_issue[k] = unicode(v)
             to_json_issues.append(json_issue)
     except Exception as e:
-        print e
-        print 'Unable to grab all Issues'
+        print(e)
+        print('Unable to grab all Issues')
         to_json_issues = []
 
     return render_to_response("charts/charts.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
@@ -75,14 +75,14 @@ def users_chart(request):
         for user in users:
             users_dict[user.id] = user.username
     except:
-        print "Can't get users"
+        print("Can't get users")
 
     try:
         projects = Project.objects.all()
         for project in projects:
             project_dict[project.id] = project.name
     except:
-        print 'Unable to grab all projects'
+        print('Unable to grab all projects')
         projects = []
 
     try:
@@ -96,14 +96,14 @@ def users_chart(request):
                 try:
                     json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
                 except Exception as e:
-                    print e   
+                    print(e   )
             for k,v in json_issue.items():
                 json_issue[k] = unicode(v)
 
             to_json_issues.append(json_issue)
     except Exception as e:
-        print e
-        print 'Unable to grab all Issues'
+        print(e)
+        print('Unable to grab all Issues')
         to_json_issues = []
 
     return render_to_response("charts/users_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
@@ -117,7 +117,7 @@ def projects_chart(request):
     try:
         users = User.objects.filter(is_staff=True)
     except:
-        print "Can't get users"
+        print("Can't get users")
 
     try:
         to_json_projects = []
@@ -129,7 +129,7 @@ def projects_chart(request):
                 json_project[k] = unicode(v)
             to_json_projects.append(json_project)
     except:
-        print 'Unable to grab all projects'
+        print('Unable to grab all projects')
         projects = []
 
     issues = []
@@ -145,13 +145,13 @@ def unassigned_issues_chart(request):
     try:
         projects = Project.objects.all()
     except:
-        print 'Unable to grab all projects'
+        print('Unable to grab all projects')
         projects = []
 
     try:
         users = User.objects.filter(is_staff=True)
     except:
-        print "Can't get users"
+        print("Can't get users")
 
     try:
         issues = Issue.objects.filter(assigned_to=None).order_by('project', '-created')
@@ -165,8 +165,8 @@ def unassigned_issues_chart(request):
 
             to_json_issues.append(json_issue)
     except Exception as e:
-        print e
-        print 'Unable to grab all Isssues'
+        print(e)
+        print('Unable to grab all Isssues')
         to_json_issues = []
 
     return render_to_response("charts/unassigned_issues_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
@@ -181,7 +181,7 @@ def unscheduled_issues_chart(request):
     try:
         projects = Project.objects.all()
     except:
-        print 'Unable to grab all projects'
+        print('Unable to grab all projects')
         projects = []
 
     try:
@@ -189,7 +189,7 @@ def unscheduled_issues_chart(request):
         for user in users:
             users_dict[user.id] = user.username
     except:
-        print "Can't get users"
+        print("Can't get users")
 
     try:
         issues = Issue.objects.filter(Q(projected_start__isnull=True, projected_end__isnull=True) | (Q(actual_start__isnull=True, actual_end__isnull=True))).order_by('project', '-created')
@@ -202,14 +202,14 @@ def unscheduled_issues_chart(request):
                 try:
                     json_issue['assigned_to'] = users_dict[issue.assigned_to.id]
                 except Exception as e:
-                    print e
+                    print(e)
             for k,v in json_issue.items():
                 json_issue[k] = unicode(v)
 
             to_json_issues.append(json_issue)
     except Exception as e:
-        print e
-        print 'Unable to grab all Isssues'
+        print(e)
+        print('Unable to grab all Isssues')
         to_json_issues = []
 
     return render_to_response("charts/unscheduled_issues_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users}, context_instance=RequestContext(request))
@@ -224,7 +224,7 @@ def issues_by_user_chart(request, user_id):
     try:
         users = User.objects.filter(is_staff=True)
     except:
-        print "Can't get users"
+        print("Can't get users")
         users = []
         
 
@@ -236,7 +236,7 @@ def issues_by_user_chart(request, user_id):
     try:
         projects = Project.objects.all()
     except:
-        print 'Unable to grab all projects'
+        print('Unable to grab all projects')
         projects = []
 
     try:
@@ -254,11 +254,11 @@ def issues_by_user_chart(request, user_id):
 
                 to_json_issues.append(json_issue)
         except Exception as e:
-            print e
-            print 'Unable to grab all Isssues'
+            print(e)
+            print('Unable to grab all Isssues')
             to_json_issues = []
     except:
-        print "User doesn't exist!"
+        print("User doesn't exist!")
 
     return render_to_response("charts/issues_by_user_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users, "assigned_to": assigned_to}, context_instance=RequestContext(request))
 
@@ -274,12 +274,12 @@ def issues_by_project_chart(request, project_id):
         for user in users:
             users_dict[user.id] = user.username
     except:
-        print "Can't get users"
+        print("Can't get users")
 
     try:
         projects = Project.objects.all()
     except:
-        print 'Unable to grab all projects'
+        print('Unable to grab all projects')
         projects = []
 
     try:
@@ -301,11 +301,11 @@ def issues_by_project_chart(request, project_id):
 
                 to_json_issues.append(json_issue)
         except Exception as e:
-            print e
-            print 'Unable to grab all Isssues'
+            print(e)
+            print('Unable to grab all Isssues')
             to_json_issues = []
     except:
-        print 'Unable to find project'
+        print('Unable to find project')
         project = Project()
     return render_to_response("charts/issues_by_project_gantt_chart.html", {"projects": projects, "issues": json.dumps(to_json_issues), "users": users, "project": project}, context_instance=RequestContext(request))
 
@@ -317,7 +317,7 @@ def meta_issues_by_project(request, project_id):
     try:
         projects = Project.objects.all()
     except:
-        print 'Unable to grab all projects'
+        print('Unable to grab all projects')
         projects = []
 
     try:
@@ -333,11 +333,11 @@ def meta_issues_by_project(request, project_id):
 
                 to_json_meta_issues.append(json_meta_issue)
         except Exception as e:
-            print e
-            print 'Unable to grab all Isssues'
+            print(e)
+            print('Unable to grab all Isssues')
             to_json_meta_issues = []
     except:
-        print 'Unable to find project'
+        print('Unable to find project')
     return render_to_response("charts/charts.html", {"projects": projects, "issues": json.dumps(to_json_meta_issues).replace("'", r"\'")}, context_instance=RequestContext(request))
     '''
 
@@ -348,7 +348,7 @@ def autoSchedule(request):
     try:
         issues = Issue.objects.filter(assigned_to=request.user).exclude(status='fixed').exclude(status='not_a_bug').exclude(status='wont_fix').exclude(status='duplicate').order_by('created')
     except Exception as e:
-        print e
+        print(e)
 
     critical_issues = []
     past_due_issues = []
@@ -376,8 +376,8 @@ def autoSchedule(request):
             else:
                 regular_issues.append(issue)
         except Exception as e:
-            print e
-            print "Error adding issue '" + issue.summary + "' to auto scheduler"
+            print(e)
+            print("Error adding issue '" + issue.summary + "' to auto scheduler")
 
     # Merging each list into a single list to pass to the front end.
     assigned_issues = []
@@ -404,7 +404,7 @@ def autoSchedule(request):
                 hours_required = (issue.projected_end - issue.projected_start).total_seconds()
                 hours_required = (hours_required/60)/60
                 time_required = datetime.timedelta(hours=hours_required)
-        print time_required
+        print(time_required)
 
         if time_required >= datetime.timedelta(days=1):
             delta = time_required - datetime.timedelta(days=1)
@@ -462,7 +462,7 @@ def updateIssueSchedule(request):
             else:
                 regular_issues.append(issue)
         except Exception as e:
-            print e
+            print(e)
 
     # Merging each list into a single list to pass to the front end.
     assigned_issues = []
@@ -485,7 +485,7 @@ def updateIssueSchedule(request):
                     hours_required = (issue.projected_end - issue.projected_start).total_seconds()
                     hours_required = (hours_required/60)/60
                     time_required = datetime.timedelta(hours=hours_required)
-            print time_required
+            print(time_required)
 
             if time_required >= datetime.timedelta(days=1):
                 delta = time_required - datetime.timedelta(days=1)
@@ -498,6 +498,6 @@ def updateIssueSchedule(request):
 
             current += time_required
     except Exception as e:
-        print e
+        print(e)
         return False
     return True

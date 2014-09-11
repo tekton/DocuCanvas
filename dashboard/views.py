@@ -20,37 +20,37 @@ def dashboard(request):
     try:
         users = User.objects.all()
     except Exception, e:
-        print e
+        print(e)
         users = []
 
     #issues = Issue.objects.filter(assigned_to=request.user).order_by('-created')
     try:
         issues = Issue.objects.filter(Q(assigned_to=request.user) & (Q(status="active") | Q(status="retest") | Q(status="unverified") | Q(status__isnull=True))).order_by('-created')
     except Exception, e:
-        print e
+        print(e)
         issues = []
     #pins = PinIssue.objects.select_related().filter(user=request.user)
     try:
         pins = Issue.objects.filter(pinissue__user=request.user).order_by('-created')
     except Exception, e:
-        print e
+        print(e)
         pins = []
     try:
         subscribed = Issue.objects.filter(subscriptiontoissue__user=request.user).order_by('-created')
     except Exception, e:
-        print e
+        print(e)
         subscribed = []
 
     try:
         newsfeeds = NewsFeedItem.objects.all().order_by('-id')[:20]
     except Exception, e:
-        print e
+        print(e)
         newsfeeds = []
     #projects = Project.objects.filter(lead_developer=request.user).order_by('-created')
     try:
         projects = Project.objects.all()
     except Exception, e:
-        print e
+        print(e)
         projects = []
 
     try:
@@ -59,7 +59,7 @@ def dashboard(request):
         for notification in notification_recipients:
             num_notifications += 1
     except Exception, e:
-        print e
+        print(e)
         notification_recipients = None
 
     # get user setting for dashboard layout...
@@ -69,9 +69,9 @@ def dashboard(request):
         if cache_check:
             dashboardLayout = cache_check
     except Exception as e:
-        print e
+        print(e)
         dashboardLayout = "col0[0]=module-pinned&col0[1]=module-assigned&col1[0]=module-newsfeed"
-    # print users
+    # print(users)
     #subscribed = SubscriptionToIssue.objects.select_related().filter(user=request.user)
     # attempt to get the user defined template first, then check for an override template
     stack = traceback.extract_stack()
@@ -82,8 +82,8 @@ def dashboard(request):
         if cache_template:
             default = cache_template
     except Exception as e:
-        # only print if debug is really necisary
-        print "Unable to get template from cache :: ".format(str(e))
+        # only print(if debug is really necisary)
+        print("Unable to get template from cache :: ".format(str(e)))
         pass
     template = request.GET.get("template", default)
     return render_to_response(template, {"issues": issues, 

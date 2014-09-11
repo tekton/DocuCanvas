@@ -4,6 +4,8 @@ database.txt
 *.project
 *.pydevproject
 venv
+VENV
+V3
 .settings
 celerybeat-schedule.db
 celerybeat-schedule

@@ -6,10 +6,10 @@ from accounts.views import setAssignable
 def make_assignable(modeladmin, request, queryset):
     #print modeladmin
     #print request
-    print queryset
+    print(queryset)
     for q in queryset:
         #print q
-        print q.id
+        print(q.id)
         setAssignable.delay(q.id)
 
 class AccountAdmin(admin.ModelAdmin):

@@ -20,7 +20,7 @@ def register(request):
             try:
                 form.save()
             except:
-                print "Unable to save form..."
+                print("Unable to save form...")
                 return render_to_response("registration/registration.html", {'form': form, 'next': nextPage}, context_instance=RequestContext(request))
             # log the user in before sending them to their next destination
             user = authenticate(username=request.POST.get("username"), password=request.POST.get("password1"))
@@ -33,8 +33,8 @@ def register(request):
             #
             return redirect(nextPage)
         else:
-            print "errors in registration"
-            print form.errors
+            print("errors in registration")
+            print(form.errors)
 
     else:
         form = RegisterForm()
@@ -47,7 +47,7 @@ def register(request):
 def create_account(user):
     try:
         account = Account.objects.get(user=user)
-        # print "Account already exists"
+        # print("Account already exists")
     except:
         account = Account()
         account.user = User.objects.get(pk=user.id)
@@ -56,15 +56,15 @@ def create_account(user):
             account.save()
             return True
         except Exception as e:
-            print "Unable to save account..."
-            print e
+            print("Unable to save account...")
+            print(e)
             return False
     return True
 
 
 def login_func(request):
     nextPage = request.GET.get("next", "/")
-    print nextPage
+    print(nextPage)
     state = ""
     stateStatus = ""
     if request.method == 'POST':
@@ -80,8 +80,8 @@ def login_func(request):
                         try:
                             create_account(user)
                         except Exception as e:
-                            print "Unable to create account!"
-                            print e
+                            print("Unable to create account!")
+                            print(e)
                     else:
                         state = "Your account is not active, please contact the site admin."
                 else:
@@ -95,8 +95,8 @@ def login_func(request):
                 state = "Your username and/or password were incorrect."
                 return render_to_response("registration/login.html", {'a_form': form, 'next': nextPage, 'state': state}, context_instance=RequestContext(request))
         except Exception as e:
-            print "Error authenticating form"
-            print e
+            print("Error authenticating form")
+            print(e)
 
     else:
         form = AuthenticationForm()
@@ -108,21 +108,21 @@ def account_settings(request):
     try:
         projects = Project.objects.all()
     except Exception as e:
-        print e
+        print(e)
     try:
         twat = TwitterProfile.objects.get(user=request.user)
     except Exception as e:
         twat = TwitterProfile(user=request.user, user_name='admin', active=False)
-        print e
+        print(e)
     try:
         fb = FacebookProfile.objects.get(user=request.user)
     except Exception as e:
         fb = FacebookProfile()
-        print e
+        print(e)
     try:
         account = Account.objects.get(user=request.user)
     except Exception, e:
-        print e
+        print(e)
     return render_to_response("registration/account_settings.html", {"projects": projects, "tw": twat, "fb": fb, "account": account,}, context_instance=RequestContext(request))
 
 @login_required
@@ -130,7 +130,7 @@ def change_password(request):
     try:
         projects = Project.objects.all()
     except Exception as e:
-        print e
+        print(e)
 
     if request.method == "POST":
         try:
@@ -140,12 +140,12 @@ def change_password(request):
                     form.save()
                     return redirect('dashboard.views.dashboard')
                 except Exception as e:
-                    print "Error saving form"
+                    print("Error saving form")
             else:
                 return render_to_response("registration/change_password.html", {'form': form, "projects": projects}, context_instance=RequestContext(request))
         except Exception as e:
-            print "Error validating password"
-            print e
+            print("Error validating password")
+            print(e)
     else:
         form = EditAccountForm(SetPasswordForm)
     return render_to_response("registration/change_password.html", {'form': form, "projects": projects}, context_instance=RequestContext(request))
@@ -155,7 +155,7 @@ def change_email(request):
     try:
         projects = Project.objects.all()
     except Exception as e:
-        print e
+        print(e)
 
     if request.method == "POST":
         try:
@@ -167,13 +167,13 @@ def change_email(request):
                     user.save()
                     return redirect('dashboard.views.dashboard')
                 except Exception as e:
-                    print e
+                    print(e)
 
             else:
-                print "form not valid"
+                print("form not valid")
         except Exception as e:
-            print "Error getting email from database"
-            print e
+            print("Error getting email from database")
+            print(e)
     else:
         form = ChangeEmailForm()
     return render_to_response("registration/change_email.html", {'form': form, "projects": projects}, context_instance=RequestContext(request))
@@ -185,7 +185,7 @@ def user_overview(request, user_id):
         issues = Issue.objects.filter(assigned_to=gadget_user).order_by('-project')
         issue_status_updates = IssueStatusUpdate.objects.filter(user=gadget_user).order_by('-time_stamp')
     except Exception as e:
-        print e
+        print(e)
         raise e
 
     return render_to_response("user/user_overview.html", {
