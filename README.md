@@ -1,6 +1,8 @@
 DocuCanvas
 ====================
 
+## Build is currently broken for most localized development without a heavily, heavily modified local settings file
+
 ### or How I Learned to Use Canvas and Make Wireframes Fun!
 ### aka Burlap to Canvas
 
